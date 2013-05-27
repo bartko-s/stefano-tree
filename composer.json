@@ -6,7 +6,8 @@
     "type": "zf-module",
     "keywords": [
         "zend-module",
-        "Tree"
+        "Tree",
+        "mptt"
     ],
     "support": {
         "source": "https://github.com/bartko-s/stefano-tree",
