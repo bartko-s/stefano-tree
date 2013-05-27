@@ -7,7 +7,7 @@ defined('TEST_STEFANO_DB_ADAPTER')
 defined('TEST_STEFANO_DB_HOSTNAME')
     || define('TEST_STEFANO_DB_HOSTNAME', '127.0.0.1');
 defined('TEST_STEFANO_DB_DB_NAME')
-    || define('TEST_STEFANO_DB_DB_NAME', 'test');
+    || define('TEST_STEFANO_DB_DB_NAME', 'stefano-tests');
 defined('TEST_STEFANO_DB_USER')
     || define('TEST_STEFANO_DB_USER', 'root');
 defined('TEST_STEFANO_DB_PASSWORD')
