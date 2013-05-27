@@ -4,7 +4,7 @@ php:
   - "5.3"
 before_script:
   - composer install --dev
-  - mysql -e 'create database stefano-tests;'
+  - mysql -e 'create database stefano_tests;'
   - echo "USE mysql;\nUPDATE user SET password=PASSWORD('test') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql -u root
 after_script:
   - echo "USE mysql;\nUPDATE user SET password=PASSWORD('') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql -u root
