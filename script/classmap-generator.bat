@@ -1,0 +1,1 @@
+php ../vendor/zendframework/zendframework/bin/classmap_generator.php -l ../src -o ../autoload_classmap.php -w
