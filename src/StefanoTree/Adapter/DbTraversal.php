@@ -6,6 +6,7 @@ use \Zend\Db\Adapter\Adapter as DbAdapter;
 use \StefanoDb\TransactionManager;
 use \StefanoTree\NodeInfo;
 use StefanoDb\Lock as DbLock;
+use StefanoDb\Transaction\TransactionManagerInterface;
 
 class DbTraversal
     implements AdapterInterface
@@ -26,6 +27,8 @@ class DbTraversal
     protected $extTables = array();
     
     protected $dbAdapter = null;
+    
+    protected $transactionManager;
     
     protected $defaultDbSelect = null;
     
@@ -49,6 +52,10 @@ class DbTraversal
         
         if(null == $this->dbAdapter) {
             $errorMessage[] = 'dbAdapter';
+        }
+        
+        if(null == $this->transactionManager) {
+            $errorMessage[] = 'transactionManager';
         }
         
         if (count($errorMessage)) {
@@ -197,6 +204,30 @@ class DbTraversal
     }
     
     /**
+     * @param TransactionManagerInterface $transactionManager
+     * @return \StefanoTree\Adapter\DbTraversal
+     */
+    public function setTransactionManager(TransactionManagerInterface $transactionManager) {
+        $this->transactionManager = $transactionManager;
+        return $this;
+    }
+    
+    /**
+     * @return TransactionManagerInterface
+     */
+    public function getTransactionManager() {
+        return $this->transactionManager;
+    }
+    
+    /**
+     * @return \StefanoDb\Lock\LockInterface
+     */
+    private function getLockAdapter() {
+        $lockFactory = new \StefanoDb\Lock\LockFactory();
+        return $lockFactory->getLockAdapter($this->getDbAdapter());
+    }
+    
+    /**
      * 
      * @param string $parentIdColumnName
      * @return DbTraversal
@@ -262,23 +293,24 @@ class DbTraversal
      */
     protected function addNode($targetNodeId, $placement, $data = array()) {
         $dbAdapter = $this->getDbAdapter();
-        $transaction = TransactionManager::getTransaction($dbAdapter);
-        $dbLock = new DbLock($dbAdapter);
+        $transaction = $this->getTransactionManager()
+                            ->getTransaction($dbAdapter);
+        $dbLock = $this->getLockAdapter();
         
         try {
             $transaction->begin();
-            $dbLock->lock($this->getTableName());
+            $dbLock->lockTables($this->getTableName());
             
             if(!$targetNodeInfo = $this->getNodeInfo($targetNodeId)) {
                 $transaction->commit();
-                $dbLock->unlock();
+                $dbLock->unlockTables();
                 return false;
             }
         
             if(self::PLACEMENT_BOTTOM == $placement) {
                 if(1 == $targetNodeId) {
                     $transaction->commit();
-                    $dbLock->unlock();
+                    $dbLock->unlockTables();
                     return false;
                 }
 
@@ -291,7 +323,7 @@ class DbTraversal
             } elseif(self::PLACEMENT_TOP == $placement) {
                 if(1 == $targetNodeId) {
                     $transaction->commit();
-                    $dbLock->unlock();
+                    $dbLock->unlockTables();
                     return false;
                 }
 
@@ -330,10 +362,10 @@ class DbTraversal
                                       ->getLastGeneratedValue();
             
             $transaction->commit();
-            $dbLock->unlock();
+            $dbLock->unlockTables();
         } catch(\Exception $e) {
             $transaction->roolBack();
-            $dbLock->unlock();
+            $dbLock->unlockTables();
             throw $e;
         }
             
@@ -395,30 +427,31 @@ class DbTraversal
         }
         
         $dbAdapter = $this->getDbAdapter();
-        $transaction = TransactionManager::getTransaction($dbAdapter);
-        $dbLock = new DbLock($dbAdapter);
+        $transaction = $this->getTransactionManager()
+                            ->getTransaction($dbAdapter);
+        $dbLock = $this->getLockAdapter();
         
         try {
             $transaction->begin();
-            $dbLock->lock($this->getTableName());
+            $dbLock->lockTables($this->getTableName());
             
             //neexistuje
             if(!$sourceNodeInfo = $this->getNodeInfo($sourceNodeId)) {
                 $transaction->commit();
-                $dbLock->unlock();
+                $dbLock->unlockTables();
                 return false;
             }
             //neexistuje
             if(!$targetNodeInfo = $this->getNodeInfo($targetNodeId)) {
                 $transaction->commit();
-                $dbLock->unlock();
+                $dbLock->unlockTables();
                 return false;
             }
             //cielovy uzol lezi v zdrojovej vetve
             if($targetNodeInfo->getLeft() > $sourceNodeInfo->getLeft() &&
                     $targetNodeInfo->getRight() < $sourceNodeInfo->getRight()) {
                 $transaction->commit();
-                $dbLock->unlock();
+                $dbLock->unlockTables();
                 return false;
             }
             
@@ -429,14 +462,14 @@ class DbTraversal
                 //cielovy uzol je root
                 if(1 == $targetNodeId) {
                     $transaction->commit();
-                    $dbLock->unlock();
+                    $dbLock->unlockTables();
                     return false;
                 }
                 //aktualna pozicia je rovnaka ako pozadovana, cize nie je dovod presuvat
                 if($targetNodeInfo->getRight() == ($sourceNodeInfo->getLeft() - 1) &&
                         $targetNodeInfo->getParentId() == $sourceNodeInfo->getParentId()) {
                     $transaction->commit();
-                    $dbLock->unlock();
+                    $dbLock->unlockTables();
                     return true;
                 }
 
@@ -484,7 +517,7 @@ class DbTraversal
                 //cielovy uzol je root
                 if(1 == $targetNodeId) {
                     $transaction->commit();
-                    $dbLock->unlock();
+                    $dbLock->unlockTables();
                     return false;
                 }
 
@@ -492,7 +525,7 @@ class DbTraversal
                 if($targetNodeInfo->getLeft() == ($sourceNodeInfo->getRight() + 1) &&
                         $targetNodeInfo->getParentId() == $sourceNodeInfo->getParentId()) {
                     $transaction->commit();
-                    $dbLock->unlock();
+                    $dbLock->unlockTables();
                     return true;
                 }
 
@@ -545,7 +578,7 @@ class DbTraversal
                 if($sourceNodeInfo->getParentId() == $targetNodeInfo->getId() && 
                         $sourceNodeInfo->getRight() == ($targetNodeInfo->getRight() - 1)) {
                     $transaction->commit();
-                    $dbLock->unlock();
+                    $dbLock->unlockTables();
                     return true;
                 }
 
@@ -597,7 +630,7 @@ class DbTraversal
                 if($sourceNodeInfo->getParentId() == $targetNodeInfo->getId() &&
                         $targetNodeInfo->getLeft() == ($sourceNodeInfo->getLeft() - 1)) {
                     $transaction->commit();
-                    $dbLock->unlock();
+                    $dbLock->unlockTables();
                     return true;
                 }
                 
@@ -651,10 +684,10 @@ class DbTraversal
             }
 
             $transaction->commit();
-            $dbLock->unlock();
+            $dbLock->unlockTables();
         } catch(\Exception $e) {
             $transaction->roolBack();
-            $dbLock->unlock();
+            $dbLock->unlockTables();
             throw $e;
         }
         
@@ -713,17 +746,18 @@ class DbTraversal
         }
         
         $dbAdapter = $this->getDbAdapter();
-        $transaction = TransactionManager::getTransaction($dbAdapter);
-        $dbLock = new DbLock($dbAdapter);
+        $transaction = $this->getTransactionManager()
+                            ->getTransaction($dbAdapter);
+        $dbLock = $this->getLockAdapter();
         
         try {
             $transaction->begin();
-            $dbLock->lock($this->getTableName());
+            $dbLock->lockTables($this->getTableName());
             
             // neexistuje
             if(!$nodeInfo = $this->getNodeInfo($nodeId)) {
                 $transaction->commit();
-                $dbLock->unlock();
+                $dbLock->unlockTables();
                 return false;
             }
             
@@ -740,10 +774,10 @@ class DbTraversal
             $this->moveIndexes($nodeInfo->getLeft(), $shift);
 
             $transaction->commit();
-            $dbLock->unlock();
+            $dbLock->unlockTables();
         } catch (\Exception $e) {
             $transaction->roolBack();
-            $dbLock->unlock();
+            $dbLock->unlockTables();
             throw $e;
         }
         
@@ -806,12 +840,14 @@ class DbTraversal
         $data[$this->getRightColumnName()] = 2;
         $data[$this->getLevelColumnName()] = 0;
         
-        $transaction = TransactionManager::getTransaction($dbAdapter);
-        $dbLock = new DbLock($dbAdapter);
+        $transaction = $this->getTransactionManager()
+                            ->getTransaction($dbAdapter);
+        
+        $dbLock = $this->getLockAdapter();
         
         try {
             $transaction->begin();
-            $dbLock->lock($this->getTableName());
+            $dbLock->lockTables($this->getTableName());
             
             $dbAdapter->query('TRUNCATE '. $this->getTableName(), DbAdapter::QUERY_MODE_EXECUTE);
             
@@ -822,10 +858,10 @@ class DbTraversal
                     DbAdapter::QUERY_MODE_EXECUTE);
             
             $transaction->commit();
-            $dbLock->unlock();
+            $dbLock->unlockTables();
         } catch (\Exception $e) {
             $transaction->roolBack();
-            $dbLock->unlock();
+            $dbLock->unlockTables();
             throw $e;
         }
         
@@ -963,7 +999,8 @@ class DbTraversal
 
         $dbSelect = clone $this->defaultDbSelect;
         
-        $transaction = TransactionManager::getTransaction($this->getDbAdapter());
+        $transaction = $this->getTransactionManager()
+                            ->getTransaction($this->getDbAdapter());
         if($transaction->isInTransaction()) {
             /*$dbSelect->forUpdate();
              * but this is not implemented yet
@@ -1069,7 +1106,8 @@ class DbTraversal
         
         $dbAdapter = $this->getDbAdapter();
         $dbPlatform = $dbAdapter->getPlatform();        
-        $transaction = TransactionManager::getTransaction($dbAdapter);
+        $transaction = $this->getTransactionManager()
+                            ->getTransaction($dbAdapter);
         
         try {
             $sqls = array();
