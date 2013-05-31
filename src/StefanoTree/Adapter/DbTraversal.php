@@ -3,19 +3,12 @@ namespace StefanoTree\Adapter;
 
 use \Zend\Db;
 use \Zend\Db\Adapter\Adapter as DbAdapter;
-use \StefanoDb\TransactionManager;
 use \StefanoTree\NodeInfo;
-use StefanoDb\Lock as DbLock;
 use StefanoDb\Transaction\TransactionManagerInterface;
 
 class DbTraversal
     implements AdapterInterface
 {
-    const PLACEMENT_TOP = 'top';
-    const PLACEMENT_BOTTOM = 'bottom';
-    const PLACEMENT_CHILD_TOP = 'childTop';
-    const PLACEMENT_CHILD_BOTTOM = 'childBottom';
-    
     protected $tableName = null;
     
     protected $idColumnName = null;

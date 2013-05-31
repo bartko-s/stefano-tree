@@ -3,6 +3,11 @@ namespace StefanoTree\Adapter;
 
 interface AdapterInterface
 {   
+    const PLACEMENT_TOP = 'top';
+    const PLACEMENT_BOTTOM = 'bottom';
+    const PLACEMENT_CHILD_TOP = 'childTop';
+    const PLACEMENT_CHILD_BOTTOM = 'childBottom';
+    
     /**
      * 
      * @param int $nodeId
