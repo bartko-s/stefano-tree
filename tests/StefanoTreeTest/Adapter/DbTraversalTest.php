@@ -3,6 +3,7 @@ namespace StefanoTreeTest\Adapter;
 
 use \StefanoTree\Adapter\DbTraversal as TreeAdapter;
 use \Zend\Db\Adapter\Adapter as DbAdapter;
+use StefanoDb\Transaction\TransactionManager;
 
 class DbTraversalTest
     extends \PHPUnit_Extensions_Database_TestCase
@@ -24,6 +25,7 @@ class DbTraversalTest
             'tableName' => 'tree_traversal',
             'idColumnName' => 'tree_traversal_id',
             'dbAdapter' => $this->dbAdapter,
+            'transactionManager' => new TransactionManager(),
         ));
         $this->treeAdapter = $treeAdapter;
         
@@ -147,7 +149,7 @@ class DbTraversalTest
     }
     
     public function testObjectConstructorValidation() {
-        $this->setExpectedException('\Exception', 'tableName, idColumnName, dbAdapter must be set');
+        $this->setExpectedException('\Exception', 'tableName, idColumnName, dbAdapter, transactionManager must be set');
         
         $treeAdapter = new TreeAdapter(array());
     }
