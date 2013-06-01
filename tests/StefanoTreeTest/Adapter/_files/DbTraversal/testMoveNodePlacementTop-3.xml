@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <mysqldump xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <database name="stefano_library">
+    <database name="stefano_tests">
         <table_data name="tree_traversal">
             <row>
                 <field name="tree_traversal_id">1</field>
