@@ -1,4 +1,4 @@
-ZF2 Stefano Tree
+Stefano Tree
 ===================
 
 Master: <a href="https://travis-ci.org/bartko-s/stefano-tree"><img src="https://secure.travis-ci.org/bartko-s/stefano-tree.png?branch=master" /></a>
