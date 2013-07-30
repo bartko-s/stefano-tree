@@ -1,10 +1,9 @@
 <?php
 namespace StefanoTree\Adapter;
 
-use \Zend\Db;
-use \Zend\Db\Adapter\Adapter as DbAdapter;
-use \StefanoTree\NodeInfo;
-use StefanoDb\Transaction\TransactionManagerInterface;
+use Zend\Db;
+use StefanoDb\Adapter\Adapter as DbAdapter;
+use StefanoTree\NodeInfo;
 
 class DbTraversal
     implements AdapterInterface
@@ -45,10 +44,6 @@ class DbTraversal
         
         if(null == $this->dbAdapter) {
             $errorMessage[] = 'dbAdapter';
-        }
-        
-        if(null == $this->transactionManager) {
-            $errorMessage[] = 'transactionManager';
         }
         
         if (count($errorMessage)) {
@@ -197,30 +192,6 @@ class DbTraversal
     }
     
     /**
-     * @param TransactionManagerInterface $transactionManager
-     * @return \StefanoTree\Adapter\DbTraversal
-     */
-    public function setTransactionManager(TransactionManagerInterface $transactionManager) {
-        $this->transactionManager = $transactionManager;
-        return $this;
-    }
-    
-    /**
-     * @return TransactionManagerInterface
-     */
-    public function getTransactionManager() {
-        return $this->transactionManager;
-    }
-    
-    /**
-     * @return \StefanoDb\Lock\LockInterface
-     */
-    private function getLockAdapter() {
-        $lockFactory = new \StefanoDb\Lock\LockFactory();
-        return $lockFactory->getLockAdapter($this->getDbAdapter());
-    }
-    
-    /**
      * 
      * @param string $parentIdColumnName
      * @return DbTraversal
@@ -286,9 +257,8 @@ class DbTraversal
      */
     protected function addNode($targetNodeId, $placement, $data = array()) {
         $dbAdapter = $this->getDbAdapter();
-        $transaction = $this->getTransactionManager()
-                            ->getTransaction($dbAdapter);
-        $dbLock = $this->getLockAdapter();
+        $transaction = $dbAdapter->getTransaction();
+        $dbLock = $dbAdapter->getLockAdapter();
         
         try {
             $transaction->begin();
@@ -420,9 +390,8 @@ class DbTraversal
         }
         
         $dbAdapter = $this->getDbAdapter();
-        $transaction = $this->getTransactionManager()
-                            ->getTransaction($dbAdapter);
-        $dbLock = $this->getLockAdapter();
+        $transaction = $dbAdapter->getTransaction();
+        $dbLock = $dbAdapter->getLockAdapter();
         
         try {
             $transaction->begin();
@@ -739,9 +708,8 @@ class DbTraversal
         }
         
         $dbAdapter = $this->getDbAdapter();
-        $transaction = $this->getTransactionManager()
-                            ->getTransaction($dbAdapter);
-        $dbLock = $this->getLockAdapter();
+        $transaction = $dbAdapter->getTransaction();
+        $dbLock = $dbAdapter->getLockAdapter();
         
         try {
             $transaction->begin();
@@ -833,10 +801,8 @@ class DbTraversal
         $data[$this->getRightColumnName()] = 2;
         $data[$this->getLevelColumnName()] = 0;
         
-        $transaction = $this->getTransactionManager()
-                            ->getTransaction($dbAdapter);
-        
-        $dbLock = $this->getLockAdapter();
+        $transaction = $dbAdapter->getTransaction();        
+        $dbLock = $dbAdapter->getLockAdapter();
         
         try {
             $transaction->begin();
@@ -992,8 +958,8 @@ class DbTraversal
 
         $dbSelect = clone $this->defaultDbSelect;
         
-        $transaction = $this->getTransactionManager()
-                            ->getTransaction($this->getDbAdapter());
+        $transaction = $this->getDbAdapter()
+                            ->getTransaction();
         if($transaction->isInTransaction()) {
             /*$dbSelect->forUpdate();
              * but this is not implemented yet
@@ -1099,8 +1065,7 @@ class DbTraversal
         
         $dbAdapter = $this->getDbAdapter();
         $dbPlatform = $dbAdapter->getPlatform();        
-        $transaction = $this->getTransactionManager()
-                            ->getTransaction($dbAdapter);
+        $transaction = $dbAdapter->getTransaction();
         
         try {
             $sqls = array();
