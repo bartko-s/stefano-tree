@@ -24,7 +24,8 @@
     },
     "require-dev": {
         "phpunit/PHPUnit": ">=3.7.0",
-        "phpunit/dbunit": ">=1.0.0"
+        "phpunit/dbunit": ">=1.0.0",
+        "satooshi/php-coveralls": "dev-master"
     },
     "autoload": {
         "psr-0": {
