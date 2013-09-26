@@ -327,7 +327,7 @@ class DbTraversal
             $transaction->commit();
             $dbLock->unlockTables();
         } catch(\Exception $e) {
-            $transaction->roolBack();
+            $transaction->rollback();
             $dbLock->unlockTables();
             throw $e;
         }
@@ -648,7 +648,7 @@ class DbTraversal
             $transaction->commit();
             $dbLock->unlockTables();
         } catch(\Exception $e) {
-            $transaction->roolBack();
+            $transaction->rollback();
             $dbLock->unlockTables();
             throw $e;
         }
@@ -737,7 +737,7 @@ class DbTraversal
             $transaction->commit();
             $dbLock->unlockTables();
         } catch (\Exception $e) {
-            $transaction->roolBack();
+            $transaction->rollback();
             $dbLock->unlockTables();
             throw $e;
         }
@@ -819,7 +819,7 @@ class DbTraversal
             $transaction->commit();
             $dbLock->unlockTables();
         } catch (\Exception $e) {
-            $transaction->roolBack();
+            $transaction->rollback();
             $dbLock->unlockTables();
             throw $e;
         }
@@ -1097,7 +1097,7 @@ class DbTraversal
             
             $transaction->commit();
         } catch(\Exception $e) {
-            $transaction->roolBack();
+            $transaction->rollback();
             throw $e;
         }
     }

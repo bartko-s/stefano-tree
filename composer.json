@@ -1,14 +1,14 @@
 {
-    "name": "stefano/stefano-tree",
+    "name": "SimasGodovan/stefano-tree",
     "description": "Library for managing tree structures",
-    "version": "1.1.2-dev",
+    "version": "1.1.2",
     "license": "BSD-3-Clause",
     "keywords": [
         "Tree",
         "mptt"
     ],
     "support": {
-        "source": "https://github.com/bartko-s/stefano-tree",
+        "source": "https://github.com/SimasGodovan/stefano-tree",
         "issues": "https://github.com/bartko-s/stefano-tree/issues"
     },
     "homepage": "https://github.com/bartko-s/stefano-tree",
