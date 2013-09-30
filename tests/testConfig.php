@@ -15,6 +15,6 @@ defined('TEST_STEFANO_DB_HOSTNAME')
 defined('TEST_STEFANO_DB_DB_NAME')
     || define('TEST_STEFANO_DB_DB_NAME', 'stefano_tests');
 defined('TEST_STEFANO_DB_USER')
-    || define('TEST_STEFANO_DB_USER', 'root');
+    || define('TEST_STEFANO_DB_USER', 'travis');
 defined('TEST_STEFANO_DB_PASSWORD')
-    || define('TEST_STEFANO_DB_PASSWORD', 'test');
+    || define('TEST_STEFANO_DB_PASSWORD', '');
