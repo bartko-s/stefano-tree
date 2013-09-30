@@ -1,5 +1,5 @@
 <?php
-namespace StefanoTreeTest;
+namespace StefanoTreeTest\Unit;
 
 use \StefanoTree\NodeInfo;
 

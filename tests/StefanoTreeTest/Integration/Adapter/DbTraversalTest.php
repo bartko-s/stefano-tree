@@ -1,7 +1,7 @@
 <?php
-namespace StefanoTreeTest\Adapter;
+namespace StefanoTreeTest\Integration\Adapter;
 
-use \StefanoTree\Adapter\DbTraversal as TreeAdapter;
+use StefanoTree\Adapter\DbTraversal as TreeAdapter;
 use StefanoDb\Adapter\Adapter as DbAdapter;
 
 class DbTraversalTest
@@ -70,87 +70,7 @@ class DbTraversalTest
 
     protected function getDataSet() {
         return $this->createMySQLXMLDataSet(__DIR__ . '/_files/DbTraversal/initDataSet.xml');
-    }
-    
-    public function testSetGetTableName() {
-        $treeAdapter = $this->treeAdapter;
-        $return = $treeAdapter->setTableName('test');
-        $this->assertEquals('test', $treeAdapter->getTableName());
-        $this->assertInstanceOf('StefanoTree\Adapter\DbTraversal', $return, 'Must implement fluent interface');
-        
-        //test
-        $this->setExpectedException('\Exception', 'tableName cannot be empty');
-        $treeAdapter->setTableName(null);        
-    }
-    
-    public function testSetGetIdColumnName() {
-        $treeAdapter = $this->treeAdapter;
-        $return = $treeAdapter->setIdColumnName('test');
-        $this->assertEquals('test', $treeAdapter->getIdColumnName());
-        $this->assertInstanceOf('StefanoTree\Adapter\DbTraversal', $return, 'Must implement fluent interface');
-        
-        //test
-        $this->setExpectedException('\Exception', 'idColumnName cannot be empty');
-        $treeAdapter->setIdColumnName(null); 
-    }
-    
-    public function testSetGetLeftColumnName() {
-        $treeAdapter = $this->treeAdapter;
-        $return = $treeAdapter->setLeftColumnName('test');
-        $this->assertEquals('test', $treeAdapter->getLeftColumnName());        
-        $this->assertInstanceOf('StefanoTree\Adapter\DbTraversal', $return, 'Must implement fluent interface');
-        
-        //test
-        $this->setExpectedException('\Exception', 'leftColumnName cannot be empty');
-        $treeAdapter->setLeftColumnName(null); 
-    }
-    
-    public function testSetGetRightColumnName() {
-        $treeAdapter = $this->treeAdapter;
-        $return = $treeAdapter->setRightColumnName('test');
-        $this->assertEquals('test', $treeAdapter->getRightColumnName());
-        $this->assertInstanceOf('StefanoTree\Adapter\DbTraversal', $return, 'Must implement fluent interface');
-        
-        //test
-        $this->setExpectedException('\Exception', 'rightColumnName cannot be empty');
-        $treeAdapter->setRightColumnName(null); 
-    }
-    
-    public function testSetGetLevelColumnName() {
-        $treeAdapter = $this->treeAdapter;
-        $return = $treeAdapter->setLevelColumnName('test');
-        $this->assertEquals('test', $treeAdapter->getLevelColumnName());
-        $this->assertInstanceOf('StefanoTree\Adapter\DbTraversal', $return, 'Must implement fluent interface');
-        
-        //test
-        $this->setExpectedException('\Exception', 'levelColumnName cannot be empty');
-        $treeAdapter->setLevelColumnName(null);
-        
-    }
-    
-    public function testSetGetParentIdColumnName() {
-        $treeAdapter = $this->treeAdapter;
-        $return = $treeAdapter->setParentIdColumnName('test');
-        $this->assertEquals('test', $treeAdapter->getParentIdColumnName());
-        $this->assertInstanceOf('StefanoTree\Adapter\DbTraversal', $return, 'Must implement fluent interface');
-        
-        //test
-        $this->setExpectedException('\Exception', 'parentIdColumnName cannot be empty');
-        $treeAdapter->setParentIdColumnName(null);
-    }
-    
-    public function testSetGetDbAdapter() {
-        $treeAdapter = $this->treeAdapter;
-        $return = $treeAdapter->setDbAdapter($this->dbAdapter);
-        $this->assertSame($this->dbAdapter, $treeAdapter->getDbAdapter());
-        $this->assertInstanceOf('StefanoTree\Adapter\DbTraversal', $return, 'Must implement fluent interface');
-    }
-    
-    public function testObjectConstructorValidation() {
-        $this->setExpectedException('\Exception', 'tableName, idColumnName, dbAdapter must be set');
-        
-        $treeAdapter = new TreeAdapter(array());
-    }
+    }    
     
     public function testClear() {
         //test
