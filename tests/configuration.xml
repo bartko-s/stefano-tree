@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <phpunit bootstrap="./bootstrap.php" colors="true">
     <testsuites>
-        <testsuite name="Stefano Tree Unit Tests">
+        <testsuite name="unit">
             <directory>./StefanoTreeTest/Unit</directory>
         </testsuite>
-        <testsuite name="Stefano Tree Integration Tests">
+        <testsuite name="integration">
             <directory>./StefanoTreeTest/Integration</directory>
         </testsuite>
     </testsuites>
