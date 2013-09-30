@@ -1,3 +1,4 @@
 /vendor/
 /tests/temp/
 /composer.lock
+/tests/testConfig.local.php

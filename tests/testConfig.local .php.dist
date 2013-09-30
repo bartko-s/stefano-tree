@@ -1,0 +1,9 @@
+<?php
+/**
+ * Your custom DB connection settings
+ */
+//define('TEST_STEFANO_DB_ADAPTER', 'mysql');
+//define('TEST_STEFANO_DB_HOSTNAME', '127.0.0.1');
+//define('TEST_STEFANO_DB_DB_NAME', '');
+//define('TEST_STEFANO_DB_USER', '');
+//define('TEST_STEFANO_DB_PASSWORD', '');

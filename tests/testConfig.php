@@ -1,4 +1,10 @@
 <?php
+$localConfig = __DIR__ . DIRECTORY_SEPARATOR . 'testConfig.local.php';
+
+if(file_exists($localConfig)) {
+    include_once $localConfig;
+}
+
 /**
  * DB connection settings
  */
