@@ -15,9 +15,7 @@ class DbTraversal
     protected $leftColumnName = 'lft';
     protected $rightColumnName = 'rgt';
     protected $levelColumnName = 'level';
-    protected $parentIdColumnName = 'parent_id';    
-    
-    protected $extTables = array();
+    protected $parentIdColumnName = 'parent_id';        
     
     protected $dbAdapter = null;
     
