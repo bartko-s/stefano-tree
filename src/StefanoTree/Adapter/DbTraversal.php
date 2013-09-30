@@ -809,7 +809,9 @@ class DbTraversal
             $transaction->begin();
             $dbLock->lockTables($this->getTableName());
             
+            $dbAdapter->query('SET FOREIGN_KEY_CHECKS=0;', DbAdapter::QUERY_MODE_EXECUTE);
             $dbAdapter->query('TRUNCATE '. $this->getTableName(), DbAdapter::QUERY_MODE_EXECUTE);
+            $dbAdapter->query('SET FOREIGN_KEY_CHECKS=1;', DbAdapter::QUERY_MODE_EXECUTE);
             
             $insert = new Db\Sql\Insert();
             $insert->into($this->getTableName())
