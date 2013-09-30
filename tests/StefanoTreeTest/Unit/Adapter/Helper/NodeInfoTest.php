@@ -1,7 +1,7 @@
 <?php
-namespace StefanoTreeTest\Unit;
+namespace StefanoTreeTest\Unit\Adapter\Helper;
 
-use \StefanoTree\NodeInfo;
+use StefanoTree\Adapter\Helper\NodeInfo;
 
 class NodeInfoTest
     extends \PHPUnit_Framework_TestCase

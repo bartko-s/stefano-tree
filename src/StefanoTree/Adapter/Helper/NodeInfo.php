@@ -1,5 +1,5 @@
 <?php
-namespace StefanoTree;
+namespace StefanoTree\Adapter\Helper;
 
 use StefanoTree\Exception\InvalidArgumentException;
 

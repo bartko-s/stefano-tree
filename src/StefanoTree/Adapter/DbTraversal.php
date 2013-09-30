@@ -3,7 +3,7 @@ namespace StefanoTree\Adapter;
 
 use Zend\Db;
 use StefanoDb\Adapter\Adapter as DbAdapter;
-use StefanoTree\NodeInfo;
+use StefanoTree\Adapter\Helper\NodeInfo;
 use Exception;
 
 class DbTraversal
