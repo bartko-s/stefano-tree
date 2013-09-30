@@ -786,19 +786,13 @@ class DbTraversal
     }
     
     /**
-     * Clear all data. Create root node
+     * Clear all data except root node
      * 
-     * @param array $data
      * @return DbTraversal
      * @throws \Exception
      */
-    public function clear($data = array()) {
+    public function clear() {
         $dbAdapter = $this->getDbAdapter();
-        
-        $data[$this->getParentIdColumnName()] = 0;
-        $data[$this->getLeftColumnName()] = 1;
-        $data[$this->getRightColumnName()] = 2;
-        $data[$this->getLevelColumnName()] = 0;
         
         $transaction = $dbAdapter->getTransaction();        
         $dbLock = $dbAdapter->getLockAdapter();
@@ -807,13 +801,23 @@ class DbTraversal
             $transaction->begin();
             $dbLock->lockTables($this->getTableName());
             
-            $dbAdapter->query('TRUNCATE '. $this->getTableName(), DbAdapter::QUERY_MODE_EXECUTE);
+            $delete = new Db\Sql\Delete;
+            $delete->from($this->getTableName())
+                   ->where
+                   ->notEqualTo($this->getIdColumnName(), 1);
+            $dbAdapter->query($delete->getSqlString($dbAdapter->getPlatform()),
+                DbAdapter::QUERY_MODE_EXECUTE);
             
-            $insert = new Db\Sql\Insert();
-            $insert->into($this->getTableName())
-                   ->values($data);
-            $dbAdapter->query($insert->getSqlString($dbAdapter->getPlatform()),
-                    DbAdapter::QUERY_MODE_EXECUTE);
+            $update = new Db\Sql\Update();
+            $update->table($this->getTableName())
+                   ->set(array(
+                        $this->getParentIdColumnName() => 0,
+                        $this->getLeftColumnName() => 1,
+                        $this->getRightColumnName() => 2,
+                        $this->getLevelColumnName() => 0,
+                   ));
+            $dbAdapter->query($update->getSqlString($dbAdapter->getPlatform()),
+                DbAdapter::QUERY_MODE_EXECUTE);       
             
             $transaction->commit();
             $dbLock->unlockTables();

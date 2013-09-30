@@ -73,23 +73,11 @@ class DbTraversalTest
     }    
     
     public function testClear() {
-        //test
         $this->treeAdapter
              ->clear();
 
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
         $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/DbTraversal/testClear-1.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
-        
-        //test
-        $data = array(
-            'name' => 'ahoj',
-        );
-        $this->treeAdapter
-             ->clear($data);
-
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/DbTraversal/testClear-2.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
     }
     
