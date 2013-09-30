@@ -1,6 +1,8 @@
 <?php
 namespace StefanoTree;
 
+use Exception;
+
 class NodeInfo
 {
     protected $_params = array(
@@ -18,7 +20,7 @@ class NodeInfo
     public function __construct(array $params) {
         foreach(array_keys($this->_params) as $paramName) {
             if(!array_key_exists($paramName, $params)) {
-                throw new \Exception('Param with name"' . $paramName . '" must be set');
+                throw new Exception('Param with name"' . $paramName . '" must be set');
             } else {
                 $this->_params[$paramName] = $params[$paramName];
             }

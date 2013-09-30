@@ -4,6 +4,7 @@ namespace StefanoTree\Adapter;
 use Zend\Db;
 use StefanoDb\Adapter\Adapter as DbAdapter;
 use StefanoTree\NodeInfo;
+use Exception;
 
 class DbTraversal
     implements AdapterInterface
@@ -47,7 +48,7 @@ class DbTraversal
         }
         
         if (count($errorMessage)) {
-            throw new \Exception(implode(', ', $errorMessage) . ' must be set');
+            throw new Exception(implode(', ', $errorMessage) . ' must be set');
         }
     }
     
@@ -76,7 +77,7 @@ class DbTraversal
         $tableName = (string) $tableName;
         
         if(0 == strlen($tableName)) {
-            throw new \Exception('tableName cannot be empty');
+            throw new Exception('tableName cannot be empty');
         }
         
         $this->tableName = $tableName;
@@ -101,7 +102,7 @@ class DbTraversal
         $idColumnName = (string) $idColumnName;
         
         if(0 == strlen($idColumnName)) {
-            throw new \Exception('idColumnName cannot be empty');
+            throw new Exception('idColumnName cannot be empty');
         }
         
         $this->idColumnName = $idColumnName;
@@ -126,7 +127,7 @@ class DbTraversal
         $leftColumnName = (string) $leftColumnName;
         
         if(0 == strlen($leftColumnName)) {
-            throw new \Exception('leftColumnName cannot be empty');
+            throw new Exception('leftColumnName cannot be empty');
         }
         
         $this->leftColumnName = $leftColumnName;
@@ -151,7 +152,7 @@ class DbTraversal
         $rightColumnName = (string) $rightColumnName;
         
         if(0 == strlen($rightColumnName)) {
-            throw new \Exception('rightColumnName cannot be empty');
+            throw new Exception('rightColumnName cannot be empty');
         }
         
         $this->rightColumnName = $rightColumnName;
@@ -176,7 +177,7 @@ class DbTraversal
         $levelColumnName = (string) $levelColumnName;
         
         if(0 == strlen($levelColumnName)) {
-            throw new \Exception('levelColumnName cannot be empty');
+            throw new Exception('levelColumnName cannot be empty');
         }
         
         $this->levelColumnName = $levelColumnName;
@@ -201,7 +202,7 @@ class DbTraversal
         $parentIdColumnName = (string) $parentIdColumnName;
         
         if(0 == strlen($parentIdColumnName)) {
-            throw new \Exception('parentIdColumnName cannot be empty');
+            throw new Exception('parentIdColumnName cannot be empty');
         }
         
         $this->parentIdColumnName = $parentIdColumnName;
@@ -312,7 +313,7 @@ class DbTraversal
                 $this->moveIndexes($targetNodeInfo->getLeft(), 2);
             } else {
                 // @codeCoverageIgnoreStart
-                throw new \Exception('Unknown placement "' . $placement . '"');
+                throw new Exception('Unknown placement "' . $placement . '"');
                 // @codeCoverageIgnoreEnd
             }
             
@@ -471,7 +472,7 @@ class DbTraversal
                     $this->moveIndexes($sourceNodeInfo->getLeft(), $reverseShift);
                 } else {
                     // @codeCoverageIgnoreStart
-                    throw new \Exception('moveBotom - this is impossible');
+                    throw new Exception('moveBotom - this is impossible');
                     // @codeCoverageIgnoreEnd
                 }
 
@@ -531,7 +532,7 @@ class DbTraversal
                     $this->moveIndexes($sourceNodeInfo->getLeft(), $reverseShift);
                 } else {
                     // @codeCoverageIgnoreStart
-                    throw new \Exception('moveTop - this is impossible');
+                    throw new Exception('moveTop - this is impossible');
                     // @codeCoverageIgnoreEnd
                 }
 
@@ -584,7 +585,7 @@ class DbTraversal
                     $this->moveIndexes($sourceNodeInfo->getRight(), $reverseShift);
                 } else {
                     // @codeCoverageIgnoreStart
-                    throw new \Exception('moveChildBottom - this is impossible');
+                    throw new Exception('moveChildBottom - this is impossible');
                     // @codeCoverageIgnoreEnd
                 }
             } elseif(self::PLACEMENT_CHILD_TOP == $placement) {
@@ -636,12 +637,12 @@ class DbTraversal
                     $this->moveIndexes($sourceNodeInfo->getRight(), $reverseShift);
                 } else {
                     // @codeCoverageIgnoreStart
-                    throw new \Exception('moveChildTop - this is impossible');
+                    throw new Exception('moveChildTop - this is impossible');
                     // @codeCoverageIgnoreEnd
                 }
             } else {
                 // @codeCoverageIgnoreStart
-                throw new \Exception('Unknown placement "' . $placement . '"');
+                throw new Exception('Unknown placement "' . $placement . '"');
                 // @codeCoverageIgnoreEnd
             }
 
