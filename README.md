@@ -1,5 +1,5 @@
-Stefano Tree
-===================
+Tree
+====
 
 | Test Status | Code Coverage | Dependencies |
 | :---: | :---: | :---: |
