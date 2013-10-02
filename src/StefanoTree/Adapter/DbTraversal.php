@@ -74,7 +74,7 @@ class DbTraversal
     
     /**
      * @param string $tableName
-     * @return DbTraversal
+     * @return this
      * @throws \Exception
      */
     public function setTableName($tableName) {
@@ -97,7 +97,7 @@ class DbTraversal
     
     /**
      * @param string $idColumnName
-     * @return DbTraversal
+     * @return this
      * @throws \Exception
      */
     public function setIdColumnName($idColumnName) {
@@ -120,7 +120,7 @@ class DbTraversal
     
     /**
      * @param string $leftColumnName
-     * @return DbTraversal
+     * @return this
      * @throws \Exception
      */
     public function setLeftColumnName($leftColumnName) {
@@ -143,7 +143,7 @@ class DbTraversal
     
     /**
      * @param string $rightColumnName
-     * @return DbTraversal
+     * @return this
      * @throws \Exception
      */
     public function setRightColumnName($rightColumnName) {
@@ -166,7 +166,7 @@ class DbTraversal
     
     /**
      * @param string $levelColumnName
-     * @return DbTraversal
+     * @return this
      * @throws \Exception
      */
     public function setLevelColumnName($levelColumnName) {
@@ -189,7 +189,7 @@ class DbTraversal
     
     /**
      * @param string $parentIdColumnName
-     * @return DbTraversal
+     * @return this
      * @throws \Exception
      */
     public function setParentIdColumnName($parentIdColumnName) {
@@ -728,7 +728,7 @@ class DbTraversal
     /**
      * Clear all data except root node
      * 
-     * @return DbTraversal
+     * @return this
      * @throws \Exception
      */
     public function clear() {
@@ -898,7 +898,7 @@ class DbTraversal
     
     /**    
      * @param \Zend\Db\Sql\Select $dbSelect
-     * @return DbTraversal
+     * @return this
      */
     public function setDefaultDbSelect(\Zend\Db\Sql\Select $dbSelect) {
         $this->defaultDbSelect = $dbSelect;
@@ -914,7 +914,7 @@ class DbTraversal
     
     /**
      * @param DbAdapter $dbAdapter
-     * @return DbTraversal
+     * @return this
      */
     public function setDbAdapter(DbAdapter $dbAdapter) {
         $this->dbAdapter = $dbAdapter;
