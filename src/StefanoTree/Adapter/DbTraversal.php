@@ -24,7 +24,6 @@ class DbTraversal
     protected $defaultDbSelect = null;
     
     /**
-     * 
      * @param array $options
      * @throws \Exception
      */
@@ -51,7 +50,6 @@ class DbTraversal
     }
     
     /**
-     * 
      * @param array $options
      * @return DbTraversal
      */
@@ -66,7 +64,6 @@ class DbTraversal
     }
     
     /**
-     * 
      * @param string $tableName
      * @return DbTraversal
      * @throws \Exception
@@ -83,7 +80,6 @@ class DbTraversal
     }
     
     /**
-     * 
      * @return string
      */
     public function getTableName() {
@@ -91,7 +87,6 @@ class DbTraversal
     }
     
     /**
-     * 
      * @param string $idColumnName
      * @return DbTraversal
      * @throws \Exception
@@ -108,7 +103,6 @@ class DbTraversal
     }
     
     /**
-     * 
      * @return string
      */
     public function getIdColumnName() {
@@ -116,7 +110,6 @@ class DbTraversal
     }
     
     /**
-     * 
      * @param string $leftColumnName
      * @return DbTraversal
      * @throws \Exception
@@ -133,7 +126,6 @@ class DbTraversal
     }
     
     /**
-     * 
      * @return string
      */
     public function getLeftColumnName() {
@@ -141,7 +133,6 @@ class DbTraversal
     }
     
     /**
-     * 
      * @param string $rightColumnName
      * @return DbTraversal
      * @throws \Exception
@@ -158,7 +149,6 @@ class DbTraversal
     }
     
     /**
-     * 
      * @return string
      */
     public function getRightColumnName() {
@@ -166,7 +156,6 @@ class DbTraversal
     }
     
     /**
-     * 
      * @param string $levelColumnName
      * @return DbTraversal
      * @throws \Exception
@@ -183,7 +172,6 @@ class DbTraversal
     }
     
     /**
-     * 
      * @return string
      */
     public function getLevelColumnName() {
@@ -191,7 +179,6 @@ class DbTraversal
     }
     
     /**
-     * 
      * @param string $parentIdColumnName
      * @return DbTraversal
      * @throws \Exception
@@ -208,7 +195,6 @@ class DbTraversal
     }
     
     /**
-     * 
      * @return string
      */
     public function getParentIdColumnName() {
@@ -216,7 +202,6 @@ class DbTraversal
     }
     
     /**
-     * 
      * @param int $nodeId
      * @param array $data
      */
@@ -251,8 +236,8 @@ class DbTraversal
      * @param int $targetNodeId
      * @param string $placement
      * @param array $data
-     * @return int|false last insert ID
-     * @throws Stefano_Tree_Exception
+     * @return int|false Id of new created node. False if node has not been created
+     * @throws Exception
      */
     protected function addNode($targetNodeId, $placement, $data = array()) {
         $dbAdapter = $this->getDbAdapter();
@@ -334,48 +319,27 @@ class DbTraversal
         return $lastInsertId;
     }
     
-    /**
-     * @param int $targetNodeId
-     * @param array $data
-     * @return int|false last insert id
-     */
     public function addNodePlacementBottom($targetNodeId, $data = array()) {
         $placement = self::PLACEMENT_BOTTOM;
         return $this->addNode($targetNodeId, $placement, $data);
     }
     
-    /**
-     * @param int $targetNodeId
-     * @param array $data
-     * @return int|false last insert id
-     */
     public function addNodePlacementTop($targetNodeId, $data = array()) {
         $placement = self::PLACEMENT_TOP;
         return $this->addNode($targetNodeId, $placement, $data);
     }
     
-    /**
-     * @param int $targetNodeId
-     * @param array $data
-     * @return int|false last insert id
-     */
     public function addNodePlacementChildBottom($targetNodeId, $data = array()) {
         $placement = self::PLACEMENT_CHILD_BOTTOM;
         return $this->addNode($targetNodeId, $placement, $data);
     }
     
-    /**
-     * @param int $targetNodeId
-     * @param array $data
-     * @return int|false last insert id
-     */
     public function addNodePlacementChildTop($targetNodeId, $data = array()) {
         $placement = self::PLACEMENT_CHILD_TOP;
         return $this->addNode($targetNodeId, $placement, $data);
     }
 
     /**
-     * 
      * @param int $sourceNodeId
      * @param int $targetNodeId
      * @param string $placement
@@ -655,52 +619,26 @@ class DbTraversal
         return true;
     }
     
-    /**
-     * @param int $sourceNodeId
-     * @param int $targetNodeId
-     * @return boolean
-     */
     public function moveNodePlacementBottom($sourceNodeId, $targetNodeId) {
         $placement = self::PLACEMENT_BOTTOM;
         return $this->moveNode($sourceNodeId, $targetNodeId, $placement);
     }
 
-    /**
-     * @param int $sourceNodeId
-     * @param int $targetNodeId
-     * @return boolean
-     */
     public function moveNodePlacementTop($sourceNodeId, $targetNodeId) {
         $placement = self::PLACEMENT_TOP;
         return $this->moveNode($sourceNodeId, $targetNodeId, $placement);
     }
-    
-    /**
-     * @param int $sourceNodeId
-     * @param int $targetNodeId
-     * @return boolean
-     */
+
     public function moveNodePlacementChildBottom($sourceNodeId, $targetNodeId) {
         $placement = self::PLACEMENT_CHILD_BOTTOM;
         return $this->moveNode($sourceNodeId, $targetNodeId, $placement);
     }    
     
-    /**
-     * @param int $sourceNodeId
-     * @param int $targetNodeId
-     * @return boolean
-     */
     public function moveNodePlacementChildTop($sourceNodeId, $targetNodeId) {
         $placement = self::PLACEMENT_CHILD_TOP;
         return $this->moveNode($sourceNodeId, $targetNodeId, $placement);
     }    
     
-    /**
-     * 
-     * @param int $nodeId
-     * @return boolean
-     * @throws \Exception
-     */
     public function deleteBranch($nodeId) {
         if(1 == $nodeId) {
             return false;
@@ -744,13 +682,6 @@ class DbTraversal
         return true;
     }
     
-    /**
-     * 
-     * @param int $nodeId
-     * @param int $startLevel 0 = vratane root
-     * @param bolean $excludeLastNode
-     * @return null|array
-     */
     public function getPath($nodeId, $startLevel = 0, $excludeLastNode = false) {
         $startLevel = (int) $startLevel;
         
@@ -854,10 +785,6 @@ class DbTraversal
         return $result;
     }    
     
-    /**
-     * @param int $nodeId
-     * @return null|array
-     */
     public function getNode($nodeId) {
         $nodeId = (int) $nodeId;
         
@@ -875,20 +802,12 @@ class DbTraversal
             return $array[0];
         }  
     }
-    
-    /**
-     * 
-     * @param int $nodeId
-     * @param int $startLevel relativny level od $nodeId. 0 = vratane $nodeId
-     * @param int $levels levelov vo vysledku
-     * @param int $excludeBranche nenacitat vetvu
-     * @return null|array
-     */
+        
     public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranche = null) {
         if(!$nodeInfo = $this->getNodeInfo($nodeId)) {
             return null;
         }
-        
+
         $dbAdapter = $this->getDbAdapter();
         $select = $this->getDefaultDbSelect();
         $select->order($this->getLeftColumnName() . ' ASC');
@@ -940,11 +859,6 @@ class DbTraversal
         }
     }    
     
-    /**
-     * Vrati priamych potomkov uzla
-     * @param int $nodeId
-     * @return null|array
-     */
     public function getChildren($nodeId) {
         return $this->getDescendants($nodeId, 1, 1);
     }
@@ -999,7 +913,6 @@ class DbTraversal
     }
     
     /**
-     * 
      * @param NodeInfo $nodeInfo
      * @param int $newParentId
      */
@@ -1023,7 +936,6 @@ class DbTraversal
     }
     
     /**
-     * 
      * @param int $leftFrom from left index
      * @param int $rightTo to right index
      * @param int $shift shift

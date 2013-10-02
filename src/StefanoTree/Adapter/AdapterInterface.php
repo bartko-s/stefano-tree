@@ -9,7 +9,6 @@ interface AdapterInterface
     const PLACEMENT_CHILD_BOTTOM = 'childBottom';
     
     /**
-     * 
      * @param int $nodeId
      * @param array $data
      */
@@ -18,28 +17,28 @@ interface AdapterInterface
     /**
      * @param int $targetNodeId
      * @param array $data
-     * @return int|false last insert id
+     * @return int|false Id of new created node. False if node has not been created
      */
     public function addNodePlacementBottom($targetNodeId, $data = array());
     
     /**
      * @param int $targetNodeId
      * @param array $data
-     * @return int|false last insert id
+     * @return int|false Id of new created node. False if node has not been created
      */
     public function addNodePlacementTop($targetNodeId, $data = array());
     
     /**
      * @param int $targetNodeId
      * @param array $data
-     * @return int|false last insert id
+     * @return int|false Id of new created node. False if node has not been created
      */
     public function addNodePlacementChildBottom($targetNodeId, $data = array());
     
     /**
      * @param int $targetNodeId
      * @param array $data
-     * @return int|false last insert id
+     * @return int|false Id of new created node. False if node has not been created
      */
     public function addNodePlacementChildTop($targetNodeId, $data = array());
     
@@ -72,7 +71,6 @@ interface AdapterInterface
     public function moveNodePlacementChildTop($sourceNodeId, $targetNodeId);
     
     /**
-     * 
      * @param int $nodeId
      * @return boolean
      * @throws \Exception
@@ -80,7 +78,6 @@ interface AdapterInterface
     public function deleteBranch($nodeId);
     
     /**
-     * 
      * @param int $nodeId
      * @param int $startLevel 0 = vratane root
      * @param bolean $excludeLastNode
@@ -95,17 +92,16 @@ interface AdapterInterface
     public function getNode($nodeId);
     
     /**
-     * 
      * @param int $nodeId
-     * @param int $startLevel relativny level od $nodeId. 0 = vratane $nodeId
-     * @param int $levels levelov vo vysledku
-     * @param int $excludeBranche nenacitat vetvu
+     * @param int $startLevel Relative level from $nodeId. 1 = excelude $nodeId from result. 
+     *                        2 = excelude 2 levels from result
+     * @param int $levels Number of levels in the restults relative to $startLevel
+     * @param int $excludeBranche Exclude defined branche(node id) from result
      * @return null|array
      */
     public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranche = null);
     
     /**
-     * Vrati priamych potomkov uzla
      * @param int $nodeId
      * @return null|array
      */
