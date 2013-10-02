@@ -28,30 +28,13 @@ class DbTraversal
      * @throws \Exception
      */
     public function __construct($options) {
-        $this->setOptions($options);
-        
-        $errorMessage = array();
-        
-        if(null == $this->tableName) {
-            $errorMessage[] = 'tableName';
-        }
-        
-        if(null == $this->idColumnName) {
-            $errorMessage[] = 'idColumnName';
-        }
-        
-        if(null == $this->dbAdapter) {
-            $errorMessage[] = 'dbAdapter';
-        }
-        
-        if (count($errorMessage)) {
-            throw new Exception(implode(', ', $errorMessage) . ' must be set');
-        }
+        $this->setOptions($options)
+             ->checkObjectSettings();
     }
     
     /**
      * @param array $options
-     * @return DbTraversal
+     * @return this
      */
     public function setOptions($options) {
         foreach($options as $name => $value) {
@@ -60,6 +43,32 @@ class DbTraversal
                 $this->$methodName($value);
             }
         }
+        return $this;
+    }
+
+    /**
+     * @return this
+     * @throws Exception If object is not fully initialized
+     */
+    protected function checkObjectSettings() {
+        $errorMessage = array();
+
+        if(null == $this->tableName) {
+            $errorMessage[] = 'tableName';
+        }
+
+        if(null == $this->idColumnName) {
+            $errorMessage[] = 'idColumnName';
+        }
+
+        if(null == $this->dbAdapter) {
+            $errorMessage[] = 'dbAdapter';
+        }
+
+        if (count($errorMessage)) {
+            throw new Exception(implode(', ', $errorMessage) . ' must be set');
+        }
+
         return $this;
     }
     
