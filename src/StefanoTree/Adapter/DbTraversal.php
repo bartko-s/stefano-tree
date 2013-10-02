@@ -10,19 +10,17 @@ class DbTraversal
     implements AdapterInterface
 {
     protected $tableName = null;
-    
+
     protected $idColumnName = null;
     protected $leftColumnName = 'lft';
     protected $rightColumnName = 'rgt';
     protected $levelColumnName = 'level';
     protected $parentIdColumnName = 'parent_id';        
-    
+
     protected $dbAdapter = null;
-    
-    protected $transactionManager;
-    
+
     protected $defaultDbSelect = null;
-    
+
     /**
      * @param array $options
      * @throws \Exception
