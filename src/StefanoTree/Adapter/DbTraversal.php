@@ -5,29 +5,48 @@ use Zend\Db;
 use StefanoDb\Adapter\Adapter as DbAdapter;
 use StefanoTree\Adapter\Helper\NodeInfo;
 use Exception;
+use StefanoTree\Exception\InvalidArgumentException;
 
 class DbTraversal
     implements AdapterInterface
 {
-    protected $tableName = null;
+    private $tableName = null;
 
-    protected $idColumnName = null;
-    protected $leftColumnName = 'lft';
-    protected $rightColumnName = 'rgt';
-    protected $levelColumnName = 'level';
-    protected $parentIdColumnName = 'parent_id';        
+    private $idColumnName = null;
+    private $leftColumnName = 'lft';
+    private $rightColumnName = 'rgt';
+    private $levelColumnName = 'level';
+    private $parentIdColumnName = 'parent_id';
 
-    protected $dbAdapter = null;
+    private $dbAdapter = null;
 
-    protected $defaultDbSelect = null;
+    private $defaultDbSelect = null;
 
     /**
+     * dbAdapter (required)
+     * tableName (required)
+     * idColumnName (required)
+     * leftColumnName (optional) default "lft"
+     * rightColumnName (optional) default "rgt"
+     * levelColumnName (optional) default "level"
+     * parentIdColumnName (optional) default "parent_id"
+     *
      * @param array $options
-     * @throws \Exception
+     * @throws InvalidArgumentException
      */
-    public function __construct($options) {
-        $this->setOptions($options)
-             ->checkObjectSettings();
+    public function __construct(array $options) {
+        $requiredOptions = array(
+            'tableName', 'idColumnName', 'dbAdapter',
+        );
+
+        $missingKeys = array_diff_key(array_flip($requiredOptions), $options);
+
+        if(count($missingKeys)) {
+            throw new InvalidArgumentException(implode(', ', array_flip($missingKeys))
+                . ' must be set');
+        }
+
+        $this->setOptions($options);
     }
     
     /**
@@ -43,43 +62,17 @@ class DbTraversal
         }
         return $this;
     }
-
-    /**
-     * @return this
-     * @throws Exception If object is not fully initialized
-     */
-    protected function checkObjectSettings() {
-        $errorMessage = array();
-
-        if(null == $this->tableName) {
-            $errorMessage[] = 'tableName';
-        }
-
-        if(null == $this->idColumnName) {
-            $errorMessage[] = 'idColumnName';
-        }
-
-        if(null == $this->dbAdapter) {
-            $errorMessage[] = 'dbAdapter';
-        }
-
-        if (count($errorMessage)) {
-            throw new Exception(implode(', ', $errorMessage) . ' must be set');
-        }
-
-        return $this;
-    }
     
     /**
      * @param string $tableName
      * @return this
-     * @throws \Exception
+     * @throws InvalidArgumentException
      */
     public function setTableName($tableName) {
-        $tableName = (string) $tableName;
+        $tableName = (string) trim($tableName);
         
-        if(0 == strlen($tableName)) {
-            throw new Exception('tableName cannot be empty');
+        if(empty($tableName)) {
+            throw new InvalidArgumentException('tableName cannot be empty');
         }
         
         $this->tableName = $tableName;
@@ -96,13 +89,13 @@ class DbTraversal
     /**
      * @param string $idColumnName
      * @return this
-     * @throws \Exception
+     * @throws InvalidArgumentException
      */
     public function setIdColumnName($idColumnName) {
-        $idColumnName = (string) $idColumnName;
+        $idColumnName = (string) trim($idColumnName);
         
-        if(0 == strlen($idColumnName)) {
-            throw new Exception('idColumnName cannot be empty');
+        if(empty($idColumnName)) {
+            throw new InvalidArgumentException('idColumnName cannot be empty');
         }
         
         $this->idColumnName = $idColumnName;
@@ -119,13 +112,13 @@ class DbTraversal
     /**
      * @param string $leftColumnName
      * @return this
-     * @throws \Exception
+     * @throws InvalidArgumentException
      */
     public function setLeftColumnName($leftColumnName) {
-        $leftColumnName = (string) $leftColumnName;
+        $leftColumnName = (string) trim($leftColumnName);
         
-        if(0 == strlen($leftColumnName)) {
-            throw new Exception('leftColumnName cannot be empty');
+        if(empty($leftColumnName)) {
+            throw new InvalidArgumentException('leftColumnName cannot be empty');
         }
         
         $this->leftColumnName = $leftColumnName;
@@ -142,13 +135,13 @@ class DbTraversal
     /**
      * @param string $rightColumnName
      * @return this
-     * @throws \Exception
+     * @throws InvalidArgumentException
      */
     public function setRightColumnName($rightColumnName) {
-        $rightColumnName = (string) $rightColumnName;
+        $rightColumnName = (string) trim($rightColumnName);
         
-        if(0 == strlen($rightColumnName)) {
-            throw new Exception('rightColumnName cannot be empty');
+        if(empty($rightColumnName)) {
+            throw new InvalidArgumentException('rightColumnName cannot be empty');
         }
         
         $this->rightColumnName = $rightColumnName;
@@ -165,13 +158,13 @@ class DbTraversal
     /**
      * @param string $levelColumnName
      * @return this
-     * @throws \Exception
+     * @throws InvalidArgumentException
      */
     public function setLevelColumnName($levelColumnName) {
-        $levelColumnName = (string) $levelColumnName;
+        $levelColumnName = (string) trim($levelColumnName);
         
-        if(0 == strlen($levelColumnName)) {
-            throw new Exception('levelColumnName cannot be empty');
+        if(empty($levelColumnName)) {
+            throw new InvalidArgumentException('levelColumnName cannot be empty');
         }
         
         $this->levelColumnName = $levelColumnName;
@@ -191,10 +184,10 @@ class DbTraversal
      * @throws \Exception
      */
     public function setParentIdColumnName($parentIdColumnName) {
-        $parentIdColumnName = (string) $parentIdColumnName;
+        $parentIdColumnName = (string) trim($parentIdColumnName);
         
-        if(0 == strlen($parentIdColumnName)) {
-            throw new Exception('parentIdColumnName cannot be empty');
+        if(empty($parentIdColumnName)) {
+            throw new InvalidArgumentException('parentIdColumnName cannot be empty');
         }
         
         $this->parentIdColumnName = $parentIdColumnName;
@@ -206,6 +199,22 @@ class DbTraversal
      */
     public function getParentIdColumnName() {
         return $this->parentIdColumnName;
+    }
+
+    /**
+     * @param DbAdapter $dbAdapter
+     * @return this
+     */
+    public function setDbAdapter(DbAdapter $dbAdapter) {
+        $this->dbAdapter = $dbAdapter;
+        return $this;
+    }
+
+    /**
+     * @return DbAdapter
+     */
+    public function getDbAdapter() {
+        return $this->dbAdapter;
     }
     
     /**
@@ -900,22 +909,6 @@ class DbTraversal
      */
     public function setDefaultDbSelect(\Zend\Db\Sql\Select $dbSelect) {
         $this->defaultDbSelect = $dbSelect;
-        return $this;
-    }
-
-    /**
-     * @return DbAdapter
-     */
-    public function getDbAdapter() {
-        return $this->dbAdapter;
-    }   
-    
-    /**
-     * @param DbAdapter $dbAdapter
-     * @return this
-     */
-    public function setDbAdapter(DbAdapter $dbAdapter) {
-        $this->dbAdapter = $dbAdapter;
         return $this;
     }
     

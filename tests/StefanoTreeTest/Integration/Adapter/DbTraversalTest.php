@@ -726,11 +726,11 @@ class DbTraversalTest
         //test
         $data = array(
             'name' => 'ahoj',
-            $this->treeAdapter->getLeftColumnName() => '123456',
-            $this->treeAdapter->getRightColumnName() => '123456',
-            $this->treeAdapter->getIdColumnName() => '123456',
-            $this->treeAdapter->getLevelColumnName() => '123456',
-            $this->treeAdapter->getParentIdColumnName() => '123456',
+            'lft' => '123456',
+            'rgt' => '123456',
+            'tree_traversal_id' => '123456',
+            'level' => '123456',
+            'parent_id' => '123456',
         );
         $return = $this->treeAdapter
                        ->updateNode(3, $data);
@@ -744,7 +744,7 @@ class DbTraversalTest
         $treeAdapter = $this->treeAdapter;
         
         $select = $treeAdapter->getDefaultDbSelect();
-        $select->join('jointable', 'jointable.col = ' . $treeAdapter->getTableName() . '.col');
+        $select->join('jointable', 'jointable.col = tree_traversal.col');
         $return = $treeAdapter->setDefaultDbSelect($select);
         
         $expected = $select->getSqlString($treeAdapter->getDbAdapter()->getPlatform());
