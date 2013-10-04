@@ -1,7 +1,7 @@
 <?php
-namespace StefanoTreeTest\Unit\Adapter;
+namespace StefanoTreeTest\Unit\Adapter\DbTraversable;
 
-use StefanoTree\Adapter\DbTraversal as TreeAdapter;
+use StefanoTree\Adapter\DbTraversal\Options;
 
 class DbTraversalTest
     extends \PHPUnit_Framework_TestCase
@@ -21,7 +21,7 @@ class DbTraversalTest
         $this->setExpectedException('\StefanoTree\Exception\InvalidArgumentException',
             'tableName, idColumnName, dbAdapter must be set');
 
-        new TreeAdapter(array());
+        new Options(array());
     }
 
     public function objectConstructorOptionsDataProvider() {
@@ -68,7 +68,7 @@ class DbTraversalTest
     /**
      * @dataProvider objectConstructorOptionsDataProvider
      */
-    public function testObjectConstructorOptions(
+    public function testThrowExceptionWrongConstructorOptions(
         $expectedException,
         $expectedMessage,
         $optinsKey,
@@ -79,6 +79,15 @@ class DbTraversalTest
 
         $this->setExpectedException($expectedException, $expectedMessage);
 
-        new TreeAdapter($options);
-    }  
+        new Options($options);
+    }
+
+    public function testDefaultValues() {
+        $options = new Options($this->getValidOptions());
+
+        $this->assertEquals('lft', $options->getLeftColumnName());
+        $this->assertEquals('rgt', $options->getRightColumnName());
+        $this->assertEquals('level', $options->getLevelColumnName());
+        $this->assertEquals('parent_id', $options->getParentIdColumnName());
+    }
 }

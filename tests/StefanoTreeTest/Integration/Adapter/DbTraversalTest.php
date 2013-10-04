@@ -739,18 +739,4 @@ class DbTraversalTest
         $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/DbTraversal/testUpdateNode-1.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);        
     }
-    
-    public function testSetGetDefaultDbSelect() {
-        $treeAdapter = $this->treeAdapter;
-        
-        $select = $treeAdapter->getDefaultDbSelect();
-        $select->join('jointable', 'jointable.col = tree_traversal.col');
-        $return = $treeAdapter->setDefaultDbSelect($select);
-        
-        $expected = $select->getSqlString($treeAdapter->getDbAdapter()->getPlatform());
-        $actual = $treeAdapter->getDefaultDbSelect()
-                              ->getSqlString($treeAdapter->getDbAdapter()->getPlatform());
-        $this->assertEquals($expected, $actual);
-        $this->assertInstanceOf('\StefanoTree\Adapter\DbTraversal', $return);
-    }
 }

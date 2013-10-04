@@ -6,19 +6,12 @@ use StefanoDb\Adapter\Adapter as DbAdapter;
 use StefanoTree\Adapter\Helper\NodeInfo;
 use Exception;
 use StefanoTree\Exception\InvalidArgumentException;
+use StefanoTree\Adapter\DbTraversal\Options;
 
 class DbTraversal
     implements AdapterInterface
 {
-    private $tableName = null;
-
-    private $idColumnName = null;
-    private $leftColumnName = 'lft';
-    private $rightColumnName = 'rgt';
-    private $levelColumnName = 'level';
-    private $parentIdColumnName = 'parent_id';
-
-    private $dbAdapter = null;
+    private $options = null;
 
     private $defaultDbSelect = null;
 
@@ -31,203 +24,39 @@ class DbTraversal
      * levelColumnName (optional) default "level"
      * parentIdColumnName (optional) default "parent_id"
      *
-     * @param array $options
+     * @param array|Options $options
      * @throws InvalidArgumentException
      */
-    public function __construct(array $options) {
-        $requiredOptions = array(
-            'tableName', 'idColumnName', 'dbAdapter',
-        );
-
-        $missingKeys = array_diff_key(array_flip($requiredOptions), $options);
-
-        if(count($missingKeys)) {
-            throw new InvalidArgumentException(implode(', ', array_flip($missingKeys))
-                . ' must be set');
+    public function __construct($options) {
+        if(is_array($options)) {
+            $this->options = new Options($options);
+        } elseif($this->options instanceof Options) {
+            $this->options = $options;
+        } else {
+            throw new InvalidArgumentException('Options must be array or Options object');
         }
-
-        $this->setOptions($options);
-    }
-    
-    /**
-     * @param array $options
-     * @return this
-     */
-    public function setOptions($options) {
-        foreach($options as $name => $value) {
-            $methodName = 'set' . ucfirst($name);
-            if(method_exists($this, $methodName)) {
-                $this->$methodName($value);
-            }
-        }
-        return $this;
-    }
-    
-    /**
-     * @param string $tableName
-     * @return this
-     * @throws InvalidArgumentException
-     */
-    public function setTableName($tableName) {
-        $tableName = (string) trim($tableName);
-        
-        if(empty($tableName)) {
-            throw new InvalidArgumentException('tableName cannot be empty');
-        }
-        
-        $this->tableName = $tableName;
-        return $this;
-    }
-    
-    /**
-     * @return string
-     */
-    public function getTableName() {
-        return $this->tableName;
-    }
-    
-    /**
-     * @param string $idColumnName
-     * @return this
-     * @throws InvalidArgumentException
-     */
-    public function setIdColumnName($idColumnName) {
-        $idColumnName = (string) trim($idColumnName);
-        
-        if(empty($idColumnName)) {
-            throw new InvalidArgumentException('idColumnName cannot be empty');
-        }
-        
-        $this->idColumnName = $idColumnName;
-        return $this;
-    }
-    
-    /**
-     * @return string
-     */
-    public function getIdColumnName() {
-        return $this->idColumnName;
-    }
-    
-    /**
-     * @param string $leftColumnName
-     * @return this
-     * @throws InvalidArgumentException
-     */
-    public function setLeftColumnName($leftColumnName) {
-        $leftColumnName = (string) trim($leftColumnName);
-        
-        if(empty($leftColumnName)) {
-            throw new InvalidArgumentException('leftColumnName cannot be empty');
-        }
-        
-        $this->leftColumnName = $leftColumnName;
-        return $this;
-    }
-    
-    /**
-     * @return string
-     */
-    public function getLeftColumnName() {
-        return $this->leftColumnName;
-    }
-    
-    /**
-     * @param string $rightColumnName
-     * @return this
-     * @throws InvalidArgumentException
-     */
-    public function setRightColumnName($rightColumnName) {
-        $rightColumnName = (string) trim($rightColumnName);
-        
-        if(empty($rightColumnName)) {
-            throw new InvalidArgumentException('rightColumnName cannot be empty');
-        }
-        
-        $this->rightColumnName = $rightColumnName;
-        return $this;
-    }
-    
-    /**
-     * @return string
-     */
-    public function getRightColumnName() {
-        return $this->rightColumnName;
-    }
-    
-    /**
-     * @param string $levelColumnName
-     * @return this
-     * @throws InvalidArgumentException
-     */
-    public function setLevelColumnName($levelColumnName) {
-        $levelColumnName = (string) trim($levelColumnName);
-        
-        if(empty($levelColumnName)) {
-            throw new InvalidArgumentException('levelColumnName cannot be empty');
-        }
-        
-        $this->levelColumnName = $levelColumnName;
-        return $this;
-    }
-    
-    /**
-     * @return string
-     */
-    public function getLevelColumnName() {
-        return $this->levelColumnName;
-    }
-    
-    /**
-     * @param string $parentIdColumnName
-     * @return this
-     * @throws \Exception
-     */
-    public function setParentIdColumnName($parentIdColumnName) {
-        $parentIdColumnName = (string) trim($parentIdColumnName);
-        
-        if(empty($parentIdColumnName)) {
-            throw new InvalidArgumentException('parentIdColumnName cannot be empty');
-        }
-        
-        $this->parentIdColumnName = $parentIdColumnName;
-        return $this;
-    }
-    
-    /**
-     * @return string
-     */
-    public function getParentIdColumnName() {
-        return $this->parentIdColumnName;
     }
 
     /**
-     * @param DbAdapter $dbAdapter
-     * @return this
+     * @return Options
      */
-    public function setDbAdapter(DbAdapter $dbAdapter) {
-        $this->dbAdapter = $dbAdapter;
-        return $this;
-    }
-
-    /**
-     * @return DbAdapter
-     */
-    public function getDbAdapter() {
-        return $this->dbAdapter;
-    }
+    protected function getOptions() {
+        return $this->options;
+    }       
     
     /**
      * @param int $nodeId
      * @param array $data
      */
     public function updateNode($nodeId, $data) {
+        $options = $this->getOptions();
+
         $disallowedDataKeys = array(
-            strtolower($this->getIdColumnName()),
-            strtolower($this->getLeftColumnName()),
-            strtolower($this->getRightColumnName()),
-            strtolower($this->getLevelColumnName()),
-            strtolower($this->getParentIdColumnName()),
+            strtolower($options->getIdColumnName()),
+            strtolower($options->getLeftColumnName()),
+            strtolower($options->getRightColumnName()),
+            strtolower($options->getLevelColumnName()),
+            strtolower($options->getParentIdColumnName()),
         );
         
         foreach (array_keys($data) as $key) {                        
@@ -236,12 +65,12 @@ class DbTraversal
             }
         }
         
-        $dbAdapter = $this->getDbAdapter();
+        $dbAdapter = $options->getDbAdapter();
         
-        $update = new Db\Sql\Update($this->getTableName());
+        $update = new Db\Sql\Update($options->getTableName());
         $update->set($data)
                ->where(array(
-                    $this->getIdColumnName() => $nodeId,
+                    $options->getIdColumnName() => $nodeId,
                ));
         
         $dbAdapter->query($update->getSqlString($dbAdapter->getPlatform()),
@@ -256,13 +85,15 @@ class DbTraversal
      * @throws Exception
      */
     protected function addNode($targetNodeId, $placement, $data = array()) {
-        $dbAdapter = $this->getDbAdapter();
+        $options = $this->getOptions();
+        
+        $dbAdapter = $options->getDbAdapter();
         $transaction = $dbAdapter->getTransaction();
         $dbLock = $dbAdapter->getLockAdapter();
         
         try {
             $transaction->begin();
-            $dbLock->lockTables($this->getTableName());
+            $dbLock->lockTables($options->getTableName());
             
             if(!$targetNodeInfo = $this->getNodeInfo($targetNodeId)) {
                 $transaction->commit();
@@ -277,10 +108,10 @@ class DbTraversal
                     return false;
                 }
 
-                $data[$this->getParentIdColumnName()] = $targetNodeInfo->getParentId();
-                $data[$this->getLevelColumnName()] = $targetNodeInfo->getLevel();
-                $data[$this->getLeftColumnName()] = $targetNodeInfo->getRight() + 1;
-                $data[$this->getRightColumnName()] = $targetNodeInfo->getRight() + 2;
+                $data[$options->getParentIdColumnName()] = $targetNodeInfo->getParentId();
+                $data[$options->getLevelColumnName()] = $targetNodeInfo->getLevel();
+                $data[$options->getLeftColumnName()] = $targetNodeInfo->getRight() + 1;
+                $data[$options->getRightColumnName()] = $targetNodeInfo->getRight() + 2;
                 
                 $this->moveIndexes($targetNodeInfo->getRight(), 2);                
             } elseif(self::PLACEMENT_TOP == $placement) {
@@ -290,24 +121,24 @@ class DbTraversal
                     return false;
                 }
 
-                $data[$this->getParentIdColumnName()] = $targetNodeInfo->getParentId();
-                $data[$this->getLevelColumnName()] = $targetNodeInfo->getLevel();
-                $data[$this->getLeftColumnName()] = $targetNodeInfo->getLeft();
-                $data[$this->getRightColumnName()] = $targetNodeInfo->getLeft() + 1;
+                $data[$options->getParentIdColumnName()] = $targetNodeInfo->getParentId();
+                $data[$options->getLevelColumnName()] = $targetNodeInfo->getLevel();
+                $data[$options->getLeftColumnName()] = $targetNodeInfo->getLeft();
+                $data[$options->getRightColumnName()] = $targetNodeInfo->getLeft() + 1;
                 
                 $this->moveIndexes(($targetNodeInfo->getLeft() - 1), 2);
             } elseif(self::PLACEMENT_CHILD_BOTTOM == $placement) {
-                $data[$this->getParentIdColumnName()] = $targetNodeInfo->getId();
-                $data[$this->getLevelColumnName()] = $targetNodeInfo->getLevel() + 1;
-                $data[$this->getLeftColumnName()] = $targetNodeInfo->getRight();
-                $data[$this->getRightColumnName()] = $targetNodeInfo->getRight() + 1;
+                $data[$options->getParentIdColumnName()] = $targetNodeInfo->getId();
+                $data[$options->getLevelColumnName()] = $targetNodeInfo->getLevel() + 1;
+                $data[$options->getLeftColumnName()] = $targetNodeInfo->getRight();
+                $data[$options->getRightColumnName()] = $targetNodeInfo->getRight() + 1;
                 
                 $this->moveIndexes(($targetNodeInfo->getRight() - 1), 2);
             } elseif(self::PLACEMENT_CHILD_TOP == $placement) {
-                $data[$this->getParentIdColumnName()] = $targetNodeInfo->getId();
-                $data[$this->getLevelColumnName()] = $targetNodeInfo->getLevel() + 1;
-                $data[$this->getLeftColumnName()] = $targetNodeInfo->getLeft() + 1;
-                $data[$this->getRightColumnName()] = $targetNodeInfo->getLeft() + 2;
+                $data[$options->getParentIdColumnName()] = $targetNodeInfo->getId();
+                $data[$options->getLevelColumnName()] = $targetNodeInfo->getLevel() + 1;
+                $data[$options->getLeftColumnName()] = $targetNodeInfo->getLeft() + 1;
+                $data[$options->getRightColumnName()] = $targetNodeInfo->getLeft() + 2;
                 
                 $this->moveIndexes($targetNodeInfo->getLeft(), 2);
             } else {
@@ -316,7 +147,7 @@ class DbTraversal
                 // @codeCoverageIgnoreEnd
             }
             
-            $insert = new Db\Sql\Insert($this->getTableName());
+            $insert = new Db\Sql\Insert($options->getTableName());
             $insert->values($data);
             $dbAdapter->query($insert->getSqlString($dbAdapter->getPlatform()),
                 DbAdapter::QUERY_MODE_EXECUTE);
@@ -363,18 +194,20 @@ class DbTraversal
      * @throws \Exception
      */
     protected function moveNode($sourceNodeId, $targetNodeId, $placement) {
+        $options = $this->getOptions();
+
         //su rovnake
         if($sourceNodeId == $targetNodeId) {
             return false;
         }
         
-        $dbAdapter = $this->getDbAdapter();
+        $dbAdapter = $options->getDbAdapter();
         $transaction = $dbAdapter->getTransaction();
         $dbLock = $dbAdapter->getLockAdapter();
         
         try {
             $transaction->begin();
-            $dbLock->lockTables($this->getTableName());
+            $dbLock->lockTables($options->getTableName());
             
             //neexistuje
             if(!$sourceNodeInfo = $this->getNodeInfo($sourceNodeId)) {
@@ -659,14 +492,16 @@ class DbTraversal
         if(1 == $nodeId) {
             return false;
         }
+
+        $options = $this->getOptions();
         
-        $dbAdapter = $this->getDbAdapter();
+        $dbAdapter = $options->getDbAdapter();
         $transaction = $dbAdapter->getTransaction();
         $dbLock = $dbAdapter->getLockAdapter();
         
         try {
             $transaction->begin();
-            $dbLock->lockTables($this->getTableName());
+            $dbLock->lockTables($options->getTableName());
             
             // neexistuje
             if(!$nodeInfo = $this->getNodeInfo($nodeId)) {
@@ -675,11 +510,11 @@ class DbTraversal
                 return false;
             }
             
-            $delete = new Db\Sql\Delete($this->getTableName());
+            $delete = new Db\Sql\Delete($options->getTableName());
             $delete->where
-                   ->greaterThanOrEqualTo($this->getLeftColumnName(), $nodeInfo->getLeft())
+                   ->greaterThanOrEqualTo($options->getLeftColumnName(), $nodeInfo->getLeft())
                    ->AND
-                   ->lessThanOrEqualTo($this->getRightColumnName(), $nodeInfo->getRight());
+                   ->lessThanOrEqualTo($options->getRightColumnName(), $nodeInfo->getRight());
             
             $dbAdapter->query($delete->getSqlString($dbAdapter->getPlatform()), 
                 DbAdapter::QUERY_MODE_EXECUTE);
@@ -699,6 +534,8 @@ class DbTraversal
     }
     
     public function getPath($nodeId, $startLevel = 0, $excludeLastNode = false) {
+        $options = $this->getOptions();
+
         $startLevel = (int) $startLevel;
         
         // neexistuje
@@ -706,24 +543,24 @@ class DbTraversal
             return null;
         }
         
-        $dbAdapter = $this->getDbAdapter();
+        $dbAdapter = $options->getDbAdapter();
         
         $select = $this->getDefaultDbSelect();
         $select->where
-               ->lessThanOrEqualTo($this->getLeftColumnName(), $nodeInfo->getLeft())
+               ->lessThanOrEqualTo($options->getLeftColumnName(), $nodeInfo->getLeft())
                ->AND
-               ->greaterThanOrEqualTo($this->getRightColumnName(), $nodeInfo->getRight());
+               ->greaterThanOrEqualTo($options->getRightColumnName(), $nodeInfo->getRight());
         
-        $select->order($this->getLeftColumnName() . ' ASC');
+        $select->order($options->getLeftColumnName() . ' ASC');
         
         if(0 < $startLevel) {
             $select->where
-                   ->greaterThanOrEqualTo($this->getLevelColumnName(), $startLevel);
+                   ->greaterThanOrEqualTo($options->getLevelColumnName(), $startLevel);
         }
         
         if(true == $excludeLastNode) {
             $select->where
-                   ->lessThan($this->getLevelColumnName(), $nodeInfo->getLevel());            
+                   ->lessThan($options->getLevelColumnName(), $nodeInfo->getLevel());
         }
         
         $result = $dbAdapter->query($select->getSqlString($dbAdapter->getPlatform()),
@@ -739,29 +576,30 @@ class DbTraversal
      * @throws \Exception
      */
     public function clear() {
-        $dbAdapter = $this->getDbAdapter();
+        $options = $this->getOptions();
+        $dbAdapter = $options->getDbAdapter();
         
         $transaction = $dbAdapter->getTransaction();        
         $dbLock = $dbAdapter->getLockAdapter();
         
         try {
             $transaction->begin();
-            $dbLock->lockTables($this->getTableName());
+            $dbLock->lockTables($options->getTableName());
             
             $delete = new Db\Sql\Delete;
-            $delete->from($this->getTableName())
+            $delete->from($options->getTableName())
                    ->where
-                   ->notEqualTo($this->getIdColumnName(), 1);
+                   ->notEqualTo($options->getIdColumnName(), 1);
             $dbAdapter->query($delete->getSqlString($dbAdapter->getPlatform()),
                 DbAdapter::QUERY_MODE_EXECUTE);
             
             $update = new Db\Sql\Update();
-            $update->table($this->getTableName())
+            $update->table($options->getTableName())
                    ->set(array(
-                        $this->getParentIdColumnName() => 0,
-                        $this->getLeftColumnName() => 1,
-                        $this->getRightColumnName() => 2,
-                        $this->getLevelColumnName() => 0,
+                        $options->getParentIdColumnName() => 0,
+                        $options->getLeftColumnName() => 1,
+                        $options->getRightColumnName() => 2,
+                        $options->getLevelColumnName() => 0,
                    ));
             $dbAdapter->query($update->getSqlString($dbAdapter->getPlatform()),
                 DbAdapter::QUERY_MODE_EXECUTE);       
@@ -781,18 +619,19 @@ class DbTraversal
      * @param int $id
      * @return NodeInfo|null
      */
-    public function getNodeInfo($nodeId) {         
+    public function getNodeInfo($nodeId) {
+        $options = $this->getOptions();
         $result = $this->getNode($nodeId);
 
         if(null == $result) {
             $result = null;
         } else {
             $params = array(
-                'id'        => $result[$this->getIdColumnName()],
-                'parentId'  => $result[$this->getParentIdColumnName()],
-                'level'     => $result[$this->getLevelColumnName()],
-                'left'      => $result[$this->getLeftColumnName()],
-                'right'     => $result[$this->getRightColumnName()],
+                'id'        => $result[$options->getIdColumnName()],
+                'parentId'  => $result[$options->getParentIdColumnName()],
+                'level'     => $result[$options->getLevelColumnName()],
+                'left'      => $result[$options->getLeftColumnName()],
+                'right'     => $result[$options->getRightColumnName()],
             );
 
             $result = new NodeInfo($params);
@@ -802,12 +641,14 @@ class DbTraversal
     }    
     
     public function getNode($nodeId) {
+        $options = $this->getOptions();
+
         $nodeId = (int) $nodeId;
         
-        $dbAdapter = $this->getDbAdapter();
+        $dbAdapter = $options->getDbAdapter();
         
         $select = $this->getDefaultDbSelect()
-                       ->where(array($this->idColumnName =>  $nodeId));
+                       ->where(array($options->getIdColumnName() =>  $nodeId));
 
         $result = $dbAdapter->query($select->getSqlString($dbAdapter->getPlatform()), 
                 DbAdapter::QUERY_MODE_EXECUTE);
@@ -820,49 +661,51 @@ class DbTraversal
     }
         
     public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranche = null) {
+        $options = $this->getOptions();
+
         if(!$nodeInfo = $this->getNodeInfo($nodeId)) {
             return null;
         }
 
-        $dbAdapter = $this->getDbAdapter();
+        $dbAdapter = $options->getDbAdapter();
         $select = $this->getDefaultDbSelect();
-        $select->order($this->getLeftColumnName() . ' ASC');
+        $select->order($options->getLeftColumnName() . ' ASC');
         
         
         if(0 != $startLevel) {
             $level = $nodeInfo->getLevel() + (int) $startLevel;
             $select->where
-                   ->greaterThanOrEqualTo($this->getLevelColumnName(), $level);            
+                   ->greaterThanOrEqualTo($options->getLevelColumnName(), $level);
         }
         
         if(null != $levels) {
             $endLevel = $nodeInfo->getLevel() + (int) $startLevel + abs($levels);
             $select->where
-                   ->lessThan($this->getLevelColumnName(), $endLevel);            
+                   ->lessThan($options->getLevelColumnName(), $endLevel);
         }
         
         if(null != $excludeBranche && null != ($excludeNodeInfo = $this->getNodeInfo($excludeBranche))) {
             $select->where
                    ->NEST
-                   ->between($this->getLeftColumnName(),
+                   ->between($options->getLeftColumnName(),
                         $nodeInfo->getLeft(), $excludeNodeInfo->getLeft() - 1)
                    ->OR
-                   ->between($this->getLeftColumnName(),
+                   ->between($options->getLeftColumnName(),
                         $excludeNodeInfo->getRight() + 1, $nodeInfo->getRight())
                    ->UNNEST
                    ->AND
                    ->NEST
-                   ->between($this->getRightColumnName(),
+                   ->between($options->getRightColumnName(),
                         $excludeNodeInfo->getRight() + 1, $nodeInfo->getRight())
                    ->OR
-                   ->between($this->getRightColumnName(),
+                   ->between($options->getRightColumnName(),
                         $nodeInfo->getLeft(), $excludeNodeInfo->getLeft() - 1)
                    ->UNNEST;
         } else {
             $select->where
-                   ->greaterThanOrEqualTo($this->getLeftColumnName(), $nodeInfo->getLeft())
+                   ->greaterThanOrEqualTo($options->getLeftColumnName(), $nodeInfo->getLeft())
                    ->AND
-                   ->lessThanOrEqualTo($this->getRightColumnName(), $nodeInfo->getRight());            
+                   ->lessThanOrEqualTo($options->getRightColumnName(), $nodeInfo->getRight());
         }
         
         $result =  $dbAdapter->query($select->getSqlString($dbAdapter->getPlatform()),
@@ -885,13 +728,15 @@ class DbTraversal
      * @return \Zend\Db\Sql\Select
      */
     public function getDefaultDbSelect() {
+        $options = $this->getOptions();
+
         if(null == $this->defaultDbSelect) {
-            $this->defaultDbSelect = new Db\Sql\Select($this->getTableName());
+            $this->defaultDbSelect = new Db\Sql\Select($options->getTableName());
         }
 
         $dbSelect = clone $this->defaultDbSelect;
         
-        $transaction = $this->getDbAdapter()
+        $transaction = $options->getDbAdapter()
                             ->getTransaction();
         if($transaction->isInTransaction()) {
             /*$dbSelect->forUpdate();
@@ -917,18 +762,20 @@ class DbTraversal
      * @param int $newParentId
      */
     protected function updateParentId(NodeInfo $nodeInfo, $newParentId) {
+        $options = $this->getOptions();
+        
         if($newParentId == $nodeInfo->getParentId()) {
             return;
         }
         
-        $dbAdapter = $this->getDbAdapter();
+        $dbAdapter = $options->getDbAdapter();
         
-        $update = new Db\Sql\Update($this->getTableName());
+        $update = new Db\Sql\Update($options->getTableName());
         $update->set(array(
-                    $this->getParentIdColumnName() => $newParentId,
+                    $options->getParentIdColumnName() => $newParentId,
                ))
                ->where(array(
-                   $this->getIdColumnName() => $nodeInfo->getId(),
+                   $options->getIdColumnName() => $nodeInfo->getId(),
                ));
         
         $dbAdapter->query($update->getSqlString($dbAdapter->getPlatform()), 
@@ -941,20 +788,22 @@ class DbTraversal
      * @param int $shift shift
      */
     protected function updateLevels($leftFrom, $rightTo, $shift) {
+        $options = $this->getOptions();
+
         if(0 == $shift) {
             return;
         }
         
-        $dbAdapter = $this->getDbAdapter();
+        $dbAdapter = $options->getDbAdapter();
         $dbPlatform = $dbAdapter->getPlatform();
         
-        $sql = 'UPDATE ' . $dbPlatform->quoteIdentifier($this->getTableName())
+        $sql = 'UPDATE ' . $dbPlatform->quoteIdentifier($options->getTableName())
             . ' SET '
-                . $dbPlatform->quoteIdentifier($this->getLevelColumnName()) . ' = ' 
-                    . $dbPlatform->quoteIdentifier($this->getLevelColumnName()) . ' + :shift'
+                . $dbPlatform->quoteIdentifier($options->getLevelColumnName()) . ' = '
+                    . $dbPlatform->quoteIdentifier($options->getLevelColumnName()) . ' + :shift'
             . ' WHERE '
-                . $dbPlatform->quoteIdentifier($this->getLeftColumnName()) . ' >= :leftFrom'
-                . ' AND ' . $dbPlatform->quoteIdentifier($this->getRightColumnName()) . ' <= :rightTo';
+                . $dbPlatform->quoteIdentifier($options->getLeftColumnName()) . ' >= :leftFrom'
+                . ' AND ' . $dbPlatform->quoteIdentifier($options->getRightColumnName()) . ' <= :rightTo';
 
         $binds = array(
             ':shift' => $shift,
@@ -974,29 +823,31 @@ class DbTraversal
      * @throws \Exception
      */
     protected function moveIndexes($fromIndex, $shift) {
+        $options = $this->getOptions();
+
         if(0 == $shift) {
             return;
         }
         
-        $dbAdapter = $this->getDbAdapter();
+        $dbAdapter = $options->getDbAdapter();
         $dbPlatform = $dbAdapter->getPlatform();        
         $transaction = $dbAdapter->getTransaction();
         
         try {
             $sqls = array();
-            $sqls[] = 'UPDATE ' . $dbPlatform->quoteIdentifier($this->getTableName())
+            $sqls[] = 'UPDATE ' . $dbPlatform->quoteIdentifier($options->getTableName())
                 . ' SET '
-                    . $dbPlatform->quoteIdentifier($this->getLeftColumnName()) . ' = ' 
-                        . $dbPlatform->quoteIdentifier($this->getLeftColumnName()) . ' + :shift'
+                    . $dbPlatform->quoteIdentifier($options->getLeftColumnName()) . ' = '
+                        . $dbPlatform->quoteIdentifier($options->getLeftColumnName()) . ' + :shift'
                 . ' WHERE '
-                    . $dbPlatform->quoteIdentifier($this->getLeftColumnName()) . ' > :fromIndex';
+                    . $dbPlatform->quoteIdentifier($options->getLeftColumnName()) . ' > :fromIndex';
 
-            $sqls[] = 'UPDATE ' . $dbPlatform->quoteIdentifier($this->getTableName())
+            $sqls[] = 'UPDATE ' . $dbPlatform->quoteIdentifier($options->getTableName())
                 . ' SET '
-                    . $dbPlatform->quoteIdentifier($this->getRightColumnName()) . ' = ' 
-                        . $dbPlatform->quoteIdentifier($this->getRightColumnName()) . ' + :shift'
+                    . $dbPlatform->quoteIdentifier($options->getRightColumnName()) . ' = '
+                        . $dbPlatform->quoteIdentifier($options->getRightColumnName()) . ' + :shift'
                 . ' WHERE '                            
-                    . $dbPlatform->quoteIdentifier($this->getRightColumnName()) . ' > :fromIndex';
+                    . $dbPlatform->quoteIdentifier($options->getRightColumnName()) . ' > :fromIndex';
 
             $binds = array(
                 ':shift' => $shift,
@@ -1028,19 +879,21 @@ class DbTraversal
         if(0 == $shift) {
             return;
         }
+
+        $options = $this->getOptions();
         
-        $dbAdapter = $this->getDbAdapter();
+        $dbAdapter = $options->getDbAdapter();
         $dbPlatform = $dbAdapter->getPlatform();
         
-        $sql = 'UPDATE ' . $dbPlatform->quoteIdentifier($this->getTableName())
+        $sql = 'UPDATE ' . $dbPlatform->quoteIdentifier($options->getTableName())
             . ' SET '
-                . $dbPlatform->quoteIdentifier($this->getLeftColumnName()) . ' = ' 
-                    . $dbPlatform->quoteIdentifier($this->getLeftColumnName()) . ' + :shift, '
-                . $dbPlatform->quoteIdentifier($this->getRightColumnName()) . ' = ' 
-                    . $dbPlatform->quoteIdentifier($this->getRightColumnName()) . ' + :shift'
+                . $dbPlatform->quoteIdentifier($options->getLeftColumnName()) . ' = '
+                    . $dbPlatform->quoteIdentifier($options->getLeftColumnName()) . ' + :shift, '
+                . $dbPlatform->quoteIdentifier($options->getRightColumnName()) . ' = '
+                    . $dbPlatform->quoteIdentifier($options->getRightColumnName()) . ' + :shift'
             . ' WHERE '
-                . $dbPlatform->quoteIdentifier($this->getLeftColumnName()) . ' >= :leftFrom'
-                . ' AND ' . $dbPlatform->quoteIdentifier($this->getRightColumnName()) . ' <= :rightTo';
+                . $dbPlatform->quoteIdentifier($options->getLeftColumnName()) . ' >= :leftFrom'
+                . ' AND ' . $dbPlatform->quoteIdentifier($options->getRightColumnName()) . ' <= :rightTo';
         
         $binds = array(
             ':shift' => $shift,
