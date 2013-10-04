@@ -167,7 +167,7 @@ class Options
     /**
      * @param string $parentIdColumnName
      * @return this
-     * @throws \Exception
+     * @throws InvalidArgumentException
      */
     public function setParentIdColumnName($parentIdColumnName) {
         $parentIdColumnName = (string) trim($parentIdColumnName);

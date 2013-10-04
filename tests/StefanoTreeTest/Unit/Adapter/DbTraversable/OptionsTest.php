@@ -6,17 +6,6 @@ use StefanoTree\Adapter\DbTraversal\Options;
 class DbTraversalTest
     extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @return array
-     */
-    private function getValidOptions() {
-        return array(
-            'tableName' => 'table',
-            'idColumnName' => 'id',
-            'dbAdapter' => $dbAdapterdStub = \Mockery::mock('\StefanoDb\Adapter\Adapter'),
-        );
-    }
-
     public function testThrowExceptionIfAllRequiredSettingsAreNotProvided() {
         $this->setExpectedException('\StefanoTree\Exception\InvalidArgumentException',
             'tableName, idColumnName, dbAdapter must be set');
@@ -24,70 +13,134 @@ class DbTraversalTest
         new Options(array());
     }
 
-    public function objectConstructorOptionsDataProvider() {
-        return array(
-            array(
-                '\StefanoTree\Exception\InvalidArgumentException',
-                'tableName cannot be empty',
-                'tableName',
-                ' ',
-            ),
-            array(
-                '\StefanoTree\Exception\InvalidArgumentException',
-                'idColumnName cannot be empty',
-                'idColumnName',
-                ' ',
-            ),
-            array(
-                '\StefanoTree\Exception\InvalidArgumentException',
-                'leftColumnName cannot be empty',
-                'leftColumnName',
-                ' ',
-            ),
-            array(
-                '\StefanoTree\Exception\InvalidArgumentException',
-                'rightColumnName cannot be empty',
-                'rightColumnName',
-                ' ',
-            ),
-            array(
-                '\StefanoTree\Exception\InvalidArgumentException',
-                'levelColumnName cannot be empty',
-                'levelColumnName',
-                ' ',
-            ),
-            array(
-                '\StefanoTree\Exception\InvalidArgumentException',
-                'parentIdColumnName cannot be empty',
-                'parentIdColumnName',
-                ' ',
-            ),
-        );
-    }
-
     /**
-     * @dataProvider objectConstructorOptionsDataProvider
+     * @return \StefanoTree\Adapter\DbTraversal\Options
      */
-    public function testThrowExceptionWrongConstructorOptions(
-        $expectedException,
-        $expectedMessage,
-        $optinsKey,
-        $optionsValue
-        ) {
-        $options = $this->getValidOptions();
-        $options[$optinsKey] = $optionsValue;
-
-        $this->setExpectedException($expectedException, $expectedMessage);
-
-        new Options($options);
+    private function getOptionsWithDefaultSettings() {
+        return new Options(array(
+            'tableName' => 'table',
+            'idColumnName' => 'id',
+            'dbAdapter' => \Mockery::mock('\StefanoDb\Adapter\Adapter'),
+        ));
     }
 
-    public function testDefaultValues() {
-        $options = new Options($this->getValidOptions());
+    public function testThrowExceptionIfTrySetWrongTableName() {
+        $optionsStub = $this->getOptionsWithDefaultSettings();
 
-        $this->assertEquals('lft', $options->getLeftColumnName());
-        $this->assertEquals('rgt', $options->getRightColumnName());
-        $this->assertEquals('level', $options->getLevelColumnName());
-        $this->assertEquals('parent_id', $options->getParentIdColumnName());
+        $this->setExpectedException('\StefanoTree\Exception\InvalidArgumentException',
+            'tableName cannot be empty');
+
+        $optionsStub->setTableName(' ');
+    }
+
+    public function testThrowExceptionIfTrySetWrongIdColumnName() {
+        $optionsStub = $this->getOptionsWithDefaultSettings();
+
+        $this->setExpectedException('\StefanoTree\Exception\InvalidArgumentException',
+            'idColumnName cannot be empty');
+
+        $optionsStub->setIdColumnName(' ');
+    }
+
+    public function testThrowExceptionIfTrySetWrongLeftColumnName() {
+        $optionsStub = $this->getOptionsWithDefaultSettings();
+
+        $this->setExpectedException('\StefanoTree\Exception\InvalidArgumentException',
+            'leftColumnName cannot be empty');
+
+        $optionsStub->setLeftColumnName(' ');
+    }
+
+    public function testThrowExceptionIfTrySetWrongRightColumnName() {
+        $optionsStub = $this->getOptionsWithDefaultSettings();
+
+        $this->setExpectedException('\StefanoTree\Exception\InvalidArgumentException',
+            'rightColumnName cannot be empty');
+
+        $optionsStub->setRightColumnName(' ');
+    }
+
+    public function testThrowExceptionIfTrySetWrongLevelColumnName() {
+        $optionsStub = $this->getOptionsWithDefaultSettings();
+
+        $this->setExpectedException('\StefanoTree\Exception\InvalidArgumentException',
+            'levelColumnName cannot be empty');
+
+        $optionsStub->setLevelColumnName(' ');
+    }
+
+    public function testThrowExceptionIfTrySetWrongParentIdColumnName() {
+        $optionsStub = $this->getOptionsWithDefaultSettings();
+
+        $this->setExpectedException('\StefanoTree\Exception\InvalidArgumentException',
+            'parentIdColumnName cannot be empty');
+
+        $optionsStub->setParentIdColumnName(' ');
+    }
+
+    public function testGetTableName() {
+        $optionsStub = $this->getOptionsWithDefaultSettings();
+
+        $optionsStub->setTableName('   table ');
+
+        $this->assertEquals('table', $optionsStub->getTableName());
+    }
+
+    public function testGetIdColumnName() {
+        $optionsStub = $this->getOptionsWithDefaultSettings();
+
+        $optionsStub->setIdColumnName('   id ');
+
+        $this->assertEquals('id', $optionsStub->getIdColumnName());
+    }
+
+    public function testGetLeftColumnName() {
+        $optionsStub = $this->getOptionsWithDefaultSettings();
+
+        $this->assertEquals('lft', $optionsStub->getLeftColumnName(), 'Wrong default value');
+
+        $optionsStub->setLeftColumnName('   left ');
+
+        $this->assertEquals('left', $optionsStub->getLeftColumnName());
+    }
+
+    public function testGetRightColumnName() {
+        $optionsStub = $this->getOptionsWithDefaultSettings();
+
+        $this->assertEquals('rgt', $optionsStub->getRightColumnName(), 'Wrong default value');
+
+        $optionsStub->setRightColumnName('   right ');
+
+        $this->assertEquals('right', $optionsStub->getRightColumnName());
+    }
+
+    public function testGetLevelColumnName() {
+        $optionsStub = $this->getOptionsWithDefaultSettings();
+
+        $this->assertEquals('level', $optionsStub->getLevelColumnName(), 'Wrong default value');
+
+        $optionsStub->setLevelColumnName('   lvl ');
+
+        $this->assertEquals('lvl', $optionsStub->getLevelColumnName());
+    }
+
+    public function testGetParentIdColumnName() {
+        $optionsStub = $this->getOptionsWithDefaultSettings();
+
+        $this->assertEquals('parent_id', $optionsStub->getParentIdColumnName(), 'Wrong default value');
+
+        $optionsStub->setParentIdColumnName('   prt ');
+
+        $this->assertEquals('prt', $optionsStub->getParentIdColumnName());
+    }
+
+    public function testGetDbAdapter() {
+        $optionsStub = $this->getOptionsWithDefaultSettings();
+
+        $dbAdapterStub = \Mockery::mock('\StefanoDb\Adapter\Adapter');
+
+        $optionsStub->setDbAdapter($dbAdapterStub);
+
+        $this->assertSame($dbAdapterStub, $optionsStub->getDbAdapter());
     }
 }
