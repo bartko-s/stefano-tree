@@ -52,23 +52,19 @@ class DbTraversal
         $options = $this->getOptions();
 
         $disallowedDataKeys = array(
-            strtolower($options->getIdColumnName()),
-            strtolower($options->getLeftColumnName()),
-            strtolower($options->getRightColumnName()),
-            strtolower($options->getLevelColumnName()),
-            strtolower($options->getParentIdColumnName()),
+            $options->getIdColumnName(),
+            $options->getLeftColumnName(),
+            $options->getRightColumnName(),
+            $options->getLevelColumnName(),
+            $options->getParentIdColumnName(),
         );
-        
-        foreach (array_keys($data) as $key) {                        
-            if(array_key_exists(strtolower($key), array_flip($disallowedDataKeys))) {
-                unset($data[$key]);
-            }
-        }
+
+        $validData = array_diff_key($data, array_flip($disallowedDataKeys));
         
         $dbAdapter = $options->getDbAdapter();
         
         $update = new Db\Sql\Update($options->getTableName());
-        $update->set($data)
+        $update->set($validData)
                ->where(array(
                     $options->getIdColumnName() => $nodeId,
                ));
