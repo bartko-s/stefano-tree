@@ -9,3 +9,5 @@ before_script:
 script: phpunit --configuration tests/phpunit.xml --coverage-clover tests/clover.xml
 after_script:
   - php vendor/bin/coveralls
+  - wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --format=php-clover tests/clover.xml
