@@ -73,7 +73,6 @@ interface AdapterInterface
     /**
      * @param int $nodeId
      * @return boolean
-     * @throws \Exception
      */
     public function deleteBranch($nodeId);
     

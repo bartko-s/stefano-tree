@@ -78,7 +78,7 @@ class DbTraversal
      * @param string $placement
      * @param array $data
      * @return int|false Id of new created node. False if node has not been created
-     * @throws Exception
+     * @throws InvalidArgumentException
      */
     protected function addNode($targetNodeId, $placement, $data = array()) {
         $options = $this->getOptions();
@@ -139,7 +139,7 @@ class DbTraversal
                 $this->moveIndexes($targetNodeInfo->getLeft(), 2);
             } else {
                 // @codeCoverageIgnoreStart
-                throw new Exception('Unknown placement "' . $placement . '"');
+                throw new InvalidArgumentException('Unknown placement "' . $placement . '"');
                 // @codeCoverageIgnoreEnd
             }
             
@@ -148,18 +148,18 @@ class DbTraversal
             $dbAdapter->query($insert->getSqlString($dbAdapter->getPlatform()),
                 DbAdapter::QUERY_MODE_EXECUTE);
             
-            $lastInsertId = $dbAdapter->getDriver()
-                                      ->getLastGeneratedValue();
+            $lastGeneratedValue = $dbAdapter->getDriver()
+                                            ->getLastGeneratedValue();
             
             $transaction->commit();
             $dbLock->unlockTables();
-        } catch(\Exception $e) {
+        } catch(Exception $e) {
             $transaction->rollback();
             $dbLock->unlockTables();
             throw $e;
         }
             
-        return $lastInsertId;
+        return $lastGeneratedValue;
     }
     
     public function addNodePlacementBottom($targetNodeId, $data = array()) {
@@ -187,7 +187,8 @@ class DbTraversal
      * @param int $targetNodeId
      * @param string $placement
      * @return boolean
-     * @throws \Exception
+     * @throws Exception
+     * @throws InvalidArgumentException
      */
     protected function moveNode($sourceNodeId, $targetNodeId, $placement) {
         $options = $this->getOptions();
@@ -449,13 +450,13 @@ class DbTraversal
                 }
             } else {
                 // @codeCoverageIgnoreStart
-                throw new Exception('Unknown placement "' . $placement . '"');
+                throw new InvalidArgumentException('Unknown placement "' . $placement . '"');
                 // @codeCoverageIgnoreEnd
             }
 
             $transaction->commit();
             $dbLock->unlockTables();
-        } catch(\Exception $e) {
+        } catch(Exception $e) {
             $transaction->rollback();
             $dbLock->unlockTables();
             throw $e;
@@ -520,7 +521,7 @@ class DbTraversal
 
             $transaction->commit();
             $dbLock->unlockTables();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $transaction->rollback();
             $dbLock->unlockTables();
             throw $e;
@@ -602,7 +603,7 @@ class DbTraversal
             
             $transaction->commit();
             $dbLock->unlockTables();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $transaction->rollback();
             $dbLock->unlockTables();
             throw $e;
@@ -858,7 +859,7 @@ class DbTraversal
             }
             
             $transaction->commit();
-        } catch(\Exception $e) {
+        } catch(Exception $e) {
             $transaction->rollback();
             throw $e;
         }
