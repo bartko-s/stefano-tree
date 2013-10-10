@@ -167,18 +167,19 @@ class DbTraversal
      * @throws InvalidArgumentException
      */
     private function getAddStrategy($placement) {
-        if(self::PLACEMENT_BOTTOM == $placement) {                
-            return new AddStrategy\Bottom();
-        } elseif(self::PLACEMENT_TOP == $placement) {
-            return new AddStrategy\Top();
-        } elseif(self::PLACEMENT_CHILD_BOTTOM == $placement) {
-            return new AddStrategy\ChildBottom();
-        } elseif(self::PLACEMENT_CHILD_TOP == $placement) {
-            return new AddStrategy\ChildTop();
-        } else {
-            // @codeCoverageIgnoreStart
-            throw new InvalidArgumentException('Unknown placement "' . $placement . '"');
-            // @codeCoverageIgnoreEnd
+        switch ($placement) {
+            case self::PLACEMENT_BOTTOM:
+                return new AddStrategy\Bottom();
+            case self::PLACEMENT_TOP:
+                return new AddStrategy\Top();
+            case self::PLACEMENT_CHILD_BOTTOM:
+                return new AddStrategy\ChildBottom();
+            case self::PLACEMENT_CHILD_TOP:
+                return new AddStrategy\ChildTop();
+            default:
+                // @codeCoverageIgnoreStart
+                throw new InvalidArgumentException('Unknown placement "' . $placement . '"');
+                // @codeCoverageIgnoreEnd
         }
     }
 
