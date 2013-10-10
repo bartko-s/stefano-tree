@@ -44,7 +44,21 @@ class DbTraversal
      */
     protected function getOptions() {
         return $this->options;
-    }       
+    }
+
+    /**
+     * Test if node is root node
+     *
+     * @param int $nodeId
+     * @return boolean
+     */
+    private function isRoot($nodeId) {
+        if(1 == $nodeId) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     
     /**
      * @param int $nodeId
@@ -100,7 +114,7 @@ class DbTraversal
             }
             
             if(self::PLACEMENT_BOTTOM == $placement || self::PLACEMENT_TOP == $placement) {
-                if(1 == $targetNodeId) {
+                if($this->isRoot($targetNodeId)) {
                     $transaction->commit();
                     $dbLock->unlockTables();
                     return false;
@@ -227,7 +241,7 @@ class DbTraversal
 
             if(self::PLACEMENT_BOTTOM == $placement) {
                 //cielovy uzol je root
-                if(1 == $targetNodeId) {
+                if($this->isRoot($targetNodeId)) {
                     $transaction->commit();
                     $dbLock->unlockTables();
                     return false;
@@ -282,7 +296,7 @@ class DbTraversal
 
             } elseif(self::PLACEMENT_TOP == $placement) {
                 //cielovy uzol je root
-                if(1 == $targetNodeId) {
+                if($this->isRoot($targetNodeId)) {
                     $transaction->commit();
                     $dbLock->unlockTables();
                     return false;
@@ -482,7 +496,7 @@ class DbTraversal
     }    
     
     public function deleteBranch($nodeId) {
-        if(1 == $nodeId) {
+        if($this->isRoot($nodeId)) {
             return false;
         }
 
