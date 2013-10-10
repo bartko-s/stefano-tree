@@ -184,23 +184,19 @@ class DbTraversal
     }
 
     public function addNodePlacementBottom($targetNodeId, $data = array()) {
-        $placement = self::PLACEMENT_BOTTOM;
-        return $this->addNode($targetNodeId, $placement, $data);
+        return $this->addNode($targetNodeId, self::PLACEMENT_BOTTOM, $data);
     }
     
     public function addNodePlacementTop($targetNodeId, $data = array()) {
-        $placement = self::PLACEMENT_TOP;
-        return $this->addNode($targetNodeId, $placement, $data);
+        return $this->addNode($targetNodeId, self::PLACEMENT_TOP, $data);
     }
     
     public function addNodePlacementChildBottom($targetNodeId, $data = array()) {
-        $placement = self::PLACEMENT_CHILD_BOTTOM;
-        return $this->addNode($targetNodeId, $placement, $data);
+        return $this->addNode($targetNodeId, self::PLACEMENT_CHILD_BOTTOM, $data);
     }
     
     public function addNodePlacementChildTop($targetNodeId, $data = array()) {
-        $placement = self::PLACEMENT_CHILD_TOP;
-        return $this->addNode($targetNodeId, $placement, $data);
+        return $this->addNode($targetNodeId, self::PLACEMENT_CHILD_TOP, $data);
     }
 
     /**
