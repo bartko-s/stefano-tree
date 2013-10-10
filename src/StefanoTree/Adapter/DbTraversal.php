@@ -59,12 +59,14 @@ class DbTraversal
             return false;
         }
     }
-    
+
     /**
-     * @param int $nodeId
+     * Data cannot contain keys like idColomnName, levelColumnName, ...
+     *
      * @param array $data
+     * @return array
      */
-    public function updateNode($nodeId, $data) {
+    private function cleanData(array $data) {
         $options = $this->getOptions();
 
         $disallowedDataKeys = array(
@@ -75,12 +77,20 @@ class DbTraversal
             $options->getParentIdColumnName(),
         );
 
-        $validData = array_diff_key($data, array_flip($disallowedDataKeys));
-        
+        return array_diff_key($data, array_flip($disallowedDataKeys));
+    }
+    
+    /**
+     * @param int $nodeId
+     * @param array $data
+     */
+    public function updateNode($nodeId, $data) {
+        $options = $this->getOptions();
+
         $dbAdapter = $options->getDbAdapter();
         
         $update = new Db\Sql\Update($options->getTableName());
-        $update->set($validData)
+        $update->set($this->cleanData($data))
                ->where(array(
                     $options->getIdColumnName() => $nodeId,
                ));
