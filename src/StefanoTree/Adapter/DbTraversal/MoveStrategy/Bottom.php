@@ -23,7 +23,9 @@ class Bottom
         } elseif ($this->isMovedDown()) {
             return $this->getSourceNode()->getLeft();
         } else {
+            // @codeCoverageIgnoreStart
             throw \Exception('Cannot move node');
+            // @codeCoverageIgnoreEnd
         }
     }
 
@@ -35,7 +37,9 @@ class Bottom
         } elseif ($this->isMovedDown()) {
             return $this->getSourceNode()->getRight();
         } else {
+            // @codeCoverageIgnoreStart
             throw \Exception('Cannot move node');
+            // @codeCoverageIgnoreEnd
         }
     }
 
@@ -48,7 +52,9 @@ class Bottom
         } elseif ($this->isMovedDown()) {
             return $this->getTargetNode()->getRight() - $this->getSourceNode()->getLeft() + 1;
         } else {
+            // @codeCoverageIgnoreStart
             throw \Exception('Cannot move node');
+            // @codeCoverageIgnoreEnd
         }
     }
 
@@ -60,7 +66,9 @@ class Bottom
         } elseif ($this->isMovedDown()) {
             return $this->getSourceNode()->getLeft();
         } else {
+            // @codeCoverageIgnoreStart
             throw \Exception('Cannot move node');
+            // @codeCoverageIgnoreEnd
         }
     }
 
