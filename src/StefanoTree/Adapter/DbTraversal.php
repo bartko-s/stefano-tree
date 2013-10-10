@@ -326,23 +326,19 @@ class DbTraversal
     }
     
     public function moveNodePlacementBottom($sourceNodeId, $targetNodeId) {
-        $placement = self::PLACEMENT_BOTTOM;
-        return $this->moveNode($sourceNodeId, $targetNodeId, $placement);
+        return $this->moveNode($sourceNodeId, $targetNodeId, self::PLACEMENT_BOTTOM);
     }
 
     public function moveNodePlacementTop($sourceNodeId, $targetNodeId) {
-        $placement = self::PLACEMENT_TOP;
-        return $this->moveNode($sourceNodeId, $targetNodeId, $placement);
+        return $this->moveNode($sourceNodeId, $targetNodeId, self::PLACEMENT_TOP);
     }
 
     public function moveNodePlacementChildBottom($sourceNodeId, $targetNodeId) {
-        $placement = self::PLACEMENT_CHILD_BOTTOM;
-        return $this->moveNode($sourceNodeId, $targetNodeId, $placement);
+        return $this->moveNode($sourceNodeId, $targetNodeId, self::PLACEMENT_CHILD_BOTTOM);
     }    
     
     public function moveNodePlacementChildTop($sourceNodeId, $targetNodeId) {
-        $placement = self::PLACEMENT_CHILD_TOP;
-        return $this->moveNode($sourceNodeId, $targetNodeId, $placement);
+        return $this->moveNode($sourceNodeId, $targetNodeId, self::PLACEMENT_CHILD_TOP);
     }
 
     /**
