@@ -7,6 +7,7 @@ use StefanoTree\Adapter\Helper\NodeInfo;
 use Exception;
 use StefanoTree\Exception\InvalidArgumentException;
 use StefanoTree\Adapter\DbTraversal\Options;
+use StefanoTree\Adapter\DbTraversal\AddStrategy;
 
 class DbTraversal
     implements AdapterInterface
@@ -96,7 +97,7 @@ class DbTraversal
                 $dbLock->unlockTables();
                 return false;
             }
-        
+            
             if(self::PLACEMENT_BOTTOM == $placement) {
                 if(1 == $targetNodeId) {
                     $transaction->commit();
@@ -104,12 +105,7 @@ class DbTraversal
                     return false;
                 }
 
-                $data[$options->getParentIdColumnName()] = $targetNodeInfo->getParentId();
-                $data[$options->getLevelColumnName()] = $targetNodeInfo->getLevel();
-                $data[$options->getLeftColumnName()] = $targetNodeInfo->getRight() + 1;
-                $data[$options->getRightColumnName()] = $targetNodeInfo->getRight() + 2;
-                
-                $this->moveIndexes($targetNodeInfo->getRight(), 2);                
+                $addStrategy = new AddStrategy\Bottom();       
             } elseif(self::PLACEMENT_TOP == $placement) {
                 if(1 == $targetNodeId) {
                     $transaction->commit();
@@ -117,32 +113,26 @@ class DbTraversal
                     return false;
                 }
 
-                $data[$options->getParentIdColumnName()] = $targetNodeInfo->getParentId();
-                $data[$options->getLevelColumnName()] = $targetNodeInfo->getLevel();
-                $data[$options->getLeftColumnName()] = $targetNodeInfo->getLeft();
-                $data[$options->getRightColumnName()] = $targetNodeInfo->getLeft() + 1;
-                
-                $this->moveIndexes(($targetNodeInfo->getLeft() - 1), 2);
+                $addStrategy = new AddStrategy\Top();
             } elseif(self::PLACEMENT_CHILD_BOTTOM == $placement) {
-                $data[$options->getParentIdColumnName()] = $targetNodeInfo->getId();
-                $data[$options->getLevelColumnName()] = $targetNodeInfo->getLevel() + 1;
-                $data[$options->getLeftColumnName()] = $targetNodeInfo->getRight();
-                $data[$options->getRightColumnName()] = $targetNodeInfo->getRight() + 1;
-                
-                $this->moveIndexes(($targetNodeInfo->getRight() - 1), 2);
+                $addStrategy = new AddStrategy\ChildBottom();
             } elseif(self::PLACEMENT_CHILD_TOP == $placement) {
-                $data[$options->getParentIdColumnName()] = $targetNodeInfo->getId();
-                $data[$options->getLevelColumnName()] = $targetNodeInfo->getLevel() + 1;
-                $data[$options->getLeftColumnName()] = $targetNodeInfo->getLeft() + 1;
-                $data[$options->getRightColumnName()] = $targetNodeInfo->getLeft() + 2;
-                
-                $this->moveIndexes($targetNodeInfo->getLeft(), 2);
+                $addStrategy = new AddStrategy\ChildTop();                
             } else {
                 // @codeCoverageIgnoreStart
                 throw new InvalidArgumentException('Unknown placement "' . $placement . '"');
                 // @codeCoverageIgnoreEnd
             }
-            
+
+            $this->moveIndexes($addStrategy->moveIndexesFromIndex($targetNodeInfo), 2);
+
+            $newNode = $addStrategy->calculateNewNode($targetNodeInfo);
+
+            $data[$options->getParentIdColumnName()] = $newNode->getParentId();
+            $data[$options->getLevelColumnName()] = $newNode->getLevel();
+            $data[$options->getLeftColumnName()] = $newNode->getLeft();
+            $data[$options->getRightColumnName()] = $newNode->getRight();
+
             $insert = new Db\Sql\Insert($options->getTableName());
             $insert->values($data);
             $dbAdapter->query($insert->getSqlString($dbAdapter->getPlatform()),
@@ -161,7 +151,7 @@ class DbTraversal
             
         return $lastGeneratedValue;
     }
-    
+
     public function addNodePlacementBottom($targetNodeId, $data = array()) {
         $placement = self::PLACEMENT_BOTTOM;
         return $this->addNode($targetNodeId, $placement, $data);
