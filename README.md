@@ -15,4 +15,5 @@ Features
 
 ToDo
 -----
-- \StefanoTree\Adapter\DbTraversal doplnit forUpdate() ak bude podporovany zend frameworkom
+- rebuild tree
+- examples
