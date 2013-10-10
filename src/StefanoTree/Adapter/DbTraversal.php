@@ -9,6 +9,8 @@ use StefanoTree\Exception\InvalidArgumentException;
 use StefanoTree\Adapter\DbTraversal\Options;
 use StefanoTree\Adapter\DbTraversal\AddStrategy;
 use StefanoTree\Adapter\DbTraversal\AddStrategy\AddStrategyInterface;
+use StefanoTree\Adapter\DbTraversal\MoveStrategy;
+use StefanoTree\Adapter\DbTraversal\MoveStrategy\MoveStrategyInterface;
 
 class DbTraversal
     implements AdapterInterface
@@ -243,9 +245,6 @@ class DbTraversal
                 return false;
             }
             
-            $shift = $sourceNodeInfo->getRight() - $sourceNodeInfo->getLeft() + 1;
-            $reverseShift = $sourceNodeInfo->getLeft() - $sourceNodeInfo->getRight() - 1;
-
             if(self::PLACEMENT_BOTTOM == $placement) {
                 //cielovy uzol je root
                 if($this->isRoot($targetNodeId)) {
@@ -260,47 +259,6 @@ class DbTraversal
                     $dbLock->unlockTables();
                     return true;
                 }
-
-                //upravime rodica
-                $this->updateParentId($sourceNodeInfo, $targetNodeInfo->getParentId());
-                
-                //upravime level
-                $this->updateLevels($sourceNodeInfo->getLeft(), $sourceNodeInfo->getRight(), 
-                    $targetNodeInfo->getLevel() - $sourceNodeInfo->getLevel());
-                
-                //medzera pre presuvanu vetvu
-                $this->moveIndexes($targetNodeInfo->getRight(), $shift);
-                
-                if($sourceNodeInfo->getLeft() > $targetNodeInfo->getLeft() &&
-                        $sourceNodeInfo->getRight() < $targetNodeInfo->getRight()) {
-                    //presunutie vetvy do medzery
-                    $shift2 = $targetNodeInfo->getRight() - $sourceNodeInfo->getLeft() + 1;
-                    $this->moveBranch($sourceNodeInfo->getLeft(), $sourceNodeInfo->getRight(), $shift2);
-
-                    //zaplatanie medzeri po presunutom uzle
-                    $this->moveIndexes($sourceNodeInfo->getLeft(), $reverseShift);
-                } elseif($targetNodeInfo->getRight() < $sourceNodeInfo->getLeft()) {
-                    //presunutie vetvy do medzery
-                    $leftFrom = $sourceNodeInfo->getLeft() + $shift;
-                    $rightTo  = $sourceNodeInfo->getRight() + $shift;
-                    $shift2   = $targetNodeInfo->getRight() - $sourceNodeInfo->getLeft() + 1 - $shift;
-                    $this->moveBranch($leftFrom, $rightTo, $shift2);
-
-                    //zaplatanie medzeri po presunutom uzle
-                    $this->moveIndexes(($sourceNodeInfo->getLeft() + $shift), $reverseShift);                    
-                } elseif($sourceNodeInfo->getRight() < $targetNodeInfo->getLeft()) {
-                    //presunutie vetvy do medzery
-                    $shift2 = $targetNodeInfo->getRight() - $sourceNodeInfo->getLeft() + 1;
-                    $this->moveBranch($sourceNodeInfo->getLeft(), $sourceNodeInfo->getRight(), $shift2);
-
-                    //zaplatanie medzeri po presunutom uzle
-                    $this->moveIndexes($sourceNodeInfo->getLeft(), $reverseShift);
-                } else {
-                    // @codeCoverageIgnoreStart
-                    throw new Exception('moveBotom - this is impossible');
-                    // @codeCoverageIgnoreEnd
-                }
-
             } elseif(self::PLACEMENT_TOP == $placement) {
                 //cielovy uzol je root
                 if($this->isRoot($targetNodeId)) {
@@ -316,51 +274,6 @@ class DbTraversal
                     $dbLock->unlockTables();
                     return true;
                 }
-
-                //upravime rodica
-                $this->updateParentId($sourceNodeInfo, $targetNodeInfo->getParentId());
-                
-                //upravime level
-                $this->updateLevels($sourceNodeInfo->getLeft(), $sourceNodeInfo->getRight(), 
-                        $targetNodeInfo->getLevel() - $sourceNodeInfo->getLevel());
-                
-                //medzera pre presuvanu vetvu
-                $this->moveIndexes(($targetNodeInfo->getLeft() - 1), $shift);
-                
-                if($sourceNodeInfo->getLeft() > $targetNodeInfo->getLeft() &&
-                        $sourceNodeInfo->getRight() < $targetNodeInfo->getRight()) {
-                    //presunutie vetvy do medzery
-                    $leftFrom = $sourceNodeInfo->getLeft() + $shift;
-                    $rightTo  = $sourceNodeInfo->getRight() + $shift;
-                    $shift2   = $targetNodeInfo->getLeft() - $sourceNodeInfo->getRight() - 1;
-                    $this->moveBranch($leftFrom, $rightTo, $shift2);
-
-                    //zaplatanie medzeri po presunutom uzle
-                   $this->moveIndexes(($sourceNodeInfo->getRight() + $shift), $reverseShift);                    
-                } elseif($targetNodeInfo->getRight() < $sourceNodeInfo->getLeft()) {
-                    //presunutie vetvy do medzery
-                    $leftFrom = $sourceNodeInfo->getLeft() + $shift;
-                    $rightTo  = $sourceNodeInfo->getRight() + $shift;
-                    $shift2   = $targetNodeInfo->getLeft() - $sourceNodeInfo->getRight() - 1;
-                    $this->moveBranch($leftFrom, $rightTo, $shift2);
-
-                    //zaplatanie medzeri po presunutom uzle
-                    $this->moveIndexes($sourceNodeInfo->getRight(), $reverseShift);
-                } elseif($sourceNodeInfo->getRight() < $targetNodeInfo->getLeft()) {
-                    //presunutie vetvy do medzery
-                    $leftFrom = $sourceNodeInfo->getLeft();
-                    $rightTo  = $sourceNodeInfo->getRight();
-                    $shift2   = $targetNodeInfo->getLeft() - $sourceNodeInfo->getLeft();
-                    $this->moveBranch($leftFrom, $rightTo, $shift2);
-
-                    //zaplatanie medzeri po presunutom uzle
-                    $this->moveIndexes($sourceNodeInfo->getLeft(), $reverseShift);
-                } else {
-                    // @codeCoverageIgnoreStart
-                    throw new Exception('moveTop - this is impossible');
-                    // @codeCoverageIgnoreEnd
-                }
-
             } elseif(self::PLACEMENT_CHILD_BOTTOM == $placement) {
                 //aktualna pozicia je rovnaka ako pozadovana, cize nie je dovod presuvat
                 if($sourceNodeInfo->getParentId() == $targetNodeInfo->getId() && 
@@ -368,50 +281,6 @@ class DbTraversal
                     $transaction->commit();
                     $dbLock->unlockTables();
                     return true;
-                }
-
-                //upravime rodica
-                $this->updateParentId($sourceNodeInfo, $targetNodeInfo->getId());
-                
-                //upravime level
-                $this->updateLevels($sourceNodeInfo->getLeft(), $sourceNodeInfo->getRight(), 
-                        $targetNodeInfo->getLevel() - $sourceNodeInfo->getLevel() + 1);
-                
-                //medzera pre presuvanu vetvu
-                $this->moveIndexes(($targetNodeInfo->getRight() - 1), $shift);
-                
-                if($sourceNodeInfo->getLeft() > $targetNodeInfo->getLeft() &&
-                        $sourceNodeInfo->getRight() < $targetNodeInfo->getRight()) {
-                    //presunutie vetvy do medzery
-                    $leftFrom = $sourceNodeInfo->getLeft();
-                    $rightTo  = $sourceNodeInfo->getRight();
-                    $shift2   = $targetNodeInfo->getRight() - $sourceNodeInfo->getLeft();
-                    $this->moveBranch($leftFrom, $rightTo, $shift2);
-                    
-                    //zaplatanie medzeri po presunutom uzle
-                    $this->moveIndexes($sourceNodeInfo->getRight(), $reverseShift);
-                } elseif($targetNodeInfo->getRight() < $sourceNodeInfo->getLeft()) {
-                    //presunutie vetvy do medzery
-                    $leftFrom = $sourceNodeInfo->getLeft() + $shift;
-                    $rightTo  = $sourceNodeInfo->getRight() + $shift;
-                    $shift2   = $targetNodeInfo->getRight() - $sourceNodeInfo->getRight() - 1;
-                    $this->moveBranch($leftFrom, $rightTo, $shift2);
-                    
-                    //zaplatanie medzeri po presunutom uzle
-                    $this->moveIndexes($sourceNodeInfo->getRight(), $reverseShift);
-                } elseif($sourceNodeInfo->getRight() < $targetNodeInfo->getLeft()) {
-                    //presunutie vetvy do medzery
-                    $leftFrom = $sourceNodeInfo->getLeft();
-                    $rightTo  = $sourceNodeInfo->getRight();
-                    $shift2   = $targetNodeInfo->getRight() - $sourceNodeInfo->getLeft();
-                    $this->moveBranch($leftFrom, $rightTo, $shift2);
-
-                    //zaplatanie medzeri po presunutom uzle
-                    $this->moveIndexes($sourceNodeInfo->getRight(), $reverseShift);
-                } else {
-                    // @codeCoverageIgnoreStart
-                    throw new Exception('moveChildBottom - this is impossible');
-                    // @codeCoverageIgnoreEnd
                 }
             } elseif(self::PLACEMENT_CHILD_TOP == $placement) {
                 //aktualna pozicia je rovnaka ako pozadovana, cize nie je dovod presuvat
@@ -421,55 +290,29 @@ class DbTraversal
                     $dbLock->unlockTables();
                     return true;
                 }
-                
-                //upravime rodica
-                $this->updateParentId($sourceNodeInfo, $targetNodeInfo->getId());
-                
-                //upravime level
-                $this->updateLevels($sourceNodeInfo->getLeft(), $sourceNodeInfo->getRight(), 
-                        $targetNodeInfo->getLevel() - $sourceNodeInfo->getLevel() + 1);
-                
-                //medzera pre presuvanu vetvu
-                $this->moveIndexes($targetNodeInfo->getLeft(), $shift);
-                
-                if($sourceNodeInfo->getLeft() > $targetNodeInfo->getLeft() &&
-                        $sourceNodeInfo->getRight() < $targetNodeInfo->getRight()) {
-                    //presunutie vetvy do medzery
-                    $leftFrom = $sourceNodeInfo->getLeft() + $shift;
-                    $rightTo  = $sourceNodeInfo->getRight() + $shift;
-                    $shift2   = $targetNodeInfo->getLeft() - $sourceNodeInfo->getRight();
-                    $this->moveBranch($leftFrom, $rightTo, $shift2);
-
-                    //zaplatanie medzeri po presunutom uzle
-                    $this->moveIndexes($sourceNodeInfo->getRight(), $reverseShift);
-                } elseif($targetNodeInfo->getRight() < $sourceNodeInfo->getLeft()) {
-                    //presunutie vetvy do medzery
-                    $leftFrom = $sourceNodeInfo->getLeft() + $shift;
-                    $rightTo  = $sourceNodeInfo->getRight() + $shift;
-                    $shift2   = $targetNodeInfo->getLeft() - $sourceNodeInfo->getRight();
-                    $this->moveBranch($leftFrom, $rightTo, $shift2);
-
-                    //zaplatanie medzeri po presunutom uzle
-                    $this->moveIndexes($sourceNodeInfo->getRight(), $reverseShift);
-                } elseif($sourceNodeInfo->getRight() < $targetNodeInfo->getLeft()) {
-                    //presunutie vetvy do medzery
-                    $leftFrom = $sourceNodeInfo->getLeft();
-                    $rightTo  = $sourceNodeInfo->getRight();
-                    $shift2   = $targetNodeInfo->getLeft() - $sourceNodeInfo->getLeft() + 1;
-                    $this->moveBranch($leftFrom, $rightTo, $shift2);
-
-                    //zaplatanie medzeri po presunutom uzle
-                    $this->moveIndexes($sourceNodeInfo->getRight(), $reverseShift);
-                } else {
-                    // @codeCoverageIgnoreStart
-                    throw new Exception('moveChildTop - this is impossible');
-                    // @codeCoverageIgnoreEnd
-                }
-            } else {
-                // @codeCoverageIgnoreStart
-                throw new InvalidArgumentException('Unknown placement "' . $placement . '"');
-                // @codeCoverageIgnoreEnd
             }
+
+            $moveStrategy = $this->getMoveStrategy($sourceNodeInfo, $targetNodeInfo, $placement);
+
+            $reverseShift = $moveStrategy->getIndexShift() * -1;
+
+            //upravime rodica
+            $this->updateParentId($sourceNodeInfo, $moveStrategy->getNewParentId());
+
+            //upravime level
+            $this->updateLevels($sourceNodeInfo->getLeft(), $sourceNodeInfo->getRight(),
+                    $moveStrategy->getLevelShift());
+
+            //medzera pre presuvanu vetvu
+            $this->moveIndexes($moveStrategy->makeHoleFromIndex(),
+                $moveStrategy->getIndexShift());
+
+            //presunutie vetvy do medzery
+            $this->moveBranch($moveStrategy->getHoleLeftIndex(),
+                $moveStrategy->getHoleRightIndex(), $moveStrategy->getSourceNodeIndexShift());
+
+            //zaplatanie medzeri po presunutom uzle
+            $this->moveIndexes($moveStrategy->fixHoleFromIndex(), $reverseShift);
 
             $transaction->commit();
             $dbLock->unlockTables();
@@ -500,7 +343,31 @@ class DbTraversal
     public function moveNodePlacementChildTop($sourceNodeId, $targetNodeId) {
         $placement = self::PLACEMENT_CHILD_TOP;
         return $this->moveNode($sourceNodeId, $targetNodeId, $placement);
-    }    
+    }
+
+    /**
+     * @param NodeInfo $sourceNode
+     * @param NodeInfo $targetNode
+     * @param string $placement
+     * @return MoveStrategyInterface
+     * @throws InvalidArgumentException
+     */
+    private function getMoveStrategy(NodeInfo $sourceNode, NodeInfo $targetNode, $placement) {
+        switch ($placement) {
+            case self::PLACEMENT_BOTTOM:
+                return new MoveStrategy\Bottom($sourceNode, $targetNode);
+            case self::PLACEMENT_TOP:
+                return new MoveStrategy\Top($sourceNode, $targetNode);
+            case self::PLACEMENT_CHILD_BOTTOM:
+                return new MoveStrategy\ChildBottom($sourceNode, $targetNode);
+            case self::PLACEMENT_CHILD_TOP:
+                return new MoveStrategy\ChildTop($sourceNode, $targetNode);
+            default:
+                // @codeCoverageIgnoreStart
+                throw new InvalidArgumentException('Unknown placement "' . $placement . '"');
+                // @codeCoverageIgnoreEnd
+        }
+    }
     
     public function deleteBranch($nodeId) {
         if($this->isRoot($nodeId)) {
