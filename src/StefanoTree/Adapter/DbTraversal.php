@@ -8,6 +8,7 @@ use Exception;
 use StefanoTree\Exception\InvalidArgumentException;
 use StefanoTree\Adapter\DbTraversal\Options;
 use StefanoTree\Adapter\DbTraversal\AddStrategy;
+use StefanoTree\Adapter\DbTraversal\AddStrategy\AddStrategyInterface;
 
 class DbTraversal
     implements AdapterInterface
@@ -79,7 +80,7 @@ class DbTraversal
      * @param string $placement
      * @param array $data
      * @return int|false Id of new created node. False if node has not been created
-     * @throws InvalidArgumentException
+     * @throws Exception
      */
     protected function addNode($targetNodeId, $placement, $data = array()) {
         $options = $this->getOptions();
@@ -98,31 +99,15 @@ class DbTraversal
                 return false;
             }
             
-            if(self::PLACEMENT_BOTTOM == $placement) {
+            if(self::PLACEMENT_BOTTOM == $placement || self::PLACEMENT_TOP == $placement) {
                 if(1 == $targetNodeId) {
                     $transaction->commit();
                     $dbLock->unlockTables();
                     return false;
-                }
-
-                $addStrategy = new AddStrategy\Bottom();       
-            } elseif(self::PLACEMENT_TOP == $placement) {
-                if(1 == $targetNodeId) {
-                    $transaction->commit();
-                    $dbLock->unlockTables();
-                    return false;
-                }
-
-                $addStrategy = new AddStrategy\Top();
-            } elseif(self::PLACEMENT_CHILD_BOTTOM == $placement) {
-                $addStrategy = new AddStrategy\ChildBottom();
-            } elseif(self::PLACEMENT_CHILD_TOP == $placement) {
-                $addStrategy = new AddStrategy\ChildTop();                
-            } else {
-                // @codeCoverageIgnoreStart
-                throw new InvalidArgumentException('Unknown placement "' . $placement . '"');
-                // @codeCoverageIgnoreEnd
+                }      
             }
+
+            $addStrategy = $this->getAddStrategy($placement);
 
             $this->moveIndexes($addStrategy->moveIndexesFromIndex($targetNodeInfo), 2);
 
@@ -150,6 +135,27 @@ class DbTraversal
         }
             
         return $lastGeneratedValue;
+    }
+
+    /**
+     * @param string $placement
+     * @return AddStrategyInterface
+     * @throws InvalidArgumentException
+     */
+    private function getAddStrategy($placement) {
+        if(self::PLACEMENT_BOTTOM == $placement) {                
+            return new AddStrategy\Bottom();
+        } elseif(self::PLACEMENT_TOP == $placement) {
+            return new AddStrategy\Top();
+        } elseif(self::PLACEMENT_CHILD_BOTTOM == $placement) {
+            return new AddStrategy\ChildBottom();
+        } elseif(self::PLACEMENT_CHILD_TOP == $placement) {
+            return new AddStrategy\ChildTop();
+        } else {
+            // @codeCoverageIgnoreStart
+            throw new InvalidArgumentException('Unknown placement "' . $placement . '"');
+            // @codeCoverageIgnoreEnd
+        }
     }
 
     public function addNodePlacementBottom($targetNodeId, $data = array()) {
