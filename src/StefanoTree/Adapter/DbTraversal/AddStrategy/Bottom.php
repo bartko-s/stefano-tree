@@ -5,7 +5,11 @@ use StefanoTree\Adapter\DbTraversal\AddStrategy\AddStrategyAbstract;
 
 class Bottom
     extends AddStrategyAbstract
-{  
+{
+    public function canAddNewNode($rootNodeId) {
+        return ($rootNodeId == $this->getTargetNode()->getId()) ? false : true;
+    }
+
     public function moveIndexesFromIndex() {
         return $this->getTargetNode()->getRight();
     }

@@ -4,6 +4,11 @@ namespace StefanoTree\Adapter\DbTraversal\AddStrategy;
 interface AddStrategyInterface
 {
     /**
+     * @param int $rootNodeId
+     * @return bolean
+     */
+    public function canAddNewNode($rootNodeId);
+    /**
      * @return int
      */
     public function moveIndexesFromIndex();

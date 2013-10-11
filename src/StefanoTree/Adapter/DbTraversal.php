@@ -49,13 +49,20 @@ class DbTraversal
     }
 
     /**
+     * @return int
+     */
+    private function getRootNodeId() {
+        return 1;
+    }
+
+    /**
      * Test if node is root node
      *
      * @param int $nodeId
      * @return boolean
      */
     private function isRoot($nodeId) {
-        if(1 == $nodeId) {
+        if($this->getRootNodeId() == $nodeId) {
             return true;
         } else {
             return false;
@@ -126,16 +133,14 @@ class DbTraversal
                 $dbLock->unlockTables();
                 return false;
             }
-            
-            if(self::PLACEMENT_BOTTOM == $placement || self::PLACEMENT_TOP == $placement) {
-                if($this->isRoot($targetNodeId)) {
-                    $transaction->commit();
-                    $dbLock->unlockTables();
-                    return false;
-                }      
-            }
 
             $addStrategy = $this->getAddStrategy($targetNode, $placement);
+
+            if(false == $addStrategy->canAddNewNode($this->getRootNodeId())) {
+                $transaction->commit();
+                $dbLock->unlockTables();
+                return false;
+            }      
 
             $this->moveIndexes($addStrategy->moveIndexesFromIndex($targetNode), 2);
 
