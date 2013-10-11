@@ -6,14 +6,12 @@ use StefanoTree\Adapter\Helper\NodeInfo;
 interface AddStrategyInterface
 {
     /**
-     * @param NodeInfo $targetNodeInfo
      * @return NodeInfo
      */
-    public function calculateNewNode(NodeInfo $targetNodeInfo);
+    public function calculateNewNode();
 
     /**
-     * @param NodeInfo $targetNodeInfo
      * @return int
      */
-    public function moveIndexesFromIndex(NodeInfo $targetNodeInfo);
+    public function moveIndexesFromIndex();
 }

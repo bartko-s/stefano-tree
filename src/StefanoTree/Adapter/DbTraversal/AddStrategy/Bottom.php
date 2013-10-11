@@ -1,25 +1,25 @@
 <?php
 namespace StefanoTree\Adapter\DbTraversal\AddStrategy;
 
-use StefanoTree\Adapter\DbTraversal\AddStrategy\AddStrategyInterface;
+use StefanoTree\Adapter\DbTraversal\AddStrategy\AddStrategyAbstract;
 use StefanoTree\Adapter\Helper\NodeInfo;
 
 class Bottom
-    implements AddStrategyInterface
+    extends AddStrategyAbstract
 {
-    public function calculateNewNode(NodeInfo $targetNodeInfo) {
+    public function calculateNewNode() {
         $data = array(
             'id'        => null,
-            'parentId'  => $targetNodeInfo->getParentId(),
-            'level'     => $targetNodeInfo->getLevel(),
-            'left'      => $targetNodeInfo->getRight() + 1,
-            'right'     => $targetNodeInfo->getRight() + 2,
+            'parentId'  => $this->getTargetNode()->getParentId(),
+            'level'     => $this->getTargetNode()->getLevel(),
+            'left'      => $this->getTargetNode()->getRight() + 1,
+            'right'     => $this->getTargetNode()->getRight() + 2,
         );
         
         return new NodeInfo($data);
     }
 
-    public function moveIndexesFromIndex(NodeInfo $targetNodeInfo) {
-        return $targetNodeInfo->getRight();
+    public function moveIndexesFromIndex() {
+        return $this->getTargetNode()->getRight();
     }
 }

@@ -133,7 +133,7 @@ class DbTraversal
                 }      
             }
 
-            $addStrategy = $this->getAddStrategy($placement);
+            $addStrategy = $this->getAddStrategy($targetNodeInfo, $placement);
 
             $this->moveIndexes($addStrategy->moveIndexesFromIndex($targetNodeInfo), 2);
 
@@ -164,20 +164,21 @@ class DbTraversal
     }
 
     /**
+     * @param NodeInfo $targetNode
      * @param string $placement
      * @return AddStrategyInterface
      * @throws InvalidArgumentException
      */
-    private function getAddStrategy($placement) {
+    private function getAddStrategy(NodeInfo $targetNode, $placement) {
         switch ($placement) {
             case self::PLACEMENT_BOTTOM:
-                return new AddStrategy\Bottom();
+                return new AddStrategy\Bottom($targetNode);
             case self::PLACEMENT_TOP:
-                return new AddStrategy\Top();
+                return new AddStrategy\Top($targetNode);
             case self::PLACEMENT_CHILD_BOTTOM:
-                return new AddStrategy\ChildBottom();
+                return new AddStrategy\ChildBottom($targetNode);
             case self::PLACEMENT_CHILD_TOP:
-                return new AddStrategy\ChildTop();
+                return new AddStrategy\ChildTop($targetNode);
             default:
                 // @codeCoverageIgnoreStart
                 throw new InvalidArgumentException('Unknown placement "' . $placement . '"');
