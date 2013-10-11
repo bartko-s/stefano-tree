@@ -118,8 +118,10 @@ class DbTraversal
         try {
             $transaction->begin();
             $dbLock->lockTables($options->getTableName());
-            
-            if(!$targetNodeInfo = $this->getNodeInfo($targetNodeId)) {
+
+            $targetNode = $this->getNodeInfo($targetNodeId);
+
+            if(null == $targetNode) {
                 $transaction->commit();
                 $dbLock->unlockTables();
                 return false;
@@ -133,16 +135,14 @@ class DbTraversal
                 }      
             }
 
-            $addStrategy = $this->getAddStrategy($targetNodeInfo, $placement);
+            $addStrategy = $this->getAddStrategy($targetNode, $placement);
 
-            $this->moveIndexes($addStrategy->moveIndexesFromIndex($targetNodeInfo), 2);
+            $this->moveIndexes($addStrategy->moveIndexesFromIndex($targetNode), 2);
 
-            $newNode = $addStrategy->calculateNewNode($targetNodeInfo);
-
-            $data[$options->getParentIdColumnName()] = $newNode->getParentId();
-            $data[$options->getLevelColumnName()] = $newNode->getLevel();
-            $data[$options->getLeftColumnName()] = $newNode->getLeft();
-            $data[$options->getRightColumnName()] = $newNode->getRight();
+            $data[$options->getParentIdColumnName()] = $addStrategy->newParentId();
+            $data[$options->getLevelColumnName()] = $addStrategy->newLevel();
+            $data[$options->getLeftColumnName()] = $addStrategy->newLeftIndex();
+            $data[$options->getRightColumnName()] = $addStrategy->newRightIndex();
 
             $insert = new Db\Sql\Insert($options->getTableName());
             $insert->values($data);
