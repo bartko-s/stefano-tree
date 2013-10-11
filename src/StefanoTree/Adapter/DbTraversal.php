@@ -137,12 +137,10 @@ class DbTraversal
 
             $this->moveIndexes($addStrategy->moveIndexesFromIndex($targetNodeInfo), 2);
 
-            $newNode = $addStrategy->calculateNewNode($targetNodeInfo);
-
-            $data[$options->getParentIdColumnName()] = $newNode->getParentId();
-            $data[$options->getLevelColumnName()] = $newNode->getLevel();
-            $data[$options->getLeftColumnName()] = $newNode->getLeft();
-            $data[$options->getRightColumnName()] = $newNode->getRight();
+            $data[$options->getParentIdColumnName()] = $addStrategy->newParentId();
+            $data[$options->getLevelColumnName()] = $addStrategy->newLevel();
+            $data[$options->getLeftColumnName()] = $addStrategy->newLeftIndex();
+            $data[$options->getRightColumnName()] = $addStrategy->newRightIndex();
 
             $insert = new Db\Sql\Insert($options->getTableName());
             $insert->values($data);
