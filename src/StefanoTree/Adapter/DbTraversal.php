@@ -232,73 +232,26 @@ class DbTraversal
             $dbLock->lockTables($options->getTableName());
             
             //neexistuje
-            if(!$sourceNodeInfo = $this->getNodeInfo($sourceNodeId)) {
+            if(!$sourceNodeInfo = $this->getNodeInfo($sourceNodeId)
+                XOR !$targetNodeInfo = $this->getNodeInfo($targetNodeId)) {
                 $transaction->commit();
                 $dbLock->unlockTables();
                 return false;
-            }
-            //neexistuje
-            if(!$targetNodeInfo = $this->getNodeInfo($targetNodeId)) {
-                $transaction->commit();
-                $dbLock->unlockTables();
-                return false;
-            }
-            //cielovy uzol lezi v zdrojovej vetve
-            if($targetNodeInfo->getLeft() > $sourceNodeInfo->getLeft() &&
-                    $targetNodeInfo->getRight() < $sourceNodeInfo->getRight()) {
-                $transaction->commit();
-                $dbLock->unlockTables();
-                return false;
-            }
-            
-            if(self::PLACEMENT_BOTTOM == $placement) {
-                //cielovy uzol je root
-                if($this->isRoot($targetNodeId)) {
-                    $transaction->commit();
-                    $dbLock->unlockTables();
-                    return false;
-                }
-                //aktualna pozicia je rovnaka ako pozadovana, cize nie je dovod presuvat
-                if($targetNodeInfo->getRight() == ($sourceNodeInfo->getLeft() - 1) &&
-                        $targetNodeInfo->getParentId() == $sourceNodeInfo->getParentId()) {
-                    $transaction->commit();
-                    $dbLock->unlockTables();
-                    return true;
-                }
-            } elseif(self::PLACEMENT_TOP == $placement) {
-                //cielovy uzol je root
-                if($this->isRoot($targetNodeId)) {
-                    $transaction->commit();
-                    $dbLock->unlockTables();
-                    return false;
-                }
-
-                //aktualna pozicia je rovnaka ako pozadovana, cize nie je dovod presuvat
-                if($targetNodeInfo->getLeft() == ($sourceNodeInfo->getRight() + 1) &&
-                        $targetNodeInfo->getParentId() == $sourceNodeInfo->getParentId()) {
-                    $transaction->commit();
-                    $dbLock->unlockTables();
-                    return true;
-                }
-            } elseif(self::PLACEMENT_CHILD_BOTTOM == $placement) {
-                //aktualna pozicia je rovnaka ako pozadovana, cize nie je dovod presuvat
-                if($sourceNodeInfo->getParentId() == $targetNodeInfo->getId() && 
-                        $sourceNodeInfo->getRight() == ($targetNodeInfo->getRight() - 1)) {
-                    $transaction->commit();
-                    $dbLock->unlockTables();
-                    return true;
-                }
-            } elseif(self::PLACEMENT_CHILD_TOP == $placement) {
-                //aktualna pozicia je rovnaka ako pozadovana, cize nie je dovod presuvat
-                if($sourceNodeInfo->getParentId() == $targetNodeInfo->getId() &&
-                        $targetNodeInfo->getLeft() == ($sourceNodeInfo->getLeft() - 1)) {
-                    $transaction->commit();
-                    $dbLock->unlockTables();
-                    return true;
-                }
             }
 
             $moveStrategy = $this->getMoveStrategy($sourceNodeInfo, $targetNodeInfo, $placement);
+
+            if(!$moveStrategy->canMoveBranche($this->getRootNodeId())) {
+                $transaction->commit();
+                $dbLock->unlockTables();
+                return false;
+            }
+                        
+            if($moveStrategy->isSourceNodeAtRequiredPossition()) {
+                $transaction->commit();
+                $dbLock->unlockTables();
+                return true;
+            }
 
             $reverseShift = $moveStrategy->getIndexShift() * -1;
 

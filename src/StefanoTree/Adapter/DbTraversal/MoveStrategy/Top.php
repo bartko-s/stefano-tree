@@ -73,4 +73,22 @@ class Top
     public function makeHoleFromIndex() {
         return $this->getTargetNode()->getLeft() - 1;
     }
+
+    public function canMoveBranche($rootNodeId) {
+        if(false == parent::canMoveBranche($rootNodeId)) {
+            return false;
+        }
+
+        return ($this->isTargetNodeRootNode($rootNodeId)) ?
+            false : true;
+    }
+
+    public function isSourceNodeAtRequiredPossition() {
+        $sourceNode = $this->getSourceNode();
+        $targetNode = $this->getTargetNode();
+
+        return ($targetNode->getLeft() == ($sourceNode->getRight() + 1) &&
+                $targetNode->getParentId() == $sourceNode->getParentId()) ?
+            true : false;
+    }
 }

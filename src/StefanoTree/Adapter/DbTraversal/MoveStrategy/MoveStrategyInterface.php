@@ -4,6 +4,17 @@ namespace StefanoTree\Adapter\DbTraversal\MoveStrategy;
 interface MoveStrategyInterface
 {
     /**
+     * @param int $rootNodeId
+     * @return bolean
+     */
+    public function canMoveBranche($rootNodeId);
+
+    /**
+     * @return bolean
+     */
+    public function isSourceNodeAtRequiredPossition();
+
+    /**
      * @return int
      */
     public function getNewParentId();

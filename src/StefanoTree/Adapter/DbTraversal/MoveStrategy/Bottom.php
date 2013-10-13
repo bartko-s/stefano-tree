@@ -75,4 +75,22 @@ class Bottom
     public function makeHoleFromIndex() {
         return $this->getTargetNode()->getRight();
     }
+
+    public function canMoveBranche($rootNodeId) {
+        if(false == parent::canMoveBranche($rootNodeId)) {
+            return false;
+        }
+
+        return ($this->isTargetNodeRootNode($rootNodeId)) ?
+            false : true;
+    }
+
+    public function isSourceNodeAtRequiredPossition() {
+        $sourceNode = $this->getSourceNode();
+        $targetNode = $this->getTargetNode();
+
+        return ($targetNode->getRight() == ($sourceNode->getLeft() - 1) &&
+                $targetNode->getParentId() == $sourceNode->getParentId()) ?
+            true : false;
+    }
 }

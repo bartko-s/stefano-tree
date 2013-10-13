@@ -73,4 +73,13 @@ class ChildTop
     public function makeHoleFromIndex() {
         return $this->getTargetNode()->getLeft();
     }
+
+    public function isSourceNodeAtRequiredPossition() {
+        $sourceNode = $this->getSourceNode();
+        $targetNode = $this->getTargetNode();
+
+        return ($sourceNode->getParentId() == $targetNode->getId() &&
+                $targetNode->getLeft() == ($sourceNode->getLeft() - 1)) ?
+            true : false;
+    }
 }
