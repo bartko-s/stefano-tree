@@ -560,7 +560,6 @@ class DbTraversal
     
     /**
      * Return clone of default db select
-     * @todo select for update if transaction is open
      * @return \Zend\Db\Sql\Select
      */
     public function getDefaultDbSelect() {
@@ -571,15 +570,6 @@ class DbTraversal
         }
 
         $dbSelect = clone $this->defaultDbSelect;
-        
-        $transaction = $options->getDbAdapter()
-                            ->getTransaction();
-        if($transaction->isInTransaction()) {
-            /*$dbSelect->forUpdate();
-             * but this is not implemented yet
-             * https://github.com/zendframework/zf2/issues/3012
-             */
-        }
         
         return $dbSelect;
     }
