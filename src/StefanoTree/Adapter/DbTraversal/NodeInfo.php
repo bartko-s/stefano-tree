@@ -1,5 +1,5 @@
 <?php
-namespace StefanoTree\Adapter\Helper;
+namespace StefanoTree\Adapter\DbTraversal;
 
 use StefanoTree\Exception\InvalidArgumentException;
 

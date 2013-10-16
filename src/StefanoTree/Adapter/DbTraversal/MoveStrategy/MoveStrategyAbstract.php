@@ -1,7 +1,7 @@
 <?php
 namespace StefanoTree\Adapter\DbTraversal\MoveStrategy;
 
-use StefanoTree\Adapter\Helper\NodeInfo;
+use StefanoTree\Adapter\DbTraversal\NodeInfo;
 use StefanoTree\Adapter\DbTraversal\MoveStrategy\MoveStrategyInterface;
 
 abstract class MoveStrategyAbstract
