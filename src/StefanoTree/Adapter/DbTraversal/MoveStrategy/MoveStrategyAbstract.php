@@ -37,34 +37,25 @@ abstract class MoveStrategyAbstract
      * @return bolean
      */
     protected function isMovedUp() {
-        if($this->getTargetNode()->getRight() < $this->getSourceNode()->getLeft()) {
-            return true;
-        } else {
-            return false;
-        }
+        return ($this->getTargetNode()->getRight() < $this->getSourceNode()->getLeft()) ?
+            true : false;
     }
 
     /**
      * @return bolean
      */
     protected function isMovedDown() {
-        if($this->getSourceNode()->getRight() < $this->getTargetNode()->getLeft()) {
-            return true;
-        } else {
-            return false;
-        }
+        return ($this->getSourceNode()->getRight() < $this->getTargetNode()->getLeft()) ?
+            true : false;
     }
 
     /**
      * @return bolean
      */
     protected function isMovedToRoot() {
-        if($this->getSourceNode()->getLeft() > $this->getTargetNode()->getLeft() &&
-                $this->getSourceNode()->getRight() < $this->getTargetNode()->getRight()) {
-            return true;
-        } else {
-            return false;
-        }
+        return ($this->getSourceNode()->getLeft() > $this->getTargetNode()->getLeft() &&
+                    $this->getSourceNode()->getRight() < $this->getTargetNode()->getRight()) ?
+            true : false;
     }
 
     public function getIndexShift() {
