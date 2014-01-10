@@ -1,7 +1,6 @@
 <?php
 namespace StefanoTree\Adapter\DbTraversal;
 
-use StefanoDb\Adapter\Adapter as DbAdapter;
 use StefanoTree\Exception\InvalidArgumentException;
 
 class Options
@@ -14,15 +13,13 @@ class Options
     private $levelColumnName = 'level';
     private $parentIdColumnName = 'parent_id';
 
-    private $dbAdapter = null;
-
     /**
      * @param array $options
      * @throws InvalidArgumentException
      */
     public function __construct(array $options) {
         $requiredOptions = array(
-            'tableName', 'idColumnName', 'dbAdapter',
+            'tableName', 'idColumnName',
         );
 
         $missingKeys = array_diff_key(array_flip($requiredOptions), $options);
@@ -185,21 +182,5 @@ class Options
      */
     public function getParentIdColumnName() {
         return $this->parentIdColumnName;
-    }
-
-    /**
-     * @param DbAdapter $dbAdapter
-     * @return this
-     */
-    public function setDbAdapter(DbAdapter $dbAdapter) {
-        $this->dbAdapter = $dbAdapter;
-        return $this;
-    }
-
-    /**
-     * @return DbAdapter
-     */
-    public function getDbAdapter() {
-        return $this->dbAdapter;
     }
 }

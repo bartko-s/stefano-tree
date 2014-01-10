@@ -3,6 +3,8 @@ namespace StefanoTreeTest\Integration\Adapter;
 
 use StefanoTree\Adapter\DbTraversal as TreeAdapter;
 use StefanoDb\Adapter\Adapter as DbAdapter;
+use StefanoTree\Adapter\DbTraversal\Adapter\ZendDbAdapter;
+use StefanoTree\Adapter\DbTraversal\Options;
 
 class DbTraversalTest
     extends \PHPUnit_Extensions_Database_TestCase
@@ -20,12 +22,11 @@ class DbTraversalTest
     protected function setUp() {
         $this->setDbConnectionAndCreateTable();
         
-        $treeAdapter = new TreeAdapter(array(
+        $options = new Options(array(
             'tableName' => 'tree_traversal',
             'idColumnName' => 'tree_traversal_id',
-            'dbAdapter' => $this->dbAdapter,
         ));
-        $this->treeAdapter = $treeAdapter;
+        $this->treeAdapter = new TreeAdapter(new ZendDbAdapter($options, $this->dbAdapter));
         
         parent::setUp();
     }
@@ -96,19 +97,6 @@ class DbTraversalTest
 
         $this->assertEquals($expectedNodeData, $nodeData);
         $this->assertNull($this->treeAdapter->getNode(123456789));
-    }
-    
-    public function testGetNodeInfo() {
-        $this->assertNull($this->treeAdapter->getNodeInfo(123456789));
-        
-        $nodeInfo = $this->treeAdapter
-                         ->getNodeInfo(11);
-        
-        $this->assertEquals(11, $nodeInfo->getId());
-        $this->assertEquals(5, $nodeInfo->getParentId());
-        $this->assertEquals(3, $nodeInfo->getLevel());
-        $this->assertEquals(12, $nodeInfo->getLeft());
-        $this->assertEquals(13, $nodeInfo->getRight());
     }
     
     public function testAddNodeTargetNodeDoesNotExist() {

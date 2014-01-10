@@ -8,7 +8,7 @@ class DbTraversalTest
 {
     public function testThrowExceptionIfAllRequiredSettingsAreNotProvided() {
         $this->setExpectedException('\StefanoTree\Exception\InvalidArgumentException',
-            'tableName, idColumnName, dbAdapter must be set');
+            'tableName, idColumnName must be set');
 
         new Options(array());
     }
@@ -132,15 +132,5 @@ class DbTraversalTest
         $optionsStub->setParentIdColumnName('   prt ');
 
         $this->assertEquals('prt', $optionsStub->getParentIdColumnName());
-    }
-
-    public function testGetDbAdapter() {
-        $optionsStub = $this->getOptionsWithDefaultSettings();
-
-        $dbAdapterStub = \Mockery::mock('\StefanoDb\Adapter\Adapter');
-
-        $optionsStub->setDbAdapter($dbAdapterStub);
-
-        $this->assertSame($dbAdapterStub, $optionsStub->getDbAdapter());
     }
 }

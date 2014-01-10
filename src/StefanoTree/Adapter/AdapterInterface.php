@@ -104,5 +104,14 @@ interface AdapterInterface
      * @param int $nodeId
      * @return null|array
      */
-    public function getChildren($nodeId);    
+    public function getChildren($nodeId);
+
+    /**
+     * Clear all data except root node
+     *
+     * @param array $data
+     * @return this
+     * @throws \Exception
+     */
+    public function clear(array $data = array());
 }

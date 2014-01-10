@@ -1,12 +1,9 @@
 <?php
 namespace StefanoTree\Adapter;
 
-use Zend\Db;
-use StefanoDb\Adapter\Adapter as DbAdapter;
 use StefanoTree\Adapter\DbTraversal\NodeInfo;
 use Exception;
 use StefanoTree\Exception\InvalidArgumentException;
-use StefanoTree\Adapter\DbTraversal\Options;
 use StefanoTree\Adapter\DbTraversal\AddStrategy;
 use StefanoTree\Adapter\DbTraversal\AddStrategy\AddStrategyInterface;
 use StefanoTree\Adapter\DbTraversal\MoveStrategy;
@@ -15,37 +12,21 @@ use StefanoTree\Adapter\DbTraversal\MoveStrategy\MoveStrategyInterface;
 class DbTraversal
     implements AdapterInterface
 {
-    private $options = null;
-
-    private $defaultDbSelect = null;
+    private $adapter;
 
     /**
-     * dbAdapter (required)
-     * tableName (required)
-     * idColumnName (required)
-     * leftColumnName (optional) default "lft"
-     * rightColumnName (optional) default "rgt"
-     * levelColumnName (optional) default "level"
-     * parentIdColumnName (optional) default "parent_id"
-     *
-     * @param array|Options $options
+     * @param \StefanoTree\Adapter\DbTraversal\Adapter\AdapterInterface $adapter
      * @throws InvalidArgumentException
      */
-    public function __construct($options) {
-        if(is_array($options)) {
-            $this->options = new Options($options);
-        } elseif($this->options instanceof Options) {
-            $this->options = $options;
-        } else {
-            throw new InvalidArgumentException('Options must be array or Options object');
-        }
+    public function __construct(\StefanoTree\Adapter\DbTraversal\Adapter\AdapterInterface $adapter) {
+        $this->adapter = $adapter;
     }
 
     /**
-     * @return Options
+     * @return \StefanoTree\Adapter\DbTraversal\Adapter\AdapterInterface
      */
-    protected function getOptions() {
-        return $this->options;
+    private function getAdapter() {
+        return $this->adapter;
     }
 
     /**
@@ -68,44 +49,14 @@ class DbTraversal
             return false;
         }
     }
-
-    /**
-     * Data cannot contain keys like idColomnName, levelColumnName, ...
-     *
-     * @param array $data
-     * @return array
-     */
-    private function cleanData(array $data) {
-        $options = $this->getOptions();
-
-        $disallowedDataKeys = array(
-            $options->getIdColumnName(),
-            $options->getLeftColumnName(),
-            $options->getRightColumnName(),
-            $options->getLevelColumnName(),
-            $options->getParentIdColumnName(),
-        );
-
-        return array_diff_key($data, array_flip($disallowedDataKeys));
-    }
     
     /**
      * @param int $nodeId
      * @param array $data
      */
     public function updateNode($nodeId, $data) {
-        $options = $this->getOptions();
-
-        $dbAdapter = $options->getDbAdapter();
-        
-        $update = new Db\Sql\Update($options->getTableName());
-        $update->set($this->cleanData($data))
-               ->where(array(
-                    $options->getIdColumnName() => $nodeId,
-               ));
-        
-        $dbAdapter->query($update->getSqlString($dbAdapter->getPlatform()),
-                DbAdapter::QUERY_MODE_EXECUTE);
+        $this->getAdapter()
+             ->update($nodeId, $data);
     }
     
     /**
@@ -116,52 +67,48 @@ class DbTraversal
      * @throws Exception
      */
     protected function addNode($targetNodeId, $placement, $data = array()) {
-        $options = $this->getOptions();
-        
-        $dbAdapter = $options->getDbAdapter();
-        $transaction = $dbAdapter->getTransaction();
-        $dbLock = $dbAdapter->getLockAdapter();
+        $adapter = $this->getAdapter();
         
         try {
-            $transaction->begin();
-            $dbLock->lockTables($options->getTableName());
+            $adapter->beginTransaction()
+                    ->lockTable();
 
-            $targetNode = $this->getNodeInfo($targetNodeId);
+            $targetNode = $adapter->getNodeInfo($targetNodeId);
 
             if(null == $targetNode) {
-                $transaction->commit();
-                $dbLock->unlockTables();
+                $adapter->commitTransaction()
+                        ->unlockTable();
                 return false;
             }
 
             $addStrategy = $this->getAddStrategy($targetNode, $placement);
 
             if(false == $addStrategy->canAddNewNode($this->getRootNodeId())) {
-                $transaction->commit();
-                $dbLock->unlockTables();
+                $adapter->commitTransaction()
+                        ->unlockTable();
                 return false;
-            }      
+            }
 
-            $this->moveIndexes($addStrategy->moveIndexesFromIndex($targetNode), 2);
+            //make hole
+            $moveFromIndex = $addStrategy->moveIndexesFromIndex($targetNode);
+            $adapter->moveLeftIndexes($moveFromIndex, 2)
+                    ->moveRightIndexes($moveFromIndex, 2);
 
-            $data[$options->getParentIdColumnName()] = $addStrategy->newParentId();
-            $data[$options->getLevelColumnName()] = $addStrategy->newLevel();
-            $data[$options->getLeftColumnName()] = $addStrategy->newLeftIndex();
-            $data[$options->getRightColumnName()] = $addStrategy->newRightIndex();
+            //insert new node
+            $newNodeInfo = new NodeInfo(array(
+                'id'        => null,
+                'parentId'  => $addStrategy->newParentId(),
+                'level'     => $addStrategy->newLevel(),
+                'left'      => $addStrategy->newLeftIndex(),
+                'right'     => $addStrategy->newRightIndex(),
+            ));
+            $lastGeneratedValue = $adapter->insert($newNodeInfo, $data);
 
-            $insert = new Db\Sql\Insert($options->getTableName());
-            $insert->values($data);
-            $dbAdapter->query($insert->getSqlString($dbAdapter->getPlatform()),
-                DbAdapter::QUERY_MODE_EXECUTE);
-            
-            $lastGeneratedValue = $dbAdapter->getDriver()
-                                            ->getLastGeneratedValue();
-            
-            $transaction->commit();
-            $dbLock->unlockTables();
+            $adapter->commitTransaction()
+                    ->unlockTable();
         } catch(Exception $e) {
-            $transaction->rollback();
-            $dbLock->unlockTables();
+            $adapter->rollbackTransaction()
+                    ->unlockTable();
             throw $e;
         }
             
@@ -184,11 +131,11 @@ class DbTraversal
                 return new AddStrategy\ChildBottom($targetNode);
             case self::PLACEMENT_CHILD_TOP:
                 return new AddStrategy\ChildTop($targetNode);
+        // @codeCoverageIgnoreStart
             default:
-                // @codeCoverageIgnoreStart
-                throw new InvalidArgumentException('Unknown placement "' . $placement . '"');
-                // @codeCoverageIgnoreEnd
+                throw new InvalidArgumentException('Unknown placement "' . $placement . '"');                
         }
+        // @codeCoverageIgnoreEnd
     }
 
     public function addNodePlacementBottom($targetNodeId, $data = array()) {
@@ -216,68 +163,74 @@ class DbTraversal
      * @throws InvalidArgumentException
      */
     protected function moveNode($sourceNodeId, $targetNodeId, $placement) {
-        $options = $this->getOptions();
-
-        //su rovnake
+        $adapter = $this->getAdapter();
+                
+        //source node and target node are equal
         if($sourceNodeId == $targetNodeId) {
             return false;
         }
         
-        $dbAdapter = $options->getDbAdapter();
-        $transaction = $dbAdapter->getTransaction();
-        $dbLock = $dbAdapter->getLockAdapter();
-        
         try {
-            $transaction->begin();
-            $dbLock->lockTables($options->getTableName());
+            $adapter->beginTransaction()
+                    ->lockTable();
             
-            //neexistuje
-            if(!$sourceNodeInfo = $this->getNodeInfo($sourceNodeId)
-                XOR !$targetNodeInfo = $this->getNodeInfo($targetNodeId)) {
-                $transaction->commit();
-                $dbLock->unlockTables();
+            //source node or target node does not exist
+            if(!$sourceNodeInfo = $adapter->getNodeInfo($sourceNodeId)
+                XOR !$targetNodeInfo = $adapter->getNodeInfo($targetNodeId)) {
+                $adapter->commitTransaction()
+                        ->unlockTable();
+
                 return false;
             }
 
             $moveStrategy = $this->getMoveStrategy($sourceNodeInfo, $targetNodeInfo, $placement);
 
             if(!$moveStrategy->canMoveBranche($this->getRootNodeId())) {
-                $transaction->commit();
-                $dbLock->unlockTables();
+                $adapter->commitTransaction()
+                        ->unlockTable();
+                
                 return false;
             }
                         
             if($moveStrategy->isSourceNodeAtRequiredPossition()) {
-                $transaction->commit();
-                $dbLock->unlockTables();
+                $adapter->commitTransaction()
+                        ->unlockTable();
+
                 return true;
             }
 
-            $reverseShift = $moveStrategy->getIndexShift() * -1;
+            //update parent id
+            $newParentId = $moveStrategy->getNewParentId();
+            if($sourceNodeInfo->getParentId() != $newParentId) {
+                $adapter->updateParentId($sourceNodeId, $newParentId);
+            }
 
-            //upravime rodica
-            $this->updateParentId($sourceNodeInfo, $moveStrategy->getNewParentId());
-
-            //upravime level
-            $this->updateLevels($sourceNodeInfo->getLeft(), $sourceNodeInfo->getRight(),
+            //update levels
+            $adapter->updateLevels($sourceNodeInfo->getLeft(), $sourceNodeInfo->getRight(),
                     $moveStrategy->getLevelShift());
 
-            //medzera pre presuvanu vetvu
-            $this->moveIndexes($moveStrategy->makeHoleFromIndex(),
-                $moveStrategy->getIndexShift());
+            //make hole
+            $adapter->moveLeftIndexes($moveStrategy->makeHoleFromIndex(),
+                        $moveStrategy->getIndexShift())
+                    ->moveRightIndexes($moveStrategy->makeHoleFromIndex(),
+                        $moveStrategy->getIndexShift());
 
-            //presunutie vetvy do medzery
-            $this->moveBranch($moveStrategy->getHoleLeftIndex(),
+            //move branche to the hole
+            $adapter->moveBranch($moveStrategy->getHoleLeftIndex(),
                 $moveStrategy->getHoleRightIndex(), $moveStrategy->getSourceNodeIndexShift());
 
-            //zaplatanie medzeri po presunutom uzle
-            $this->moveIndexes($moveStrategy->fixHoleFromIndex(), $reverseShift);
+            //patch hole
+            $adapter->moveLeftIndexes($moveStrategy->fixHoleFromIndex(),
+                        ($moveStrategy->getIndexShift() * -1))
+                    ->moveRightIndexes($moveStrategy->fixHoleFromIndex(),
+                        ($moveStrategy->getIndexShift() * -1));
 
-            $transaction->commit();
-            $dbLock->unlockTables();
+            $adapter->commitTransaction()
+                    ->unlockTable();
         } catch(Exception $e) {
-            $transaction->rollback();
-            $dbLock->unlockTables();
+            $adapter->rollbackTransaction()
+                    ->unlockTable();
+            
             throw $e;
         }
         
@@ -317,11 +270,11 @@ class DbTraversal
                 return new MoveStrategy\ChildBottom($sourceNode, $targetNode);
             case self::PLACEMENT_CHILD_TOP:
                 return new MoveStrategy\ChildTop($sourceNode, $targetNode);
+        // @codeCoverageIgnoreStart
             default:
-                // @codeCoverageIgnoreStart
                 throw new InvalidArgumentException('Unknown placement "' . $placement . '"');
-                // @codeCoverageIgnoreEnd
         }
+        // @codeCoverageIgnoreEnd
     }
     
     public function deleteBranch($nodeId) {
@@ -329,40 +282,36 @@ class DbTraversal
             return false;
         }
 
-        $options = $this->getOptions();
-        
-        $dbAdapter = $options->getDbAdapter();
-        $transaction = $dbAdapter->getTransaction();
-        $dbLock = $dbAdapter->getLockAdapter();
+        $adapter = $this->getAdapter();
         
         try {
-            $transaction->begin();
-            $dbLock->lockTables($options->getTableName());
+            $adapter->beginTransaction()
+                    ->lockTable();
             
-            // neexistuje
-            if(!$nodeInfo = $this->getNodeInfo($nodeId)) {
-                $transaction->commit();
-                $dbLock->unlockTables();
+            // node does not exist
+            if(!$nodeInfo = $adapter->getNodeInfo($nodeId)) {
+                $adapter->commitTransaction()
+                        ->unlockTable();
+                
                 return false;
             }
-            
-            $delete = new Db\Sql\Delete($options->getTableName());
-            $delete->where
-                   ->greaterThanOrEqualTo($options->getLeftColumnName(), $nodeInfo->getLeft())
-                   ->AND
-                   ->lessThanOrEqualTo($options->getRightColumnName(), $nodeInfo->getRight());
-            
-            $dbAdapter->query($delete->getSqlString($dbAdapter->getPlatform()), 
-                DbAdapter::QUERY_MODE_EXECUTE);
-            
-            $shift = $nodeInfo->getLeft() - $nodeInfo->getRight() - 1;            
-            $this->moveIndexes($nodeInfo->getLeft(), $shift);
 
-            $transaction->commit();
-            $dbLock->unlockTables();
+            // delete branch
+            $leftIndex = $nodeInfo->getLeft();
+            $rightIndex = $nodeInfo->getRight();
+            $adapter->delete($leftIndex, $rightIndex);
+
+            //patch hole
+            $moveFromIndex = $nodeInfo->getLeft();
+            $shift = $nodeInfo->getLeft() - $nodeInfo->getRight() - 1;
+            $adapter->moveLeftIndexes($moveFromIndex, $shift)
+                    ->moveRightIndexes($moveFromIndex, $shift);
+
+            $adapter->commitTransaction()
+                    ->unlockTable();
         } catch (Exception $e) {
-            $transaction->rollback();
-            $dbLock->unlockTables();
+            $adapter->rollbackTransaction()
+                    ->unlockTable();
             throw $e;
         }
         
@@ -370,364 +319,51 @@ class DbTraversal
     }
     
     public function getPath($nodeId, $startLevel = 0, $excludeLastNode = false) {
-        $options = $this->getOptions();
-
-        $startLevel = (int) $startLevel;
-        
-        // neexistuje
-        if(!$nodeInfo = $this->getNodeInfo($nodeId)) {
-            return null;
-        }
-        
-        $dbAdapter = $options->getDbAdapter();
-        
-        $select = $this->getDefaultDbSelect();
-        $select->where
-               ->lessThanOrEqualTo($options->getLeftColumnName(), $nodeInfo->getLeft())
-               ->AND
-               ->greaterThanOrEqualTo($options->getRightColumnName(), $nodeInfo->getRight());
-        
-        $select->order($options->getLeftColumnName() . ' ASC');
-        
-        if(0 < $startLevel) {
-            $select->where
-                   ->greaterThanOrEqualTo($options->getLevelColumnName(), $startLevel);
-        }
-        
-        if(true == $excludeLastNode) {
-            $select->where
-                   ->lessThan($options->getLevelColumnName(), $nodeInfo->getLevel());
-        }
-        
-        $result = $dbAdapter->query($select->getSqlString($dbAdapter->getPlatform()),
-            DbAdapter::QUERY_MODE_EXECUTE);
-        
-        return $result->toArray();
+        return $this->getAdapter()
+                    ->getPath($nodeId, $startLevel, $excludeLastNode);
     }
     
-    /**
-     * Clear all data except root node
-     * 
-     * @return this
-     * @throws \Exception
-     */
-    public function clear() {
-        $options = $this->getOptions();
-        $dbAdapter = $options->getDbAdapter();
-        
-        $transaction = $dbAdapter->getTransaction();        
-        $dbLock = $dbAdapter->getLockAdapter();
-        
+    public function clear(array $data = array()) {
+        $adapter = $this->getAdapter();
+
         try {
-            $transaction->begin();
-            $dbLock->lockTables($options->getTableName());
-            
-            $delete = new Db\Sql\Delete;
-            $delete->from($options->getTableName())
-                   ->where
-                   ->notEqualTo($options->getIdColumnName(), 1);
-            $dbAdapter->query($delete->getSqlString($dbAdapter->getPlatform()),
-                DbAdapter::QUERY_MODE_EXECUTE);
-            
-            $update = new Db\Sql\Update();
-            $update->table($options->getTableName())
-                   ->set(array(
-                        $options->getParentIdColumnName() => 0,
-                        $options->getLeftColumnName() => 1,
-                        $options->getRightColumnName() => 2,
-                        $options->getLevelColumnName() => 0,
-                   ));
-            $dbAdapter->query($update->getSqlString($dbAdapter->getPlatform()),
-                DbAdapter::QUERY_MODE_EXECUTE);       
-            
-            $transaction->commit();
-            $dbLock->unlockTables();
+            $adapter->beginTransaction()
+                    ->lockTable();
+
+            $adapter->deleteAll($this->getRootNodeId());
+
+            $nodeInfo = new NodeInfo(array(
+                'id'        => null,
+                'parentId'  => 0,
+                'level'     => 0,
+                'left'      => 1,
+                'right'     => 2,
+            ));
+            $adapter->update($this->getRootNodeId(), $data, $nodeInfo);
+
+            $adapter->commitTransaction()
+                    ->unlockTable();
         } catch (Exception $e) {
-            $transaction->rollback();
-            $dbLock->unlockTables();
+            $adapter->rollbackTransaction()
+                    ->unlockTable();
             throw $e;
         }
         
         return $this;
-    }    
-    
-    /**
-     * @param int $id
-     * @return NodeInfo|null
-     */
-    public function getNodeInfo($nodeId) {
-        $options = $this->getOptions();
-        $result = $this->getNode($nodeId);
-
-        if(null == $result) {
-            $result = null;
-        } else {
-            $params = array(
-                'id'        => $result[$options->getIdColumnName()],
-                'parentId'  => $result[$options->getParentIdColumnName()],
-                'level'     => $result[$options->getLevelColumnName()],
-                'left'      => $result[$options->getLeftColumnName()],
-                'right'     => $result[$options->getRightColumnName()],
-            );
-
-            $result = new NodeInfo($params);
-        }
-            
-        return $result;
-    }    
+    }        
     
     public function getNode($nodeId) {
-        $options = $this->getOptions();
-
-        $nodeId = (int) $nodeId;
-        
-        $dbAdapter = $options->getDbAdapter();
-        
-        $select = $this->getDefaultDbSelect()
-                       ->where(array($options->getIdColumnName() =>  $nodeId));
-
-        $result = $dbAdapter->query($select->getSqlString($dbAdapter->getPlatform()), 
-                DbAdapter::QUERY_MODE_EXECUTE);
-        
-        $array = $result->toArray();
-        
-        if(0 < count($array)) {
-            return $array[0];
-        }  
+        return $this->getAdapter()
+                    ->getNode($nodeId);
     }
         
     public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranche = null) {
-        $options = $this->getOptions();
+        return $this->getAdapter()
+                    ->getDescendants($nodeId, $startLevel, $levels, $excludeBranche);
 
-        if(!$nodeInfo = $this->getNodeInfo($nodeId)) {
-            return null;
-        }
-
-        $dbAdapter = $options->getDbAdapter();
-        $select = $this->getDefaultDbSelect();
-        $select->order($options->getLeftColumnName() . ' ASC');
-        
-        
-        if(0 != $startLevel) {
-            $level = $nodeInfo->getLevel() + (int) $startLevel;
-            $select->where
-                   ->greaterThanOrEqualTo($options->getLevelColumnName(), $level);
-        }
-        
-        if(null != $levels) {
-            $endLevel = $nodeInfo->getLevel() + (int) $startLevel + abs($levels);
-            $select->where
-                   ->lessThan($options->getLevelColumnName(), $endLevel);
-        }
-        
-        if(null != $excludeBranche && null != ($excludeNodeInfo = $this->getNodeInfo($excludeBranche))) {
-            $select->where
-                   ->NEST
-                   ->between($options->getLeftColumnName(),
-                        $nodeInfo->getLeft(), $excludeNodeInfo->getLeft() - 1)
-                   ->OR
-                   ->between($options->getLeftColumnName(),
-                        $excludeNodeInfo->getRight() + 1, $nodeInfo->getRight())
-                   ->UNNEST
-                   ->AND
-                   ->NEST
-                   ->between($options->getRightColumnName(),
-                        $excludeNodeInfo->getRight() + 1, $nodeInfo->getRight())
-                   ->OR
-                   ->between($options->getRightColumnName(),
-                        $nodeInfo->getLeft(), $excludeNodeInfo->getLeft() - 1)
-                   ->UNNEST;
-        } else {
-            $select->where
-                   ->greaterThanOrEqualTo($options->getLeftColumnName(), $nodeInfo->getLeft())
-                   ->AND
-                   ->lessThanOrEqualTo($options->getRightColumnName(), $nodeInfo->getRight());
-        }
-        
-        $result =  $dbAdapter->query($select->getSqlString($dbAdapter->getPlatform()),
-            DbAdapter::QUERY_MODE_EXECUTE);
-        
-        $resultArray = $result->toArray();
-        
-        if(0 < count($resultArray)) {
-            return $resultArray;
-        }
     }    
     
     public function getChildren($nodeId) {
         return $this->getDescendants($nodeId, 1, 1);
-    }
-    
-    /**
-     * Return clone of default db select
-     * @return \Zend\Db\Sql\Select
-     */
-    public function getDefaultDbSelect() {
-        $options = $this->getOptions();
-
-        if(null == $this->defaultDbSelect) {
-            $this->defaultDbSelect = new Db\Sql\Select($options->getTableName());
-        }
-
-        $dbSelect = clone $this->defaultDbSelect;
-        
-        return $dbSelect;
-    }
-    
-    /**    
-     * @param \Zend\Db\Sql\Select $dbSelect
-     * @return this
-     */
-    public function setDefaultDbSelect(\Zend\Db\Sql\Select $dbSelect) {
-        $this->defaultDbSelect = $dbSelect;
-        return $this;
-    }
-    
-    /**
-     * @param NodeInfo $nodeInfo
-     * @param int $newParentId
-     */
-    protected function updateParentId(NodeInfo $nodeInfo, $newParentId) {
-        $options = $this->getOptions();
-        
-        if($newParentId == $nodeInfo->getParentId()) {
-            return;
-        }
-        
-        $dbAdapter = $options->getDbAdapter();
-        
-        $update = new Db\Sql\Update($options->getTableName());
-        $update->set(array(
-                    $options->getParentIdColumnName() => $newParentId,
-               ))
-               ->where(array(
-                   $options->getIdColumnName() => $nodeInfo->getId(),
-               ));
-        
-        $dbAdapter->query($update->getSqlString($dbAdapter->getPlatform()), 
-            DbAdapter::QUERY_MODE_EXECUTE);
-    }
-    
-    /**
-     * @param int $leftFrom from left index
-     * @param int $rightTo to right index
-     * @param int $shift shift
-     */
-    protected function updateLevels($leftFrom, $rightTo, $shift) {
-        $options = $this->getOptions();
-
-        if(0 == $shift) {
-            return;
-        }
-        
-        $dbAdapter = $options->getDbAdapter();
-        $dbPlatform = $dbAdapter->getPlatform();
-        
-        $sql = 'UPDATE ' . $dbPlatform->quoteIdentifier($options->getTableName())
-            . ' SET '
-                . $dbPlatform->quoteIdentifier($options->getLevelColumnName()) . ' = '
-                    . $dbPlatform->quoteIdentifier($options->getLevelColumnName()) . ' + :shift'
-            . ' WHERE '
-                . $dbPlatform->quoteIdentifier($options->getLeftColumnName()) . ' >= :leftFrom'
-                . ' AND ' . $dbPlatform->quoteIdentifier($options->getRightColumnName()) . ' <= :rightTo';
-
-        $binds = array(
-            ':shift' => $shift,
-            ':leftFrom' => $leftFrom,
-            ':rightTo' => $rightTo,
-        );
-        
-        $dbAdapter->query($sql)
-                  ->execute($binds);
-    }
-    
-    /**
-     * Create or fix hole in tree
-     * 
-     * @param int $fromIndex left and right index from
-     * @param int $shift 
-     * @throws \Exception
-     */
-    protected function moveIndexes($fromIndex, $shift) {
-        $options = $this->getOptions();
-
-        if(0 == $shift) {
-            return;
-        }
-        
-        $dbAdapter = $options->getDbAdapter();
-        $dbPlatform = $dbAdapter->getPlatform();        
-        $transaction = $dbAdapter->getTransaction();
-        
-        try {
-            $sqls = array();
-            $sqls[] = 'UPDATE ' . $dbPlatform->quoteIdentifier($options->getTableName())
-                . ' SET '
-                    . $dbPlatform->quoteIdentifier($options->getLeftColumnName()) . ' = '
-                        . $dbPlatform->quoteIdentifier($options->getLeftColumnName()) . ' + :shift'
-                . ' WHERE '
-                    . $dbPlatform->quoteIdentifier($options->getLeftColumnName()) . ' > :fromIndex';
-
-            $sqls[] = 'UPDATE ' . $dbPlatform->quoteIdentifier($options->getTableName())
-                . ' SET '
-                    . $dbPlatform->quoteIdentifier($options->getRightColumnName()) . ' = '
-                        . $dbPlatform->quoteIdentifier($options->getRightColumnName()) . ' + :shift'
-                . ' WHERE '                            
-                    . $dbPlatform->quoteIdentifier($options->getRightColumnName()) . ' > :fromIndex';
-
-            $binds = array(
-                ':shift' => $shift,
-                ':fromIndex' => $fromIndex,
-            );
-        
-            $transaction->begin();
-            
-            foreach($sqls as $singleSql) {
-                $dbAdapter->query($singleSql)
-                          ->execute($binds);
-            }
-            
-            $transaction->commit();
-        } catch(Exception $e) {
-            $transaction->rollback();
-            throw $e;
-        }
-    }
-    
-    /**
-     * Move branch
-     * 
-     * @param int $leftFrom from left index
-     * @param int $rightTo to right index
-     * @param int $shift
-     */
-    protected function moveBranch($leftFrom, $rightTo, $shift) {
-        if(0 == $shift) {
-            return;
-        }
-
-        $options = $this->getOptions();
-        
-        $dbAdapter = $options->getDbAdapter();
-        $dbPlatform = $dbAdapter->getPlatform();
-        
-        $sql = 'UPDATE ' . $dbPlatform->quoteIdentifier($options->getTableName())
-            . ' SET '
-                . $dbPlatform->quoteIdentifier($options->getLeftColumnName()) . ' = '
-                    . $dbPlatform->quoteIdentifier($options->getLeftColumnName()) . ' + :shift, '
-                . $dbPlatform->quoteIdentifier($options->getRightColumnName()) . ' = '
-                    . $dbPlatform->quoteIdentifier($options->getRightColumnName()) . ' + :shift'
-            . ' WHERE '
-                . $dbPlatform->quoteIdentifier($options->getLeftColumnName()) . ' >= :leftFrom'
-                . ' AND ' . $dbPlatform->quoteIdentifier($options->getRightColumnName()) . ' <= :rightTo';
-        
-        $binds = array(
-            ':shift' => $shift,
-            ':leftFrom' => $leftFrom,
-            ':rightTo' => $rightTo,
-        );
-        
-        $dbAdapter->query($sql)
-                  ->execute($binds);
     }
 }
