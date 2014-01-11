@@ -8,6 +8,7 @@ use StefanoTree\NestedSet\AddStrategy;
 use StefanoTree\NestedSet\AddStrategy\AddStrategyInterface;
 use StefanoTree\NestedSet\MoveStrategy;
 use StefanoTree\NestedSet\MoveStrategy\MoveStrategyInterface;
+use StefanoTree\NestedSet\Adapter\AdapterInterface;
 
 class NestedSet
     implements TreeInterface
@@ -15,14 +16,14 @@ class NestedSet
     private $adapter;
 
     /**
-     * @param \StefanoTree\NestedSet\Adapter\AdapterInterface $adapter
+     * @param AdapterInterface $adapter
      */
-    public function __construct(\StefanoTree\NestedSet\Adapter\AdapterInterface $adapter) {
+    public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
     }
 
     /**
-     * @return \StefanoTree\NestedSet\Adapter\AdapterInterface
+     * @return AdapterInterface
      */
     private function getAdapter() {
         return $this->adapter;
