@@ -1,5 +1,5 @@
 <?php
-namespace StefanoTree\DbTraversal\AddStrategy;
+namespace StefanoTree\NestedSet\AddStrategy;
 
 interface AddStrategyInterface
 {

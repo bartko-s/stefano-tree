@@ -1,9 +1,9 @@
 <?php
-namespace StefanoTreeTest\Unit\Adapter\DbTraversable;
+namespace StefanoTreeTest\Unit\NestedSet;
 
-use StefanoTree\DbTraversal\Options;
+use StefanoTree\NestedSet\Options;
 
-class DbTraversalTest
+class NestedSetTest
     extends \PHPUnit_Framework_TestCase
 {
     public function testThrowExceptionIfAllRequiredSettingsAreNotProvided() {
@@ -14,7 +14,7 @@ class DbTraversalTest
     }
 
     /**
-     * @return \StefanoTree\DbTraversal\Options
+     * @return \StefanoTree\NestedSet\Options
      */
     private function getOptionsWithDefaultSettings() {
         return new Options(array(

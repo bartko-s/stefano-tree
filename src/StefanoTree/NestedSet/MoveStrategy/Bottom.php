@@ -1,7 +1,7 @@
 <?php
-namespace StefanoTree\DbTraversal\MoveStrategy;
+namespace StefanoTree\NestedSet\MoveStrategy;
 
-use StefanoTree\DbTraversal\MoveStrategy\MoveStrategyAbstract;
+use StefanoTree\NestedSet\MoveStrategy\MoveStrategyAbstract;
 
 class Bottom
     extends MoveStrategyAbstract

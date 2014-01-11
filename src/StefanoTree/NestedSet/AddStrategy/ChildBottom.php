@@ -1,13 +1,13 @@
 <?php
-namespace StefanoTree\DbTraversal\AddStrategy;
+namespace StefanoTree\NestedSet\AddStrategy;
 
-use StefanoTree\DbTraversal\AddStrategy\AddStrategyAbstract;
+use StefanoTree\NestedSet\AddStrategy\AddStrategyAbstract;
 
-class ChildTop
+class ChildBottom
     extends AddStrategyAbstract
-{
+{    
     public function moveIndexesFromIndex() {
-        return $this->getTargetNode()->getLeft();
+        return $this->getTargetNode()->getRight() - 1;
     }
 
     public function newParentId() {
@@ -19,10 +19,10 @@ class ChildTop
     }
 
     public function newLeftIndex() {
-        return $this->getTargetNode()->getLeft() + 1;
+        return $this->getTargetNode()->getRight();
     }
 
     public function newRightIndex() {
-        return $this->getTargetNode()->getLeft() + 2;
+        return $this->getTargetNode()->getRight() + 1;
     }
 }

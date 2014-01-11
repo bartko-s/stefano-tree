@@ -1,7 +1,7 @@
 <?php
-namespace StefanoTreeTest\Unit\Adapter\DbTraversable;
+namespace StefanoTreeTest\Unit\NestedSet;
 
-use StefanoTree\DbTraversal\NodeInfo;
+use StefanoTree\NestedSet\NodeInfo;
 
 class NodeInfoTest
     extends \PHPUnit_Framework_TestCase

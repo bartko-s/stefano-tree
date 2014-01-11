@@ -1,8 +1,8 @@
 <?php
-namespace StefanoTree\DbTraversal\MoveStrategy;
+namespace StefanoTree\NestedSet\MoveStrategy;
 
-use StefanoTree\DbTraversal\NodeInfo;
-use StefanoTree\DbTraversal\MoveStrategy\MoveStrategyInterface;
+use StefanoTree\NestedSet\NodeInfo;
+use StefanoTree\NestedSet\MoveStrategy\MoveStrategyInterface;
 
 abstract class MoveStrategyAbstract
     implements MoveStrategyInterface

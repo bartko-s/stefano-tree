@@ -1,29 +1,29 @@
 <?php
 namespace StefanoTree;
 
-use StefanoTree\DbTraversal\NodeInfo;
+use StefanoTree\NestedSet\NodeInfo;
 use Exception;
 use StefanoTree\Exception\InvalidArgumentException;
-use StefanoTree\DbTraversal\AddStrategy;
-use StefanoTree\DbTraversal\AddStrategy\AddStrategyInterface;
-use StefanoTree\DbTraversal\MoveStrategy;
-use StefanoTree\DbTraversal\MoveStrategy\MoveStrategyInterface;
+use StefanoTree\NestedSet\AddStrategy;
+use StefanoTree\NestedSet\AddStrategy\AddStrategyInterface;
+use StefanoTree\NestedSet\MoveStrategy;
+use StefanoTree\NestedSet\MoveStrategy\MoveStrategyInterface;
 
-class DbTraversal
+class NestedSet
     implements AdapterInterface
 {
     private $adapter;
 
     /**
-     * @param \StefanoTree\DbTraversal\Adapter\AdapterInterface $adapter
+     * @param \StefanoTree\NestedSet\Adapter\AdapterInterface $adapter
      * @throws InvalidArgumentException
      */
-    public function __construct(\StefanoTree\DbTraversal\Adapter\AdapterInterface $adapter) {
+    public function __construct(\StefanoTree\NestedSet\Adapter\AdapterInterface $adapter) {
         $this->adapter = $adapter;
     }
 
     /**
-     * @return \StefanoTree\DbTraversal\Adapter\AdapterInterface
+     * @return \StefanoTree\NestedSet\Adapter\AdapterInterface
      */
     private function getAdapter() {
         return $this->adapter;

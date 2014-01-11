@@ -1,5 +1,5 @@
 <?php
-namespace StefanoTree\DbTraversal;
+namespace StefanoTree\NestedSet;
 
 use StefanoTree\Exception\InvalidArgumentException;
 

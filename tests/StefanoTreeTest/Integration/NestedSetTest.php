@@ -1,12 +1,12 @@
 <?php
-namespace StefanoTreeTest\Integration\Adapter;
+namespace StefanoTreeTest\Integration;
 
-use StefanoTree\DbTraversal as TreeAdapter;
+use StefanoTree\NestedSet as TreeAdapter;
 use StefanoDb\Adapter\Adapter as DbAdapter;
-use StefanoTree\DbTraversal\Adapter\ZendDbAdapter;
-use StefanoTree\DbTraversal\Options;
+use StefanoTree\NestedSet\Adapter\ZendDbAdapter;
+use StefanoTree\NestedSet\Options;
 
-class DbTraversalTest
+class NestedSetTest
     extends \PHPUnit_Extensions_Database_TestCase
 {
     /**
@@ -70,7 +70,7 @@ class DbTraversalTest
     }
 
     protected function getDataSet() {
-        return $this->createMySQLXMLDataSet(__DIR__ . '/_files/DbTraversal/initDataSet.xml');
+        return $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/initDataSet.xml');
     }    
     
     public function testClear() {
@@ -78,7 +78,7 @@ class DbTraversalTest
              ->clear();
 
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/DbTraversal/testClear-1.xml');
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/testClear-1.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
     }
     
@@ -123,7 +123,7 @@ class DbTraversalTest
                                    ->addNodePlacementBottom(12);
 
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/DbTraversal/testAddNodePlacementBottom-1.xml');
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/testAddNodePlacementBottom-1.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
         $this->assertEquals(26, $lastGeneratedValue);
         
@@ -136,7 +136,7 @@ class DbTraversalTest
                                    ->addNodePlacementBottom(19, $data);
 
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/DbTraversal/testAddNodePlacementBottom-2.xml');
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/testAddNodePlacementBottom-2.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
         $this->assertEquals(27, $lastGeneratedValue);
     }
@@ -155,7 +155,7 @@ class DbTraversalTest
                                    ->addNodePlacementTop(16);
 
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/DbTraversal/testAddNodePlacementTop-1.xml');
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/testAddNodePlacementTop-1.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
         $this->assertEquals(26, $lastGeneratedValue);
         
@@ -167,7 +167,7 @@ class DbTraversalTest
                                    ->addNodePlacementTop(3, $data);
 
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/DbTraversal/testAddNodePlacementTop-2.xml');
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/testAddNodePlacementTop-2.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
         $this->assertEquals(27, $lastGeneratedValue);        
     }
@@ -178,7 +178,7 @@ class DbTraversalTest
                                    ->addNodePlacementChildBottom(21);
 
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/DbTraversal/testAddNodePlacementChildBottom-1.xml');
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/testAddNodePlacementChildBottom-1.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
         $this->assertEquals(26, $lastGeneratedValue);
         
@@ -190,7 +190,7 @@ class DbTraversalTest
                                    ->addNodePlacementChildBottom(4, $data);
 
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/DbTraversal/testAddNodePlacementChildBottom-2.xml');
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/testAddNodePlacementChildBottom-2.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
         $this->assertEquals(27, $lastGeneratedValue);
     }    
@@ -201,7 +201,7 @@ class DbTraversalTest
                                    ->addNodePlacementChildTop(4);
 
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/DbTraversal/testAddNodePlacementChildTop-1.xml');
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/testAddNodePlacementChildTop-1.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
         $this->assertEquals(26, $lastGeneratedValue);
         
@@ -213,7 +213,7 @@ class DbTraversalTest
                                    ->addNodePlacementChildTop(10, $data);
 
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/DbTraversal/testAddNodePlacementChildTop-2.xml');
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/testAddNodePlacementChildTop-2.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
         $this->assertEquals(27, $lastGeneratedValue);
     }    
@@ -240,7 +240,7 @@ class DbTraversalTest
                        ->deleteBranch(6);
 
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/DbTraversal/testDeleteBranch.xml');
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/testDeleteBranch.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
         $this->assertTrue($return);
     }
@@ -299,7 +299,7 @@ class DbTraversalTest
                        ->moveNodePlacementBottom(14, 18);
 
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/DbTraversal/testMoveNodePlacementBottom-1.xml');
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/testMoveNodePlacementBottom-1.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
         $this->assertTrue($return);
         
@@ -308,7 +308,7 @@ class DbTraversalTest
                        ->moveNodePlacementBottom(16, 7);
 
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/DbTraversal/testMoveNodePlacementBottom-2.xml');
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/testMoveNodePlacementBottom-2.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
         $this->assertTrue($return);
         
@@ -317,7 +317,7 @@ class DbTraversalTest
                        ->moveNodePlacementBottom(14, 3);
 
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/DbTraversal/testMoveNodePlacementBottom-3.xml');
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/testMoveNodePlacementBottom-3.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
         $this->assertTrue($return);
     }
@@ -344,7 +344,7 @@ class DbTraversalTest
                        ->moveNodePlacementTop(19, 12);
 
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/DbTraversal/testMoveNodePlacementTop-1.xml');
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/testMoveNodePlacementTop-1.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
         $this->assertTrue($return);
         
@@ -353,7 +353,7 @@ class DbTraversalTest
                        ->moveNodePlacementTop(10, 18);
 
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/DbTraversal/testMoveNodePlacementTop-2.xml');
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/testMoveNodePlacementTop-2.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
         $this->assertTrue($return);
         
@@ -362,7 +362,7 @@ class DbTraversalTest
                        ->moveNodePlacementTop(21, 6);
 
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/DbTraversal/testMoveNodePlacementTop-3.xml');
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/testMoveNodePlacementTop-3.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
         $this->assertTrue($return);
     }    
@@ -381,7 +381,7 @@ class DbTraversalTest
                        ->moveNodePlacementChildBottom(9, 12);
 
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/DbTraversal/testMoveNodePlacementChildBottom-1.xml');
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/testMoveNodePlacementChildBottom-1.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
         $this->assertTrue($return);
         
@@ -390,7 +390,7 @@ class DbTraversalTest
                        ->moveNodePlacementChildBottom(10, 3);
 
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/DbTraversal/testMoveNodePlacementChildBottom-2.xml');
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/testMoveNodePlacementChildBottom-2.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
         $this->assertTrue($return);
         
@@ -399,7 +399,7 @@ class DbTraversalTest
                        ->moveNodePlacementChildBottom(21, 12);
 
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/DbTraversal/testMoveNodePlacementChildBottom-3.xml');
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/testMoveNodePlacementChildBottom-3.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
         $this->assertTrue($return);
     }    
@@ -418,7 +418,7 @@ class DbTraversalTest
                        ->moveNodePlacementChildTop(9, 21);
 
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/DbTraversal/testMoveNodePlacementChildTop-1.xml');
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/testMoveNodePlacementChildTop-1.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
         $this->assertTrue($return);
         
@@ -427,7 +427,7 @@ class DbTraversalTest
                        ->moveNodePlacementChildTop(16, 3);
 
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/DbTraversal/testMoveNodePlacementChildTop-2.xml');
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/testMoveNodePlacementChildTop-2.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
         $this->assertTrue($return);
 
@@ -436,7 +436,7 @@ class DbTraversalTest
                        ->moveNodePlacementChildTop(18, 3);
 
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/DbTraversal/testMoveNodePlacementChildTop-3.xml');
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/testMoveNodePlacementChildTop-3.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
         $this->assertTrue($return);
     }     
@@ -708,7 +708,7 @@ class DbTraversalTest
                        ->updateNode(3, $data);
 
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/DbTraversal/testUpdateNode-1.xml');
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/testUpdateNode-1.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);        
         
         //test
@@ -724,7 +724,7 @@ class DbTraversalTest
                        ->updateNode(3, $data);
 
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/DbTraversal/testUpdateNode-1.xml');
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/testUpdateNode-1.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);        
     }
 }
