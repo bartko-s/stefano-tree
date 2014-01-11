@@ -1,7 +1,7 @@
 <?php
-namespace StefanoTree\Adapter\DbTraversal\Adapter;
+namespace StefanoTree\DbTraversal\Adapter;
 
-use StefanoTree\Adapter\DbTraversal\NodeInfo;
+use StefanoTree\DbTraversal\NodeInfo;
 
 /**
  * Lock, Unlock db table

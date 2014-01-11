@@ -1,17 +1,18 @@
 <?php
-namespace StefanoTree\Adapter\DbTraversal\MoveStrategy;
+namespace StefanoTree\DbTraversal\MoveStrategy;
 
-use StefanoTree\Adapter\DbTraversal\MoveStrategy\MoveStrategyAbstract;
+use StefanoTree\DbTraversal\MoveStrategy\MoveStrategyAbstract;
 
-class ChildBottom
+class Bottom
     extends MoveStrategyAbstract
 {
     public function getNewParentId() {
-        return $this->getTargetNode()->getId();
+        return $this->getTargetNode()
+                    ->getParentId();
     }
 
     public function getLevelShift() {
-        return $this->getTargetNode()->getLevel() - $this->getSourceNode()->getLevel() + 1;
+        return $this->getTargetNode()->getLevel() - $this->getSourceNode()->getLevel();
     }
 
     public function getHoleLeftIndex() {
@@ -44,11 +45,12 @@ class ChildBottom
 
     public function getSourceNodeIndexShift() {
         if($this->isMovedToRoot()) {
-            return $this->getTargetNode()->getRight() - $this->getSourceNode()->getLeft();
+            return $this->getTargetNode()->getRight() - $this->getSourceNode()->getLeft() + 1;
         } elseif ($this->isMovedUp()) {
-            return $this->getTargetNode()->getRight() - $this->getSourceNode()->getRight() - 1;
+            return $this->getTargetNode()->getRight() - $this->getSourceNode()->getLeft()
+                + 1 - $this->getIndexShift();
         } elseif ($this->isMovedDown()) {
-            return $this->getTargetNode()->getRight() - $this->getSourceNode()->getLeft();
+            return $this->getTargetNode()->getRight() - $this->getSourceNode()->getLeft() + 1;
         } else {
             // @codeCoverageIgnoreStart
             throw \Exception('Cannot move node');
@@ -58,11 +60,11 @@ class ChildBottom
 
     public function fixHoleFromIndex() {
         if($this->isMovedToRoot()) {
-            return $this->getSourceNode()->getRight();
+            return $this->getSourceNode()->getLeft();
         } elseif ($this->isMovedUp()) {
-            return $this->getSourceNode()->getRight();
+            return $this->getSourceNode()->getLeft() + $this->getIndexShift();
         } elseif ($this->isMovedDown()) {
-            return $this->getSourceNode()->getRight();
+            return $this->getSourceNode()->getLeft();
         } else {
             // @codeCoverageIgnoreStart
             throw \Exception('Cannot move node');
@@ -71,15 +73,24 @@ class ChildBottom
     }
 
     public function makeHoleFromIndex() {
-        return $this->getTargetNode()->getRight() - 1;
+        return $this->getTargetNode()->getRight();
+    }
+
+    public function canMoveBranche($rootNodeId) {
+        if(false == parent::canMoveBranche($rootNodeId)) {
+            return false;
+        }
+
+        return ($this->isTargetNodeRootNode($rootNodeId)) ?
+            false : true;
     }
 
     public function isSourceNodeAtRequiredPossition() {
         $sourceNode = $this->getSourceNode();
         $targetNode = $this->getTargetNode();
 
-        return ($sourceNode->getParentId() == $targetNode->getId() &&
-                $sourceNode->getRight() == ($targetNode->getRight() - 1)) ?
+        return ($targetNode->getRight() == ($sourceNode->getLeft() - 1) &&
+                $targetNode->getParentId() == $sourceNode->getParentId()) ?
             true : false;
     }
 }

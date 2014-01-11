@@ -1,10 +1,10 @@
 <?php
 namespace StefanoTreeTest\Integration\Adapter;
 
-use StefanoTree\Adapter\DbTraversal as TreeAdapter;
+use StefanoTree\DbTraversal as TreeAdapter;
 use StefanoDb\Adapter\Adapter as DbAdapter;
-use StefanoTree\Adapter\DbTraversal\Adapter\ZendDbAdapter;
-use StefanoTree\Adapter\DbTraversal\Options;
+use StefanoTree\DbTraversal\Adapter\ZendDbAdapter;
+use StefanoTree\DbTraversal\Options;
 
 class DbTraversalTest
     extends \PHPUnit_Extensions_Database_TestCase

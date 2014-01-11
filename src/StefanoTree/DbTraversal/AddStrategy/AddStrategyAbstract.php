@@ -1,8 +1,8 @@
 <?php
-namespace StefanoTree\Adapter\DbTraversal\AddStrategy;
+namespace StefanoTree\DbTraversal\AddStrategy;
 
-use StefanoTree\Adapter\DbTraversal\NodeInfo;
-use StefanoTree\Adapter\DbTraversal\AddStrategy\AddStrategyInterface;
+use StefanoTree\DbTraversal\NodeInfo;
+use StefanoTree\DbTraversal\AddStrategy\AddStrategyInterface;
 
 abstract class AddStrategyAbstract
     implements AddStrategyInterface

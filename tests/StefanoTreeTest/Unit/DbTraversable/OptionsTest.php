@@ -1,7 +1,7 @@
 <?php
 namespace StefanoTreeTest\Unit\Adapter\DbTraversable;
 
-use StefanoTree\Adapter\DbTraversal\Options;
+use StefanoTree\DbTraversal\Options;
 
 class DbTraversalTest
     extends \PHPUnit_Framework_TestCase
@@ -14,7 +14,7 @@ class DbTraversalTest
     }
 
     /**
-     * @return \StefanoTree\Adapter\DbTraversal\Options
+     * @return \StefanoTree\DbTraversal\Options
      */
     private function getOptionsWithDefaultSettings() {
         return new Options(array(

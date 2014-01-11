@@ -1,11 +1,11 @@
 <?php
-namespace StefanoTree\Adapter\DbTraversal\Adapter;
+namespace StefanoTree\DbTraversal\Adapter;
 
-use StefanoTree\Adapter\DbTraversal\Adapter\AdapterInterface;
-use StefanoTree\Adapter\DbTraversal\Options;
+use StefanoTree\DbTraversal\Adapter\AdapterInterface;
+use StefanoTree\DbTraversal\Options;
 use StefanoDb\Adapter\Adapter as DbAdapter;
 use Zend\Db;
-use StefanoTree\Adapter\DbTraversal\NodeInfo;
+use StefanoTree\DbTraversal\NodeInfo;
 
 class ZendDbAdapter
     implements AdapterInterface

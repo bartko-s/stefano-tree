@@ -1,5 +1,5 @@
 <?php
-namespace StefanoTree\Adapter;
+namespace StefanoTree;
 
 interface AdapterInterface
 {   

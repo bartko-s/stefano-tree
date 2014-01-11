@@ -1,13 +1,13 @@
 <?php
-namespace StefanoTree\Adapter;
+namespace StefanoTree;
 
-use StefanoTree\Adapter\DbTraversal\NodeInfo;
+use StefanoTree\DbTraversal\NodeInfo;
 use Exception;
 use StefanoTree\Exception\InvalidArgumentException;
-use StefanoTree\Adapter\DbTraversal\AddStrategy;
-use StefanoTree\Adapter\DbTraversal\AddStrategy\AddStrategyInterface;
-use StefanoTree\Adapter\DbTraversal\MoveStrategy;
-use StefanoTree\Adapter\DbTraversal\MoveStrategy\MoveStrategyInterface;
+use StefanoTree\DbTraversal\AddStrategy;
+use StefanoTree\DbTraversal\AddStrategy\AddStrategyInterface;
+use StefanoTree\DbTraversal\MoveStrategy;
+use StefanoTree\DbTraversal\MoveStrategy\MoveStrategyInterface;
 
 class DbTraversal
     implements AdapterInterface
@@ -15,15 +15,15 @@ class DbTraversal
     private $adapter;
 
     /**
-     * @param \StefanoTree\Adapter\DbTraversal\Adapter\AdapterInterface $adapter
+     * @param \StefanoTree\DbTraversal\Adapter\AdapterInterface $adapter
      * @throws InvalidArgumentException
      */
-    public function __construct(\StefanoTree\Adapter\DbTraversal\Adapter\AdapterInterface $adapter) {
+    public function __construct(\StefanoTree\DbTraversal\Adapter\AdapterInterface $adapter) {
         $this->adapter = $adapter;
     }
 
     /**
-     * @return \StefanoTree\Adapter\DbTraversal\Adapter\AdapterInterface
+     * @return \StefanoTree\DbTraversal\Adapter\AdapterInterface
      */
     private function getAdapter() {
         return $this->adapter;

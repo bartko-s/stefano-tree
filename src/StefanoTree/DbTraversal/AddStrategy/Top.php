@@ -1,9 +1,9 @@
 <?php
-namespace StefanoTree\Adapter\DbTraversal\AddStrategy;
+namespace StefanoTree\DbTraversal\AddStrategy;
 
-use StefanoTree\Adapter\DbTraversal\AddStrategy\AddStrategyAbstract;
+use StefanoTree\DbTraversal\AddStrategy\AddStrategyAbstract;
 
-class Bottom
+class Top
     extends AddStrategyAbstract
 {
     public function canAddNewNode($rootNodeId) {
@@ -11,7 +11,7 @@ class Bottom
     }
 
     public function moveIndexesFromIndex() {
-        return $this->getTargetNode()->getRight();
+        return $this->getTargetNode()->getLeft() - 1;
     }
 
     public function newParentId() {
@@ -23,10 +23,10 @@ class Bottom
     }
 
     public function newLeftIndex() {
-        return $this->getTargetNode()->getRight() + 1;
+        return $this->getTargetNode()->getLeft();
     }
 
     public function newRightIndex() {
-        return $this->getTargetNode()->getRight() + 2;
+        return $this->getTargetNode()->getLeft() + 1;
     }
 }
