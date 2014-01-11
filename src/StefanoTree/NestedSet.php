@@ -10,7 +10,7 @@ use StefanoTree\NestedSet\MoveStrategy;
 use StefanoTree\NestedSet\MoveStrategy\MoveStrategyInterface;
 
 class NestedSet
-    implements AdapterInterface
+    implements TreeInterface
 {
     private $adapter;
 

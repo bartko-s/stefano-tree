@@ -1,7 +1,7 @@
 <?php
 namespace StefanoTree;
 
-interface AdapterInterface
+interface TreeInterface
 {   
     const PLACEMENT_TOP = 'top';
     const PLACEMENT_BOTTOM = 'bottom';
