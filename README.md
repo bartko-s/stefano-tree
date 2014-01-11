@@ -11,7 +11,7 @@ Instalation using Composer
 
 Features
 ----------
- - DbTraversalAdapter(MPTT - Modified Preorder Tree Traversal)
+ - NestedSet(MPTT - Modified Preorder Tree Traversal)
 
 ToDo
 -----
