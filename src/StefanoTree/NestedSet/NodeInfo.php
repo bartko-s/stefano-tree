@@ -1,71 +1,54 @@
 <?php
 namespace StefanoTree\NestedSet;
 
-use StefanoTree\Exception\InvalidArgumentException;
-
 class NodeInfo
 {
-    protected $_params = array(
-        'id'        => null,
-        'parentId'  => null,
-        'level'     => null,
-        'left'      => null,
-        'right'     => null,
-    );
+    private $id;
+    private $parentId;
+    private $level;
+    private $left;
+    private $right;
+ 
+    public function __construct($id, $parentId, $level, $left, $right) {
+        $this->id       = $id;
+        $this->parentId = $parentId;
+        $this->level    = $level;
+        $this->left     = $left;
+        $this->right    = $right;
+    }   
     
     /**
-     * @param array $params
-     * @throws InvalidArgumentException
-     */
-    public function __construct(array $params) {
-        $missingParams = array();
-        
-        foreach(array_keys($this->_params) as $paramName) {
-            if(!array_key_exists($paramName, $params)) {
-                $missingParams[] = $paramName;                
-            } else {
-                $this->_params[$paramName] = $params[$paramName];
-            }
-        }
-        
-        if(0 < count($missingParams)) {
-            throw new InvalidArgumentException(sprintf('Params "%s" must be set', 
-                implode(', ', $missingParams)));
-        }
-    }
-    
-    /**
-     * @return int
+     * @return int|null
      */
     public function getId() {
-        return $this->_params['id'];
+        return $this->id;
     }
 
     /**
      * @return int|null
      */
     public function getParentId() {
-        return $this->_params['parentId'];
+        return $this->parentId;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getLevel() {
-        return $this->_params['level'];
+        return $this->level;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getLeft() {
-        return $this->_params['left'];
+        return $this->left;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getRight() {
-        return $this->_params['right'];
+        return $this->right;
     }
 }

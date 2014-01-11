@@ -362,16 +362,14 @@ class Zend2DbAdapter
 
         if(null == $result) {
             $result = null;
-        } else {
-            $params = array(
-                'id'        => $result[$options->getIdColumnName()],
-                'parentId'  => $result[$options->getParentIdColumnName()],
-                'level'     => $result[$options->getLevelColumnName()],
-                'left'      => $result[$options->getLeftColumnName()],
-                'right'     => $result[$options->getRightColumnName()],
-            );
+        } else {            
+            $id        = $result[$options->getIdColumnName()];
+            $parentId  = $result[$options->getParentIdColumnName()];
+            $level     = $result[$options->getLevelColumnName()];
+            $left      = $result[$options->getLeftColumnName()];
+            $right     = $result[$options->getRightColumnName()];
 
-            $result = new NodeInfo($params);
+            $result = new NodeInfo($id, $parentId, $level, $left, $right);
         }
 
         return $result;

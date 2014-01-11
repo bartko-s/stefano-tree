@@ -95,13 +95,13 @@ class NestedSet
                     ->moveRightIndexes($moveFromIndex, 2);
 
             //insert new node
-            $newNodeInfo = new NodeInfo(array(
-                'id'        => null,
-                'parentId'  => $addStrategy->newParentId(),
-                'level'     => $addStrategy->newLevel(),
-                'left'      => $addStrategy->newLeftIndex(),
-                'right'     => $addStrategy->newRightIndex(),
-            ));
+            $newNodeInfo = new NodeInfo(
+                null,
+                $addStrategy->newParentId(),
+                $addStrategy->newLevel(),
+                $addStrategy->newLeftIndex(),
+                $addStrategy->newRightIndex()
+            );
             $lastGeneratedValue = $adapter->insert($newNodeInfo, $data);
 
             $adapter->commitTransaction()
@@ -332,13 +332,7 @@ class NestedSet
 
             $adapter->deleteAll($this->getRootNodeId());
 
-            $nodeInfo = new NodeInfo(array(
-                'id'        => null,
-                'parentId'  => 0,
-                'level'     => 0,
-                'left'      => 1,
-                'right'     => 2,
-            ));
+            $nodeInfo = new NodeInfo(null, 0, 0, 1, 2);
             $adapter->update($this->getRootNodeId(), $data, $nodeInfo);
 
             $adapter->commitTransaction()
