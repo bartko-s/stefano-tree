@@ -7,7 +7,7 @@ use StefanoDb\Adapter\Adapter as DbAdapter;
 use Zend\Db;
 use StefanoTree\NestedSet\NodeInfo;
 
-class ZendDbAdapter
+class Zend2DbAdapter
     implements AdapterInterface
 {
     private $options;

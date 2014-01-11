@@ -3,7 +3,7 @@ namespace StefanoTreeTest\Integration;
 
 use StefanoTree\NestedSet as TreeAdapter;
 use StefanoDb\Adapter\Adapter as DbAdapter;
-use StefanoTree\NestedSet\Adapter\ZendDbAdapter;
+use StefanoTree\NestedSet\Adapter\Zend2DbAdapter;
 use StefanoTree\NestedSet\Options;
 
 class NestedSetTest
@@ -26,7 +26,7 @@ class NestedSetTest
             'tableName' => 'tree_traversal',
             'idColumnName' => 'tree_traversal_id',
         ));
-        $this->treeAdapter = new TreeAdapter(new ZendDbAdapter($options, $this->dbAdapter));
+        $this->treeAdapter = new TreeAdapter(new Zend2DbAdapter($options, $this->dbAdapter));
         
         parent::setUp();
     }

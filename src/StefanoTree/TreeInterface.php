@@ -111,7 +111,6 @@ interface TreeInterface
      *
      * @param array $data
      * @return this
-     * @throws \Exception
      */
     public function clear(array $data = array());
 }
