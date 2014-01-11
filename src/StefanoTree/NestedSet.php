@@ -16,7 +16,6 @@ class NestedSet
 
     /**
      * @param \StefanoTree\NestedSet\Adapter\AdapterInterface $adapter
-     * @throws InvalidArgumentException
      */
     public function __construct(\StefanoTree\NestedSet\Adapter\AdapterInterface $adapter) {
         $this->adapter = $adapter;
