@@ -52,6 +52,7 @@ $nestedSetAdapter->setDefaultDbSelect($defaultDbSelect);
 
 
 - Create new node
+
 ```
 $targetNodeId = 10;
 
@@ -66,6 +67,7 @@ $tree->addNodePlacementTop($targetNodeId, $data);
 ```
 
 - Update node
+
 ```
 $targetNodeId = 10;
 
@@ -77,6 +79,7 @@ $tree->updateNode($targetNodeId, $data);
 ```
 
 - Move node
+
 ```
 $sourceNodeId = 15;
 $targetNodeId = 10;
@@ -88,6 +91,7 @@ $tree->moveNodePlacementChildTop($sourceNodeId, $targetNodeId);
 ```
 
 - Delete node or branch
+
 ```
 $nodeId = 15;
 
@@ -95,17 +99,20 @@ $tree->deleteBranch($nodeId);
 ```
 
 - Clear all nodes except root node
+
 ```
 $tree->clear();
 ```
 
 - Get all children
+
 ```
 $nodeId = 15;
 $tree->getChildren($nodeId);
 ```
 
 - Get all descedants
+
 ```
 $nodeId = 15;
 
@@ -123,6 +130,7 @@ $tree->getDescendants($nodeId, 0, 4);
 ```
 
 - Exclude branche from  result
+
 ```
 $nodeId = 15;
 $excludeBranche = 22;
