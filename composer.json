@@ -4,8 +4,10 @@
     "version": "1.1.4-dev",
     "license": "BSD-3-Clause",
     "keywords": [
-        "Tree",
-        "mptt"
+        "tree",
+        "mptt",
+        "nested set",
+        "zend"
     ],
     "support": {
         "source": "https://github.com/bartko-s/stefano-tree",
