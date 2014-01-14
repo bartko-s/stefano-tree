@@ -137,6 +137,23 @@ $excludeBranche = 22;
 $tree->getDescendants($nodeId, 0, null, $excludeBranche);
 ```
 
+- Get Path
+
+```
+$nodeId = 15;
+
+//full path
+$tree->getPath($nodeId);
+
+//exclude node $nodeId from result
+$tree->getPath($nodeId, 1);
+
+//exclude first two levels from result
+$tree->getPath($nodeId, 2);
+
+//exclude last node
+$tree->getPath($nodeId, 0, true);
+```
 
 ToDo
 -----
