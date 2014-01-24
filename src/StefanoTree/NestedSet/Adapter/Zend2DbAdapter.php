@@ -6,6 +6,8 @@ use StefanoTree\NestedSet\Options;
 use StefanoDb\Adapter\Adapter as DbAdapter;
 use Zend\Db;
 use StefanoTree\NestedSet\NodeInfo;
+use StefanoLockTable\Factory as LockSqlBuilderFactory;
+use StefanoLockTable\Adapter\AdapterInterface as LockSqlBuilderInterface;
 
 class Zend2DbAdapter
     implements AdapterInterface
@@ -15,6 +17,8 @@ class Zend2DbAdapter
     private $dbAdapter;
 
     private $defaultDbSelect = null;
+
+    private $lockSqlBuilder;
 
     public function __construct(Options $options, DbAdapter $dbAdapter) {
         $this->options = $options;
@@ -80,21 +84,45 @@ class Zend2DbAdapter
         return $dbSelect;
     }
 
+    /**
+    * @return LockSqlBuilderInterface
+    */
+    private function getLockSqlBuilder() {
+        if(null == $this->lockSqlBuilder) {
+            $vendorName = $this->getDbAdapter()
+                               ->getDriver()
+                               ->getDatabasePlatformName();
+
+            $factory = new LockSqlBuilderFactory();
+            $this->lockSqlBuilder = $factory->createAdapter($vendorName);
+        }
+
+        return $this->lockSqlBuilder;
+    }
+
     public function lockTable() {
         $tableName = $this->getOptions()
                           ->getTableName();
 
-        $this->getDbAdapter()
-             ->getLockAdapter()
-             ->lockTables($tableName);
+        $sql = $this->getLockSqlBuilder()
+                    ->getLockSqlString($tableName);
+
+        if(null != $sql) {
+            $this->getDbAdapter()
+                 ->query($sql, DbAdapter::QUERY_MODE_EXECUTE);
+        }
 
         return $this;
     }
 
     public function unlockTable() {
-        $this->getDbAdapter()
-             ->getLockAdapter()
-             ->unlockTables();
+        $sql = $this->getLockSqlBuilder()
+                    ->getUnlockSqlString();
+
+        if(null != $sql) {
+            $this->getDbAdapter()
+                 ->query($sql, DbAdapter::QUERY_MODE_EXECUTE);
+        }
 
         return $this;
     }
