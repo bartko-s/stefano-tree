@@ -9,11 +9,35 @@ use StefanoTree\NestedSet\AddStrategy\AddStrategyInterface;
 use StefanoTree\NestedSet\MoveStrategy;
 use StefanoTree\NestedSet\MoveStrategy\MoveStrategyInterface;
 use StefanoTree\NestedSet\Adapter\AdapterInterface;
+use StefanoTree\NestedSet\Options;
+use StefanoTree\NestedSet\Adapter\Doctrine2DBALAdapter;
+use StefanoTree\NestedSet\Adapter\Zend2DbAdapter;
+use StefanoDb\Adapter\ExtendedAdapterInterface;
+use Doctrine\DBAL\Connection as DoctrineConnection;
 
 class NestedSet
     implements TreeInterface
 {
     private $adapter;
+
+    /**
+     * @param Options $options
+     * @param object $dbAdapter
+     * @return TreeInterface
+     * @throws InvalidArgumentException
+     */
+    static public function factory(Options $options, $dbAdapter) {
+        if($dbAdapter instanceof ExtendedAdapterInterface) {
+            $adapter = new Zend2DbAdapter($options, $dbAdapter);
+        } elseif($dbAdapter instanceof  DoctrineConnection) {
+            $adapter = new Doctrine2DBALAdapter($options, $dbAdapter);
+        } else {
+            throw new InvalidArgumentException('Db adapter "' . get_class($dbAdapter)
+                . '" is not supported');
+        }
+
+        return new self($adapter);
+    }
 
     /**
      * @param AdapterInterface $adapter
@@ -25,7 +49,7 @@ class NestedSet
     /**
      * @return AdapterInterface
      */
-    private function getAdapter() {
+    public function getAdapter() {
         return $this->adapter;
     }
 
