@@ -5,53 +5,53 @@ use StefanoTree\NestedSet as TreeAdapter;
 use StefanoDb\Adapter\Adapter as DbAdapter;
 use StefanoTree\NestedSet\Adapter\Zend2DbAdapter;
 use StefanoTree\NestedSet\Options;
+use \PDO;
 
-class NestedSetTest
+abstract class AbstractTest
     extends \PHPUnit_Extensions_Database_TestCase
 {
     /**
      * @var TreeAdapter
      */
     protected $treeAdapter;
-    
-    /**
-     * @var DbAdapter
-     */
-    protected $dbAdapter;
- 
+     
     protected function setUp() {
-        $this->setDbConnectionAndCreateTable();
+        $this->createDatabaseTableIfNotExist();
         
-        $options = new Options(array(
-            'tableName' => 'tree_traversal',
-            'idColumnName' => 'tree_traversal_id',
-        ));
-        $this->treeAdapter = new TreeAdapter(new Zend2DbAdapter($options, $this->dbAdapter));
+        $this->treeAdapter = $this->getTreeAdapter();
         
         parent::setUp();
     }
+
+    protected function tearDown() {
+        $this->treeAdapter = null;
+        parent::tearDown();
+    }
+
+    /**
+     * @return TreeAdapter
+     */
+    abstract protected function getTreeAdapter();
     
     protected function getConnection() {
+        $pdo = $this->getPDODbConnection();
+        return $this->createDefaultDBConnection($pdo);
+    }
+
+    /**
+     * @return PDO
+     */
+    private function getPDODbConnection() {
         $adapter    = strtolower(TEST_STEFANO_DB_ADAPTER);
         $hostname   = TEST_STEFANO_DB_HOSTNAME;
         $dbName     = TEST_STEFANO_DB_DB_NAME;
         $user       = TEST_STEFANO_DB_USER;
         $password   = TEST_STEFANO_DB_PASSWORD;
-        
-        $pdo = new \PDO($adapter . ':host=' . $hostname . ';dbname=' . $dbName, $user, $password);
-        return $this->createDefaultDBConnection($pdo);
+
+        return new PDO($adapter . ':host=' . $hostname . ';dbname=' . $dbName, $user, $password);
     }
-    
-    protected function setDbConnectionAndCreateTable() {
-        $dbAdapter = new DbAdapter(array(
-            'driver' => 'Pdo_' . ucfirst(TEST_STEFANO_DB_ADAPTER),
-            'hostname' => TEST_STEFANO_DB_HOSTNAME,
-            'database' => TEST_STEFANO_DB_DB_NAME,
-            'username' => TEST_STEFANO_DB_USER,
-            'password' => TEST_STEFANO_DB_PASSWORD
-        ));
-        $this->dbAdapter = $dbAdapter;
-        
+
+    private function createDatabaseTableIfNotExist() {
         $sql =  'CREATE TABLE IF NOT EXISTS `tree_traversal` (
                     `tree_traversal_id` int(11) NOT NULL AUTO_INCREMENT,
                     `name` varchar(255) COLLATE utf8_bin DEFAULT NULL,
@@ -65,9 +65,10 @@ class NestedSetTest
                     KEY `lft` (`lft`),
                     KEY `rgt` (`rgt`)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin';
-        
-        $dbAdapter->query($sql, DbAdapter::QUERY_MODE_EXECUTE);
-    }
+
+        $this->getPDODbConnection()
+             ->query($sql);
+    }  
 
     protected function getDataSet() {
         return $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/initDataSet.xml');
