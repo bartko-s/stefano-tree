@@ -68,10 +68,10 @@ class NestedSet
      */
     protected function addNode($targetNodeId, $placement, $data = array()) {
         $adapter = $this->getAdapter();
-        
+
+        $adapter->beginTransaction();
         try {
-            $adapter->beginTransaction()
-                    ->lockTable();
+            $adapter->lockTable();
 
             $targetNode = $adapter->getNodeInfo($targetNodeId);
 
@@ -169,10 +169,10 @@ class NestedSet
         if($sourceNodeId == $targetNodeId) {
             return false;
         }
-        
+
+        $adapter->beginTransaction();
         try {
-            $adapter->beginTransaction()
-                    ->lockTable();
+            $adapter->lockTable();
             
             //source node or target node does not exist
             if(!$sourceNodeInfo = $adapter->getNodeInfo($sourceNodeId)
@@ -283,10 +283,10 @@ class NestedSet
         }
 
         $adapter = $this->getAdapter();
-        
+
+        $adapter->beginTransaction();
         try {
-            $adapter->beginTransaction()
-                    ->lockTable();
+            $adapter->lockTable();
             
             // node does not exist
             if(!$nodeInfo = $adapter->getNodeInfo($nodeId)) {
@@ -326,9 +326,9 @@ class NestedSet
     public function clear(array $data = array()) {
         $adapter = $this->getAdapter();
 
+        $adapter->beginTransaction();
         try {
-            $adapter->beginTransaction()
-                    ->lockTable();
+            $adapter->lockTable();
 
             $adapter->deleteAll($this->getRootNodeId());
 
