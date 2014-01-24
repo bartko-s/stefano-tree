@@ -180,7 +180,7 @@ class Doctrine2DBALAdapter
             ->where($options->getIdColumnName() . ' = :' . $options->getIdColumnName());
 
         foreach ($data as $key => $value) {
-            $sql->set($key, ':' . $key);
+            $sql->set($connection->quoteIdentifier($key), ':' . $key);
         }
 
         $data[$options->getIdColumnName()] = $nodeId;
