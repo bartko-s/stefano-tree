@@ -28,7 +28,9 @@ Usage
 
 - Create tree adapter
 
-``` 
+User static factory method
+
+```
 $options = new \StefanoTree\NestedSet\Options(array(
     'tableName'    => 'tree_traversal', //required
     'idColumnName' => 'tree_traversal_id', //required
@@ -38,6 +40,19 @@ $options = new \StefanoTree\NestedSet\Options(array(
     'parentIdColumnName' => 'parent_id', //optional (default parent_id)
 ));
 
+//Stefano Db
+$dbAdapter = new \StefanoDb\Adapter\Adapter(...);
+//Doctrine DBAL
+$dbAdapter = new \Doctrine\DBAL\Connection(...);
+
+$tree = \StefanoTree\NestedSet::factory($options, $dbAdapter);
+```
+
+or create tree adapter diretly
+
+``` 
+$options = new \StefanoTree\NestedSet\Options(array(...);
+
 $dbAdapter = new \StefanoDb\Adapter\Adapter(array(...));
 
 $nestedSetAdapter = new \StefanoTree\NestedSet\Adapter\Zend2DbAdapter($options, $dbAdapter);
@@ -45,7 +60,7 @@ $nestedSetAdapter = new \StefanoTree\NestedSet\Adapter\Zend2DbAdapter($options, 
 $tree = new \StefanoTree\NestedSet($nestedSetAdapter);
 ```
 
-You can join table
+You can join table. 
 ```
 $defaultDbSelect = $nestedSetAdapter->getDefaultDbSelect();
 
@@ -54,7 +69,6 @@ $defaultDbSelect = $nestedSetAdapter->getDefaultDbSelect();
 $defaultDbSelect->join($name, $on, $columns, $type);
 $nestedSetAdapter->setDefaultDbSelect($defaultDbSelect);
 ```
-
 
 - Create new node
 

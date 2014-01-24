@@ -7,7 +7,8 @@
         "tree",
         "mptt",
         "nested set",
-        "zend"
+        "zend",
+        "doctrine"
     ],
     "support": {
         "source": "https://github.com/bartko-s/stefano-tree",
