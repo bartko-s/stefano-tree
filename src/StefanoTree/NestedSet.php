@@ -176,7 +176,7 @@ class NestedSet
             
             //source node or target node does not exist
             if(!$sourceNodeInfo = $adapter->getNodeInfo($sourceNodeId)
-                XOR !$targetNodeInfo = $adapter->getNodeInfo($targetNodeId)) {
+                OR !$targetNodeInfo = $adapter->getNodeInfo($targetNodeId)) {
                 $adapter->commitTransaction()
                         ->unlockTable();
 
