@@ -10,21 +10,27 @@ Features
  - NestedSet(MPTT - Modified Preorder Tree Traversal)
  - Works only with mysql and postgresql
 
+
 Dependencies
 ------------
-- [Stefano Db](https://github.com/bartko-s/stefano-db) This repository is 100% compatible with Zend Framework 2 DB package
+- Optional [Stefano DB](https://github.com/bartko-s/stefano-db) This repository is 100% compatible with Zend Framework 2 DB package
+- Optional [Doctrine DBAL](https://github.com/doctrine/dbal)
 
 Instalation using Composer
 --------------------------
 1. Add following line to your composer.json file  ``` "stefano/stefano-tree": "*" ```
-2. Create db scheme [example db scheme](https://github.com/bartko-s/stefano-tree/tree/master/sql)
+2. Add following line to your composer.json file ``` "doctrine/dbal": "2.4.*" ``` if you want to use this library with Doctrine DBAL
+3. Add following line to your composer.json file ``` "stefano/stefano-db": "1.3.*" ``` if you want to use this library with Stefano DB
+4. Create db scheme [example db scheme](https://github.com/bartko-s/stefano-tree/tree/master/sql)
 
 Usage
 -----
 
 - Create tree adapter
 
-``` 
+Use static factory method
+
+```
 $options = new \StefanoTree\NestedSet\Options(array(
     'tableName'    => 'tree_traversal', //required
     'idColumnName' => 'tree_traversal_id', //required
@@ -34,6 +40,19 @@ $options = new \StefanoTree\NestedSet\Options(array(
     'parentIdColumnName' => 'parent_id', //optional (default parent_id)
 ));
 
+//Stefano Db
+$dbAdapter = new \StefanoDb\Adapter\Adapter(...);
+//Doctrine DBAL
+$dbAdapter = new \Doctrine\DBAL\Connection(...);
+
+$tree = \StefanoTree\NestedSet::factory($options, $dbAdapter);
+```
+
+or create tree adapter directly
+
+``` 
+$options = new \StefanoTree\NestedSet\Options(array(...);
+
 $dbAdapter = new \StefanoDb\Adapter\Adapter(array(...));
 
 $nestedSetAdapter = new \StefanoTree\NestedSet\Adapter\Zend2DbAdapter($options, $dbAdapter);
@@ -41,7 +60,7 @@ $nestedSetAdapter = new \StefanoTree\NestedSet\Adapter\Zend2DbAdapter($options, 
 $tree = new \StefanoTree\NestedSet($nestedSetAdapter);
 ```
 
-You can join table
+You can join table. 
 ```
 $defaultDbSelect = $nestedSetAdapter->getDefaultDbSelect();
 
@@ -50,7 +69,6 @@ $defaultDbSelect = $nestedSetAdapter->getDefaultDbSelect();
 $defaultDbSelect->join($name, $on, $columns, $type);
 $nestedSetAdapter->setDefaultDbSelect($defaultDbSelect);
 ```
-
 
 - Create new node
 
