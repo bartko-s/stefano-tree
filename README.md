@@ -8,6 +8,7 @@ Tree
 Features
 ----------
  - NestedSet(MPTT - Modified Preorder Tree Traversal)
+ - Works only with mysql and postgresql
 
 Dependencies
 ------------
