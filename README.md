@@ -10,14 +10,18 @@ Features
  - NestedSet(MPTT - Modified Preorder Tree Traversal)
  - Works only with mysql and postgresql
 
+
 Dependencies
 ------------
-- [Stefano Db](https://github.com/bartko-s/stefano-db) This repository is 100% compatible with Zend Framework 2 DB package
+- Optional [Stefano DB](https://github.com/bartko-s/stefano-db) This repository is 100% compatible with Zend Framework 2 DB package
+- Optional [Doctrine DBAL](https://github.com/doctrine/dbal)
 
 Instalation using Composer
 --------------------------
 1. Add following line to your composer.json file  ``` "stefano/stefano-tree": "*" ```
-2. Create db scheme [example db scheme](https://github.com/bartko-s/stefano-tree/tree/master/sql)
+2. Add following line to your composer.json file ``` "doctrine/dbal": "2.4.*" ``` if you want to use this library with Doctrine DBAL
+3. Add following line to your composer.json file ``` "stefano/stefano-db": "1.3.*" ``` if you want to use this library with Stefano DB
+4. Create db scheme [example db scheme](https://github.com/bartko-s/stefano-tree/tree/master/sql)
 
 Usage
 -----
