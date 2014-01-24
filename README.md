@@ -28,7 +28,7 @@ Usage
 
 - Create tree adapter
 
-User static factory method
+Use static factory method
 
 ```
 $options = new \StefanoTree\NestedSet\Options(array(
@@ -48,7 +48,7 @@ $dbAdapter = new \Doctrine\DBAL\Connection(...);
 $tree = \StefanoTree\NestedSet::factory($options, $dbAdapter);
 ```
 
-or create tree adapter diretly
+or create tree adapter directly
 
 ``` 
 $options = new \StefanoTree\NestedSet\Options(array(...);
