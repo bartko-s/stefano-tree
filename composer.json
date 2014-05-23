@@ -30,7 +30,7 @@
     },
     "require-dev": {
         "doctrine/dbal": "2.4.*",
-        "stefano/stefano-db": "1.3.*",
+        "stefano/stefano-db": ">=1.3.0, <3.0.0",
         "phpunit/PHPUnit": ">=3.7.0",
         "phpunit/dbunit": ">=1.0.0",
         "mockery/mockery": ">=0.8.0",
