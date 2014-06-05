@@ -19,8 +19,8 @@ Dependencies
 Instalation using Composer
 --------------------------
 1. Add following line to your composer.json file  ``` "stefano/stefano-tree": "*" ```
-2. Add following line to your composer.json file ``` "doctrine/dbal": "2.4.*" ``` if you want to use this library with Doctrine DBAL
-3. Add following line to your composer.json file ``` "stefano/stefano-db": "1.3.*" ``` if you want to use this library with Stefano DB
+2. Add following line to your composer.json file ``` "doctrine/dbal": "~2.4.0" ``` if you want to use this library with Doctrine DBAL
+3. Add following line to your composer.json file ``` "stefano/stefano-db": "~1.3.0" ``` if you want to use this library with Stefano DB
 4. Create db scheme [example db scheme](https://github.com/bartko-s/stefano-tree/tree/master/sql)
 
 Usage
@@ -50,7 +50,7 @@ $tree = \StefanoTree\NestedSet::factory($options, $dbAdapter);
 
 or create tree adapter directly
 
-``` 
+```
 $options = new \StefanoTree\NestedSet\Options(array(...);
 
 $dbAdapter = new \StefanoDb\Adapter\Adapter(array(...));
@@ -60,7 +60,7 @@ $nestedSetAdapter = new \StefanoTree\NestedSet\Adapter\Zend2DbAdapter($options, 
 $tree = new \StefanoTree\NestedSet($nestedSetAdapter);
 ```
 
-You can join table. 
+You can join table.
 ```
 $defaultDbSelect = $nestedSetAdapter->getDefaultDbSelect();
 

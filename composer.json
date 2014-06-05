@@ -22,15 +22,15 @@
     ],
     "require": {
         "php": ">=5.3.0",
-        "stefano/stefano-lock-table": "0.0.*"
+        "stefano/stefano-lock-table": "0.*"
     },
     "suggest": {
         "doctrine/dbal": "If you want to use Doctrine DBAL",
         "stefano/stefano-db": "If you want to use Stefano DB"
     },
     "require-dev": {
-        "doctrine/dbal": "2.4.*",
-        "stefano/stefano-db": ">=1.3.0, <3.0.0",
+        "doctrine/dbal": "~2.4.0",
+        "stefano/stefano-db": "~1.3.0",
         "phpunit/PHPUnit": ">=3.7.0",
         "phpunit/dbunit": ">=1.0.0",
         "mockery/mockery": ">=0.8.0",
