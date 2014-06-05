@@ -1,5 +1,6 @@
 language: php
 php:
+  - "hhvm"
   - "5.6"
   - "5.5"
   - "5.4"
@@ -12,3 +13,7 @@ after_script:
   - php vendor/bin/coveralls
   - wget https://scrutinizer-ci.com/ocular.phar
   - php ocular.phar code-coverage:upload --format=php-clover tests/clover.xml
+matrix:
+    fast_finish: true
+    allow_failures:
+        - php: hhvm
