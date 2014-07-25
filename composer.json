@@ -1,7 +1,7 @@
 {
     "name": "stefano/stefano-tree",
     "description": "Library for managing tree structures",
-    "version": "1.3.3-dev",
+    "version": "1.3.3",
     "license": "BSD-3-Clause",
     "keywords": [
         "tree",
