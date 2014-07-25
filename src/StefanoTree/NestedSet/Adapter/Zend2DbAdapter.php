@@ -129,7 +129,6 @@ class Zend2DbAdapter
 
     public function beginTransaction() {
         $this->getDbAdapter()
-             ->getTransaction()
              ->begin();
 
         return $this;
@@ -137,7 +136,6 @@ class Zend2DbAdapter
 
     public function commitTransaction() {
         $this->getDbAdapter()
-             ->getTransaction()
              ->commit();
 
         return $this;
@@ -145,7 +143,6 @@ class Zend2DbAdapter
 
     public function rollbackTransaction() {
         $this->getDbAdapter()
-             ->getTransaction()
              ->rollback();
 
         return $this;
@@ -209,7 +206,7 @@ class Zend2DbAdapter
                ->AND
                ->lessThanOrEqualTo($options->getRightColumnName(), $rightIndex);
 
-        $dbAdapter->query($delete->getSqlString($dbAdapter->getPlatform()), 
+        $dbAdapter->query($delete->getSqlString($dbAdapter->getPlatform()),
             DbAdapter::QUERY_MODE_EXECUTE);
 
         return $this;
@@ -238,7 +235,7 @@ class Zend2DbAdapter
 
         $dbAdapter = $this->getDbAdapter();
         $dbPlatform = $dbAdapter->getPlatform();
-        
+
         $sql = 'UPDATE ' . $dbPlatform->quoteIdentifier($options->getTableName())
                 . ' SET '
                     . $dbPlatform->quoteIdentifier($options->getLeftColumnName()) . ' = '
@@ -266,7 +263,7 @@ class Zend2DbAdapter
 
         $dbAdapter = $this->getDbAdapter();
         $dbPlatform = $dbAdapter->getPlatform();
-        
+
         $sql = 'UPDATE ' . $dbPlatform->quoteIdentifier($options->getTableName())
                 . ' SET '
                     . $dbPlatform->quoteIdentifier($options->getRightColumnName()) . ' = '
@@ -390,7 +387,7 @@ class Zend2DbAdapter
 
         if(null == $result) {
             $result = null;
-        } else {            
+        } else {
             $id        = $result[$options->getIdColumnName()];
             $parentId  = $result[$options->getParentIdColumnName()];
             $level     = $result[$options->getLevelColumnName()];
