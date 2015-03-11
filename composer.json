@@ -29,7 +29,7 @@
         "stefano/stefano-db": "If you want to use Stefano DB"
     },
     "require-dev": {
-        "doctrine/dbal": "~2.4.0",
+        "doctrine/dbal": "2.*",
         "stefano/stefano-db": "~1.4.0",
         "phpunit/PHPUnit": ">=3.7.0",
         "phpunit/dbunit": ">=1.0.0",
