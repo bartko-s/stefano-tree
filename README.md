@@ -19,7 +19,7 @@ Dependencies
 Instalation using Composer
 --------------------------
 1. Add following line to your composer.json file  ``` "stefano/stefano-tree": "*" ```
-2. Add following line to your composer.json file ``` "doctrine/dbal": "~2.4.0" ``` if you want to use this library with Doctrine DBAL
+2. Add following line to your composer.json file ``` "doctrine/dbal": "2.*" ``` if you want to use this library with Doctrine DBAL
 3. Add following line to your composer.json file ``` "stefano/stefano-db": "~1.4.0" ``` if you want to use this library with Stefano DB
 4. Create db scheme [example db scheme](https://github.com/bartko-s/stefano-tree/tree/master/sql)
 
