@@ -22,7 +22,7 @@ class Doctrine2DBALAdapter
 
     /**
      * @param Options $options
-     * @param Connection $connection
+     * @param DbConnection $connection
      */
     public function __construct(Options $options, DbConnection $connection) {
         $this->options = $options;
@@ -45,7 +45,7 @@ class Doctrine2DBALAdapter
 
 
     /**
-     * Data cannot contain keys like idColomnName, levelColumnName, ...
+     * Data cannot contain keys like idColumnName, levelColumnName, ...
      *
      * @param array $data
      * @return array

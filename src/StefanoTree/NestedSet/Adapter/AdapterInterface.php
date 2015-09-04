@@ -5,7 +5,7 @@ use StefanoTree\NestedSet\NodeInfo;
 
 /**
  * Lock, Unlock db table
- * Begin, Commit, Roolback Db Transaction (must support nested transaction)
+ * Begin, Commit, Rollback Db Transaction (must support nested transaction)
  * Other methods which manipulate with trees
  */
 interface AdapterInterface
@@ -23,7 +23,7 @@ interface AdapterInterface
     public function unlockTable();
 
     /**
-     * Begin db transation only if transaction has not been started before
+     * Begin db transaction only if transaction has not been started before
      * @return this
      */
     public function beginTransaction();
@@ -41,7 +41,7 @@ interface AdapterInterface
     public function rollbackTransaction();
 
     /**
-     * Update node data. Functin must sanitize data from keys like level, leftIndex, ...
+     * Update node data. Function must sanitize data from keys like level, leftIndex, ...
      *
      * @param int $nodeId
      * @param array $data
@@ -60,8 +60,8 @@ interface AdapterInterface
     /**
      * Delete branch
      *
-     * @param int $leftIndex Left index greater or eqoul to
-     * @param int $rightIndex Right index greater or eqoul to
+     * @param int $leftIndex Left index greater or equal to
+     * @param int $rightIndex Right index greater or equal to
      * @return this
      */
     public function delete($leftIndex, $rightIndex);
@@ -74,14 +74,14 @@ interface AdapterInterface
 
     /**
      * @param int $fromIndex Left index is greater than
-     * @shift int $shift
+     * @param int $shift
      * @return this
      */
     public function moveLeftIndexes($fromIndex, $shift);
 
     /**
      * @param int $fromIndex Right index is greater than
-     * @shift int $shift
+     * @param int $shift
      * @return this
      */
     public function moveRightIndexes($fromIndex, $shift);
@@ -114,26 +114,26 @@ interface AdapterInterface
     public function getNode($nodeId);
 
     /**
-     * @param int $id
+     * @param int $nodeId
      * @return NodeInfo|null
      */
     public function getNodeInfo($nodeId);
 
     /**
      * @param int $nodeId
-     * @param int $startLevel 0 = vratane root
-     * @param bolean $excludeLastNode
+     * @param int $startLevel 0 = include root
+     * @param boolean $excludeLastNode
      * @return null|array
      */
     public function getPath($nodeId, $startLevel = 0, $excludeLastNode = false);
 
     /**
      * @param int $nodeId
-     * @param int $startLevel Relative level from $nodeId. 1 = excelude $nodeId from result.
-     *                        2 = excelude 2 levels from result
-     * @param int $levels Number of levels in the restults relative to $startLevel
-     * @param int $excludeBranche Exclude defined branche(node id) from result
+     * @param int $startLevel Relative level from $nodeId. 1 = exclude $nodeId from result.
+     *                        2 = exclude 2 levels from result
+     * @param int $levels Number of levels in the results relative to $startLevel
+     * @param int $excludeBranch Exclude defined branch(node id) from result
      * @return null|array
      */
-    public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranche = null);
+    public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranch = null);
 }

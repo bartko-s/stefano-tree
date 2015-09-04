@@ -5,14 +5,14 @@ interface MoveStrategyInterface
 {
     /**
      * @param int $rootNodeId
-     * @return bolean
+     * @return boolean
      */
-    public function canMoveBranche($rootNodeId);
+    public function canMoveBranch($rootNodeId);
 
     /**
-     * @return bolean
+     * @return boolean
      */
-    public function isSourceNodeAtRequiredPossition();
+    public function isSourceNodeAtRequiredPosition();
 
     /**
      * @return int
@@ -25,7 +25,7 @@ interface MoveStrategyInterface
     public function getLevelShift();
 
     /**
-     * hole for moved branche
+     * hole for moved branch
      *
      * @return int
      */

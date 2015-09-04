@@ -209,14 +209,14 @@ class NestedSet
 
             $moveStrategy = $this->getMoveStrategy($sourceNodeInfo, $targetNodeInfo, $placement);
 
-            if(!$moveStrategy->canMoveBranche($this->getRootNodeId())) {
+            if(!$moveStrategy->canMoveBranch($this->getRootNodeId())) {
                 $adapter->commitTransaction()
                         ->unlockTable();
                 
                 return false;
             }
                         
-            if($moveStrategy->isSourceNodeAtRequiredPossition()) {
+            if($moveStrategy->isSourceNodeAtRequiredPosition()) {
                 $adapter->commitTransaction()
                         ->unlockTable();
 

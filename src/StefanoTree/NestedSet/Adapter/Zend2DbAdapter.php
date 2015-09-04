@@ -40,7 +40,7 @@ class Zend2DbAdapter
     }
 
     /**
-     * Data cannot contain keys like idColomnName, levelColumnName, ...
+     * Data cannot contain keys like idColumnName, levelColumnName, ...
      *
      * @param array $data
      * @return array

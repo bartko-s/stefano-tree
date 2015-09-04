@@ -5,7 +5,7 @@ interface AddStrategyInterface
 {
     /**
      * @param int $rootNodeId
-     * @return bolean
+     * @return boolean
      */
     public function canAddNewNode($rootNodeId);
     /**

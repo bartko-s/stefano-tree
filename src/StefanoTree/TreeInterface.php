@@ -79,7 +79,7 @@ interface TreeInterface
     /**
      * @param int $nodeId
      * @param int $startLevel 0 = vratane root
-     * @param bolean $excludeLastNode
+     * @param boolean $excludeLastNode
      * @return null|array
      */
     public function getPath($nodeId, $startLevel = 0, $excludeLastNode = false);

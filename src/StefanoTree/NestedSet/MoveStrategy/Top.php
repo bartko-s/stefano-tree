@@ -74,8 +74,8 @@ class Top
         return $this->getTargetNode()->getLeft() - 1;
     }
 
-    public function canMoveBranche($rootNodeId) {
-        if(false == parent::canMoveBranche($rootNodeId)) {
+    public function canMoveBranch($rootNodeId) {
+        if(false == parent::canMoveBranch($rootNodeId)) {
             return false;
         }
 
@@ -83,7 +83,7 @@ class Top
             false : true;
     }
 
-    public function isSourceNodeAtRequiredPossition() {
+    public function isSourceNodeAtRequiredPosition() {
         $sourceNode = $this->getSourceNode();
         $targetNode = $this->getTargetNode();
 

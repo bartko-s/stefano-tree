@@ -74,7 +74,7 @@ class ChildTop
         return $this->getTargetNode()->getLeft();
     }
 
-    public function isSourceNodeAtRequiredPossition() {
+    public function isSourceNodeAtRequiredPosition() {
         $sourceNode = $this->getSourceNode();
         $targetNode = $this->getTargetNode();
 

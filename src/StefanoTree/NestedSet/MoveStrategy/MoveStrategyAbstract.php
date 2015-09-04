@@ -34,7 +34,7 @@ abstract class MoveStrategyAbstract
     }
 
     /**
-     * @return bolean
+     * @return boolean
      */
     protected function isMovedUp() {
         return ($this->getTargetNode()->getRight() < $this->getSourceNode()->getLeft()) ?
@@ -42,7 +42,7 @@ abstract class MoveStrategyAbstract
     }
 
     /**
-     * @return bolean
+     * @return boolean
      */
     protected function isMovedDown() {
         return ($this->getSourceNode()->getRight() < $this->getTargetNode()->getLeft()) ?
@@ -50,7 +50,7 @@ abstract class MoveStrategyAbstract
     }
 
     /**
-     * @return bolean
+     * @return boolean
      */
     protected function isMovedToRoot() {
         return ($this->getSourceNode()->getLeft() > $this->getTargetNode()->getLeft() &&
@@ -62,7 +62,7 @@ abstract class MoveStrategyAbstract
         return $this->getSourceNode()->getRight() - $this->getSourceNode()->getLeft() + 1;
     }
 
-    public function canMoveBranche($rootNodeId) {
+    public function canMoveBranch($rootNodeId) {
         return ($this->isTargetNodeInsideSourceBranche()) ?
             false : true;
     }
