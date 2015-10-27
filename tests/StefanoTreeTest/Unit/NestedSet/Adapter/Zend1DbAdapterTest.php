@@ -1,6 +1,7 @@
 <?php
 namespace StefanoTreeTest\Unit\NestedSet\Adapter;
 
+use StefanoTree\DbAdapter\Zend1DbWrapper;
 use StefanoTree\NestedSet\Adapter\Zend1DbAdapter;
 use StefanoTree\NestedSet\Options;
 
@@ -19,7 +20,8 @@ class Zend1DbAdapterTest extends \PHPUnit_Framework_TestCase
         ));
 
         $dbAdapter = $this->getDbAdapterMock();
-        $adapter = new Zend1DbAdapter($options, $dbAdapter);
+        $adapter = new Zend1DbWrapper($dbAdapter);
+        $adapter = new Zend1DbAdapter($options, $adapter);
 
         $expectedQuery = 'SELECT "tableName".* FROM "tableName"';
         $actualQuery = (string) $adapter->getDefaultDbSelect();
@@ -35,7 +37,8 @@ class Zend1DbAdapterTest extends \PHPUnit_Framework_TestCase
         ));
 
         $dbAdapter = $this->getDbAdapterMock();
-        $adapter = new Zend1DbAdapter($options, $dbAdapter);
+        $adapter = new Zend1DbWrapper($dbAdapter);
+        $adapter = new Zend1DbAdapter($options, $adapter);
 
         $this->assertNotSame($adapter->getDefaultDbSelect(), $adapter->getDefaultDbSelect());
     }
@@ -48,7 +51,8 @@ class Zend1DbAdapterTest extends \PHPUnit_Framework_TestCase
         ));
 
         $dbAdapter = $this->getDbAdapterMock();
-        $adapter = new Zend1DbAdapter($options, $dbAdapter);
+        $adapter = new Zend1DbWrapper($dbAdapter);
+        $adapter = new Zend1DbAdapter($options, $adapter);
 
         $select = $dbAdapter->select()->from('tableName');
 
@@ -66,6 +70,7 @@ class Zend1DbAdapterTest extends \PHPUnit_Framework_TestCase
             'database' => ':memory:',
             'dbname' => TEST_STEFANO_DB_DB_NAME,
         ));
+
 
         $dbAdapterMock = \Mockery::mock($dbA);
         $dbAdapterMock->makePartial();

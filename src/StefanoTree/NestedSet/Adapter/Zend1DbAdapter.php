@@ -1,14 +1,7 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: tomasfejfar
- * Date: 23. 10. 2015
- * Time: 23:52
- */
-
 namespace StefanoTree\NestedSet\Adapter;
 
-use Mockery\CountValidator\Exception;
+use StefanoTree\DbAdapter\Zend1DbWrapper;
 use StefanoTree\NestedSet\NodeInfo;
 use StefanoTree\NestedSet\Options;
 use StefanoLockTable\Factory as LockSqlBuilderFactory;
@@ -22,7 +15,7 @@ class Zend1DbAdapter implements AdapterInterface
     protected $options;
 
     /**
-     * @var \Zend_Db_Adapter_Abstract
+     * @var Zend1DbWrapper
      */
     protected $dbAdapter;
 
@@ -36,7 +29,7 @@ class Zend1DbAdapter implements AdapterInterface
      */
     protected $lockSqlBuilder;
 
-    public function __construct(Options $options, \Zend_Db_Adapter_Abstract $dbAdapter) {
+    public function __construct(Options $options, Zend1DbWrapper $dbAdapter) {
         $this->options = $options;
         $this->dbAdapter = $dbAdapter;
     }
@@ -61,7 +54,7 @@ class Zend1DbAdapter implements AdapterInterface
      */
     private function getLockSqlBuilder() {
         if (null == $this->lockSqlBuilder) {
-            $adapterClassname = get_class($this->getDbAdapter());
+            $adapterClassname = $this->getDbAdapter()->getInternalAdapterClass();
             $parts = explode('_', $adapterClassname);
             $vendorName = end($parts);
 
@@ -310,7 +303,7 @@ class Zend1DbAdapter implements AdapterInterface
     }
 
     /**
-     * @return \Zend_Db_Adapter_Abstract
+     * @return Zend1DbWrapper
      */
     public function getDbAdapter() {
         return $this->dbAdapter;
