@@ -36,7 +36,7 @@ class Zend2DbAdapterTest
         $this->assertNotSame($adapter->getDefaultDbSelect(), $adapter->getDefaultDbSelect());
     }
 
-    public function testSetDefaulDbSelect() {
+    public function testSetDefaultDbSelect() {
         $options = new Options(array(
             'tableName'    => 'tableName',
             'idColumnName' => 'id',
