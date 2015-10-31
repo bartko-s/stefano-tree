@@ -4,7 +4,6 @@ namespace StefanoTreeTest\Integration;
 use StefanoTree\NestedSet as TreeAdapter;
 use StefanoTree\NestedSet\Adapter\Doctrine2DBALAdapter;
 use StefanoTree\NestedSet\Options;
-use StefanoTreeTest\Integration\AbstractTest;
 
 class NestedSetWithDoctrine2DbAdapterTest
     extends AbstractTest

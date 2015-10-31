@@ -2,7 +2,6 @@
 namespace StefanoTree\NestedSet\MoveStrategy;
 
 use StefanoTree\NestedSet\NodeInfo;
-use StefanoTree\NestedSet\MoveStrategy\MoveStrategyInterface;
 
 abstract class MoveStrategyAbstract
     implements MoveStrategyInterface

@@ -1,7 +1,6 @@
 <?php
 namespace StefanoTree\NestedSet\Adapter;
 
-use StefanoTree\NestedSet\Adapter\AdapterInterface;
 use StefanoTree\NestedSet\Options;
 use StefanoDb\Adapter\Adapter as DbAdapter;
 use Zend\Db;
@@ -60,17 +59,16 @@ class Zend2DbAdapter
     }
 
     /**
-     * @param \Zend\Db\Sql\Select $dbSelect
-     * @return this
+     * @param Db\Sql\Select $dbSelect
+     * @return void
      */
-    public function setDefaultDbSelect(\Zend\Db\Sql\Select $dbSelect) {
+    public function setDefaultDbSelect(Db\Sql\Select $dbSelect) {
         $this->defaultDbSelect = $dbSelect;
-        return $this;
     }
 
     /**
      * Return clone of default db select
-     * @return \Zend\Db\Sql\Select
+     * @return Db\Sql\Select
      */
     public function getDefaultDbSelect() {
         $options = $this->getOptions();
@@ -111,8 +109,6 @@ class Zend2DbAdapter
             $this->getDbAdapter()
                  ->query($sql, DbAdapter::QUERY_MODE_EXECUTE);
         }
-
-        return $this;
     }
 
     public function unlockTable() {
@@ -123,29 +119,21 @@ class Zend2DbAdapter
             $this->getDbAdapter()
                  ->query($sql, DbAdapter::QUERY_MODE_EXECUTE);
         }
-
-        return $this;
     }
 
     public function beginTransaction() {
         $this->getDbAdapter()
              ->begin();
-
-        return $this;
     }
 
     public function commitTransaction() {
         $this->getDbAdapter()
              ->commit();
-
-        return $this;
     }
 
     public function rollbackTransaction() {
         $this->getDbAdapter()
              ->rollback();
-
-        return $this;
     }
 
     public function update($nodeId, array $data, NodeInfo $nodeInfo = null) {
@@ -170,8 +158,6 @@ class Zend2DbAdapter
 
         $dbAdapter->query($update->getSqlString($dbAdapter->getPlatform()),
                 DbAdapter::QUERY_MODE_EXECUTE);
-
-        return $this;
     }
 
     public function insert(NodeInfo $nodeInfo, array $data) {
@@ -208,8 +194,6 @@ class Zend2DbAdapter
 
         $dbAdapter->query($delete->getSqlString($dbAdapter->getPlatform()),
             DbAdapter::QUERY_MODE_EXECUTE);
-
-        return $this;
     }
 
     public function deleteAll($expectNodeId) {
@@ -222,15 +206,13 @@ class Zend2DbAdapter
                ->notEqualTo($options->getIdColumnName(), $expectNodeId);
         $dbAdapter->query($delete->getSqlString($dbAdapter->getPlatform()),
             DbAdapter::QUERY_MODE_EXECUTE);
-
-        return $this;
     }
 
     public function moveLeftIndexes($fromIndex, $shift) {
         $options = $this->getOptions();
 
         if(0 == $shift) {
-            return $this;
+            return null;
         }
 
         $dbAdapter = $this->getDbAdapter();
@@ -250,15 +232,13 @@ class Zend2DbAdapter
 
         $dbAdapter->query($sql)
                   ->execute($binds);
-
-        return $this;
     }
 
     public function moveRightIndexes($fromIndex, $shift) {
         $options = $this->getOptions();
 
         if(0 == $shift) {
-            return $this;
+            return null;
         }
 
         $dbAdapter = $this->getDbAdapter();
@@ -278,8 +258,6 @@ class Zend2DbAdapter
 
         $dbAdapter->query($sql)
                   ->execute($binds);
-
-        return $this;
     }
 
     public function updateParentId($nodeId, $newParentId) {
@@ -297,15 +275,13 @@ class Zend2DbAdapter
 
         $dbAdapter->query($update->getSqlString($dbAdapter->getPlatform()),
             DbAdapter::QUERY_MODE_EXECUTE);
-
-        return $this;
     }
 
     public function updateLevels($leftIndexFrom, $rightIndexTo, $shift) {
         $options = $this->getOptions();
 
         if(0 == $shift) {
-            return;
+            return null;
         }
 
         $dbAdapter = $this->getDbAdapter();
@@ -327,8 +303,6 @@ class Zend2DbAdapter
 
         $dbAdapter->query($sql)
                   ->execute($binds);
-
-        return $this;
     }
 
     public function moveBranch($leftIndexFrom, $rightIndexTo, $shift) {
@@ -405,7 +379,7 @@ class Zend2DbAdapter
 
         $startLevel = (int) $startLevel;
 
-        // neexistuje
+        // node does not exist
         if(!$nodeInfo = $this->getNodeInfo($nodeId)) {
             return null;
         }
@@ -436,7 +410,7 @@ class Zend2DbAdapter
         return $result->toArray();
     }
 
-    public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranche = null) {
+    public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranch = null) {
         $options = $this->getOptions();
 
         if(!$nodeInfo = $this->getNodeInfo($nodeId)) {
@@ -460,7 +434,7 @@ class Zend2DbAdapter
                    ->lessThan($options->getLevelColumnName(), $endLevel);
         }
 
-        if(null != $excludeBranche && null != ($excludeNodeInfo = $this->getNodeInfo($excludeBranche))) {
+        if(null != $excludeBranch && null != ($excludeNodeInfo = $this->getNodeInfo($excludeBranch))) {
             $select->where
                    ->NEST
                    ->between($options->getLeftColumnName(),

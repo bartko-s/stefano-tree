@@ -3,7 +3,6 @@ namespace StefanoTree\NestedSet\Adapter;
 
 use Doctrine\DBAL\Connection as DbConnection;
 use Doctrine\DBAL\Query\QueryBuilder;
-use StefanoTree\NestedSet\Adapter\AdapterInterface;
 use StefanoTree\NestedSet\NodeInfo;
 use StefanoTree\NestedSet\Options;
 use StefanoLockTable\Factory as LockSqlBuilderFactory;
@@ -37,7 +36,7 @@ class Doctrine2DBALAdapter
     }
 
     /**
-     * @return DbAdapter
+     * @return DbConnection
      */
     private function getConnection() {
         return $this->connection;
@@ -66,11 +65,10 @@ class Doctrine2DBALAdapter
 
     /**
      * @param QueryBuilder $dbSelect
-     * @return this
+     * @return void
      */
     public function setDefaultDbSelect(QueryBuilder $dbSelect) {
         $this->defaultDbSelect = $dbSelect;
-        return $this;
     }
 
     /**
@@ -111,7 +109,6 @@ class Doctrine2DBALAdapter
         return $this->lockSqlBuilder;
     }
 
-
     public function lockTable() {
         $tableName = $this->getOptions()
                           ->getTableName();
@@ -123,8 +120,6 @@ class Doctrine2DBALAdapter
             $this->getConnection()
                  ->executeQuery($sql);
         }
-        
-        return $this;
     }
 
     public function unlockTable() {
@@ -135,29 +130,21 @@ class Doctrine2DBALAdapter
             $this->getConnection()
                  ->executeQuery($sql);
         }
-
-          return $this;
     }
 
     public function beginTransaction() {
         $this->getConnection()
              ->beginTransaction();
-        
-        return $this;
     }
 
     public function commitTransaction() {
         $this->getConnection()
              ->commit();
-
-        return $this;
     }
 
     public function rollbackTransaction() {
         $this->getConnection()
              ->rollBack();
-        
-        return $this;
     }
 
     public function update($nodeId, array $data, NodeInfo $nodeInfo = null) {
@@ -186,8 +173,6 @@ class Doctrine2DBALAdapter
         $data[$options->getIdColumnName()] = $nodeId;
 
         $connection->executeUpdate($sql, $data);
-        
-        return $this;
     }
 
     public function insert(NodeInfo $nodeInfo, array $data) {
@@ -221,8 +206,6 @@ class Doctrine2DBALAdapter
         );
 
         $connection->executeQuery($sql, $params);
-        
-        return $this;
     }
 
     public function deleteAll($expectNodeId) {
@@ -238,15 +221,13 @@ class Doctrine2DBALAdapter
         );
 
         $connection->executeQuery($sql, $params);
-
-        return $this;
     }
 
     public function moveLeftIndexes($fromIndex, $shift) {
         $options = $this->getOptions();
 
         if(0 == $shift) {
-            return $this;
+            return null;
         }
 
         $connection = $this->getConnection();
@@ -262,15 +243,13 @@ class Doctrine2DBALAdapter
         );
 
         $connection->executeUpdate($sql, $params);
-
-        return $this;
     }
 
     public function moveRightIndexes($fromIndex, $shift) {
         $options = $this->getOptions();
 
         if(0 == $shift) {
-            return $this;
+            return null;
         }
 
         $connection = $this->getConnection();
@@ -286,8 +265,6 @@ class Doctrine2DBALAdapter
         );
 
         $connection->executeUpdate($sql, $params);
-
-        return $this;
     }
 
     public function updateParentId($nodeId, $newParentId) {
@@ -306,15 +283,13 @@ class Doctrine2DBALAdapter
         );
 
         $connection->executeUpdate($sql, $params);
-        
-        return $this;
     }
 
     public function updateLevels($leftIndexFrom, $rightIndexTo, $shift) {
         $options = $this->getOptions();
 
         if(0 == $shift) {
-            return;
+            return null;
         }
 
         $connection = $this->getConnection();
@@ -332,8 +307,6 @@ class Doctrine2DBALAdapter
         );
 
         $connection->executeUpdate($sql, $params);
-
-        return $this;
     }
 
     public function moveBranch($leftIndexFrom, $rightIndexTo, $shift) {
@@ -409,7 +382,7 @@ class Doctrine2DBALAdapter
 
         $startLevel = (int) $startLevel;
 
-        // neexistuje
+        // node does not exist
         if(!$nodeInfo = $this->getNodeInfo($nodeId)) {
             return null;
         }
@@ -447,7 +420,7 @@ class Doctrine2DBALAdapter
         }
     }
 
-    public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranche = null) {
+    public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranch = null) {
         $options = $this->getOptions();
 
         if(!$nodeInfo = $this->getNodeInfo($nodeId)) {
@@ -471,7 +444,7 @@ class Doctrine2DBALAdapter
             $params['endLevel'] = $nodeInfo->getLevel() + (int) $startLevel + abs($levels);
         }
 
-        if(null != $excludeBranche && null != ($excludeNodeInfo = $this->getNodeInfo($excludeBranche))) {
+        if(null != $excludeBranch && null != ($excludeNodeInfo = $this->getNodeInfo($excludeBranch))) {
             $sql->andWhere('(' . $options->getLeftColumnName() . ' BETWEEN :left AND :exLeftMinusOne'
                     . ') OR (' . $options->getLeftColumnName() . ' BETWEEN :exRightPlusOne AND :right)')
                 ->andWhere('(' . $options->getRightColumnName() . ' BETWEEN :exRightPlusOne AND :right'
