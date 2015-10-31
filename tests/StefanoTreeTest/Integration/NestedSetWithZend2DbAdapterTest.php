@@ -5,7 +5,6 @@ use StefanoTree\NestedSet as TreeAdapter;
 use StefanoDb\Adapter\Adapter as DbAdapter;
 use StefanoTree\NestedSet\Adapter\Zend2DbAdapter;
 use StefanoTree\NestedSet\Options;
-use StefanoTreeTest\Integration\AbstractTest;
 
 class NestedSetWithZend2DbAdapterTest
     extends AbstractTest

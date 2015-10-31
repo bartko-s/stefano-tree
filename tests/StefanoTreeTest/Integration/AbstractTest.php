@@ -2,9 +2,6 @@
 namespace StefanoTreeTest\Integration;
 
 use StefanoTree\NestedSet as TreeAdapter;
-use StefanoDb\Adapter\Adapter as DbAdapter;
-use StefanoTree\NestedSet\Adapter\Zend2DbAdapter;
-use StefanoTree\NestedSet\Options;
 use \PDO;
 
 abstract class AbstractTest
@@ -705,8 +702,8 @@ abstract class AbstractTest
         $data = array(
             'name' => 'ahoj',
         );
-        $return = $this->treeAdapter
-                       ->updateNode(3, $data);
+        $this->treeAdapter
+             ->updateNode(3, $data);
 
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
         $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/testUpdateNode-1.xml');
@@ -721,8 +718,8 @@ abstract class AbstractTest
             'level' => '123456',
             'parent_id' => '123456',
         );
-        $return = $this->treeAdapter
-                       ->updateNode(3, $data);
+        $this->treeAdapter
+             ->updateNode(3, $data);
 
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
         $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/testUpdateNode-1.xml');
