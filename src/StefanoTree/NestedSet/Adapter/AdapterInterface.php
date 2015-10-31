@@ -12,31 +12,31 @@ interface AdapterInterface
 {
     /**
      * Lock tree table
-     * @return this
+     * @return $this
      */
     public function lockTable();
 
     /**
      * Unlock tree table
-     * @return this
+     * @return $this
      */
     public function unlockTable();
 
     /**
      * Begin db transaction only if transaction has not been started before
-     * @return this
+     * @return $this
      */
     public function beginTransaction();
 
     /**
      * Commit db transaction. Only if transaction start this class
-     * @return this
+     * @return $this
      */
     public function commitTransaction();
 
     /**
      * Rollback db transaction
-     * @return this
+     * @return $this
      */
     public function rollbackTransaction();
 
@@ -46,7 +46,7 @@ interface AdapterInterface
      * @param int $nodeId
      * @param array $data
      * @param NodeInfo $nodeInfo
-     * @return this
+     * @return $this
      */
     public function update($nodeId, array $data, NodeInfo $nodeInfo = null);
 
@@ -62,34 +62,34 @@ interface AdapterInterface
      *
      * @param int $leftIndex Left index greater or equal to
      * @param int $rightIndex Right index greater or equal to
-     * @return this
+     * @return $this
      */
     public function delete($leftIndex, $rightIndex);
 
     /**
      * @param int $expectNodeId Delete all expect this node
-     * @return this
+     * @return $this
      */
     public function deleteAll($expectNodeId);
 
     /**
      * @param int $fromIndex Left index is greater than
      * @param int $shift
-     * @return this
+     * @return $this
      */
     public function moveLeftIndexes($fromIndex, $shift);
 
     /**
      * @param int $fromIndex Right index is greater than
      * @param int $shift
-     * @return this
+     * @return $this
      */
     public function moveRightIndexes($fromIndex, $shift);
 
     /**
      * @param int $nodeId
      * @param int $newParentId
-     * @return this
+     * @return $this
      */
     public function updateParentId($nodeId, $newParentId);
 

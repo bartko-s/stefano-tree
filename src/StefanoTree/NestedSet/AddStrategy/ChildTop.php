@@ -1,7 +1,6 @@
 <?php
 namespace StefanoTree\NestedSet\AddStrategy;
 
-use StefanoTree\NestedSet\AddStrategy\AddStrategyAbstract;
 
 class ChildTop
     extends AddStrategyAbstract

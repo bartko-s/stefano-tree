@@ -78,7 +78,7 @@ interface TreeInterface
     
     /**
      * @param int $nodeId
-     * @param int $startLevel 0 = vratane root
+     * @param int $startLevel 0 = including root node
      * @param boolean $excludeLastNode
      * @return null|array
      */
@@ -92,13 +92,13 @@ interface TreeInterface
     
     /**
      * @param int $nodeId
-     * @param int $startLevel Relative level from $nodeId. 1 = excelude $nodeId from result. 
-     *                        2 = excelude 2 levels from result
-     * @param int $levels Number of levels in the restults relative to $startLevel
-     * @param int $excludeBranche Exclude defined branche(node id) from result
+     * @param int $startLevel Relative level from $nodeId. 1 = exclude $nodeId from result.
+     *                        2 = exclude 2 levels from result
+     * @param int $levels Number of levels in the results relative to $startLevel
+     * @param int $excludeBranch Exclude defined branch(node id) from result
      * @return null|array
      */
-    public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranche = null);
+    public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranch = null);
     
     /**
      * @param int $nodeId
@@ -110,7 +110,7 @@ interface TreeInterface
      * Clear all data except root node
      *
      * @param array $data
-     * @return this
+     * @return $this
      */
     public function clear(array $data = array());
 }

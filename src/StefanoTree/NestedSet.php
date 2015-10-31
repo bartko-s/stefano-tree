@@ -239,7 +239,7 @@ class NestedSet
                     ->moveRightIndexes($moveStrategy->makeHoleFromIndex(),
                         $moveStrategy->getIndexShift());
 
-            //move branche to the hole
+            //move branch to the hole
             $adapter->moveBranch($moveStrategy->getHoleLeftIndex(),
                 $moveStrategy->getHoleRightIndex(), $moveStrategy->getSourceNodeIndexShift());
 
@@ -375,9 +375,9 @@ class NestedSet
                     ->getNode($nodeId);
     }
         
-    public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranche = null) {
+    public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranch = null) {
         return $this->getAdapter()
-                    ->getDescendants($nodeId, $startLevel, $levels, $excludeBranche);
+                    ->getDescendants($nodeId, $startLevel, $levels, $excludeBranch);
 
     }    
     

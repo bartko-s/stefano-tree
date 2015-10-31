@@ -1,7 +1,6 @@
 <?php
 namespace StefanoTree\NestedSet\Adapter;
 
-use StefanoTree\NestedSet\Adapter\AdapterInterface;
 use StefanoTree\NestedSet\Options;
 use StefanoDb\Adapter\Adapter as DbAdapter;
 use Zend\Db;
@@ -63,7 +62,7 @@ class Zend2DbAdapter
      * @param \Zend\Db\Sql\Select $dbSelect
      * @return this
      */
-    public function setDefaultDbSelect(\Zend\Db\Sql\Select $dbSelect) {
+    public function setDefaultDbSelect(Db\Sql\Select $dbSelect) {
         $this->defaultDbSelect = $dbSelect;
         return $this;
     }
@@ -305,7 +304,7 @@ class Zend2DbAdapter
         $options = $this->getOptions();
 
         if(0 == $shift) {
-            return;
+            return null;
         }
 
         $dbAdapter = $this->getDbAdapter();
@@ -405,7 +404,7 @@ class Zend2DbAdapter
 
         $startLevel = (int) $startLevel;
 
-        // neexistuje
+        // node does not exist
         if(!$nodeInfo = $this->getNodeInfo($nodeId)) {
             return null;
         }
@@ -436,7 +435,7 @@ class Zend2DbAdapter
         return $result->toArray();
     }
 
-    public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranche = null) {
+    public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranch = null) {
         $options = $this->getOptions();
 
         if(!$nodeInfo = $this->getNodeInfo($nodeId)) {
@@ -460,7 +459,7 @@ class Zend2DbAdapter
                    ->lessThan($options->getLevelColumnName(), $endLevel);
         }
 
-        if(null != $excludeBranche && null != ($excludeNodeInfo = $this->getNodeInfo($excludeBranche))) {
+        if(null != $excludeBranch && null != ($excludeNodeInfo = $this->getNodeInfo($excludeBranch))) {
             $select->where
                    ->NEST
                    ->between($options->getLeftColumnName(),

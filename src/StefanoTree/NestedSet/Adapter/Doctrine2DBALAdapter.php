@@ -3,7 +3,6 @@ namespace StefanoTree\NestedSet\Adapter;
 
 use Doctrine\DBAL\Connection as DbConnection;
 use Doctrine\DBAL\Query\QueryBuilder;
-use StefanoTree\NestedSet\Adapter\AdapterInterface;
 use StefanoTree\NestedSet\NodeInfo;
 use StefanoTree\NestedSet\Options;
 use StefanoLockTable\Factory as LockSqlBuilderFactory;
@@ -37,7 +36,7 @@ class Doctrine2DBALAdapter
     }
 
     /**
-     * @return DbAdapter
+     * @return DbConnection
      */
     private function getConnection() {
         return $this->connection;
@@ -66,7 +65,7 @@ class Doctrine2DBALAdapter
 
     /**
      * @param QueryBuilder $dbSelect
-     * @return this
+     * @return $this
      */
     public function setDefaultDbSelect(QueryBuilder $dbSelect) {
         $this->defaultDbSelect = $dbSelect;
@@ -110,7 +109,6 @@ class Doctrine2DBALAdapter
 
         return $this->lockSqlBuilder;
     }
-
 
     public function lockTable() {
         $tableName = $this->getOptions()
@@ -314,7 +312,7 @@ class Doctrine2DBALAdapter
         $options = $this->getOptions();
 
         if(0 == $shift) {
-            return;
+            return null;
         }
 
         $connection = $this->getConnection();
@@ -409,7 +407,7 @@ class Doctrine2DBALAdapter
 
         $startLevel = (int) $startLevel;
 
-        // neexistuje
+        // node does not exist
         if(!$nodeInfo = $this->getNodeInfo($nodeId)) {
             return null;
         }
@@ -447,7 +445,7 @@ class Doctrine2DBALAdapter
         }
     }
 
-    public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranche = null) {
+    public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranch = null) {
         $options = $this->getOptions();
 
         if(!$nodeInfo = $this->getNodeInfo($nodeId)) {
@@ -471,7 +469,7 @@ class Doctrine2DBALAdapter
             $params['endLevel'] = $nodeInfo->getLevel() + (int) $startLevel + abs($levels);
         }
 
-        if(null != $excludeBranche && null != ($excludeNodeInfo = $this->getNodeInfo($excludeBranche))) {
+        if(null != $excludeBranch && null != ($excludeNodeInfo = $this->getNodeInfo($excludeBranch))) {
             $sql->andWhere('(' . $options->getLeftColumnName() . ' BETWEEN :left AND :exLeftMinusOne'
                     . ') OR (' . $options->getLeftColumnName() . ' BETWEEN :exRightPlusOne AND :right)')
                 ->andWhere('(' . $options->getRightColumnName() . ' BETWEEN :exRightPlusOne AND :right'

@@ -34,7 +34,7 @@ class Options
     
     /**
      * @param array $options
-     * @return this
+     * @return $this
      */
     protected function setOptions($options) {
         foreach($options as $name => $value) {
@@ -48,7 +48,7 @@ class Options
     
     /**
      * @param string $tableName
-     * @return this
+     * @return $this
      * @throws InvalidArgumentException
      */
     public function setTableName($tableName) {
@@ -71,7 +71,7 @@ class Options
     
     /**
      * @param string $idColumnName
-     * @return this
+     * @return $this
      * @throws InvalidArgumentException
      */
     public function setIdColumnName($idColumnName) {
@@ -94,7 +94,7 @@ class Options
     
     /**
      * @param string $leftColumnName
-     * @return this
+     * @return $this
      * @throws InvalidArgumentException
      */
     public function setLeftColumnName($leftColumnName) {
@@ -117,7 +117,7 @@ class Options
     
     /**
      * @param string $rightColumnName
-     * @return this
+     * @return $this
      * @throws InvalidArgumentException
      */
     public function setRightColumnName($rightColumnName) {
@@ -140,7 +140,7 @@ class Options
     
     /**
      * @param string $levelColumnName
-     * @return this
+     * @return $this
      * @throws InvalidArgumentException
      */
     public function setLevelColumnName($levelColumnName) {
@@ -163,7 +163,7 @@ class Options
     
     /**
      * @param string $parentIdColumnName
-     * @return this
+     * @return $this
      * @throws InvalidArgumentException
      */
     public function setParentIdColumnName($parentIdColumnName) {

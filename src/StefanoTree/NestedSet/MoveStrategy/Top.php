@@ -1,7 +1,6 @@
 <?php
 namespace StefanoTree\NestedSet\MoveStrategy;
 
-use StefanoTree\NestedSet\MoveStrategy\MoveStrategyAbstract;
 
 class Top
     extends MoveStrategyAbstract
