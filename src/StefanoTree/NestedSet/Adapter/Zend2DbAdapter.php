@@ -59,8 +59,8 @@ class Zend2DbAdapter
     }
 
     /**
-     * @param \Zend\Db\Sql\Select $dbSelect
-     * @return this
+     * @param Db\Sql\Select $dbSelect
+     * @return $this
      */
     public function setDefaultDbSelect(Db\Sql\Select $dbSelect) {
         $this->defaultDbSelect = $dbSelect;
@@ -69,7 +69,7 @@ class Zend2DbAdapter
 
     /**
      * Return clone of default db select
-     * @return \Zend\Db\Sql\Select
+     * @return Db\Sql\Select
      */
     public function getDefaultDbSelect() {
         $options = $this->getOptions();
