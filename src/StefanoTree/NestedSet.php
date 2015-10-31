@@ -100,23 +100,25 @@ class NestedSet
             $targetNode = $adapter->getNodeInfo($targetNodeId);
 
             if(null == $targetNode) {
-                $adapter->commitTransaction()
-                        ->unlockTable();
+                $adapter->commitTransaction();
+                $adapter->unlockTable();
+
                 return false;
             }
 
             $addStrategy = $this->getAddStrategy($targetNode, $placement);
 
             if(false == $addStrategy->canAddNewNode($this->getRootNodeId())) {
-                $adapter->commitTransaction()
-                        ->unlockTable();
+                $adapter->commitTransaction();
+                $adapter->unlockTable();
+
                 return false;
             }
 
             //make hole
             $moveFromIndex = $addStrategy->moveIndexesFromIndex($targetNode);
-            $adapter->moveLeftIndexes($moveFromIndex, 2)
-                    ->moveRightIndexes($moveFromIndex, 2);
+            $adapter->moveLeftIndexes($moveFromIndex, 2);
+            $adapter->moveRightIndexes($moveFromIndex, 2);
 
             //insert new node
             $newNodeInfo = new NodeInfo(
@@ -128,11 +130,12 @@ class NestedSet
             );
             $lastGeneratedValue = $adapter->insert($newNodeInfo, $data);
 
-            $adapter->commitTransaction()
-                    ->unlockTable();
+            $adapter->commitTransaction();
+            $adapter->unlockTable();
         } catch(Exception $e) {
-            $adapter->rollbackTransaction()
-                    ->unlockTable();
+            $adapter->rollbackTransaction();
+            $adapter->unlockTable();
+
             throw $e;
         }
             
@@ -201,8 +204,8 @@ class NestedSet
             //source node or target node does not exist
             if(!$sourceNodeInfo = $adapter->getNodeInfo($sourceNodeId)
                 OR !$targetNodeInfo = $adapter->getNodeInfo($targetNodeId)) {
-                $adapter->commitTransaction()
-                        ->unlockTable();
+                $adapter->commitTransaction();
+                $adapter->unlockTable();
 
                 return false;
             }
@@ -210,15 +213,15 @@ class NestedSet
             $moveStrategy = $this->getMoveStrategy($sourceNodeInfo, $targetNodeInfo, $placement);
 
             if(!$moveStrategy->canMoveBranch($this->getRootNodeId())) {
-                $adapter->commitTransaction()
-                        ->unlockTable();
+                $adapter->commitTransaction();
+                $adapter->unlockTable();
                 
                 return false;
             }
                         
             if($moveStrategy->isSourceNodeAtRequiredPosition()) {
-                $adapter->commitTransaction()
-                        ->unlockTable();
+                $adapter->commitTransaction();
+                $adapter->unlockTable();
 
                 return true;
             }
@@ -235,8 +238,8 @@ class NestedSet
 
             //make hole
             $adapter->moveLeftIndexes($moveStrategy->makeHoleFromIndex(),
-                        $moveStrategy->getIndexShift())
-                    ->moveRightIndexes($moveStrategy->makeHoleFromIndex(),
+                        $moveStrategy->getIndexShift());
+            $adapter->moveRightIndexes($moveStrategy->makeHoleFromIndex(),
                         $moveStrategy->getIndexShift());
 
             //move branch to the hole
@@ -245,15 +248,15 @@ class NestedSet
 
             //patch hole
             $adapter->moveLeftIndexes($moveStrategy->fixHoleFromIndex(),
-                        ($moveStrategy->getIndexShift() * -1))
-                    ->moveRightIndexes($moveStrategy->fixHoleFromIndex(),
+                        ($moveStrategy->getIndexShift() * -1));
+            $adapter->moveRightIndexes($moveStrategy->fixHoleFromIndex(),
                         ($moveStrategy->getIndexShift() * -1));
 
-            $adapter->commitTransaction()
-                    ->unlockTable();
+            $adapter->commitTransaction();
+            $adapter->unlockTable();
         } catch(Exception $e) {
-            $adapter->rollbackTransaction()
-                    ->unlockTable();
+            $adapter->rollbackTransaction();
+            $adapter->unlockTable();
             
             throw $e;
         }
@@ -314,8 +317,8 @@ class NestedSet
             
             // node does not exist
             if(!$nodeInfo = $adapter->getNodeInfo($nodeId)) {
-                $adapter->commitTransaction()
-                        ->unlockTable();
+                $adapter->commitTransaction();
+                $adapter->unlockTable();
                 
                 return false;
             }
@@ -328,14 +331,15 @@ class NestedSet
             //patch hole
             $moveFromIndex = $nodeInfo->getLeft();
             $shift = $nodeInfo->getLeft() - $nodeInfo->getRight() - 1;
-            $adapter->moveLeftIndexes($moveFromIndex, $shift)
-                    ->moveRightIndexes($moveFromIndex, $shift);
+            $adapter->moveLeftIndexes($moveFromIndex, $shift);
+            $adapter->moveRightIndexes($moveFromIndex, $shift);
 
-            $adapter->commitTransaction()
-                    ->unlockTable();
+            $adapter->commitTransaction();
+            $adapter->unlockTable();
         } catch (Exception $e) {
-            $adapter->rollbackTransaction()
-                    ->unlockTable();
+            $adapter->rollbackTransaction();
+            $adapter->unlockTable();
+
             throw $e;
         }
         
@@ -359,11 +363,12 @@ class NestedSet
             $nodeInfo = new NodeInfo(null, 0, 0, 1, 2);
             $adapter->update($this->getRootNodeId(), $data, $nodeInfo);
 
-            $adapter->commitTransaction()
-                    ->unlockTable();
+            $adapter->commitTransaction();
+            $adapter->unlockTable();
         } catch (Exception $e) {
-            $adapter->rollbackTransaction()
-                    ->unlockTable();
+            $adapter->rollbackTransaction();
+            $adapter->unlockTable();
+
             throw $e;
         }
         

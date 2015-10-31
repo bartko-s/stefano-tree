@@ -65,11 +65,10 @@ class Doctrine2DBALAdapter
 
     /**
      * @param QueryBuilder $dbSelect
-     * @return $this
+     * @return void
      */
     public function setDefaultDbSelect(QueryBuilder $dbSelect) {
         $this->defaultDbSelect = $dbSelect;
-        return $this;
     }
 
     /**
@@ -121,8 +120,6 @@ class Doctrine2DBALAdapter
             $this->getConnection()
                  ->executeQuery($sql);
         }
-        
-        return $this;
     }
 
     public function unlockTable() {
@@ -133,29 +130,21 @@ class Doctrine2DBALAdapter
             $this->getConnection()
                  ->executeQuery($sql);
         }
-
-          return $this;
     }
 
     public function beginTransaction() {
         $this->getConnection()
              ->beginTransaction();
-        
-        return $this;
     }
 
     public function commitTransaction() {
         $this->getConnection()
              ->commit();
-
-        return $this;
     }
 
     public function rollbackTransaction() {
         $this->getConnection()
              ->rollBack();
-        
-        return $this;
     }
 
     public function update($nodeId, array $data, NodeInfo $nodeInfo = null) {
@@ -184,8 +173,6 @@ class Doctrine2DBALAdapter
         $data[$options->getIdColumnName()] = $nodeId;
 
         $connection->executeUpdate($sql, $data);
-        
-        return $this;
     }
 
     public function insert(NodeInfo $nodeInfo, array $data) {
@@ -219,8 +206,6 @@ class Doctrine2DBALAdapter
         );
 
         $connection->executeQuery($sql, $params);
-        
-        return $this;
     }
 
     public function deleteAll($expectNodeId) {
@@ -236,15 +221,13 @@ class Doctrine2DBALAdapter
         );
 
         $connection->executeQuery($sql, $params);
-
-        return $this;
     }
 
     public function moveLeftIndexes($fromIndex, $shift) {
         $options = $this->getOptions();
 
         if(0 == $shift) {
-            return $this;
+            return null;
         }
 
         $connection = $this->getConnection();
@@ -260,15 +243,13 @@ class Doctrine2DBALAdapter
         );
 
         $connection->executeUpdate($sql, $params);
-
-        return $this;
     }
 
     public function moveRightIndexes($fromIndex, $shift) {
         $options = $this->getOptions();
 
         if(0 == $shift) {
-            return $this;
+            return null;
         }
 
         $connection = $this->getConnection();
@@ -284,8 +265,6 @@ class Doctrine2DBALAdapter
         );
 
         $connection->executeUpdate($sql, $params);
-
-        return $this;
     }
 
     public function updateParentId($nodeId, $newParentId) {
@@ -304,8 +283,6 @@ class Doctrine2DBALAdapter
         );
 
         $connection->executeUpdate($sql, $params);
-        
-        return $this;
     }
 
     public function updateLevels($leftIndexFrom, $rightIndexTo, $shift) {
@@ -330,8 +307,6 @@ class Doctrine2DBALAdapter
         );
 
         $connection->executeUpdate($sql, $params);
-
-        return $this;
     }
 
     public function moveBranch($leftIndexFrom, $rightIndexTo, $shift) {

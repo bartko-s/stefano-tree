@@ -110,7 +110,7 @@ interface TreeInterface
      * Clear all data except root node
      *
      * @param array $data
-     * @return $this
+     * @return void
      */
     public function clear(array $data = array());
 }

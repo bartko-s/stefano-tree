@@ -60,11 +60,10 @@ class Zend2DbAdapter
 
     /**
      * @param Db\Sql\Select $dbSelect
-     * @return $this
+     * @return void
      */
     public function setDefaultDbSelect(Db\Sql\Select $dbSelect) {
         $this->defaultDbSelect = $dbSelect;
-        return $this;
     }
 
     /**
@@ -110,8 +109,6 @@ class Zend2DbAdapter
             $this->getDbAdapter()
                  ->query($sql, DbAdapter::QUERY_MODE_EXECUTE);
         }
-
-        return $this;
     }
 
     public function unlockTable() {
@@ -122,29 +119,21 @@ class Zend2DbAdapter
             $this->getDbAdapter()
                  ->query($sql, DbAdapter::QUERY_MODE_EXECUTE);
         }
-
-        return $this;
     }
 
     public function beginTransaction() {
         $this->getDbAdapter()
              ->begin();
-
-        return $this;
     }
 
     public function commitTransaction() {
         $this->getDbAdapter()
              ->commit();
-
-        return $this;
     }
 
     public function rollbackTransaction() {
         $this->getDbAdapter()
              ->rollback();
-
-        return $this;
     }
 
     public function update($nodeId, array $data, NodeInfo $nodeInfo = null) {
@@ -169,8 +158,6 @@ class Zend2DbAdapter
 
         $dbAdapter->query($update->getSqlString($dbAdapter->getPlatform()),
                 DbAdapter::QUERY_MODE_EXECUTE);
-
-        return $this;
     }
 
     public function insert(NodeInfo $nodeInfo, array $data) {
@@ -207,8 +194,6 @@ class Zend2DbAdapter
 
         $dbAdapter->query($delete->getSqlString($dbAdapter->getPlatform()),
             DbAdapter::QUERY_MODE_EXECUTE);
-
-        return $this;
     }
 
     public function deleteAll($expectNodeId) {
@@ -221,15 +206,13 @@ class Zend2DbAdapter
                ->notEqualTo($options->getIdColumnName(), $expectNodeId);
         $dbAdapter->query($delete->getSqlString($dbAdapter->getPlatform()),
             DbAdapter::QUERY_MODE_EXECUTE);
-
-        return $this;
     }
 
     public function moveLeftIndexes($fromIndex, $shift) {
         $options = $this->getOptions();
 
         if(0 == $shift) {
-            return $this;
+            return null;
         }
 
         $dbAdapter = $this->getDbAdapter();
@@ -249,15 +232,13 @@ class Zend2DbAdapter
 
         $dbAdapter->query($sql)
                   ->execute($binds);
-
-        return $this;
     }
 
     public function moveRightIndexes($fromIndex, $shift) {
         $options = $this->getOptions();
 
         if(0 == $shift) {
-            return $this;
+            return null;
         }
 
         $dbAdapter = $this->getDbAdapter();
@@ -277,8 +258,6 @@ class Zend2DbAdapter
 
         $dbAdapter->query($sql)
                   ->execute($binds);
-
-        return $this;
     }
 
     public function updateParentId($nodeId, $newParentId) {
@@ -296,8 +275,6 @@ class Zend2DbAdapter
 
         $dbAdapter->query($update->getSqlString($dbAdapter->getPlatform()),
             DbAdapter::QUERY_MODE_EXECUTE);
-
-        return $this;
     }
 
     public function updateLevels($leftIndexFrom, $rightIndexTo, $shift) {
@@ -326,8 +303,6 @@ class Zend2DbAdapter
 
         $dbAdapter->query($sql)
                   ->execute($binds);
-
-        return $this;
     }
 
     public function moveBranch($leftIndexFrom, $rightIndexTo, $shift) {
