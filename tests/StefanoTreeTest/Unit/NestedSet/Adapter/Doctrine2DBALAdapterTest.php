@@ -23,7 +23,7 @@ class Doctrine2DBALAdapterTest
         $this->assertNotSame($adapter->getDefaultDbSelect(), $adapter->getDefaultDbSelect());
     }
 
-    public function testSetDefaulDbSelect() {
+    public function testSetDefaultDbSelect() {
         $adapter = $this->getAdapter();
 
         $select = $this->getConnection()

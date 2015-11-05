@@ -34,7 +34,7 @@ class Options
     
     /**
      * @param array $options
-     * @return this
+     * @return void
      */
     protected function setOptions($options) {
         foreach($options as $name => $value) {
@@ -43,12 +43,11 @@ class Options
                 $this->$methodName($value);
             }
         }
-        return $this;
     }
     
     /**
      * @param string $tableName
-     * @return this
+     * @return void
      * @throws InvalidArgumentException
      */
     public function setTableName($tableName) {
@@ -59,7 +58,6 @@ class Options
         }
         
         $this->tableName = $tableName;
-        return $this;
     }
     
     /**
@@ -71,7 +69,7 @@ class Options
     
     /**
      * @param string $idColumnName
-     * @return this
+     * @return void
      * @throws InvalidArgumentException
      */
     public function setIdColumnName($idColumnName) {
@@ -82,7 +80,6 @@ class Options
         }
         
         $this->idColumnName = $idColumnName;
-        return $this;
     }
     
     /**
@@ -94,7 +91,7 @@ class Options
     
     /**
      * @param string $leftColumnName
-     * @return this
+     * @return void
      * @throws InvalidArgumentException
      */
     public function setLeftColumnName($leftColumnName) {
@@ -105,7 +102,6 @@ class Options
         }
         
         $this->leftColumnName = $leftColumnName;
-        return $this;
     }
     
     /**
@@ -117,7 +113,7 @@ class Options
     
     /**
      * @param string $rightColumnName
-     * @return this
+     * @return void
      * @throws InvalidArgumentException
      */
     public function setRightColumnName($rightColumnName) {
@@ -128,7 +124,6 @@ class Options
         }
         
         $this->rightColumnName = $rightColumnName;
-        return $this;
     }
     
     /**
@@ -140,7 +135,7 @@ class Options
     
     /**
      * @param string $levelColumnName
-     * @return this
+     * @return void
      * @throws InvalidArgumentException
      */
     public function setLevelColumnName($levelColumnName) {
@@ -151,7 +146,6 @@ class Options
         }
         
         $this->levelColumnName = $levelColumnName;
-        return $this;
     }
     
     /**
@@ -163,7 +157,7 @@ class Options
     
     /**
      * @param string $parentIdColumnName
-     * @return this
+     * @return void
      * @throws InvalidArgumentException
      */
     public function setParentIdColumnName($parentIdColumnName) {
@@ -174,7 +168,6 @@ class Options
         }
         
         $this->parentIdColumnName = $parentIdColumnName;
-        return $this;
     }
     
     /**

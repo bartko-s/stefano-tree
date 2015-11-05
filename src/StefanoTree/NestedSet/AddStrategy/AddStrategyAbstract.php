@@ -2,7 +2,6 @@
 namespace StefanoTree\NestedSet\AddStrategy;
 
 use StefanoTree\NestedSet\NodeInfo;
-use StefanoTree\NestedSet\AddStrategy\AddStrategyInterface;
 
 abstract class AddStrategyAbstract
     implements AddStrategyInterface

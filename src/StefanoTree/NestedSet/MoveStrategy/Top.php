@@ -1,7 +1,7 @@
 <?php
 namespace StefanoTree\NestedSet\MoveStrategy;
 
-use StefanoTree\NestedSet\MoveStrategy\MoveStrategyAbstract;
+use StefanoTree\Exception;
 
 class Top
     extends MoveStrategyAbstract
@@ -23,7 +23,7 @@ class Top
             return $this->getSourceNode()->getLeft();
         } else {
             // @codeCoverageIgnoreStart
-            throw \Exception('Cannot move node');
+            throw new Exception\BaseException('Cannot move node');
             // @codeCoverageIgnoreEnd
         }
     }
@@ -37,7 +37,7 @@ class Top
             return $this->getSourceNode()->getRight();
         } else {
             // @codeCoverageIgnoreStart
-            throw \Exception('Cannot move node');
+            throw new Exception\BaseException('Cannot move node');
             // @codeCoverageIgnoreEnd
         }
     }
@@ -51,7 +51,7 @@ class Top
             return $this->getTargetNode()->getLeft() - $this->getSourceNode()->getLeft();
         } else {
             // @codeCoverageIgnoreStart
-            throw \Exception('Cannot move node');
+            throw new Exception\BaseException('Cannot move node');
             // @codeCoverageIgnoreEnd
         }
     }
@@ -65,7 +65,7 @@ class Top
             return $this->getSourceNode()->getLeft();
         } else {
             // @codeCoverageIgnoreStart
-            throw \Exception('Cannot move node');
+            throw new Exception\BaseException('Cannot move node');
             // @codeCoverageIgnoreEnd
         }
     }

@@ -2,13 +2,10 @@
 namespace StefanoTreeTest\Integration;
 
 use StefanoTree\NestedSet as TreeAdapter;
-use StefanoDb\Adapter\Adapter as DbAdapter;
-use StefanoTree\NestedSet\Adapter\Zend2DbAdapter;
-use StefanoTree\NestedSet\Options;
-use \PDO;
+use StefanoTreeTest\IntegrationTestCase;
 
 abstract class AbstractTest
-    extends \PHPUnit_Extensions_Database_TestCase
+    extends IntegrationTestCase
 {
     /**
      * @var TreeAdapter
@@ -16,8 +13,6 @@ abstract class AbstractTest
     protected $treeAdapter;
      
     protected function setUp() {
-        $this->createDatabaseTableIfNotExist();
-        
         $this->treeAdapter = $this->getTreeAdapter();
         
         parent::setUp();
@@ -32,43 +27,6 @@ abstract class AbstractTest
      * @return TreeAdapter
      */
     abstract protected function getTreeAdapter();
-    
-    protected function getConnection() {
-        $pdo = $this->getPDODbConnection();
-        return $this->createDefaultDBConnection($pdo);
-    }
-
-    /**
-     * @return PDO
-     */
-    private function getPDODbConnection() {
-        $adapter    = strtolower(TEST_STEFANO_DB_ADAPTER);
-        $hostname   = TEST_STEFANO_DB_HOSTNAME;
-        $dbName     = TEST_STEFANO_DB_DB_NAME;
-        $user       = TEST_STEFANO_DB_USER;
-        $password   = TEST_STEFANO_DB_PASSWORD;
-
-        return new PDO($adapter . ':host=' . $hostname . ';dbname=' . $dbName, $user, $password);
-    }
-
-    private function createDatabaseTableIfNotExist() {
-        $sql =  'CREATE TABLE IF NOT EXISTS `tree_traversal` (
-                    `tree_traversal_id` int(11) NOT NULL AUTO_INCREMENT,
-                    `name` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-                    `lft` int(11) NOT NULL,
-                    `rgt` int(11) NOT NULL,
-                    `parent_id` int(11) DEFAULT NULL,
-                    `level` int(11) DEFAULT NULL,
-                    PRIMARY KEY (`tree_traversal_id`),
-                    KEY `parent_id` (`parent_id`),
-                    KEY `level` (`level`),
-                    KEY `lft` (`lft`),
-                    KEY `rgt` (`rgt`)
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin';
-
-        $this->getPDODbConnection()
-             ->query($sql);
-    }  
 
     protected function getDataSet() {
         return $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/initDataSet.xml');
@@ -705,8 +663,8 @@ abstract class AbstractTest
         $data = array(
             'name' => 'ahoj',
         );
-        $return = $this->treeAdapter
-                       ->updateNode(3, $data);
+        $this->treeAdapter
+             ->updateNode(3, $data);
 
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
         $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/testUpdateNode-1.xml');
@@ -721,8 +679,8 @@ abstract class AbstractTest
             'level' => '123456',
             'parent_id' => '123456',
         );
-        $return = $this->treeAdapter
-                       ->updateNode(3, $data);
+        $this->treeAdapter
+             ->updateNode(3, $data);
 
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
         $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/testUpdateNode-1.xml');

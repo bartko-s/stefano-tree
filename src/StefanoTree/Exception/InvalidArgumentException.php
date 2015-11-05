@@ -2,7 +2,7 @@
 namespace StefanoTree\Exception;
 
 class InvalidArgumentException
-    extends \InvalidArgumentException
+    extends BaseException
 {
     
 }
