@@ -16,6 +16,10 @@ class NestedSetTest
                 '\Doctrine\DBAL\Connection',
                 '\StefanoTree\NestedSet\Adapter\Doctrine2DBALAdapter',
             ),
+            array(
+                '\Zend_Db_Adapter_Abstract',
+                '\StefanoTree\NestedSet\Adapter\Zend1DbAdapter',
+            ),
         );
     }
 

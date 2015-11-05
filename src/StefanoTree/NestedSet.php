@@ -1,6 +1,7 @@
 <?php
 namespace StefanoTree;
 
+use StefanoTree\NestedSet\Adapter\Zend1DbAdapter;
 use StefanoTree\NestedSet\NodeInfo;
 use Exception;
 use StefanoTree\Exception\InvalidArgumentException;
@@ -14,6 +15,7 @@ use StefanoTree\NestedSet\Adapter\Doctrine2DBALAdapter;
 use StefanoTree\NestedSet\Adapter\Zend2DbAdapter;
 use StefanoDb\Adapter\ExtendedAdapterInterface;
 use Doctrine\DBAL\Connection as DoctrineConnection;
+use Zend_Db_Adapter_Abstract;
 
 class NestedSet
     implements TreeInterface
@@ -29,8 +31,10 @@ class NestedSet
     static public function factory(Options $options, $dbAdapter) {
         if($dbAdapter instanceof ExtendedAdapterInterface) {
             $adapter = new Zend2DbAdapter($options, $dbAdapter);
-        } elseif($dbAdapter instanceof  DoctrineConnection) {
+        } elseif($dbAdapter instanceof DoctrineConnection) {
             $adapter = new Doctrine2DBALAdapter($options, $dbAdapter);
+        } elseif($dbAdapter instanceof Zend_Db_Adapter_Abstract) {
+            $adapter = new Zend1DbAdapter($options, $dbAdapter);
         } else {
             throw new InvalidArgumentException('Db adapter "' . get_class($dbAdapter)
                 . '" is not supported');
