@@ -1,7 +1,6 @@
 <?php
 namespace StefanoTreeTest\Unit\NestedSet\Adapter;
 
-use StefanoTree\DbAdapter\Zend1DbWrapper;
 use StefanoTree\NestedSet\Adapter\Zend1DbAdapter;
 use StefanoTree\NestedSet\Options;
 
@@ -20,8 +19,7 @@ class Zend1DbAdapterTest extends \PHPUnit_Framework_TestCase
         ));
 
         $dbAdapter = $this->getDbAdapterMock();
-        $adapter = new Zend1DbWrapper($dbAdapter);
-        $adapter = new Zend1DbAdapter($options, $adapter);
+        $adapter = new Zend1DbAdapter($options, $dbAdapter);
 
         $expectedQuery = 'SELECT "tableName".* FROM "tableName"';
         $actualQuery = (string) $adapter->getDefaultDbSelect();
@@ -37,13 +35,12 @@ class Zend1DbAdapterTest extends \PHPUnit_Framework_TestCase
         ));
 
         $dbAdapter = $this->getDbAdapterMock();
-        $adapter = new Zend1DbWrapper($dbAdapter);
-        $adapter = new Zend1DbAdapter($options, $adapter);
+        $adapter = new Zend1DbAdapter($options, $dbAdapter);
 
         $this->assertNotSame($adapter->getDefaultDbSelect(), $adapter->getDefaultDbSelect());
     }
 
-    public function testSetDefaulDbSelect()
+    public function testSetDefaultDbSelect()
     {
         $options = new Options(array(
             'tableName' => 'tableName',
@@ -51,8 +48,7 @@ class Zend1DbAdapterTest extends \PHPUnit_Framework_TestCase
         ));
 
         $dbAdapter = $this->getDbAdapterMock();
-        $adapter = new Zend1DbWrapper($dbAdapter);
-        $adapter = new Zend1DbAdapter($options, $adapter);
+        $adapter = new Zend1DbAdapter($options, $dbAdapter);
 
         $select = $dbAdapter->select()->from('tableName');
 

@@ -1,7 +1,6 @@
 <?php
 namespace StefanoTreeTest\Integration;
 
-use StefanoTree\DbAdapter\Zend1DbWrapper;
 use StefanoTree\NestedSet as TreeAdapter;
 use StefanoTree\NestedSet\Adapter\Zend1DbAdapter;
 use StefanoTree\NestedSet\Options;
@@ -17,12 +16,10 @@ class NestedSetWithZend1DbAdapterTest
             'password' => TEST_STEFANO_DB_PASSWORD
         ));
 
-        $adapter = new Zend1DbWrapper($dbAdapter);
-
         $options = new Options(array(
             'tableName' => 'tree_traversal',
             'idColumnName' => 'tree_traversal_id',
         ));
-        return new TreeAdapter(new Zend1DbAdapter($options, $adapter));
+        return new TreeAdapter(new Zend1DbAdapter($options, $dbAdapter));
     }
 }
