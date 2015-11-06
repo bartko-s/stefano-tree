@@ -104,7 +104,7 @@ class Zend1DbAdapter
         }
 
         $where = array(
-            $options->getIdColumnName() . ' = ?' => $nodeId,
+            $dbAdapter->quoteIdentifier($options->getIdColumnName()) . ' = ?' => $nodeId,
         );
         $dbAdapter->update($options->getTableName(), $data, $where);
     }
@@ -114,7 +114,7 @@ class Zend1DbAdapter
         $dbAdapter = $this->getDbAdapter();
 
         $where = array(
-            $options->getIdColumnName() . ' != ?' => $expectNodeId,
+            $dbAdapter->quoteIdentifier($options->getIdColumnName()) . ' != ?' => $expectNodeId,
         );
         $dbAdapter->delete($options->getTableName(), $where);
     }
@@ -171,7 +171,7 @@ class Zend1DbAdapter
         );
 
         $where = array(
-            $options->getIdColumnName() . ' = ?' => $nodeId,
+            $dbAdapter->quoteIdentifier($options->getIdColumnName()) . ' = ?' => $nodeId,
         );
         $dbAdapter->update($options->getTableName(), $bind, $where);
     }
@@ -270,8 +270,8 @@ class Zend1DbAdapter
         $dbAdapter = $this->getDbAdapter();
 
         $where = array(
-            $options->getLeftColumnName() . ' >= ?' => $leftIndex,
-            $options->getRightColumnName() . ' <= ?' => $rightIndex,
+            $dbAdapter->quoteIdentifier($options->getLeftColumnName()) . ' >= ?' => $leftIndex,
+            $dbAdapter->quoteIdentifier($options->getRightColumnName()) . ' <= ?' => $rightIndex,
         );
 
         $dbAdapter->delete($options->getTableName(), $where);
@@ -341,16 +341,24 @@ class Zend1DbAdapter
         $dbAdapter = $this->getDbAdapter();
 
         $select = $this->getDefaultDbSelect();
-        $select->where($options->getLeftColumnName() . ' <= ?', $nodeInfo->getLeft());
-        $select->where($options->getRightColumnName() . ' >= ?', $nodeInfo->getRight());
+        $select->where(
+            $dbAdapter->quoteIdentifier($options->getLeftColumnName()) . ' <= ?', $nodeInfo->getLeft()
+        );
+        $select->where(
+            $dbAdapter->quoteIdentifier($options->getRightColumnName()) . ' >= ?', $nodeInfo->getRight()
+        );
         $select->order($options->getLeftColumnName() . ' ASC');
 
         if (0 < $startLevel) {
-            $select->where($options->getLevelColumnName() . ' >= ?', $startLevel);
+            $select->where(
+                $dbAdapter->quoteIdentifier($options->getLevelColumnName()) . ' >= ?', $startLevel
+            );
         }
 
         if (true == $excludeLastNode) {
-            $select->where($options->getLevelColumnName() . ' < ?', $nodeInfo->getLevel());
+            $select->where(
+                $dbAdapter->quoteIdentifier($options->getLevelColumnName()) . ' < ?', $nodeInfo->getLevel()
+            );
         }
 
         $result = $dbAdapter->fetchAll($select);
@@ -372,12 +380,16 @@ class Zend1DbAdapter
 
         if(0 != $startLevel) {
             $level = $nodeInfo->getLevel() + (int) $startLevel;
-            $select->where($options->getLevelColumnName() . ' >= ?', $level);
+            $select->where(
+                $dbAdapter->quoteIdentifier($options->getLevelColumnName()) . ' >= ?', $level
+            );
         }
 
         if(null != $levels) {
             $endLevel = $nodeInfo->getLevel() + (int) $startLevel + abs($levels);
-            $select->where($options->getLevelColumnName() . ' < ?', $endLevel);
+            $select->where(
+                $dbAdapter->quoteIdentifier($options->getLevelColumnName()) . ' < ?', $endLevel
+            );
         }
 
         if(null != $excludeBranch && null != ($excludeNodeInfo = $this->getNodeInfo($excludeBranch))) {
@@ -393,8 +405,12 @@ class Zend1DbAdapter
             );
             $select->where($where);
         } else {
-            $select->where($options->getLeftColumnName() . ' >= ?', $nodeInfo->getLeft());
-            $select->where($options->getRightColumnName() . ' <= ?', $nodeInfo->getRight());
+            $select->where(
+                $dbAdapter->quoteIdentifier($options->getLeftColumnName()) . ' >= ?', $nodeInfo->getLeft()
+            );
+            $select->where(
+                $dbAdapter->quoteIdentifier($options->getRightColumnName()) . ' <= ?', $nodeInfo->getRight()
+            );
         }
 
         $resultArray = $dbAdapter->fetchAll($select);
@@ -404,8 +420,7 @@ class Zend1DbAdapter
         }
     }
 
-    protected function getWhereBetween($column, $first, $second)
-    {
+    protected function getWhereBetween($column, $first, $second) {
         $dbAdapter = $this->getDbAdapter();
         $quotedColumn = $dbAdapter->quoteIdentifier($column);
         $quotedFirst = $dbAdapter->quote($first);
