@@ -12,6 +12,7 @@ cache:
   directories:
     - $HOME/.composer/cache
 before_script:
+  - composer self-update
   - composer install --dev
   - mysql -e 'create database stefano_tests;'
 script: phpunit --configuration tests/phpunit.xml --coverage-clover tests/clover.xml
