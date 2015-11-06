@@ -7,6 +7,10 @@ php:
   - "5.5"
   - "5.4"
   - "5.3"
+sudo: false
+cache:
+  directories:
+    - $HOME/.composer/cache
 before_script:
   - composer install --dev
   - mysql -e 'create database stefano_tests;'
@@ -16,8 +20,8 @@ after_script:
   - wget https://scrutinizer-ci.com/ocular.phar
   - php ocular.phar code-coverage:upload --format=php-clover tests/clover.xml
 matrix:
-    fast_finish: true
-    allow_failures:
-        - php: hhvm
-        - php: nightly
-        - php: "7"
+  fast_finish: true
+  allow_failures:
+    - php: hhvm
+    - php: nightly
+    - php: "7"
