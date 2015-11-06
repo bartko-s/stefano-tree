@@ -15,13 +15,15 @@ Dependencies
 ------------
 - Optional [Stefano DB](https://github.com/bartko-s/stefano-db) This repository is 100% compatible with Zend Framework 2 DB package
 - Optional [Doctrine DBAL](https://github.com/doctrine/dbal)
+- Optional [Zend Framework 1 - Db package](https://github.com/zf1/zend-db.git)
 
 Instalation using Composer
 --------------------------
 1. Add following line to your composer.json file  ``` "stefano/stefano-tree": "*" ```
 2. Add following line to your composer.json file ``` "doctrine/dbal": "2.*" ``` if you want to use this library with Doctrine DBAL
 3. Add following line to your composer.json file ``` "stefano/stefano-db": "~1.4.0" ``` if you want to use this library with Stefano DB
-4. Create db scheme [example db scheme](https://github.com/bartko-s/stefano-tree/tree/master/sql)
+4. Add following line to your composer.json file ``` "zf1/zend-db": "*" ``` if you want to use this library with Zend Framework 1
+5. Create db scheme [example db scheme](https://github.com/bartko-s/stefano-tree/tree/master/sql)
 
 Usage
 -----
@@ -40,10 +42,14 @@ $options = new \StefanoTree\NestedSet\Options(array(
     'parentIdColumnName' => 'parent_id', //optional (default parent_id)
 ));
 
+// One of this
 //Stefano Db
 $dbAdapter = new \StefanoDb\Adapter\Adapter(...);
-//Doctrine DBAL
+// or Doctrine DBAL
 $dbAdapter = new \Doctrine\DBAL\Connection(...);
+// or Zend 1 DB package
+$dbAdapter = Zend_Db::factory(...)
+
 
 $tree = \StefanoTree\NestedSet::factory($options, $dbAdapter);
 ```
