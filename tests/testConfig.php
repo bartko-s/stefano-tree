@@ -1,8 +1,6 @@
 <?php
-$localConfig = __DIR__ . DIRECTORY_SEPARATOR . 'testConfig.local.php';
-
-if(file_exists($localConfig)) {
-    include_once $localConfig;
+if(file_exists(__DIR__ . '/testConfig.local.php')) {
+    include_once __DIR__ . '/testConfig.local.php';
 }
 
 /**

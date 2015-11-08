@@ -8,4 +8,10 @@ abstract class IntegrationTestCase
     protected function getConnection() {
         return $this->createDefaultDBConnection(TestUtil::getPDOConnection());
     }
+
+    protected function setUp() {
+        parent::setUp();
+
+        TestUtil::createDbScheme();
+    }
 }

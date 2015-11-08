@@ -63,7 +63,7 @@ abstract class AbstractTest
         $return = $this->treeAdapter
                        ->addNodePlacementBottom(123456789);
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->getDataSet();
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/initDataSetWithIds.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
         $this->assertFalse($return);
     }
@@ -73,7 +73,7 @@ abstract class AbstractTest
         $return = $this->treeAdapter
                        ->addNodePlacementBottom(1);
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->getDataSet();
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/initDataSetWithIds.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
         $this->assertFalse($return);
         
@@ -105,7 +105,7 @@ abstract class AbstractTest
         $return = $this->treeAdapter
                        ->addNodePlacementTop(1);
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->getDataSet();
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/initDataSetWithIds.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
         $this->assertFalse($return);
         
@@ -182,16 +182,18 @@ abstract class AbstractTest
         $return = $this->treeAdapter
                        ->deleteBranch(1);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));        
-        $this->assertDataSetsEqual($this->getDataSet(), $dataSet, 'Cannot delete root node');
+        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/initDataSetWithIds.xml');
+        $this->assertDataSetsEqual($expectedDataSet, $dataSet, 'Cannot delete root node');
         $this->assertFalse($return);
         
         //test 2
         $return = $this->treeAdapter
                        ->deleteBranch(123456789);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));        
-        $this->assertDataSetsEqual($this->getDataSet(), $dataSet, 'Not Exist Branch');
+        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/initDataSetWithIds.xml');
+        $this->assertDataSetsEqual($expectedDataSet, $dataSet, 'Not Exist Branch');
         $this->assertFalse($return);
         
         //test 3
@@ -205,44 +207,46 @@ abstract class AbstractTest
     }
     
     public function testMoveUnmovableNode() {
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/initDataSetWithIds.xml');
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
         
         //test 1
         $return = $this->treeAdapter
                        ->moveNodePlacementBottom(1, 12);
       
-        $this->assertDataSetsEqual($this->getDataSet(), $dataSet, 'Target node is inside source node');
+        $this->assertDataSetsEqual($expectedDataSet, $dataSet, 'Target node is inside source node');
         $this->assertFalse($return);
         
         //test
         $return = $this->treeAdapter
                        ->moveNodePlacementBottom(10, 10);
         
-        $this->assertDataSetsEqual($this->getDataSet(), $dataSet, 'Target node and source node are same');
+        $this->assertDataSetsEqual($expectedDataSet, $dataSet, 'Target node and source node are same');
         $this->assertFalse($return);
         
         //test
         $return = $this->treeAdapter
                        ->moveNodePlacementBottom(5, 123456);
         
-        $this->assertDataSetsEqual($this->getDataSet(), $dataSet, 'Target node does not exist');
+        $this->assertDataSetsEqual($expectedDataSet, $dataSet, 'Target node does not exist');
         $this->assertFalse($return);
         
         //test
         $return = $this->treeAdapter
                        ->moveNodePlacementBottom(123456, 6);
         
-        $this->assertDataSetsEqual($this->getDataSet(), $dataSet, 'Source node does not exist');
+        $this->assertDataSetsEqual($expectedDataSet, $dataSet, 'Source node does not exist');
         $this->assertFalse($return);
     }
     
     public function testMoveNodePlacementBottom() {
-        //test 
+        //test
         $return = $this->treeAdapter
                        ->moveNodePlacementBottom(11, 1);
-      
+
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $this->assertDataSetsEqual($this->getDataSet(), $dataSet, 'Root node cannot have sibling');
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/initDataSetWithIds.xml');
+        $this->assertDataSetsEqual($expectedDataSet, $dataSet, 'Root node cannot have sibling');
         $this->assertFalse($return);
         
         //test 
@@ -250,7 +254,8 @@ abstract class AbstractTest
                        ->moveNodePlacementBottom(3, 2);
       
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $this->assertDataSetsEqual($this->getDataSet(), $dataSet, 'Source node is in required position');
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/initDataSetWithIds.xml');
+        $this->assertDataSetsEqual($expectedDataSet, $dataSet, 'Source node is in required position');
         $this->assertTrue($return);
         
         //test
@@ -282,12 +287,13 @@ abstract class AbstractTest
     }
     
     public function testMoveNodePlacementTop() {
-        //test 
+        //test
         $return = $this->treeAdapter
                        ->moveNodePlacementTop(17, 1);
       
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $this->assertDataSetsEqual($this->getDataSet(), $dataSet, 'Root node cannot have sibling');
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/initDataSetWithIds.xml');
+        $this->assertDataSetsEqual($expectedDataSet, $dataSet, 'Root node cannot have sibling');
         $this->assertFalse($return);
         
         //test 
@@ -295,7 +301,8 @@ abstract class AbstractTest
                        ->moveNodePlacementTop(3, 4);
       
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $this->assertDataSetsEqual($this->getDataSet(), $dataSet, 'Source node is in required position');
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/initDataSetWithIds.xml');
+        $this->assertDataSetsEqual($expectedDataSet, $dataSet, 'Source node is in required position');
         $this->assertTrue($return);
         
         //test
@@ -332,7 +339,8 @@ abstract class AbstractTest
                        ->moveNodePlacementChildBottom(22, 18);
       
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $this->assertDataSetsEqual($this->getDataSet(), $dataSet, 'Source node is in required position');
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/initDataSetWithIds.xml');
+        $this->assertDataSetsEqual($expectedDataSet, $dataSet, 'Source node is in required position');
         $this->assertTrue($return);
         
         //test
@@ -369,7 +377,8 @@ abstract class AbstractTest
                        ->moveNodePlacementChildTop(21, 18);
       
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $this->assertDataSetsEqual($this->getDataSet(), $dataSet, 'Source node is in required position');
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/initDataSetWithIds.xml');
+        $this->assertDataSetsEqual($expectedDataSet, $dataSet, 'Source node is in required position');
         $this->assertTrue($return);
         
         //test
