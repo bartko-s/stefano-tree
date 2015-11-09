@@ -10,8 +10,8 @@ abstract class IntegrationTestCase
     }
 
     protected function setUp() {
-        parent::setUp();
-
         TestUtil::createDbScheme();
+
+        parent::setUp();
     }
 }
