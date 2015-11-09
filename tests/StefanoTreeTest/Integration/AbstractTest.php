@@ -444,7 +444,7 @@ abstract class AbstractTest
                 'level' => '2',
             ),
         );
-        $this->assertSame($expected, $return);
+        $this->assertEquals($expected, $return);
         
         //test
         $return = $this->treeAdapter
@@ -467,7 +467,7 @@ abstract class AbstractTest
                 'level' => '2',
             ),
         );
-        $this->assertSame($expected, $return);
+        $this->assertEquals($expected, $return);
         
         //test
         $return = $this->treeAdapter
@@ -490,10 +490,10 @@ abstract class AbstractTest
                 'level' => '1',
             ),
         );
-        $this->assertSame($expected, $return);
+        $this->assertEquals($expected, $return);
     }
     
-    public function testGetDescedants() {
+    public function testGetDescendants() {
         //test
         $return = $this->treeAdapter
                        ->getDescendants(123456789);
@@ -533,7 +533,7 @@ abstract class AbstractTest
                 'level' => '6',
             ),
         );
-        $this->assertSame($expected, $return);
+        $this->assertEquals($expected, $return);
         
         //test different start node
         $return = $this->treeAdapter
@@ -572,7 +572,7 @@ abstract class AbstractTest
                 'level' => '5',
             ),
         );
-        $this->assertSame($expected, $return);
+        $this->assertEquals($expected, $return);
         
         //test custom levels
         $return = $this->treeAdapter
@@ -603,7 +603,7 @@ abstract class AbstractTest
                 'level' => '5',
             ),
         );
-        $this->assertSame($expected, $return);
+        $this->assertEquals($expected, $return);
         
         //test exclude node
         $return = $this->treeAdapter
@@ -634,7 +634,7 @@ abstract class AbstractTest
                 'level' => '5',
             ),
         );
-        $this->assertSame($expected, $return);
+        $this->assertEquals($expected, $return);
     }
     
     public function testGetChildren() {

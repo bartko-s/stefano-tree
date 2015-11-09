@@ -176,7 +176,7 @@ class Zend2DbAdapter
             DbAdapter::QUERY_MODE_EXECUTE);
 
         $lastGeneratedValue = $dbAdapter->getDriver()
-                                        ->getLastGeneratedValue();
+                                        ->getLastGeneratedValue($options->getSequenceName());
 
         return $lastGeneratedValue;
     }

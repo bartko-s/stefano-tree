@@ -10,7 +10,7 @@ class NestedSetWithZend1DbAdapterTest
 {
     protected function getTreeAdapter() {
         $dbAdapter = \Zend_Db::factory('Pdo_' . ucfirst(TEST_STEFANO_DB_ADAPTER), array(
-            'hostname' => TEST_STEFANO_DB_HOSTNAME,
+            'host' => TEST_STEFANO_DB_HOSTNAME,
             'dbname' => TEST_STEFANO_DB_DB_NAME,
             'username' => TEST_STEFANO_DB_USER,
             'password' => TEST_STEFANO_DB_PASSWORD
@@ -20,6 +20,11 @@ class NestedSetWithZend1DbAdapterTest
             'tableName' => 'tree_traversal',
             'idColumnName' => 'tree_traversal_id',
         ));
+
+        if('pgsql' == TEST_STEFANO_DB_ADAPTER) {
+            $options->setSequenceName('tree_traversal_tree_traversal_id_seq');
+        }
+
         return new TreeAdapter(new Zend1DbAdapter($options, $dbAdapter));
     }
 }

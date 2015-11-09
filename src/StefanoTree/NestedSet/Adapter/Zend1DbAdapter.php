@@ -259,7 +259,11 @@ class Zend1DbAdapter
         $data[$options->getRightColumnName()] = $nodeInfo->getRight();
 
         $dbAdapter->insert($options->getTableName(), $data);
-        $lastGeneratedValue = $dbAdapter->lastInsertId();
+        if('' != $options->getSequenceName()) {
+            $lastGeneratedValue = $dbAdapter->lastSequenceId($options->getSequenceName());
+        } else {
+            $lastGeneratedValue = $dbAdapter->lastInsertId();
+        }
 
         return $lastGeneratedValue;
     }

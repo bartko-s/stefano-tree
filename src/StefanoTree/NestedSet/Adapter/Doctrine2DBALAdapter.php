@@ -187,7 +187,7 @@ class Doctrine2DBALAdapter
 
         $connection->insert($options->getTableName(), $data);
 
-        return $connection->lastInsertId();
+        return $connection->lastInsertId($options->getSequenceName());
     }
 
     public function delete($leftIndex, $rightIndex) {

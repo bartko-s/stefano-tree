@@ -25,6 +25,11 @@ class NestedSetWithDoctrine2DbAdapterTest
             'tableName' => 'tree_traversal',
             'idColumnName' => 'tree_traversal_id',
         ));
+
+        if('pgsql' == TEST_STEFANO_DB_ADAPTER) {
+            $options->setSequenceName('tree_traversal_tree_traversal_id_seq');
+        }
+
         return new TreeAdapter(new Doctrine2DBALAdapter($options, $connection));
     }
 }
