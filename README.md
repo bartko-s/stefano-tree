@@ -40,6 +40,7 @@ $options = new \StefanoTree\NestedSet\Options(array(
     'rightColumnName' => 'rgt', //optional (default rgt)
     'levelColumnName' => 'level', //optional (default level)
     'parentIdColumnName' => 'parent_id', //optional (default parent_id)
+    'sequenceName' => 'sequence_name_seq', //required for PostgreSQL
 ));
 
 // One of this
