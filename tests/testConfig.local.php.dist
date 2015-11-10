@@ -2,8 +2,16 @@
 /**
  * Your custom DB connection settings
  */
-//define('TEST_STEFANO_DB_ADAPTER', 'mysql');
-//define('TEST_STEFANO_DB_HOSTNAME', '127.0.0.1');
-//define('TEST_STEFANO_DB_DB_NAME', '');
-//define('TEST_STEFANO_DB_USER', '');
-//define('TEST_STEFANO_DB_PASSWORD', '');
+if('mysql' == TEST_STEFANO_DB_ADAPTER) {
+    // define('TEST_STEFANO_DB_HOSTNAME', '127.0.0.1');
+    // define('TEST_STEFANO_DB_DB_NAME', 'stefano_tests');
+    // define('TEST_STEFANO_DB_USER', 'travis');
+    // define('TEST_STEFANO_DB_PASSWORD', '');
+} elseif('pgsql' == TEST_STEFANO_DB_ADAPTER) {
+    // define('TEST_STEFANO_DB_HOSTNAME', '127.0.0.1');
+    // define('TEST_STEFANO_DB_DB_NAME', 'stefano_tests');
+    // define('TEST_STEFANO_DB_USER', 'travis');
+    // define('TEST_STEFANO_DB_PASSWORD', '');
+} else {
+    throw new \Exception(sprintf('Unsupported adapter "%s"', TEST_STEFANO_DB_ADAPTER));
+}

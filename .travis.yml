@@ -1,4 +1,5 @@
 language: php
+
 php:
   - 5.3
   - 5.4
@@ -7,19 +8,30 @@ php:
   - 7
   - nightly
   - hhvm
+
+env:
+  - DB=mysql
+  - DB=pgsql
+
 sudo: false
+
 cache:
   directories:
     - $HOME/.composer/cache
+
 before_script:
   - composer self-update
   - composer install --dev
-  - mysql -e 'create database stefano_tests;'
-script: phpunit --configuration tests/phpunit.xml --coverage-clover tests/clover.xml
+  - sh -c "if [ '$DB' = 'mysql' ]; then mysql -e 'create database stefano_tests;'; fi"
+  - sh -c "if [ '$DB' = 'pgsql' ]; then psql -c 'create database stefano_tests;' -U postgres; fi"
+
+script: vendor/bin/phpunit --configuration tests/phpunit.$DB.xml --coverage-clover tests/clover.xml
+
 after_script:
   - php vendor/bin/coveralls
   - wget https://scrutinizer-ci.com/ocular.phar
   - php ocular.phar code-coverage:upload --format=php-clover tests/clover.xml
+
 matrix:
   fast_finish: true
   allow_failures:
