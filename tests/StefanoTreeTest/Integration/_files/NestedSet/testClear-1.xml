@@ -9,6 +9,7 @@
                 <field name="rgt">2</field>
                 <field name="parent_id">0</field>
                 <field name="level">0</field>
+                <field name="unrelated_id">2</field>
             </row>
         </table_data>
     </database>

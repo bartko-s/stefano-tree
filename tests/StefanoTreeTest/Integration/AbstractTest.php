@@ -59,6 +59,7 @@ abstract class AbstractTest
                     `rgt` int(11) NOT NULL,
                     `parent_id` int(11) DEFAULT NULL,
                     `level` int(11) DEFAULT NULL,
+                    `unrelated_id` int(11) DEFAULT NULL,
                     PRIMARY KEY (`tree_traversal_id`),
                     KEY `parent_id` (`parent_id`),
                     KEY `level` (`level`),
@@ -91,6 +92,7 @@ abstract class AbstractTest
             'rgt' => '29',
             'parent_id' => '6',
             'level' => '3',
+            'unrelated_id' => '1',
         );
         
         $nodeData = $this->treeAdapter
@@ -459,6 +461,7 @@ abstract class AbstractTest
                 'rgt' => '50',
                 'parent_id' => '0',
                 'level' => '0',
+                'unrelated_id' => '2',
             ),
             array(
                 'tree_traversal_id' => '3',
@@ -467,6 +470,7 @@ abstract class AbstractTest
                 'rgt' => '35',
                 'parent_id' => '1',
                 'level' => '1',
+                'unrelated_id' => '1',
             ),
             array(
                 'tree_traversal_id' => '6',
@@ -475,6 +479,7 @@ abstract class AbstractTest
                 'rgt' => '32',
                 'parent_id' => '3',
                 'level' => '2',
+                'unrelated_id' => '1',
             ),
         );
         $this->assertSame($expected, $return);
@@ -490,6 +495,7 @@ abstract class AbstractTest
                 'rgt' => '35',
                 'parent_id' => '1',
                 'level' => '1',
+                'unrelated_id' => '1',
             ),
             array(
                 'tree_traversal_id' => '6',
@@ -498,6 +504,7 @@ abstract class AbstractTest
                 'rgt' => '32',
                 'parent_id' => '3',
                 'level' => '2',
+                'unrelated_id' => '1',
             ),
         );
         $this->assertSame($expected, $return);
@@ -513,6 +520,7 @@ abstract class AbstractTest
                 'rgt' => '50',
                 'parent_id' => '0',
                 'level' => '0',
+                'unrelated_id' => '2',
             ),
             array(
                 'tree_traversal_id' => '3',
@@ -521,6 +529,7 @@ abstract class AbstractTest
                 'rgt' => '35',
                 'parent_id' => '1',
                 'level' => '1',
+                'unrelated_id' => '1',
             ),
         );
         $this->assertSame($expected, $return);
@@ -548,6 +557,7 @@ abstract class AbstractTest
                 'rgt' => '25',
                 'parent_id' => '18',
                 'level' => '5',
+                'unrelated_id' => '1',
             ),
             array(
                 'tree_traversal_id' => '24',
@@ -556,6 +566,7 @@ abstract class AbstractTest
                 'rgt' => '22',
                 'parent_id' => '21',
                 'level' => '6',
+                'unrelated_id' => '1',
             ),
             array(
                 'tree_traversal_id' => '25',
@@ -564,6 +575,7 @@ abstract class AbstractTest
                 'rgt' => '24',
                 'parent_id' => '21',
                 'level' => '6',
+                'unrelated_id' => '1',
             ),
         );
         $this->assertSame($expected, $return);
@@ -579,6 +591,7 @@ abstract class AbstractTest
                 'rgt' => '25',
                 'parent_id' => '18',
                 'level' => '5',
+                'unrelated_id' => '1',
             ),
             array(
                 'tree_traversal_id' => '24',
@@ -587,6 +600,7 @@ abstract class AbstractTest
                 'rgt' => '22',
                 'parent_id' => '21',
                 'level' => '6',
+                'unrelated_id' => '1',
             ),
             array(
                 'tree_traversal_id' => '25',
@@ -595,6 +609,7 @@ abstract class AbstractTest
                 'rgt' => '24',
                 'parent_id' => '21',
                 'level' => '6',
+                'unrelated_id' => '1',
             ),
             array(
                 'tree_traversal_id' => '22',
@@ -603,6 +618,7 @@ abstract class AbstractTest
                 'rgt' => '27',
                 'parent_id' => '18',
                 'level' => '5',
+                'unrelated_id' => '1',
             ),
         );
         $this->assertSame($expected, $return);
@@ -618,6 +634,7 @@ abstract class AbstractTest
                 'rgt' => '28',
                 'parent_id' => '12',
                 'level' => '4',
+                'unrelated_id' => '1',
             ),
             array(
                 'tree_traversal_id' => '21',
@@ -626,6 +643,7 @@ abstract class AbstractTest
                 'rgt' => '25',
                 'parent_id' => '18',
                 'level' => '5',
+                'unrelated_id' => '1',
             ),
             array(
                 'tree_traversal_id' => '22',
@@ -634,6 +652,7 @@ abstract class AbstractTest
                 'rgt' => '27',
                 'parent_id' => '18',
                 'level' => '5',
+                'unrelated_id' => '1',
             ),
         );
         $this->assertSame($expected, $return);
@@ -649,6 +668,7 @@ abstract class AbstractTest
                 'rgt' => '29',
                 'parent_id' => '6',
                 'level' => '3',
+                'unrelated_id' => '1',
             ),
             array(
                 'tree_traversal_id' => '18',
@@ -657,6 +677,7 @@ abstract class AbstractTest
                 'rgt' => '28',
                 'parent_id' => '12',
                 'level' => '4',
+                'unrelated_id' => '1',
             ),
             array(
                 'tree_traversal_id' => '22',
@@ -665,6 +686,7 @@ abstract class AbstractTest
                 'rgt' => '27',
                 'parent_id' => '18',
                 'level' => '5',
+                'unrelated_id' => '1',
             ),
         );
         $this->assertSame($expected, $return);
@@ -687,6 +709,7 @@ abstract class AbstractTest
                 'rgt' => '25',
                 'parent_id' => '18',
                 'level' => '5',
+                'unrelated_id' => '1',
             ),
             array(
                 'tree_traversal_id' => '22',
@@ -695,6 +718,7 @@ abstract class AbstractTest
                 'rgt' => '27',
                 'parent_id' => '18',
                 'level' => '5',
+                'unrelated_id' => '1',
             ),
         );
         $this->assertEquals($expected, $return);
@@ -719,6 +743,7 @@ abstract class AbstractTest
             'rgt' => '123456',
             'tree_traversal_id' => '123456',
             'level' => '123456',
+            'unrelated_id' => '1',
             'parent_id' => '123456',
         );
         $return = $this->treeAdapter
