@@ -25,4 +25,33 @@ class NestedSetWithZend1DbAdapterTest
         ));
         return new TreeAdapter(new Zend1DbAdapter($options, $adapter));
     }
+
+    public function testSpecialSelect() {
+        $this->getDataSet();
+        /** @var Zend1DbAdapter $adapter */
+        $adapter = $this->treeAdapter->getAdapter();
+
+        $adapter->getDbAdapter()->insert('tree_traversal', [
+            'name' => 'test',
+            'unrelated_id' => '33',
+        ]);
+        $select = $adapter->getDefaultDbSelect();
+        $select->where('unrelated_id != ?', 33);
+        $adapter->setDefaultDbSelect($select);
+        $data = array(
+            'name' => 'ahoj',
+            'unrelated_id' => 1
+        );
+        $return = $this->treeAdapter
+            ->addNodePlacementBottom(1);
+        $lastGeneratedValue = $this->treeAdapter
+            ->addNodePlacementBottom(12);
+        $lastGeneratedValue = $this->treeAdapter
+            ->addNodePlacementBottom(19, $data);
+
+        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/testAddNodePlacementBottom-2-custom.xml');
+        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+        $this->assertEquals(28, $lastGeneratedValue);
+    }
 }

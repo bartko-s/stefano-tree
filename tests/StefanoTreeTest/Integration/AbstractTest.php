@@ -55,8 +55,8 @@ abstract class AbstractTest
         $sql =  'CREATE TABLE IF NOT EXISTS `tree_traversal` (
                     `tree_traversal_id` int(11) NOT NULL AUTO_INCREMENT,
                     `name` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-                    `lft` int(11) NOT NULL,
-                    `rgt` int(11) NOT NULL,
+                    `lft` int(11) DEFAULT NULL,
+                    `rgt` int(11) DEFAULT NULL,
                     `parent_id` int(11) DEFAULT NULL,
                     `level` int(11) DEFAULT NULL,
                     `unrelated_id` int(11) DEFAULT NULL,

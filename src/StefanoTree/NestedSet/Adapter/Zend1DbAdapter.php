@@ -135,6 +135,11 @@ class Zend1DbAdapter implements AdapterInterface
         $where = array(
             sprintf('%s = ?', $quoteIdColumn) => $nodeId,
         );
+
+        $defaultSelect = $this->getDefaultDbSelect();
+        $wheres = $defaultSelect->getPart(\Zend_Db_Select::WHERE);
+        $where += $wheres;
+
         $dbAdapter->update($options->getTableName(), $data, $where);
 
         return $this;
@@ -151,6 +156,11 @@ class Zend1DbAdapter implements AdapterInterface
         $where = array(
             sprintf('%s != ?', $quoteIdColumn) => $expectNodeId,
         );
+
+        $defaultSelect = $this->getDefaultDbSelect();
+        $wheres = $defaultSelect->getPart(\Zend_Db_Select::WHERE);
+        $where += $wheres;
+
         $db->delete($options->getTableName(), $where);
 
         return $this;
@@ -170,6 +180,12 @@ class Zend1DbAdapter implements AdapterInterface
 
         $dbAdapter = $this->getDbAdapter();
         $sql = 'UPDATE ' . $dbAdapter->quoteIdentifier($options->getTableName()) . ' SET ' . $dbAdapter->quoteIdentifier($options->getLeftColumnName()) . ' = ' . $dbAdapter->quoteIdentifier($options->getLeftColumnName()) . ' + :shift' . ' WHERE ' . $dbAdapter->quoteIdentifier($options->getLeftColumnName()) . ' > :fromIndex';
+
+        $defaultSelect = $this->getDefaultDbSelect();
+        $wheres = $defaultSelect->getPart(\Zend_Db_Select::WHERE);
+        if (count($wheres)) {
+            $sql .= ' AND ' . implode(' ', $wheres);
+        }
 
         $binds = array(
             ':shift' => $shift,
@@ -195,6 +211,12 @@ class Zend1DbAdapter implements AdapterInterface
         $dbAdapter = $this->getDbAdapter();
 
         $sql = 'UPDATE ' . $dbAdapter->quoteIdentifier($options->getTableName()) . ' SET ' . $dbAdapter->quoteIdentifier($options->getRightColumnName()) . ' = ' . $dbAdapter->quoteIdentifier($options->getRightColumnName()) . ' + :shift' . ' WHERE ' . $dbAdapter->quoteIdentifier($options->getRightColumnName()) . ' > :fromIndex';
+
+        $defaultSelect = $this->getDefaultDbSelect();
+        $wheres = $defaultSelect->getPart(\Zend_Db_Select::WHERE);
+        if (count($wheres)) {
+            $sql .= ' AND ' . implode(' ', $wheres);
+        }
 
         $binds = array(
             ':shift' => $shift,
@@ -224,6 +246,11 @@ class Zend1DbAdapter implements AdapterInterface
         $where = array(
             $quotedIdCol . ' = ?' => $nodeId,
         );
+
+        $defaultSelect = $this->getDefaultDbSelect();
+        $wheres = $defaultSelect->getPart(\Zend_Db_Select::WHERE);
+        $where += $wheres;
+
         $dbAdapter->update($options->getTableName(), $bind, $where);
 
         return $this;
@@ -360,6 +387,10 @@ class Zend1DbAdapter implements AdapterInterface
             sprintf('%s <= ?', $dbAdapter->quoteIdentifier($options->getRightColumnName())) => $rightIndex,
         );
 
+        $defaultSelect = $this->getDefaultDbSelect();
+        $wheres = $defaultSelect->getPart(\Zend_Db_Select::WHERE);
+        $where += $wheres;
+
         $dbAdapter->delete($options->getTableName(), $where);
         return $this;
     }
@@ -379,6 +410,12 @@ class Zend1DbAdapter implements AdapterInterface
         $dbAdapter = $this->getDbAdapter();
 
         $sql = 'UPDATE ' . $dbAdapter->quoteIdentifier($options->getTableName()) . ' SET ' . $dbAdapter->quoteIdentifier($options->getLevelColumnName()) . ' = ' . $dbAdapter->quoteIdentifier($options->getLevelColumnName()) . ' + :shift' . ' WHERE ' . $dbAdapter->quoteIdentifier($options->getLeftColumnName()) . ' >= :leftFrom' . ' AND ' . $dbAdapter->quoteIdentifier($options->getRightColumnName()) . ' <= :rightTo';
+
+        $defaultSelect = $this->getDefaultDbSelect();
+        $wheres = $defaultSelect->getPart(\Zend_Db_Select::WHERE);
+        if (count($wheres)) {
+            $sql .= ' AND ' . implode(' ', $wheres);
+        }
 
         $binds = array(
             ':shift' => $shift,
@@ -406,6 +443,12 @@ class Zend1DbAdapter implements AdapterInterface
         $dbAdapter = $this->getDbAdapter();
 
         $sql = 'UPDATE ' . $dbAdapter->quoteIdentifier($options->getTableName()) . ' SET ' . $dbAdapter->quoteIdentifier($options->getLeftColumnName()) . ' = ' . $dbAdapter->quoteIdentifier($options->getLeftColumnName()) . ' + :shift, ' . $dbAdapter->quoteIdentifier($options->getRightColumnName()) . ' = ' . $dbAdapter->quoteIdentifier($options->getRightColumnName()) . ' + :shift' . ' WHERE ' . $dbAdapter->quoteIdentifier($options->getLeftColumnName()) . ' >= :leftFrom' . ' AND ' . $dbAdapter->quoteIdentifier($options->getRightColumnName()) . ' <= :rightTo';
+
+        $defaultSelect = $this->getDefaultDbSelect();
+        $wheres = $defaultSelect->getPart(\Zend_Db_Select::WHERE);
+        if (count($wheres)) {
+            $sql .= ' AND ' . implode(' ', $wheres);
+        }
 
         $binds = array(
             ':shift' => $shift,
