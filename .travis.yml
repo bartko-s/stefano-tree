@@ -18,17 +18,19 @@ cache:
     - $HOME/.composer/cache
 
 before_script:
+  - mkdir -p build/logs
   - composer self-update
   - composer install --dev
   - sh -c "if [ '$DB' = 'mysql' ]; then mysql -e 'create database stefano_tests;'; fi"
   - sh -c "if [ '$DB' = 'pgsql' ]; then psql -c 'create database stefano_tests;' -U postgres; fi"
 
-script: vendor/bin/phpunit --configuration tests/phpunit.$DB.xml --coverage-clover tests/clover.xml
+script: vendor/bin/phpunit --configuration tests/phpunit.$DB.xml --coverage-php build/logs/clover-$DB.cov
 
-after_script:
-  - php vendor/bin/coveralls
+after_success:
+  - php vendor/bin/phpcov merge --clover build/logs/clover.xml build/logs
+  - travis_retry php vendor/bin/coveralls
   - wget https://scrutinizer-ci.com/ocular.phar
-  - php ocular.phar code-coverage:upload --format=php-clover tests/clover.xml
+  - php ocular.phar code-coverage:upload --format=php-clover build/logs/clover.xml
 
 matrix:
   fast_finish: true

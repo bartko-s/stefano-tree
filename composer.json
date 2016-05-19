@@ -35,9 +35,10 @@
         "phpunit/PHPUnit": ">=3.7.0",
         "phpunit/dbunit": ">=1.0.0",
         "mockery/mockery": ">=0.8.0",
-        "satooshi/php-coveralls": "dev-master",
+        "satooshi/php-coveralls": "^1.0",
         "zf1/zend-db": "^1.12",
-        "fabpot/php-cs-fixer": "^1.11"
+        "fabpot/php-cs-fixer": "^1.11",
+        "phpunit/phpcov": "^3.0"
     },
     "autoload": {
         "psr-0": {
