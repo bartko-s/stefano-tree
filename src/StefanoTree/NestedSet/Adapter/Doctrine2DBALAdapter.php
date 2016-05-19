@@ -23,7 +23,8 @@ class Doctrine2DBALAdapter
      * @param Options $options
      * @param DbConnection $connection
      */
-    public function __construct(Options $options, DbConnection $connection) {
+    public function __construct(Options $options, DbConnection $connection)
+    {
         $this->options = $options;
         $this->connection = $connection;
     }
@@ -31,14 +32,16 @@ class Doctrine2DBALAdapter
     /**
      * @return Options
      */
-    private function getOptions() {
+    private function getOptions()
+    {
         return $this->options;
     }
 
     /**
      * @return DbConnection
      */
-    private function getConnection() {
+    private function getConnection()
+    {
         return $this->connection;
     }
 
@@ -49,7 +52,8 @@ class Doctrine2DBALAdapter
      * @param array $data
      * @return array
      */
-    private function cleanData(array $data) {
+    private function cleanData(array $data)
+    {
         $options = $this->getOptions();
 
         $disallowedDataKeys = array(
@@ -67,7 +71,8 @@ class Doctrine2DBALAdapter
      * @param QueryBuilder $dbSelect
      * @return void
      */
-    public function setDefaultDbSelect(QueryBuilder $dbSelect) {
+    public function setDefaultDbSelect(QueryBuilder $dbSelect)
+    {
         $this->defaultDbSelect = $dbSelect;
     }
 
@@ -75,16 +80,17 @@ class Doctrine2DBALAdapter
      * Return clone of default db select
      * @return QueryBuilder
      */
-    public function getDefaultDbSelect() {
+    public function getDefaultDbSelect()
+    {
         $options = $this->getOptions();
 
-        if(null == $this->defaultDbSelect) {
+        if (null == $this->defaultDbSelect) {
             $queryBuilder = $this->getConnection()
                                  ->createQueryBuilder();
 
             $queryBuilder->select('*')
                          ->from($options->getTableName(), null);
-            
+
             $this->defaultDbSelect = $queryBuilder;
         }
 
@@ -96,8 +102,9 @@ class Doctrine2DBALAdapter
     /**
      * @return LockSqlBuilderInterface
      */
-    private function getLockSqlBuilder() {
-        if(null == $this->lockSqlBuilder) {
+    private function getLockSqlBuilder()
+    {
+        if (null == $this->lockSqlBuilder) {
             $vendorName = $this->getConnection()
                                ->getDatabasePlatform()
                                ->getName();
@@ -109,50 +116,56 @@ class Doctrine2DBALAdapter
         return $this->lockSqlBuilder;
     }
 
-    public function lockTable() {
+    public function lockTable()
+    {
         $tableName = $this->getOptions()
                           ->getTableName();
 
         $sql = $this->getLockSqlBuilder()
                     ->getLockSqlString($tableName);
 
-        if(null != $sql) {
+        if (null != $sql) {
             $this->getConnection()
                  ->executeQuery($sql);
         }
     }
 
-    public function unlockTable() {
+    public function unlockTable()
+    {
         $sql = $this->getLockSqlBuilder()
                     ->getUnlockSqlString();
 
-        if(null != $sql) {
+        if (null != $sql) {
             $this->getConnection()
                  ->executeQuery($sql);
         }
     }
 
-    public function beginTransaction() {
+    public function beginTransaction()
+    {
         $this->getConnection()
              ->beginTransaction();
     }
 
-    public function commitTransaction() {
+    public function commitTransaction()
+    {
         $this->getConnection()
              ->commit();
     }
 
-    public function rollbackTransaction() {
+    public function rollbackTransaction()
+    {
         $this->getConnection()
              ->rollBack();
     }
 
-    public function update($nodeId, array $data, NodeInfo $nodeInfo = null) {
+    public function update($nodeId, array $data, NodeInfo $nodeInfo = null)
+    {
         $options = $this->getOptions();
 
         $connection = $this->getConnection();
 
-        if(null == $nodeInfo) {
+        if (null == $nodeInfo) {
             $data = $this->cleanData($data);
         } else {
             $data[$options->getParentIdColumnName()] = $nodeInfo->getParentId();
@@ -175,7 +188,8 @@ class Doctrine2DBALAdapter
         $connection->executeUpdate($sql, $data);
     }
 
-    public function insert(NodeInfo $nodeInfo, array $data) {
+    public function insert(NodeInfo $nodeInfo, array $data)
+    {
         $options = $this->getOptions();
 
         $connection = $this->getConnection();
@@ -190,7 +204,8 @@ class Doctrine2DBALAdapter
         return $connection->lastInsertId($options->getSequenceName());
     }
 
-    public function delete($leftIndex, $rightIndex) {
+    public function delete($leftIndex, $rightIndex)
+    {
         $options = $this->getOptions();
 
         $connection = $this->getConnection();
@@ -208,7 +223,8 @@ class Doctrine2DBALAdapter
         $connection->executeQuery($sql, $params);
     }
 
-    public function deleteAll($expectNodeId) {
+    public function deleteAll($expectNodeId)
+    {
         $options = $this->getOptions();
         $connection = $this->getConnection();
 
@@ -223,11 +239,12 @@ class Doctrine2DBALAdapter
         $connection->executeQuery($sql, $params);
     }
 
-    public function moveLeftIndexes($fromIndex, $shift) {
+    public function moveLeftIndexes($fromIndex, $shift)
+    {
         $options = $this->getOptions();
 
-        if(0 == $shift) {
-            return null;
+        if (0 == $shift) {
+            return;
         }
 
         $connection = $this->getConnection();
@@ -245,11 +262,12 @@ class Doctrine2DBALAdapter
         $connection->executeUpdate($sql, $params);
     }
 
-    public function moveRightIndexes($fromIndex, $shift) {
+    public function moveRightIndexes($fromIndex, $shift)
+    {
         $options = $this->getOptions();
 
-        if(0 == $shift) {
-            return null;
+        if (0 == $shift) {
+            return;
         }
 
         $connection = $this->getConnection();
@@ -267,7 +285,8 @@ class Doctrine2DBALAdapter
         $connection->executeUpdate($sql, $params);
     }
 
-    public function updateParentId($nodeId, $newParentId) {
+    public function updateParentId($nodeId, $newParentId)
+    {
         $options = $this->getOptions();
 
         $connection = $this->getConnection();
@@ -285,11 +304,12 @@ class Doctrine2DBALAdapter
         $connection->executeUpdate($sql, $params);
     }
 
-    public function updateLevels($leftIndexFrom, $rightIndexTo, $shift) {
+    public function updateLevels($leftIndexFrom, $rightIndexTo, $shift)
+    {
         $options = $this->getOptions();
 
-        if(0 == $shift) {
-            return null;
+        if (0 == $shift) {
+            return;
         }
 
         $connection = $this->getConnection();
@@ -309,8 +329,9 @@ class Doctrine2DBALAdapter
         $connection->executeUpdate($sql, $params);
     }
 
-    public function moveBranch($leftIndexFrom, $rightIndexTo, $shift) {
-        if(0 == $shift) {
+    public function moveBranch($leftIndexFrom, $rightIndexTo, $shift)
+    {
+        if (0 == $shift) {
             return;
         }
 
@@ -334,7 +355,8 @@ class Doctrine2DBALAdapter
         $connection->executeUpdate($sql, $params);
     }
 
-    public function getNode($nodeId) {
+    public function getNode($nodeId)
+    {
         $options = $this->getOptions();
 
         $nodeId = (int) $nodeId;
@@ -353,16 +375,17 @@ class Doctrine2DBALAdapter
 
         $node = $stmt->fetch();
 
-        if(is_array($node)) {
+        if (is_array($node)) {
             return $node;
         }
     }
 
-    public function getNodeInfo($nodeId) {
+    public function getNodeInfo($nodeId)
+    {
         $options = $this->getOptions();
         $result = $this->getNode($nodeId);
 
-        if(null == $result) {
+        if (null == $result) {
             $result = null;
         } else {
             $id        = $result[$options->getIdColumnName()];
@@ -377,14 +400,15 @@ class Doctrine2DBALAdapter
         return $result;
     }
 
-    public function getPath($nodeId, $startLevel = 0, $excludeLastNode = false) {
+    public function getPath($nodeId, $startLevel = 0, $excludeLastNode = false)
+    {
         $options = $this->getOptions();
 
         $startLevel = (int) $startLevel;
 
         // node does not exist
-        if(!$nodeInfo = $this->getNodeInfo($nodeId)) {
-            return null;
+        if (!$nodeInfo = $this->getNodeInfo($nodeId)) {
+            return;
         }
 
         $connection = $this->getConnection();
@@ -399,13 +423,13 @@ class Doctrine2DBALAdapter
             'rightIndex' => $nodeInfo->getRight(),
         );
 
-        if(0 < $startLevel) {
+        if (0 < $startLevel) {
             $sql->andWhere($options->getLevelColumnName() . ' >= :startLevel');
 
             $params['startLevel'] = $startLevel;
         }
 
-        if(true == $excludeLastNode) {
+        if (true == $excludeLastNode) {
             $sql->andWhere($options->getLevelColumnName() . ' < :level');
 
             $params['level'] = $nodeInfo->getLevel();
@@ -415,16 +439,17 @@ class Doctrine2DBALAdapter
 
         $result = $stmt->fetchAll();
 
-        if(is_array($result)) {
+        if (is_array($result)) {
             return $result;
         }
     }
 
-    public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranch = null) {
+    public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranch = null)
+    {
         $options = $this->getOptions();
 
-        if(!$nodeInfo = $this->getNodeInfo($nodeId)) {
-            return null;
+        if (!$nodeInfo = $this->getNodeInfo($nodeId)) {
+            return;
         }
 
         $connection = $this->getConnection();
@@ -433,18 +458,18 @@ class Doctrine2DBALAdapter
 
         $params = array();
 
-        if(0 != $startLevel) {
+        if (0 != $startLevel) {
             $sql->andWhere($options->getLevelColumnName() . ' >= :startLevel');
 
             $params['startLevel'] = $nodeInfo->getLevel() + (int) $startLevel;
         }
 
-        if(null != $levels) {
+        if (null != $levels) {
             $sql->andWhere($options->getLevelColumnName() . '< :endLevel');
             $params['endLevel'] = $nodeInfo->getLevel() + (int) $startLevel + abs($levels);
         }
 
-        if(null != $excludeBranch && null != ($excludeNodeInfo = $this->getNodeInfo($excludeBranch))) {
+        if (null != $excludeBranch && null != ($excludeNodeInfo = $this->getNodeInfo($excludeBranch))) {
             $sql->andWhere('(' . $options->getLeftColumnName() . ' BETWEEN :left AND :exLeftMinusOne'
                     . ') OR (' . $options->getLeftColumnName() . ' BETWEEN :exRightPlusOne AND :right)')
                 ->andWhere('(' . $options->getRightColumnName() . ' BETWEEN :exRightPlusOne AND :right'
@@ -466,7 +491,7 @@ class Doctrine2DBALAdapter
 
         $result = $stmt->fetchAll();
 
-        if(0 < count($result)) {
+        if (0 < count($result)) {
             return $result;
         }
     }

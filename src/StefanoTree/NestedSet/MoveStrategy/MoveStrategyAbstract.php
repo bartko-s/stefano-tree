@@ -13,7 +13,8 @@ abstract class MoveStrategyAbstract
      * @param NodeInfo $sourceNode
      * @param NodeInfo $targetNode
      */
-    public function __construct(NodeInfo $sourceNode, NodeInfo $targetNode) {
+    public function __construct(NodeInfo $sourceNode, NodeInfo $targetNode)
+    {
         $this->sourceNode = $sourceNode;
         $this->targetNode = $targetNode;
     }
@@ -21,21 +22,24 @@ abstract class MoveStrategyAbstract
     /**
      * @return NodeInfo
      */
-    protected function getSourceNode() {
+    protected function getSourceNode()
+    {
         return $this->sourceNode;
     }
 
     /**
      * @return NodeInfo
      */
-    protected function getTargetNode() {
+    protected function getTargetNode()
+    {
         return $this->targetNode;
     }
 
     /**
      * @return boolean
      */
-    protected function isMovedUp() {
+    protected function isMovedUp()
+    {
         return ($this->getTargetNode()->getRight() < $this->getSourceNode()->getLeft()) ?
             true : false;
     }
@@ -43,7 +47,8 @@ abstract class MoveStrategyAbstract
     /**
      * @return boolean
      */
-    protected function isMovedDown() {
+    protected function isMovedDown()
+    {
         return ($this->getSourceNode()->getRight() < $this->getTargetNode()->getLeft()) ?
             true : false;
     }
@@ -51,22 +56,26 @@ abstract class MoveStrategyAbstract
     /**
      * @return boolean
      */
-    protected function isMovedToRoot() {
+    protected function isMovedToRoot()
+    {
         return ($this->getSourceNode()->getLeft() > $this->getTargetNode()->getLeft() &&
                     $this->getSourceNode()->getRight() < $this->getTargetNode()->getRight()) ?
             true : false;
     }
 
-    public function getIndexShift() {
+    public function getIndexShift()
+    {
         return $this->getSourceNode()->getRight() - $this->getSourceNode()->getLeft() + 1;
     }
 
-    public function canMoveBranch($rootNodeId) {
+    public function canMoveBranch($rootNodeId)
+    {
         return ($this->isTargetNodeInsideSourceBranche()) ?
             false : true;
     }
 
-    protected function isTargetNodeInsideSourceBranche() {
+    protected function isTargetNodeInsideSourceBranche()
+    {
         $targetNode = $this->getTargetNode();
         $sourceNode = $this->getSourceNode();
 
@@ -75,7 +84,8 @@ abstract class MoveStrategyAbstract
             true : false;
     }
 
-    protected function isTargetNodeRootNode($rootNodeId) {
+    protected function isTargetNodeRootNode($rootNodeId)
+    {
         return ($rootNodeId == $this->getTargetNode()->getId()) ?
             true : false;
     }

@@ -1,12 +1,12 @@
 <?php
-if(file_exists(__DIR__ . '/testConfig.local.php')) {
+if (file_exists(__DIR__ . '/testConfig.local.php')) {
     include_once __DIR__ . '/testConfig.local.php';
 }
 
 /**
  * DB connection settings
  */
-if('mysql' == TEST_STEFANO_DB_ADAPTER) {
+if ('mysql' == TEST_STEFANO_DB_ADAPTER) {
     defined('TEST_STEFANO_DB_HOSTNAME')
     || define('TEST_STEFANO_DB_HOSTNAME', '127.0.0.1');
     defined('TEST_STEFANO_DB_DB_NAME')
@@ -15,7 +15,7 @@ if('mysql' == TEST_STEFANO_DB_ADAPTER) {
     || define('TEST_STEFANO_DB_USER', 'travis');
     defined('TEST_STEFANO_DB_PASSWORD')
     || define('TEST_STEFANO_DB_PASSWORD', '');
-} elseif('pgsql' == TEST_STEFANO_DB_ADAPTER) {
+} elseif ('pgsql' == TEST_STEFANO_DB_ADAPTER) {
     defined('TEST_STEFANO_DB_HOSTNAME')
     || define('TEST_STEFANO_DB_HOSTNAME', '127.0.0.1');
     defined('TEST_STEFANO_DB_DB_NAME')

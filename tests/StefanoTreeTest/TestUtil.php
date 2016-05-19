@@ -7,12 +7,13 @@ class TestUtil
 {
     private static $dbConnection;
 
-    public static function createDbScheme() {
+    public static function createDbScheme()
+    {
         $connection = self::getPDOConnection();
 
         $queries = array();
 
-        if('mysql' == TEST_STEFANO_DB_ADAPTER) {
+        if ('mysql' == TEST_STEFANO_DB_ADAPTER) {
             $queries[] = 'DROP TABLE IF EXISTS `tree_traversal`';
 
             $queries[] =  'CREATE TABLE `tree_traversal` (
@@ -28,7 +29,7 @@ class TestUtil
                 KEY `lft` (`lft`),
                 KEY `rgt` (`rgt`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin';
-        } elseif('pgsql' == TEST_STEFANO_DB_ADAPTER) {
+        } elseif ('pgsql' == TEST_STEFANO_DB_ADAPTER) {
             $queries[] = 'DROP TABLE IF EXISTS tree_traversal';
 
             $queries[] = 'CREATE TABLE tree_traversal (
@@ -44,7 +45,7 @@ class TestUtil
             throw new \Exception(sprintf('Unsupported vendor %s', TEST_STEFANO_DB_ADAPTER));
         }
 
-        foreach($queries as $query) {
+        foreach ($queries as $query) {
             $connection->query($query);
         }
     }
@@ -53,7 +54,8 @@ class TestUtil
      * Singleton
      * @return PDO
      */
-    public static function getPDOConnection() {
+    public static function getPDOConnection()
+    {
         if (null == self::$dbConnection) {
             $adapter    = strtolower(TEST_STEFANO_DB_ADAPTER);
             $hostname   = TEST_STEFANO_DB_HOSTNAME;

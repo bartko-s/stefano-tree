@@ -28,12 +28,13 @@ class NestedSet
      * @return TreeInterface
      * @throws InvalidArgumentException
      */
-    static public function factory(Options $options, $dbAdapter) {
-        if($dbAdapter instanceof ExtendedAdapterInterface) {
+    public static function factory(Options $options, $dbAdapter)
+    {
+        if ($dbAdapter instanceof ExtendedAdapterInterface) {
             $adapter = new Zend2DbAdapter($options, $dbAdapter);
-        } elseif($dbAdapter instanceof DoctrineConnection) {
+        } elseif ($dbAdapter instanceof DoctrineConnection) {
             $adapter = new Doctrine2DBALAdapter($options, $dbAdapter);
-        } elseif($dbAdapter instanceof Zend_Db_Adapter_Abstract) {
+        } elseif ($dbAdapter instanceof Zend_Db_Adapter_Abstract) {
             $adapter = new Zend1DbAdapter($options, $dbAdapter);
         } else {
             throw new InvalidArgumentException('Db adapter "' . get_class($dbAdapter)
@@ -46,21 +47,24 @@ class NestedSet
     /**
      * @param AdapterInterface $adapter
      */
-    public function __construct(AdapterInterface $adapter) {
+    public function __construct(AdapterInterface $adapter)
+    {
         $this->adapter = $adapter;
     }
 
     /**
      * @return AdapterInterface
      */
-    public function getAdapter() {
+    public function getAdapter()
+    {
         return $this->adapter;
     }
 
     /**
      * @return int
      */
-    private function getRootNodeId() {
+    private function getRootNodeId()
+    {
         return 1;
     }
 
@@ -70,23 +74,25 @@ class NestedSet
      * @param int $nodeId
      * @return boolean
      */
-    private function isRoot($nodeId) {
-        if($this->getRootNodeId() == $nodeId) {
+    private function isRoot($nodeId)
+    {
+        if ($this->getRootNodeId() == $nodeId) {
             return true;
         } else {
             return false;
         }
     }
-    
+
     /**
      * @param int $nodeId
      * @param array $data
      */
-    public function updateNode($nodeId, $data) {
+    public function updateNode($nodeId, $data)
+    {
         $this->getAdapter()
              ->update($nodeId, $data);
     }
-    
+
     /**
      * @param int $targetNodeId
      * @param string $placement
@@ -94,7 +100,8 @@ class NestedSet
      * @return int|false Id of new created node. False if node has not been created
      * @throws Exception
      */
-    protected function addNode($targetNodeId, $placement, $data = array()) {
+    protected function addNode($targetNodeId, $placement, $data = array())
+    {
         $adapter = $this->getAdapter();
 
         $adapter->beginTransaction();
@@ -103,7 +110,7 @@ class NestedSet
 
             $targetNode = $adapter->getNodeInfo($targetNodeId);
 
-            if(null == $targetNode) {
+            if (null == $targetNode) {
                 $adapter->commitTransaction();
                 $adapter->unlockTable();
 
@@ -112,7 +119,7 @@ class NestedSet
 
             $addStrategy = $this->getAddStrategy($targetNode, $placement);
 
-            if(false == $addStrategy->canAddNewNode($this->getRootNodeId())) {
+            if (false == $addStrategy->canAddNewNode($this->getRootNodeId())) {
                 $adapter->commitTransaction();
                 $adapter->unlockTable();
 
@@ -136,13 +143,13 @@ class NestedSet
 
             $adapter->commitTransaction();
             $adapter->unlockTable();
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $adapter->rollbackTransaction();
             $adapter->unlockTable();
 
             throw $e;
         }
-            
+
         return $lastGeneratedValue;
     }
 
@@ -152,7 +159,8 @@ class NestedSet
      * @return AddStrategyInterface
      * @throws InvalidArgumentException
      */
-    private function getAddStrategy(NodeInfo $targetNode, $placement) {
+    private function getAddStrategy(NodeInfo $targetNode, $placement)
+    {
         switch ($placement) {
             case self::PLACEMENT_BOTTOM:
                 return new AddStrategy\Bottom($targetNode);
@@ -164,24 +172,28 @@ class NestedSet
                 return new AddStrategy\ChildTop($targetNode);
         // @codeCoverageIgnoreStart
             default:
-                throw new InvalidArgumentException('Unknown placement "' . $placement . '"');                
+                throw new InvalidArgumentException('Unknown placement "' . $placement . '"');
         }
         // @codeCoverageIgnoreEnd
     }
 
-    public function addNodePlacementBottom($targetNodeId, $data = array()) {
+    public function addNodePlacementBottom($targetNodeId, $data = array())
+    {
         return $this->addNode($targetNodeId, self::PLACEMENT_BOTTOM, $data);
     }
-    
-    public function addNodePlacementTop($targetNodeId, $data = array()) {
+
+    public function addNodePlacementTop($targetNodeId, $data = array())
+    {
         return $this->addNode($targetNodeId, self::PLACEMENT_TOP, $data);
     }
-    
-    public function addNodePlacementChildBottom($targetNodeId, $data = array()) {
+
+    public function addNodePlacementChildBottom($targetNodeId, $data = array())
+    {
         return $this->addNode($targetNodeId, self::PLACEMENT_CHILD_BOTTOM, $data);
     }
-    
-    public function addNodePlacementChildTop($targetNodeId, $data = array()) {
+
+    public function addNodePlacementChildTop($targetNodeId, $data = array())
+    {
         return $this->addNode($targetNodeId, self::PLACEMENT_CHILD_TOP, $data);
     }
 
@@ -193,21 +205,22 @@ class NestedSet
      * @throws Exception
      * @throws InvalidArgumentException
      */
-    protected function moveNode($sourceNodeId, $targetNodeId, $placement) {
+    protected function moveNode($sourceNodeId, $targetNodeId, $placement)
+    {
         $adapter = $this->getAdapter();
-                
+
         //source node and target node are equal
-        if($sourceNodeId == $targetNodeId) {
+        if ($sourceNodeId == $targetNodeId) {
             return false;
         }
 
         $adapter->beginTransaction();
         try {
             $adapter->lockTable();
-            
+
             //source node or target node does not exist
-            if(!$sourceNodeInfo = $adapter->getNodeInfo($sourceNodeId)
-                OR !$targetNodeInfo = $adapter->getNodeInfo($targetNodeId)) {
+            if (!$sourceNodeInfo = $adapter->getNodeInfo($sourceNodeId)
+                or !$targetNodeInfo = $adapter->getNodeInfo($targetNodeId)) {
                 $adapter->commitTransaction();
                 $adapter->unlockTable();
 
@@ -216,14 +229,14 @@ class NestedSet
 
             $moveStrategy = $this->getMoveStrategy($sourceNodeInfo, $targetNodeInfo, $placement);
 
-            if(!$moveStrategy->canMoveBranch($this->getRootNodeId())) {
+            if (!$moveStrategy->canMoveBranch($this->getRootNodeId())) {
                 $adapter->commitTransaction();
                 $adapter->unlockTable();
-                
+
                 return false;
             }
-                        
-            if($moveStrategy->isSourceNodeAtRequiredPosition()) {
+
+            if ($moveStrategy->isSourceNodeAtRequiredPosition()) {
                 $adapter->commitTransaction();
                 $adapter->unlockTable();
 
@@ -232,7 +245,7 @@ class NestedSet
 
             //update parent id
             $newParentId = $moveStrategy->getNewParentId();
-            if($sourceNodeInfo->getParentId() != $newParentId) {
+            if ($sourceNodeInfo->getParentId() != $newParentId) {
                 $adapter->updateParentId($sourceNodeId, $newParentId);
             }
 
@@ -258,29 +271,33 @@ class NestedSet
 
             $adapter->commitTransaction();
             $adapter->unlockTable();
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $adapter->rollbackTransaction();
             $adapter->unlockTable();
-            
+
             throw $e;
         }
-        
+
         return true;
     }
-    
-    public function moveNodePlacementBottom($sourceNodeId, $targetNodeId) {
+
+    public function moveNodePlacementBottom($sourceNodeId, $targetNodeId)
+    {
         return $this->moveNode($sourceNodeId, $targetNodeId, self::PLACEMENT_BOTTOM);
     }
 
-    public function moveNodePlacementTop($sourceNodeId, $targetNodeId) {
+    public function moveNodePlacementTop($sourceNodeId, $targetNodeId)
+    {
         return $this->moveNode($sourceNodeId, $targetNodeId, self::PLACEMENT_TOP);
     }
 
-    public function moveNodePlacementChildBottom($sourceNodeId, $targetNodeId) {
+    public function moveNodePlacementChildBottom($sourceNodeId, $targetNodeId)
+    {
         return $this->moveNode($sourceNodeId, $targetNodeId, self::PLACEMENT_CHILD_BOTTOM);
-    }    
-    
-    public function moveNodePlacementChildTop($sourceNodeId, $targetNodeId) {
+    }
+
+    public function moveNodePlacementChildTop($sourceNodeId, $targetNodeId)
+    {
         return $this->moveNode($sourceNodeId, $targetNodeId, self::PLACEMENT_CHILD_TOP);
     }
 
@@ -291,7 +308,8 @@ class NestedSet
      * @return MoveStrategyInterface
      * @throws InvalidArgumentException
      */
-    private function getMoveStrategy(NodeInfo $sourceNode, NodeInfo $targetNode, $placement) {
+    private function getMoveStrategy(NodeInfo $sourceNode, NodeInfo $targetNode, $placement)
+    {
         switch ($placement) {
             case self::PLACEMENT_BOTTOM:
                 return new MoveStrategy\Bottom($sourceNode, $targetNode);
@@ -307,9 +325,10 @@ class NestedSet
         }
         // @codeCoverageIgnoreEnd
     }
-    
-    public function deleteBranch($nodeId) {
-        if($this->isRoot($nodeId)) {
+
+    public function deleteBranch($nodeId)
+    {
+        if ($this->isRoot($nodeId)) {
             return false;
         }
 
@@ -318,12 +337,12 @@ class NestedSet
         $adapter->beginTransaction();
         try {
             $adapter->lockTable();
-            
+
             // node does not exist
-            if(!$nodeInfo = $adapter->getNodeInfo($nodeId)) {
+            if (!$nodeInfo = $adapter->getNodeInfo($nodeId)) {
                 $adapter->commitTransaction();
                 $adapter->unlockTable();
-                
+
                 return false;
             }
 
@@ -346,16 +365,18 @@ class NestedSet
 
             throw $e;
         }
-        
+
         return true;
     }
-    
-    public function getPath($nodeId, $startLevel = 0, $excludeLastNode = false) {
+
+    public function getPath($nodeId, $startLevel = 0, $excludeLastNode = false)
+    {
         return $this->getAdapter()
                     ->getPath($nodeId, $startLevel, $excludeLastNode);
     }
-    
-    public function clear(array $data = array()) {
+
+    public function clear(array $data = array())
+    {
         $adapter = $this->getAdapter();
 
         $adapter->beginTransaction();
@@ -375,22 +396,24 @@ class NestedSet
 
             throw $e;
         }
-        
+
         return $this;
-    }        
-    
-    public function getNode($nodeId) {
+    }
+
+    public function getNode($nodeId)
+    {
         return $this->getAdapter()
                     ->getNode($nodeId);
     }
-        
-    public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranch = null) {
+
+    public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranch = null)
+    {
         return $this->getAdapter()
                     ->getDescendants($nodeId, $startLevel, $levels, $excludeBranch);
+    }
 
-    }    
-    
-    public function getChildren($nodeId) {
+    public function getChildren($nodeId)
+    {
         return $this->getDescendants($nodeId, 1, 1);
     }
 }

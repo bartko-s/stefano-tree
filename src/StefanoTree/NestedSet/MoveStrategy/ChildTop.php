@@ -6,16 +6,19 @@ use StefanoTree\Exception;
 class ChildTop
     extends MoveStrategyAbstract
 {
-    public function getNewParentId() {
+    public function getNewParentId()
+    {
         return $this->getTargetNode()->getId();
     }
 
-    public function getLevelShift() {
+    public function getLevelShift()
+    {
         return $this->getTargetNode()->getLevel() - $this->getSourceNode()->getLevel() + 1;
     }
 
-    public function getHoleLeftIndex() {
-        if($this->isMovedToRoot()) {
+    public function getHoleLeftIndex()
+    {
+        if ($this->isMovedToRoot()) {
             return $this->getSourceNode()->getLeft() + $this->getIndexShift();
         } elseif ($this->isMovedUp()) {
             return $this->getSourceNode()->getLeft() + $this->getIndexShift();
@@ -28,8 +31,9 @@ class ChildTop
         }
     }
 
-    public function getHoleRightIndex() {
-        if($this->isMovedToRoot()) {
+    public function getHoleRightIndex()
+    {
+        if ($this->isMovedToRoot()) {
             return $this->getSourceNode()->getRight() + $this->getIndexShift();
         } elseif ($this->isMovedUp()) {
             return $this->getSourceNode()->getRight() + $this->getIndexShift();
@@ -42,8 +46,9 @@ class ChildTop
         }
     }
 
-    public function getSourceNodeIndexShift() {
-        if($this->isMovedToRoot()) {
+    public function getSourceNodeIndexShift()
+    {
+        if ($this->isMovedToRoot()) {
             return $this->getTargetNode()->getLeft() - $this->getSourceNode()->getRight();
         } elseif ($this->isMovedUp()) {
             return $this->getTargetNode()->getLeft() - $this->getSourceNode()->getRight();
@@ -56,8 +61,9 @@ class ChildTop
         }
     }
 
-    public function fixHoleFromIndex() {
-        if($this->isMovedToRoot()) {
+    public function fixHoleFromIndex()
+    {
+        if ($this->isMovedToRoot()) {
             return $this->getSourceNode()->getRight();
         } elseif ($this->isMovedUp()) {
             return $this->getSourceNode()->getRight();
@@ -70,11 +76,13 @@ class ChildTop
         }
     }
 
-    public function makeHoleFromIndex() {
+    public function makeHoleFromIndex()
+    {
         return $this->getTargetNode()->getLeft();
     }
 
-    public function isSourceNodeAtRequiredPosition() {
+    public function isSourceNodeAtRequiredPosition()
+    {
         $sourceNode = $this->getSourceNode();
         $targetNode = $this->getTargetNode();
 

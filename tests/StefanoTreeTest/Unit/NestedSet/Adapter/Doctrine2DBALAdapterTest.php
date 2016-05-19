@@ -7,23 +7,27 @@ use StefanoTree\NestedSet\Options;
 class Doctrine2DBALAdapterTest
     extends \PHPUnit_Framework_TestCase
 {
-    protected function tearDown() {
+    protected function tearDown()
+    {
         \Mockery::close();
     }
 
-    public function testGetDefaultDbSelect() {
+    public function testGetDefaultDbSelect()
+    {
         $adapter = $this->getAdapter();
 
         $this->assertEquals('SELECT * FROM tableName',
             trim($adapter->getDefaultDbSelect()->getSQL()));
     }
 
-    public function testGetDefaultDbSelectMustAlwaysReturnNewInstance() {
+    public function testGetDefaultDbSelectMustAlwaysReturnNewInstance()
+    {
         $adapter = $this->getAdapter();
         $this->assertNotSame($adapter->getDefaultDbSelect(), $adapter->getDefaultDbSelect());
     }
 
-    public function testSetDefaultDbSelect() {
+    public function testSetDefaultDbSelect()
+    {
         $adapter = $this->getAdapter();
 
         $select = $this->getConnection()
@@ -33,14 +37,14 @@ class Doctrine2DBALAdapterTest
 
         $adapter->setDefaultDbSelect($select);
 
-        $this->assertEquals($select->getSQL()
-            , $adapter->getDefaultDbSelect()->getSQL());
+        $this->assertEquals($select->getSQL(), $adapter->getDefaultDbSelect()->getSQL());
     }
 
     /**
      * @return Doctrine2DBALAdapter
      */
-    private function getAdapter() {
+    private function getAdapter()
+    {
         $options = new Options(array(
             'tableName'    => 'tableName',
             'idColumnName' => 'id',
@@ -52,7 +56,8 @@ class Doctrine2DBALAdapterTest
     /**
      * @return \Doctrine\DBAL\Connection
      */
-    private function getConnection() {
+    private function getConnection()
+    {
         $config = new \Doctrine\DBAL\Configuration();
 
         $connectionParams = array(

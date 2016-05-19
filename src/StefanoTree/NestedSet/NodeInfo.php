@@ -8,47 +8,53 @@ class NodeInfo
     private $level;
     private $left;
     private $right;
- 
-    public function __construct($id, $parentId, $level, $left, $right) {
+
+    public function __construct($id, $parentId, $level, $left, $right)
+    {
         $this->id       = $id;
         $this->parentId = $parentId;
         $this->level    = $level;
         $this->left     = $left;
         $this->right    = $right;
-    }   
-    
+    }
+
     /**
      * @return int|null
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
     /**
      * @return int|null
      */
-    public function getParentId() {
+    public function getParentId()
+    {
         return $this->parentId;
     }
 
     /**
      * @return int|null
      */
-    public function getLevel() {
+    public function getLevel()
+    {
         return $this->level;
     }
 
     /**
      * @return int|null
      */
-    public function getLeft() {
+    public function getLeft()
+    {
         return $this->left;
     }
 
     /**
      * @return int|null
      */
-    public function getRight() {
+    public function getRight()
+    {
         return $this->right;
     }
 }

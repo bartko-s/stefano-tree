@@ -8,7 +8,8 @@ use StefanoTree\NestedSet\Options;
 class NestedSetWithDoctrine2DbAdapterTest
     extends AbstractTest
 {
-    protected function getTreeAdapter() {
+    protected function getTreeAdapter()
+    {
         $config = new \Doctrine\DBAL\Configuration();
 
         $connectionParams = array(
@@ -26,7 +27,7 @@ class NestedSetWithDoctrine2DbAdapterTest
             'idColumnName' => 'tree_traversal_id',
         ));
 
-        if('pgsql' == TEST_STEFANO_DB_ADAPTER) {
+        if ('pgsql' == TEST_STEFANO_DB_ADAPTER) {
             $options->setSequenceName('tree_traversal_tree_traversal_id_seq');
         }
 

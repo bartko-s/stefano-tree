@@ -8,7 +8,8 @@ use StefanoTree\NestedSet\Options;
 class NestedSetWithZend1DbAdapterTest
     extends AbstractTest
 {
-    protected function getTreeAdapter() {
+    protected function getTreeAdapter()
+    {
         $dbAdapter = \Zend_Db::factory('Pdo_' . ucfirst(TEST_STEFANO_DB_ADAPTER), array(
             'host' => TEST_STEFANO_DB_HOSTNAME,
             'dbname' => TEST_STEFANO_DB_DB_NAME,
@@ -21,7 +22,7 @@ class NestedSetWithZend1DbAdapterTest
             'idColumnName' => 'tree_traversal_id',
         ));
 
-        if('pgsql' == TEST_STEFANO_DB_ADAPTER) {
+        if ('pgsql' == TEST_STEFANO_DB_ADAPTER) {
             $options->setSequenceName('tree_traversal_tree_traversal_id_seq');
         }
 

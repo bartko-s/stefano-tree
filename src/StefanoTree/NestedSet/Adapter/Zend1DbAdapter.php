@@ -19,7 +19,8 @@ class Zend1DbAdapter
 
     protected $lockSqlBuilder;
 
-    public function __construct(Options $options, ZendDbAdapter $dbAdapter) {
+    public function __construct(Options $options, ZendDbAdapter $dbAdapter)
+    {
         $this->options = $options;
         $this->dbAdapter = $dbAdapter;
     }
@@ -27,21 +28,24 @@ class Zend1DbAdapter
     /**
      * @return Options
      */
-    private function getOptions() {
+    private function getOptions()
+    {
         return $this->options;
     }
 
     /**
      * @return ZendDbAdapter
      */
-    public function getDbAdapter() {
+    public function getDbAdapter()
+    {
         return $this->dbAdapter;
     }
 
     /**
      * @return LockSqlBuilderInterface
      */
-    private function getLockSqlBuilder() {
+    private function getLockSqlBuilder()
+    {
         if (null == $this->lockSqlBuilder) {
             $adapterClassName = get_class($this->getDbAdapter());
             $parts = explode('_', $adapterClassName);
@@ -54,7 +58,8 @@ class Zend1DbAdapter
         return $this->lockSqlBuilder;
     }
 
-    public function lockTable() {
+    public function lockTable()
+    {
         $options = $this->getOptions();
         $sql = $this->getLockSqlBuilder()->getLockSqlString($options->getTableName());
 
@@ -63,7 +68,8 @@ class Zend1DbAdapter
         }
     }
 
-    public function unlockTable() {
+    public function unlockTable()
+    {
         $sql = $this->getLockSqlBuilder()->getUnlockSqlString();
 
         if (null != $sql) {
@@ -71,25 +77,30 @@ class Zend1DbAdapter
         }
     }
 
-    protected function _isInTransaction() {
+    protected function _isInTransaction()
+    {
         return $this->getDbAdapter()
                     ->getConnection()
                     ->inTransaction();
     }
 
-    protected function _beginTransaction() {
+    protected function _beginTransaction()
+    {
         $this->getDbAdapter()->beginTransaction();
     }
 
-    protected function _commitTransaction() {
+    protected function _commitTransaction()
+    {
         $this->getDbAdapter()->commit();
     }
 
-    protected function _rollbackTransaction() {
+    protected function _rollbackTransaction()
+    {
         $this->getDbAdapter()->rollBack();
     }
 
-    public function update($nodeId, array $data, NodeInfo $nodeInfo = null) {
+    public function update($nodeId, array $data, NodeInfo $nodeInfo = null)
+    {
         $options = $this->getOptions();
 
         $dbAdapter = $this->getDbAdapter();
@@ -109,7 +120,8 @@ class Zend1DbAdapter
         $dbAdapter->update($options->getTableName(), $data, $where);
     }
 
-    public function deleteAll($expectNodeId) {
+    public function deleteAll($expectNodeId)
+    {
         $options = $this->getOptions();
         $dbAdapter = $this->getDbAdapter();
 
@@ -119,11 +131,12 @@ class Zend1DbAdapter
         $dbAdapter->delete($options->getTableName(), $where);
     }
 
-    public function moveLeftIndexes($fromIndex, $shift) {
+    public function moveLeftIndexes($fromIndex, $shift)
+    {
         $options = $this->getOptions();
 
         if (0 == $shift) {
-            return null;
+            return;
         }
 
         $dbAdapter = $this->getDbAdapter();
@@ -139,11 +152,12 @@ class Zend1DbAdapter
         $dbAdapter->prepare($sql)->execute($binds);
     }
 
-    public function moveRightIndexes($fromIndex, $shift) {
+    public function moveRightIndexes($fromIndex, $shift)
+    {
         $options = $this->getOptions();
 
         if (0 == $shift) {
-            return null;
+            return;
         }
 
         $dbAdapter = $this->getDbAdapter();
@@ -161,7 +175,8 @@ class Zend1DbAdapter
         $dbAdapter->prepare($sql)->execute($binds);
     }
 
-    public function updateParentId($nodeId, $newParentId) {
+    public function updateParentId($nodeId, $newParentId)
+    {
         $options = $this->getOptions();
 
         $dbAdapter = $this->getDbAdapter();
@@ -176,7 +191,8 @@ class Zend1DbAdapter
         $dbAdapter->update($options->getTableName(), $bind, $where);
     }
 
-    public function getNode($nodeId) {
+    public function getNode($nodeId)
+    {
         $options = $this->getOptions();
 
         $nodeId = (int) $nodeId;
@@ -190,7 +206,8 @@ class Zend1DbAdapter
         return $row ? $row : null;
     }
 
-    public function getNodeInfo($nodeId) {
+    public function getNodeInfo($nodeId)
+    {
         $options = $this->getOptions();
         $result = $this->getNode($nodeId);
 
@@ -214,7 +231,8 @@ class Zend1DbAdapter
      *
      * @return \Zend_Db_Select
      */
-    public function getDefaultDbSelect() {
+    public function getDefaultDbSelect()
+    {
         $options = $this->getOptions();
 
         if (null == $this->defaultDbSelect) {
@@ -231,11 +249,13 @@ class Zend1DbAdapter
      * @param \Zend_Db_Select $dbSelect
      * @return void
      */
-    public function setDefaultDbSelect(\Zend_Db_Select $dbSelect) {
+    public function setDefaultDbSelect(\Zend_Db_Select $dbSelect)
+    {
         $this->defaultDbSelect = $dbSelect;
     }
 
-    private function cleanData(array $data) {
+    private function cleanData(array $data)
+    {
         $options = $this->getOptions();
 
         $disallowedDataKeys = array(
@@ -249,7 +269,8 @@ class Zend1DbAdapter
         return array_diff_key($data, array_flip($disallowedDataKeys));
     }
 
-    public function insert(NodeInfo $nodeInfo, array $data) {
+    public function insert(NodeInfo $nodeInfo, array $data)
+    {
         $options = $this->getOptions();
         $dbAdapter = $this->getDbAdapter();
 
@@ -259,7 +280,7 @@ class Zend1DbAdapter
         $data[$options->getRightColumnName()] = $nodeInfo->getRight();
 
         $dbAdapter->insert($options->getTableName(), $data);
-        if('' != $options->getSequenceName()) {
+        if ('' != $options->getSequenceName()) {
             $lastGeneratedValue = $dbAdapter->lastSequenceId($options->getSequenceName());
         } else {
             $lastGeneratedValue = $dbAdapter->lastInsertId();
@@ -268,7 +289,8 @@ class Zend1DbAdapter
         return $lastGeneratedValue;
     }
 
-    public function delete($leftIndex, $rightIndex) {
+    public function delete($leftIndex, $rightIndex)
+    {
         $options = $this->getOptions();
 
         $dbAdapter = $this->getDbAdapter();
@@ -281,11 +303,12 @@ class Zend1DbAdapter
         $dbAdapter->delete($options->getTableName(), $where);
     }
 
-    public function updateLevels($leftIndexFrom, $rightIndexTo, $shift) {
+    public function updateLevels($leftIndexFrom, $rightIndexTo, $shift)
+    {
         $options = $this->getOptions();
 
         if (0 == $shift) {
-            return null;
+            return;
         }
 
         $dbAdapter = $this->getDbAdapter();
@@ -306,7 +329,8 @@ class Zend1DbAdapter
         $dbAdapter->prepare($sql)->execute($binds);
     }
 
-    public function moveBranch($leftIndexFrom, $rightIndexTo, $shift) {
+    public function moveBranch($leftIndexFrom, $rightIndexTo, $shift)
+    {
         if (0 == $shift) {
             return;
         }
@@ -332,14 +356,15 @@ class Zend1DbAdapter
         $dbAdapter->prepare($sql)->execute($binds);
     }
 
-    public function getPath($nodeId, $startLevel = 0, $excludeLastNode = false) {
+    public function getPath($nodeId, $startLevel = 0, $excludeLastNode = false)
+    {
         $options = $this->getOptions();
 
         $startLevel = (int) $startLevel;
 
         // node does not exist
         if (!$nodeInfo = $this->getNodeInfo($nodeId)) {
-            return null;
+            return;
         }
 
         $dbAdapter = $this->getDbAdapter();
@@ -370,11 +395,12 @@ class Zend1DbAdapter
         return $result;
     }
 
-    public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranch = null) {
+    public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranch = null)
+    {
         $options = $this->getOptions();
 
-        if(!$nodeInfo = $this->getNodeInfo($nodeId)) {
-            return null;
+        if (!$nodeInfo = $this->getNodeInfo($nodeId)) {
+            return;
         }
 
         $dbAdapter = $this->getDbAdapter();
@@ -382,24 +408,24 @@ class Zend1DbAdapter
         $select->order($options->getLeftColumnName() . ' ASC');
 
 
-        if(0 != $startLevel) {
+        if (0 != $startLevel) {
             $level = $nodeInfo->getLevel() + (int) $startLevel;
             $select->where(
                 $dbAdapter->quoteIdentifier($options->getLevelColumnName()) . ' >= ?', $level
             );
         }
 
-        if(null != $levels) {
+        if (null != $levels) {
             $endLevel = $nodeInfo->getLevel() + (int) $startLevel + abs($levels);
             $select->where(
                 $dbAdapter->quoteIdentifier($options->getLevelColumnName()) . ' < ?', $endLevel
             );
         }
 
-        if(null != $excludeBranch && null != ($excludeNodeInfo = $this->getNodeInfo($excludeBranch))) {
+        if (null != $excludeBranch && null != ($excludeNodeInfo = $this->getNodeInfo($excludeBranch))) {
             $where = sprintf(
                 "(%s OR %s) AND (%s OR %s)",
-                $this->getWhereBetween($options->getLeftColumnName(),$nodeInfo->getLeft(), $excludeNodeInfo->getLeft() - 1),
+                $this->getWhereBetween($options->getLeftColumnName(), $nodeInfo->getLeft(), $excludeNodeInfo->getLeft() - 1),
                 $this->getWhereBetween($options->getLeftColumnName(),
                     $excludeNodeInfo->getRight() + 1, $nodeInfo->getRight()),
                 $this->getWhereBetween($options->getRightColumnName(),
@@ -419,12 +445,13 @@ class Zend1DbAdapter
 
         $resultArray = $dbAdapter->fetchAll($select);
 
-        if(0 < count($resultArray)) {
+        if (0 < count($resultArray)) {
             return $resultArray;
         }
     }
 
-    protected function getWhereBetween($column, $first, $second) {
+    protected function getWhereBetween($column, $first, $second)
+    {
         $dbAdapter = $this->getDbAdapter();
         $quotedColumn = $dbAdapter->quoteIdentifier($column);
         $quotedFirst = $dbAdapter->quote($first);

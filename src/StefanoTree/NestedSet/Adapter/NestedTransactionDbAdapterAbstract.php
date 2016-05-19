@@ -1,7 +1,6 @@
 <?php
 namespace StefanoTree\NestedSet\Adapter;
 
-
 abstract class NestedTransactionDbAdapterAbstract
     implements AdapterInterface
 {
@@ -28,22 +27,25 @@ abstract class NestedTransactionDbAdapterAbstract
      */
     abstract protected function _isInTransaction();
 
-    public function beginTransaction() {
+    public function beginTransaction()
+    {
         $this->outerTransactionWasStarted = $this->_isInTransaction();
 
-        if(!$this->outerTransactionWasStarted) {
+        if (!$this->outerTransactionWasStarted) {
             $this->_beginTransaction();
         }
     }
 
-    public function commitTransaction() {
-        if(!$this->outerTransactionWasStarted) {
+    public function commitTransaction()
+    {
+        if (!$this->outerTransactionWasStarted) {
             $this->_commitTransaction();
         }
     }
 
-    public function rollbackTransaction() {
-        if(!$this->outerTransactionWasStarted) {
+    public function rollbackTransaction()
+    {
+        if (!$this->outerTransactionWasStarted) {
             $this->_rollbackTransaction();
         }
     }

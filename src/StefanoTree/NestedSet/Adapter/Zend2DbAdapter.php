@@ -19,7 +19,8 @@ class Zend2DbAdapter
 
     private $lockSqlBuilder;
 
-    public function __construct(Options $options, DbAdapter $dbAdapter) {
+    public function __construct(Options $options, DbAdapter $dbAdapter)
+    {
         $this->options = $options;
         $this->dbAdapter = $dbAdapter;
     }
@@ -27,14 +28,16 @@ class Zend2DbAdapter
     /**
      * @return Options
      */
-    private function getOptions() {
+    private function getOptions()
+    {
         return $this->options;
     }
 
     /**
      * @return DbAdapter
      */
-    private function getDbAdapter() {
+    private function getDbAdapter()
+    {
         return $this->dbAdapter;
     }
 
@@ -44,7 +47,8 @@ class Zend2DbAdapter
      * @param array $data
      * @return array
      */
-    private function cleanData(array $data) {
+    private function cleanData(array $data)
+    {
         $options = $this->getOptions();
 
         $disallowedDataKeys = array(
@@ -62,7 +66,8 @@ class Zend2DbAdapter
      * @param Db\Sql\Select $dbSelect
      * @return void
      */
-    public function setDefaultDbSelect(Db\Sql\Select $dbSelect) {
+    public function setDefaultDbSelect(Db\Sql\Select $dbSelect)
+    {
         $this->defaultDbSelect = $dbSelect;
     }
 
@@ -70,10 +75,11 @@ class Zend2DbAdapter
      * Return clone of default db select
      * @return Db\Sql\Select
      */
-    public function getDefaultDbSelect() {
+    public function getDefaultDbSelect()
+    {
         $options = $this->getOptions();
 
-        if(null == $this->defaultDbSelect) {
+        if (null == $this->defaultDbSelect) {
             $this->defaultDbSelect = new Db\Sql\Select($options->getTableName());
         }
 
@@ -85,8 +91,9 @@ class Zend2DbAdapter
     /**
     * @return LockSqlBuilderInterface
     */
-    private function getLockSqlBuilder() {
-        if(null == $this->lockSqlBuilder) {
+    private function getLockSqlBuilder()
+    {
+        if (null == $this->lockSqlBuilder) {
             $vendorName = $this->getDbAdapter()
                                ->getDriver()
                                ->getDatabasePlatformName();
@@ -98,50 +105,56 @@ class Zend2DbAdapter
         return $this->lockSqlBuilder;
     }
 
-    public function lockTable() {
+    public function lockTable()
+    {
         $tableName = $this->getOptions()
                           ->getTableName();
 
         $sql = $this->getLockSqlBuilder()
                     ->getLockSqlString($tableName);
 
-        if(null != $sql) {
+        if (null != $sql) {
             $this->getDbAdapter()
                  ->query($sql, DbAdapter::QUERY_MODE_EXECUTE);
         }
     }
 
-    public function unlockTable() {
+    public function unlockTable()
+    {
         $sql = $this->getLockSqlBuilder()
                     ->getUnlockSqlString();
 
-        if(null != $sql) {
+        if (null != $sql) {
             $this->getDbAdapter()
                  ->query($sql, DbAdapter::QUERY_MODE_EXECUTE);
         }
     }
 
-    public function beginTransaction() {
+    public function beginTransaction()
+    {
         $this->getDbAdapter()
              ->begin();
     }
 
-    public function commitTransaction() {
+    public function commitTransaction()
+    {
         $this->getDbAdapter()
              ->commit();
     }
 
-    public function rollbackTransaction() {
+    public function rollbackTransaction()
+    {
         $this->getDbAdapter()
              ->rollback();
     }
 
-    public function update($nodeId, array $data, NodeInfo $nodeInfo = null) {
+    public function update($nodeId, array $data, NodeInfo $nodeInfo = null)
+    {
         $options = $this->getOptions();
 
         $dbAdapter = $this->getDbAdapter();
 
-        if(null == $nodeInfo) {
+        if (null == $nodeInfo) {
             $data = $this->cleanData($data);
         } else {
             $data[$options->getParentIdColumnName()] = $nodeInfo->getParentId();
@@ -160,7 +173,8 @@ class Zend2DbAdapter
                 DbAdapter::QUERY_MODE_EXECUTE);
     }
 
-    public function insert(NodeInfo $nodeInfo, array $data) {
+    public function insert(NodeInfo $nodeInfo, array $data)
+    {
         $options = $this->getOptions();
 
         $dbAdapter = $this->getDbAdapter();
@@ -181,7 +195,8 @@ class Zend2DbAdapter
         return $lastGeneratedValue;
     }
 
-    public function delete($leftIndex, $rightIndex) {
+    public function delete($leftIndex, $rightIndex)
+    {
         $options = $this->getOptions();
 
         $dbAdapter = $this->getDbAdapter();
@@ -196,7 +211,8 @@ class Zend2DbAdapter
             DbAdapter::QUERY_MODE_EXECUTE);
     }
 
-    public function deleteAll($expectNodeId) {
+    public function deleteAll($expectNodeId)
+    {
         $options = $this->getOptions();
         $dbAdapter = $this->getDbAdapter();
 
@@ -208,11 +224,12 @@ class Zend2DbAdapter
             DbAdapter::QUERY_MODE_EXECUTE);
     }
 
-    public function moveLeftIndexes($fromIndex, $shift) {
+    public function moveLeftIndexes($fromIndex, $shift)
+    {
         $options = $this->getOptions();
 
-        if(0 == $shift) {
-            return null;
+        if (0 == $shift) {
+            return;
         }
 
         $dbAdapter = $this->getDbAdapter();
@@ -234,11 +251,12 @@ class Zend2DbAdapter
                   ->execute($binds);
     }
 
-    public function moveRightIndexes($fromIndex, $shift) {
+    public function moveRightIndexes($fromIndex, $shift)
+    {
         $options = $this->getOptions();
 
-        if(0 == $shift) {
-            return null;
+        if (0 == $shift) {
+            return;
         }
 
         $dbAdapter = $this->getDbAdapter();
@@ -260,7 +278,8 @@ class Zend2DbAdapter
                   ->execute($binds);
     }
 
-    public function updateParentId($nodeId, $newParentId) {
+    public function updateParentId($nodeId, $newParentId)
+    {
         $options = $this->getOptions();
 
         $dbAdapter = $this->getDbAdapter();
@@ -277,11 +296,12 @@ class Zend2DbAdapter
             DbAdapter::QUERY_MODE_EXECUTE);
     }
 
-    public function updateLevels($leftIndexFrom, $rightIndexTo, $shift) {
+    public function updateLevels($leftIndexFrom, $rightIndexTo, $shift)
+    {
         $options = $this->getOptions();
 
-        if(0 == $shift) {
-            return null;
+        if (0 == $shift) {
+            return;
         }
 
         $dbAdapter = $this->getDbAdapter();
@@ -305,8 +325,9 @@ class Zend2DbAdapter
                   ->execute($binds);
     }
 
-    public function moveBranch($leftIndexFrom, $rightIndexTo, $shift) {
-        if(0 == $shift) {
+    public function moveBranch($leftIndexFrom, $rightIndexTo, $shift)
+    {
+        if (0 == $shift) {
             return;
         }
 
@@ -335,7 +356,8 @@ class Zend2DbAdapter
                   ->execute($binds);
     }
 
-    public function getNode($nodeId) {
+    public function getNode($nodeId)
+    {
         $options = $this->getOptions();
 
         $nodeId = (int) $nodeId;
@@ -350,16 +372,17 @@ class Zend2DbAdapter
 
         $array = $result->toArray();
 
-        if(0 < count($array)) {
+        if (0 < count($array)) {
             return $array[0];
         }
     }
 
-    public function getNodeInfo($nodeId) {
+    public function getNodeInfo($nodeId)
+    {
         $options = $this->getOptions();
         $result = $this->getNode($nodeId);
 
-        if(null == $result) {
+        if (null == $result) {
             $result = null;
         } else {
             $id        = $result[$options->getIdColumnName()];
@@ -374,14 +397,15 @@ class Zend2DbAdapter
         return $result;
     }
 
-    public function getPath($nodeId, $startLevel = 0, $excludeLastNode = false) {
+    public function getPath($nodeId, $startLevel = 0, $excludeLastNode = false)
+    {
         $options = $this->getOptions();
 
         $startLevel = (int) $startLevel;
 
         // node does not exist
-        if(!$nodeInfo = $this->getNodeInfo($nodeId)) {
-            return null;
+        if (!$nodeInfo = $this->getNodeInfo($nodeId)) {
+            return;
         }
 
         $dbAdapter = $this->getDbAdapter();
@@ -394,12 +418,12 @@ class Zend2DbAdapter
 
         $select->order($options->getLeftColumnName() . ' ASC');
 
-        if(0 < $startLevel) {
+        if (0 < $startLevel) {
             $select->where
                    ->greaterThanOrEqualTo($options->getLevelColumnName(), $startLevel);
         }
 
-        if(true == $excludeLastNode) {
+        if (true == $excludeLastNode) {
             $select->where
                    ->lessThan($options->getLevelColumnName(), $nodeInfo->getLevel());
         }
@@ -410,11 +434,12 @@ class Zend2DbAdapter
         return $result->toArray();
     }
 
-    public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranch = null) {
+    public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranch = null)
+    {
         $options = $this->getOptions();
 
-        if(!$nodeInfo = $this->getNodeInfo($nodeId)) {
-            return null;
+        if (!$nodeInfo = $this->getNodeInfo($nodeId)) {
+            return;
         }
 
         $dbAdapter = $this->getDbAdapter();
@@ -422,19 +447,19 @@ class Zend2DbAdapter
         $select->order($options->getLeftColumnName() . ' ASC');
 
 
-        if(0 != $startLevel) {
+        if (0 != $startLevel) {
             $level = $nodeInfo->getLevel() + (int) $startLevel;
             $select->where
                    ->greaterThanOrEqualTo($options->getLevelColumnName(), $level);
         }
 
-        if(null != $levels) {
+        if (null != $levels) {
             $endLevel = $nodeInfo->getLevel() + (int) $startLevel + abs($levels);
             $select->where
                    ->lessThan($options->getLevelColumnName(), $endLevel);
         }
 
-        if(null != $excludeBranch && null != ($excludeNodeInfo = $this->getNodeInfo($excludeBranch))) {
+        if (null != $excludeBranch && null != ($excludeNodeInfo = $this->getNodeInfo($excludeBranch))) {
             $select->where
                    ->NEST
                    ->between($options->getLeftColumnName(),
@@ -463,7 +488,7 @@ class Zend2DbAdapter
 
         $resultArray = $result->toArray();
 
-        if(0 < count($resultArray)) {
+        if (0 < count($resultArray)) {
             return $resultArray;
         }
     }

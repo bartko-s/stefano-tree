@@ -11,18 +11,21 @@ abstract class AddStrategyAbstract
     /**
      * @param NodeInfo $targetNode
      */
-    public function __construct(NodeInfo $targetNode) {
+    public function __construct(NodeInfo $targetNode)
+    {
         $this->targetNode = $targetNode;
     }
 
     /**
      * @return NodeInfo
      */
-    protected function getTargetNode() {
+    protected function getTargetNode()
+    {
         return $this->targetNode;
     }
 
-    public function canAddNewNode($rootNodeId) {
+    public function canAddNewNode($rootNodeId)
+    {
         return true;
     }
 }

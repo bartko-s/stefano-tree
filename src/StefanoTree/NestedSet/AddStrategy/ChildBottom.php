@@ -1,27 +1,31 @@
 <?php
 namespace StefanoTree\NestedSet\AddStrategy;
 
-
 class ChildBottom
     extends AddStrategyAbstract
-{    
-    public function moveIndexesFromIndex() {
+{
+    public function moveIndexesFromIndex()
+    {
         return $this->getTargetNode()->getRight() - 1;
     }
 
-    public function newParentId() {
+    public function newParentId()
+    {
         return $this->getTargetNode()->getId();
     }
 
-    public function newLevel() {
+    public function newLevel()
+    {
         return $this->getTargetNode()->getLevel() + 1;
     }
 
-    public function newLeftIndex() {
+    public function newLeftIndex()
+    {
         return $this->getTargetNode()->getRight();
     }
 
-    public function newRightIndex() {
+    public function newRightIndex()
+    {
         return $this->getTargetNode()->getRight() + 1;
     }
 }

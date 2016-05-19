@@ -6,7 +6,8 @@ use StefanoTree\NestedSet;
 class NestedSetTest
     extends \PHPUnit_Framework_TestCase
 {
-    public function factoryDataProvider() {
+    public function factoryDataProvider()
+    {
         return array(
             array(
                 '\StefanoDb\Adapter\Adapter',
@@ -26,7 +27,8 @@ class NestedSetTest
     /**
      * @dataProvider factoryDataProvider
      */
-    public function testFactoryMethod($dbAdapterClass, $expectedAdapterClass) {
+    public function testFactoryMethod($dbAdapterClass, $expectedAdapterClass)
+    {
         $optionsStub = \Mockery::mock('\StefanoTree\NestedSet\Options');
         $dbAdapterStub = \Mockery::mock($dbAdapterClass);
 
@@ -36,7 +38,8 @@ class NestedSetTest
         $this->assertInstanceOf($expectedAdapterClass, $adapter);
     }
 
-    public function testThrowExceptionIfYouDbAdapterIsNotSupporter() {
+    public function testThrowExceptionIfYouDbAdapterIsNotSupporter()
+    {
         $optionsStub = \Mockery::mock('\StefanoTree\NestedSet\Options');
         $dbAdapter = new \DateTime();
 

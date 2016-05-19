@@ -7,11 +7,13 @@ use StefanoTree\NestedSet\Options;
 class Zend2DbAdapterTest
     extends \PHPUnit_Framework_TestCase
 {
-    protected function tearDown() {
+    protected function tearDown()
+    {
         \Mockery::close();
     }
 
-    public function testGetDefaultDbSelect() {
+    public function testGetDefaultDbSelect()
+    {
         $options = new Options(array(
             'tableName'    => 'tableName',
             'idColumnName' => 'id',
@@ -24,7 +26,8 @@ class Zend2DbAdapterTest
             $adapter->getDefaultDbSelect()->getSqlString());
     }
 
-    public function testGetDefaultDbSelectMustAlwaysReturnNewInstance() {
+    public function testGetDefaultDbSelectMustAlwaysReturnNewInstance()
+    {
         $options = new Options(array(
             'tableName'    => 'tableName',
             'idColumnName' => 'id',
@@ -36,7 +39,8 @@ class Zend2DbAdapterTest
         $this->assertNotSame($adapter->getDefaultDbSelect(), $adapter->getDefaultDbSelect());
     }
 
-    public function testSetDefaultDbSelect() {
+    public function testSetDefaultDbSelect()
+    {
         $options = new Options(array(
             'tableName'    => 'tableName',
             'idColumnName' => 'id',
@@ -49,14 +53,14 @@ class Zend2DbAdapterTest
 
         $adapter->setDefaultDbSelect($select);
 
-        $this->assertEquals($select->getSqlString()
-            , $adapter->getDefaultDbSelect()->getSqlString());
+        $this->assertEquals($select->getSqlString(), $adapter->getDefaultDbSelect()->getSqlString());
     }
 
     /**
     * @return \StefanoDb\Adapter\Adapter
     */
-    private function getDbAdapterMock() {
+    private function getDbAdapterMock()
+    {
         $dbA = new \StefanoDb\Adapter\Adapter(array(
             'driver' => 'Pdo_Sqlite',
             'database' => ':memory:',

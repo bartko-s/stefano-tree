@@ -9,7 +9,8 @@ use StefanoTree\NestedSet\Options;
 class NestedSetWithZend2DbAdapterTest
     extends AbstractTest
 {
-    protected function getTreeAdapter() {
+    protected function getTreeAdapter()
+    {
         $dbAdapter = new DbAdapter(array(
             'driver' => 'Pdo_' . ucfirst(TEST_STEFANO_DB_ADAPTER),
             'hostname' => TEST_STEFANO_DB_HOSTNAME,
@@ -23,7 +24,7 @@ class NestedSetWithZend2DbAdapterTest
             'idColumnName' => 'tree_traversal_id',
         ));
 
-        if('pgsql' == TEST_STEFANO_DB_ADAPTER) {
+        if ('pgsql' == TEST_STEFANO_DB_ADAPTER) {
             $options->setSequenceName('tree_traversal_tree_traversal_id_seq');
         }
 
