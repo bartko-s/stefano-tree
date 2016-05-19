@@ -218,9 +218,11 @@ class NestedSet
         try {
             $adapter->lockTable();
 
+            $sourceNodeInfo = $adapter->getNodeInfo($sourceNodeId);
+            $targetNodeInfo = $adapter->getNodeInfo($targetNodeId);
+
             //source node or target node does not exist
-            if (!$sourceNodeInfo = $adapter->getNodeInfo($sourceNodeId)
-                or !$targetNodeInfo = $adapter->getNodeInfo($targetNodeId)) {
+            if (!$sourceNodeInfo || !$targetNodeInfo) {
                 $adapter->commitTransaction();
                 $adapter->unlockTable();
 
