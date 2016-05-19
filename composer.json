@@ -36,7 +36,8 @@
         "phpunit/dbunit": ">=1.0.0",
         "mockery/mockery": ">=0.8.0",
         "satooshi/php-coveralls": "dev-master",
-        "zf1/zend-db": "^1.12"
+        "zf1/zend-db": "^1.12",
+        "fabpot/php-cs-fixer": "^1.11"
     },
     "autoload": {
         "psr-0": {
@@ -46,5 +47,9 @@
         "classmap": [
             "./src/"
         ]
+    },
+    "scripts": {
+        "cs-check": "php-cs-fixer --version && php-cs-fixer fix -v --diff --dry-run",
+        "cs-fix": "php-cs-fixer fix -v"
     }
 }
