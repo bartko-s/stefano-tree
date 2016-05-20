@@ -4,10 +4,9 @@ namespace StefanoTree\NestedSet\MoveStrategy;
 interface MoveStrategyInterface
 {
     /**
-     * @param int $rootNodeId
      * @return boolean
      */
-    public function canMoveBranch($rootNodeId);
+    public function canMoveBranch();
 
     /**
      * @return boolean

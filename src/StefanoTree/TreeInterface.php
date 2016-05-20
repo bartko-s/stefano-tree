@@ -105,12 +105,4 @@ interface TreeInterface
      * @return null|array
      */
     public function getChildren($nodeId);
-
-    /**
-     * Clear all data except root node
-     *
-     * @param array $data
-     * @return void
-     */
-    public function clear(array $data = array());
 }

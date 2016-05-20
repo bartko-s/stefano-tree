@@ -35,16 +35,6 @@ abstract class AbstractTest
         return $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/initDataSet.xml');
     }
 
-    public function testClear()
-    {
-        $this->treeAdapter
-             ->clear();
-
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/testClear-1.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
-    }
-
     public function testGetNode()
     {
         $expectedNodeData = array(
@@ -189,15 +179,6 @@ abstract class AbstractTest
 
     public function testDeleteBranch()
     {
-        //test 1
-        $return = $this->treeAdapter
-                       ->deleteBranch(1);
-
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/initDataSetWithIds.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet, 'Cannot delete root node');
-        $this->assertFalse($return);
-
         //test 2
         $return = $this->treeAdapter
                        ->deleteBranch(123456789);

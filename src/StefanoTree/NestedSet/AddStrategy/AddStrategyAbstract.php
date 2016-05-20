@@ -24,7 +24,7 @@ abstract class AddStrategyAbstract
         return $this->targetNode;
     }
 
-    public function canAddNewNode($rootNodeId)
+    public function canAddNewNode()
     {
         return true;
     }

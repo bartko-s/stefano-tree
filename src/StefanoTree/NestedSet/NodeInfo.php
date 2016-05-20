@@ -57,4 +57,13 @@ class NodeInfo
     {
         return $this->right;
     }
+
+    public function isRoot()
+    {
+        if (0 == $this->getParentId()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

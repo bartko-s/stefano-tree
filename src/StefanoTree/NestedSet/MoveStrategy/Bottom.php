@@ -83,13 +83,13 @@ class Bottom
         return $this->getTargetNode()->getRight();
     }
 
-    public function canMoveBranch($rootNodeId)
+    public function canMoveBranch()
     {
-        if (false == parent::canMoveBranch($rootNodeId)) {
+        if (false == parent::canMoveBranch()) {
             return false;
         }
 
-        return ($this->isTargetNodeRootNode($rootNodeId)) ?
+        return ($this->getTargetNode()->isRoot()) ?
             false : true;
     }
 

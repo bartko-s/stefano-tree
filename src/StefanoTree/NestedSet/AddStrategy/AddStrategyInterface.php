@@ -4,10 +4,9 @@ namespace StefanoTree\NestedSet\AddStrategy;
 interface AddStrategyInterface
 {
     /**
-     * @param int $rootNodeId
      * @return boolean
      */
-    public function canAddNewNode($rootNodeId);
+    public function canAddNewNode();
     /**
      * @return int
      */

@@ -68,25 +68,19 @@ abstract class MoveStrategyAbstract
         return $this->getSourceNode()->getRight() - $this->getSourceNode()->getLeft() + 1;
     }
 
-    public function canMoveBranch($rootNodeId)
+    public function canMoveBranch()
     {
-        return ($this->isTargetNodeInsideSourceBranche()) ?
+        return ($this->isTargetNodeInsideSourceBranch()) ?
             false : true;
     }
 
-    protected function isTargetNodeInsideSourceBranche()
+    protected function isTargetNodeInsideSourceBranch()
     {
         $targetNode = $this->getTargetNode();
         $sourceNode = $this->getSourceNode();
 
         return ($targetNode->getLeft() > $sourceNode->getLeft() &&
                 $targetNode->getRight() < $sourceNode->getRight()) ?
-            true : false;
-    }
-
-    protected function isTargetNodeRootNode($rootNodeId)
-    {
-        return ($rootNodeId == $this->getTargetNode()->getId()) ?
             true : false;
     }
 }

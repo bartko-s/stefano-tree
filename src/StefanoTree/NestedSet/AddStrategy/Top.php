@@ -4,9 +4,9 @@ namespace StefanoTree\NestedSet\AddStrategy;
 class Top
     extends AddStrategyAbstract
 {
-    public function canAddNewNode($rootNodeId)
+    public function canAddNewNode()
     {
-        return ($rootNodeId == $this->getTargetNode()->getId()) ? false : true;
+        return ($this->getTargetNode()->isRoot()) ? false : true;
     }
 
     public function moveIndexesFromIndex()

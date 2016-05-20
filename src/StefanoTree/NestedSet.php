@@ -61,29 +61,6 @@ class NestedSet
     }
 
     /**
-     * @return int
-     */
-    private function getRootNodeId()
-    {
-        return 1;
-    }
-
-    /**
-     * Test if node is root node
-     *
-     * @param int $nodeId
-     * @return boolean
-     */
-    private function isRoot($nodeId)
-    {
-        if ($this->getRootNodeId() == $nodeId) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
      * @param int $nodeId
      * @param array $data
      */
@@ -119,7 +96,7 @@ class NestedSet
 
             $addStrategy = $this->getAddStrategy($targetNode, $placement);
 
-            if (false == $addStrategy->canAddNewNode($this->getRootNodeId())) {
+            if (false == $addStrategy->canAddNewNode()) {
                 $adapter->commitTransaction();
                 $adapter->unlockTable();
 
@@ -231,7 +208,7 @@ class NestedSet
 
             $moveStrategy = $this->getMoveStrategy($sourceNodeInfo, $targetNodeInfo, $placement);
 
-            if (!$moveStrategy->canMoveBranch($this->getRootNodeId())) {
+            if (!$moveStrategy->canMoveBranch()) {
                 $adapter->commitTransaction();
                 $adapter->unlockTable();
 
@@ -330,10 +307,6 @@ class NestedSet
 
     public function deleteBranch($nodeId)
     {
-        if ($this->isRoot($nodeId)) {
-            return false;
-        }
-
         $adapter = $this->getAdapter();
 
         $adapter->beginTransaction();
@@ -341,7 +314,9 @@ class NestedSet
             $adapter->lockTable();
 
             // node does not exist
-            if (!$nodeInfo = $adapter->getNodeInfo($nodeId)) {
+            $nodeInfo = $adapter->getNodeInfo($nodeId);
+
+            if (!$nodeInfo) {
                 $adapter->commitTransaction();
                 $adapter->unlockTable();
 
@@ -375,31 +350,6 @@ class NestedSet
     {
         return $this->getAdapter()
                     ->getPath($nodeId, $startLevel, $excludeLastNode);
-    }
-
-    public function clear(array $data = array())
-    {
-        $adapter = $this->getAdapter();
-
-        $adapter->beginTransaction();
-        try {
-            $adapter->lockTable();
-
-            $adapter->deleteAll($this->getRootNodeId());
-
-            $nodeInfo = new NodeInfo(null, 0, 0, 1, 2);
-            $adapter->update($this->getRootNodeId(), $data, $nodeInfo);
-
-            $adapter->commitTransaction();
-            $adapter->unlockTable();
-        } catch (Exception $e) {
-            $adapter->rollbackTransaction();
-            $adapter->unlockTable();
-
-            throw $e;
-        }
-
-        return $this;
     }
 
     public function getNode($nodeId)
