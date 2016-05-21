@@ -184,3 +184,4 @@ $tree->getPath($nodeId, 0, true);
 ToDo
 -----
 - rebuild tree
+- scope support
