@@ -1,12 +1,21 @@
 <?php
 namespace StefanoTree;
 
+use StefanoTree\Exception\RootNodeAlreadyExistException;
+
 interface TreeInterface
 {
     const PLACEMENT_TOP = 'top';
     const PLACEMENT_BOTTOM = 'bottom';
     const PLACEMENT_CHILD_TOP = 'childTop';
     const PLACEMENT_CHILD_BOTTOM = 'childBottom';
+
+    /**
+     * @throws RootNodeAlreadyExistException if root already exist
+     * @param array $data
+     * @return int Id of new created root
+     */
+    public function createRootNode($data = array());
 
     /**
      * @param int $nodeId
@@ -105,4 +114,9 @@ interface TreeInterface
      * @return null|array
      */
     public function getChildren($nodeId);
+
+    /**
+     * @return array
+     */
+    public function getRootNode();
 }

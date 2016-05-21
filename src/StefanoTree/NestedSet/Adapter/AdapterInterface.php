@@ -138,4 +138,9 @@ interface AdapterInterface
      * @return null|array
      */
     public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranch = null);
+
+    /**
+     * @return array
+     */
+    public function getRoot();
 }

@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<mysqldump>
+    <database name="stefano_tests">
+        <table_data name="tree_traversal">
+            <row>
+                <field name="tree_traversal_id">1</field>
+                <field name="name">This is root node</field>
+                <field name="lft">1</field>
+                <field name="rgt">2</field>
+                <field name="parent_id">0</field>
+                <field name="level">0</field>
+            </row>
+        </table_data>
+    </database>
+</mysqldump>

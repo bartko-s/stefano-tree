@@ -3,10 +3,10 @@ namespace StefanoTree\NestedSet\Adapter;
 
 use Doctrine\DBAL\Connection as DbConnection;
 use Doctrine\DBAL\Query\QueryBuilder;
+use StefanoLockTable\Adapter\AdapterInterface as LockSqlBuilderInterface;
+use StefanoLockTable\Factory as LockSqlBuilderFactory;
 use StefanoTree\NestedSet\NodeInfo;
 use StefanoTree\NestedSet\Options;
-use StefanoLockTable\Factory as LockSqlBuilderFactory;
-use StefanoLockTable\Adapter\AdapterInterface as LockSqlBuilderInterface;
 
 class Doctrine2DBALAdapter
     implements AdapterInterface
@@ -353,6 +353,26 @@ class Doctrine2DBALAdapter
         );
 
         $connection->executeUpdate($sql, $params);
+    }
+
+    public function getRoot()
+    {
+        $options = $this->getOptions();
+
+        $connection = $this->getConnection();
+
+        $sql = $this->getDefaultDbSelect();
+        $sql->where($options->getParentIdColumnName() . ' = :' . $options->getParentIdColumnName());
+
+        $params = array(
+            $options->getParentIdColumnName() => 0,
+        );
+
+        $stmt = $connection->executeQuery($sql, $params);
+
+        $node = $stmt->fetch();
+
+        return (is_array($node)) ?  $node : array();
     }
 
     public function getNode($nodeId)

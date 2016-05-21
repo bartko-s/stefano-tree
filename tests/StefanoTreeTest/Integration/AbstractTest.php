@@ -32,7 +32,47 @@ abstract class AbstractTest
 
     protected function getDataSet()
     {
-        return $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/initDataSet.xml');
+        switch ($this->getName()) {
+            case 'testCreateRootNode':
+            case 'testCreateRootNodeWithCustomData':
+            case 'testGetRootNodeRootDoesNotExist':
+                return $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/initEmptyDataSet.xml');
+            default:
+                return $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/initDataSet.xml');
+        }
+    }
+
+    public function testCreateRootNode()
+    {
+        $newId = $this->treeAdapter
+            ->createRootNode();
+        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/testCreateRootNode.xml');
+        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+        $this->assertEquals(1, $newId);
+    }
+
+    public function testCreateRootNodeWithCustomData()
+    {
+        $newId = $this->treeAdapter
+            ->createRootNode(array('name' => 'This is root node'));
+        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/testCreateRootNodeWithCustomData.xml');
+        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+        $this->assertEquals(1, $newId);
+    }
+
+    public function testCreateRootRootAlreadyExist()
+    {
+        $this->setExpectedException(
+            '\StefanoTree\Exception\RootNodeAlreadyExistException',
+            'Root node already exist'
+        );
+
+        $this->treeAdapter
+             ->createRootNode();
+        $this->treeAdapter
+            ->createRootNode();
     }
 
     public function testGetNode()
@@ -695,5 +735,29 @@ abstract class AbstractTest
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
         $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/testUpdateNode-1.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+    }
+
+    public function testGetRootNodeRootDoesNotExist()
+    {
+        $return = $this->treeAdapter
+            ->getRootNode();
+
+        $this->assertEquals(array(), $return);
+    }
+
+    public function testGetRootNode()
+    {
+        $return = $this->treeAdapter
+            ->getRootNode();
+
+        $expected = array(
+            'tree_traversal_id' => '1',
+            'name' => '',
+            'lft' => '1',
+            'rgt' => '50',
+            'parent_id' => '0',
+            'level' => '0',
+        );
+        $this->assertEquals($expected, $return);
     }
 }

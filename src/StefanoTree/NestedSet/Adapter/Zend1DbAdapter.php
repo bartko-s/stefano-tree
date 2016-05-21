@@ -1,10 +1,10 @@
 <?php
 namespace StefanoTree\NestedSet\Adapter;
 
+use StefanoLockTable\Adapter\AdapterInterface as LockSqlBuilderInterface;
+use StefanoLockTable\Factory as LockSqlBuilderFactory;
 use StefanoTree\NestedSet\NodeInfo;
 use StefanoTree\NestedSet\Options;
-use StefanoLockTable\Factory as LockSqlBuilderFactory;
-use StefanoLockTable\Adapter\AdapterInterface as LockSqlBuilderInterface;
 use Zend_Db_Adapter_Abstract as ZendDbAdapter;
 
 class Zend1DbAdapter
@@ -189,6 +189,19 @@ class Zend1DbAdapter
             $dbAdapter->quoteIdentifier($options->getIdColumnName()) . ' = ?' => $nodeId,
         );
         $dbAdapter->update($options->getTableName(), $bind, $where);
+    }
+
+    public function getRoot()
+    {
+        $options = $this->getOptions();
+
+        $dbAdapter = $this->getDbAdapter();
+
+        $select = $this->getDefaultDbSelect()
+            ->where($options->getParentIdColumnName() . ' = ?', 0);
+
+        $row = $dbAdapter->fetchRow($select);
+        return $row ? $row : array();
     }
 
     public function getNode($nodeId)

@@ -1,12 +1,12 @@
 <?php
 namespace StefanoTree\NestedSet\Adapter;
 
-use StefanoTree\NestedSet\Options;
 use StefanoDb\Adapter\Adapter as DbAdapter;
-use Zend\Db;
-use StefanoTree\NestedSet\NodeInfo;
-use StefanoLockTable\Factory as LockSqlBuilderFactory;
 use StefanoLockTable\Adapter\AdapterInterface as LockSqlBuilderInterface;
+use StefanoLockTable\Factory as LockSqlBuilderFactory;
+use StefanoTree\NestedSet\NodeInfo;
+use StefanoTree\NestedSet\Options;
+use Zend\Db;
 
 class Zend2DbAdapter
     implements AdapterInterface
@@ -354,6 +354,23 @@ class Zend2DbAdapter
 
         $dbAdapter->query($sql)
                   ->execute($binds);
+    }
+
+    public function getRoot()
+    {
+        $options = $this->getOptions();
+
+        $dbAdapter = $this->getDbAdapter();
+
+        $select = $this->getDefaultDbSelect()
+            ->where(array($options->getParentIdColumnName() =>  0));
+
+        $result = $dbAdapter->query($select->getSqlString($dbAdapter->getPlatform()),
+            DbAdapter::QUERY_MODE_EXECUTE);
+
+        $array = $result->toArray();
+
+        return (0 < count($array)) ?  $array[0] : array();
     }
 
     public function getNode($nodeId)

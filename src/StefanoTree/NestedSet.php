@@ -1,20 +1,21 @@
 <?php
 namespace StefanoTree;
 
-use StefanoTree\NestedSet\Adapter\Zend1DbAdapter;
-use StefanoTree\NestedSet\NodeInfo;
+use Doctrine\DBAL\Connection as DoctrineConnection;
 use Exception;
+use StefanoDb\Adapter\ExtendedAdapterInterface;
 use StefanoTree\Exception\InvalidArgumentException;
+use StefanoTree\Exception\RootNodeAlreadyExistException;
+use StefanoTree\NestedSet\Adapter\AdapterInterface;
+use StefanoTree\NestedSet\Adapter\Doctrine2DBALAdapter;
+use StefanoTree\NestedSet\Adapter\Zend1DbAdapter;
+use StefanoTree\NestedSet\Adapter\Zend2DbAdapter;
 use StefanoTree\NestedSet\AddStrategy;
 use StefanoTree\NestedSet\AddStrategy\AddStrategyInterface;
 use StefanoTree\NestedSet\MoveStrategy;
 use StefanoTree\NestedSet\MoveStrategy\MoveStrategyInterface;
-use StefanoTree\NestedSet\Adapter\AdapterInterface;
+use StefanoTree\NestedSet\NodeInfo;
 use StefanoTree\NestedSet\Options;
-use StefanoTree\NestedSet\Adapter\Doctrine2DBALAdapter;
-use StefanoTree\NestedSet\Adapter\Zend2DbAdapter;
-use StefanoDb\Adapter\ExtendedAdapterInterface;
-use Doctrine\DBAL\Connection as DoctrineConnection;
 use Zend_Db_Adapter_Abstract;
 
 class NestedSet
@@ -58,6 +59,19 @@ class NestedSet
     public function getAdapter()
     {
         return $this->adapter;
+    }
+
+    public function createRootNode($data = array())
+    {
+        if ($this->getRootNode()) {
+            throw new RootNodeAlreadyExistException(
+                'Root node already exist'
+            );
+        }
+
+        $nodeInfo = new NodeInfo(null, 0, 0, 1, 2);
+
+        return $this->getAdapter()->insert($nodeInfo, $data);
     }
 
     /**
@@ -367,5 +381,11 @@ class NestedSet
     public function getChildren($nodeId)
     {
         return $this->getDescendants($nodeId, 1, 1);
+    }
+
+    public function getRootNode()
+    {
+        return $this->getAdapter()
+                    ->getRoot();
     }
 }
