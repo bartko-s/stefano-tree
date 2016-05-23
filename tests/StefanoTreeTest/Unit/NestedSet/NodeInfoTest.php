@@ -17,6 +17,18 @@ class NodeInfoTest
         $this->assertEquals(62, $nodeInfo->getRight());
     }
 
+    public function testNodeInfoWithScope()
+    {
+        $nodeInfo = new NodeInfo(11, 29, 33, 44, 62, 45);
+
+        $this->assertEquals(11, $nodeInfo->getId());
+        $this->assertEquals(29, $nodeInfo->getParentId());
+        $this->assertEquals(33, $nodeInfo->getLevel());
+        $this->assertEquals(44, $nodeInfo->getLeft());
+        $this->assertEquals(62, $nodeInfo->getRight());
+        $this->assertEquals(45, $nodeInfo->getScope());
+    }
+
     public function testIsNotRoot()
     {
         $nodeInfo = new NodeInfo(11, 29, 33, 44, 62);

@@ -57,6 +57,7 @@ class Zend2DbAdapter
             $options->getRightColumnName(),
             $options->getLevelColumnName(),
             $options->getParentIdColumnName(),
+            $options->getScopeColumnName(),
         );
 
         return array_diff_key($data, array_flip($disallowedDataKeys));
@@ -148,20 +149,13 @@ class Zend2DbAdapter
              ->rollback();
     }
 
-    public function update($nodeId, array $data, NodeInfo $nodeInfo = null)
+    public function update($nodeId, array $data)
     {
         $options = $this->getOptions();
 
         $dbAdapter = $this->getDbAdapter();
 
-        if (null == $nodeInfo) {
-            $data = $this->cleanData($data);
-        } else {
-            $data[$options->getParentIdColumnName()] = $nodeInfo->getParentId();
-            $data[$options->getLevelColumnName()]    = $nodeInfo->getLevel();
-            $data[$options->getLeftColumnName()]     = $nodeInfo->getLeft();
-            $data[$options->getRightColumnName()]    = $nodeInfo->getRight();
-        }
+        $data = $this->cleanData($data);
 
         $update = new Db\Sql\Update($options->getTableName());
         $update->set($data)
@@ -184,6 +178,10 @@ class Zend2DbAdapter
         $data[$options->getLeftColumnName()]     = $nodeInfo->getLeft();
         $data[$options->getRightColumnName()]    = $nodeInfo->getRight();
 
+        if ($options->getScopeColumnName()) {
+            $data[$options->getScopeColumnName()] = $nodeInfo->getScope();
+        }
+
         $insert = new Db\Sql\Insert($options->getTableName());
         $insert->values($data);
         $dbAdapter->query($insert->getSqlString($dbAdapter->getPlatform()),
@@ -195,7 +193,7 @@ class Zend2DbAdapter
         return $lastGeneratedValue;
     }
 
-    public function delete($leftIndex, $rightIndex)
+    public function delete($leftIndex, $rightIndex, $scope=null)
     {
         $options = $this->getOptions();
 
@@ -207,24 +205,17 @@ class Zend2DbAdapter
                ->AND
                ->lessThanOrEqualTo($options->getRightColumnName(), $rightIndex);
 
+        if ($options->getScopeColumnName()) {
+            $delete->where
+                   ->AND
+                   ->equalTo($options->getScopeColumnName(), $scope);
+        }
+
         $dbAdapter->query($delete->getSqlString($dbAdapter->getPlatform()),
             DbAdapter::QUERY_MODE_EXECUTE);
     }
 
-    public function deleteAll($expectNodeId)
-    {
-        $options = $this->getOptions();
-        $dbAdapter = $this->getDbAdapter();
-
-        $delete = new Db\Sql\Delete;
-        $delete->from($options->getTableName())
-               ->where
-               ->notEqualTo($options->getIdColumnName(), $expectNodeId);
-        $dbAdapter->query($delete->getSqlString($dbAdapter->getPlatform()),
-            DbAdapter::QUERY_MODE_EXECUTE);
-    }
-
-    public function moveLeftIndexes($fromIndex, $shift)
+    public function moveLeftIndexes($fromIndex, $shift, $scope=null)
     {
         $options = $this->getOptions();
 
@@ -242,6 +233,10 @@ class Zend2DbAdapter
                 . ' WHERE '
                     . $dbPlatform->quoteIdentifier($options->getLeftColumnName()) . ' > :fromIndex';
 
+        if ($options->getScopeColumnName()) {
+            $sql .= ' AND ' . $dbPlatform->quoteIdentifier($options->getScopeColumnName()) . ' = ' . $dbPlatform->quoteValue($scope);
+        }
+
         $binds = array(
             ':shift' => $shift,
             ':fromIndex' => $fromIndex,
@@ -251,7 +246,7 @@ class Zend2DbAdapter
                   ->execute($binds);
     }
 
-    public function moveRightIndexes($fromIndex, $shift)
+    public function moveRightIndexes($fromIndex, $shift, $scope=null)
     {
         $options = $this->getOptions();
 
@@ -268,6 +263,10 @@ class Zend2DbAdapter
                         . $dbPlatform->quoteIdentifier($options->getRightColumnName()) . ' + :shift'
                 . ' WHERE '
                     . $dbPlatform->quoteIdentifier($options->getRightColumnName()) . ' > :fromIndex';
+
+        if ($options->getScopeColumnName()) {
+            $sql .= ' AND ' . $dbPlatform->quoteIdentifier($options->getScopeColumnName()) . ' = ' . $dbPlatform->quoteValue($scope);
+        }
 
         $binds = array(
             ':shift' => $shift,
@@ -296,7 +295,7 @@ class Zend2DbAdapter
             DbAdapter::QUERY_MODE_EXECUTE);
     }
 
-    public function updateLevels($leftIndexFrom, $rightIndexTo, $shift)
+    public function updateLevels($leftIndexFrom, $rightIndexTo, $shift, $scope=null)
     {
         $options = $this->getOptions();
 
@@ -315,6 +314,10 @@ class Zend2DbAdapter
                 . $dbPlatform->quoteIdentifier($options->getLeftColumnName()) . ' >= :leftFrom'
                 . ' AND ' . $dbPlatform->quoteIdentifier($options->getRightColumnName()) . ' <= :rightTo';
 
+        if ($options->getScopeColumnName()) {
+            $sql .= ' AND ' . $dbPlatform->quoteIdentifier($options->getScopeColumnName()) . ' = ' . $dbPlatform->quoteValue($scope);
+        }
+
         $binds = array(
             ':shift' => $shift,
             ':leftFrom' => $leftIndexFrom,
@@ -325,7 +328,7 @@ class Zend2DbAdapter
                   ->execute($binds);
     }
 
-    public function moveBranch($leftIndexFrom, $rightIndexTo, $shift)
+    public function moveBranch($leftIndexFrom, $rightIndexTo, $shift, $scope=null)
     {
         if (0 == $shift) {
             return;
@@ -346,6 +349,10 @@ class Zend2DbAdapter
                 . $dbPlatform->quoteIdentifier($options->getLeftColumnName()) . ' >= :leftFrom'
                 . ' AND ' . $dbPlatform->quoteIdentifier($options->getRightColumnName()) . ' <= :rightTo';
 
+        if ($options->getScopeColumnName()) {
+            $sql .= ' AND ' . $dbPlatform->quoteIdentifier($options->getScopeColumnName()) . ' = ' . $dbPlatform->quoteValue($scope);
+        }
+
         $binds = array(
             ':shift' => $shift,
             ':leftFrom' => $leftIndexFrom,
@@ -356,21 +363,32 @@ class Zend2DbAdapter
                   ->execute($binds);
     }
 
-    public function getRoot()
+    public function getRoots($scope=null)
     {
         $options = $this->getOptions();
 
         $dbAdapter = $this->getDbAdapter();
 
-        $select = $this->getDefaultDbSelect()
-            ->where(array($options->getParentIdColumnName() =>  0));
+        $select = $this->getDefaultDbSelect();
+        $select->where
+            ->equalTo($options->getParentIdColumnName(),  0);
+
+        if (null != $scope && $options->getScopeColumnName()) {
+            $select->where
+                ->equalTo($options->getScopeColumnName(), $scope);
+        }
 
         $result = $dbAdapter->query($select->getSqlString($dbAdapter->getPlatform()),
             DbAdapter::QUERY_MODE_EXECUTE);
 
-        $array = $result->toArray();
+        return $result->toArray();
+    }
 
-        return (0 < count($array)) ?  $array[0] : array();
+    public function getRoot($scope=null)
+    {
+        $roots = $this->getRoots($scope);
+
+        return (0 < count($roots)) ?  $roots[0] : array();
     }
 
     public function getNode($nodeId)
@@ -408,7 +426,13 @@ class Zend2DbAdapter
             $left      = $result[$options->getLeftColumnName()];
             $right     = $result[$options->getRightColumnName()];
 
-            $result = new NodeInfo($id, $parentId, $level, $left, $right);
+            if (isset($result[$options->getScopeColumnName()])) {
+                $scope = $result[$options->getScopeColumnName()];
+            } else {
+                $scope = null;
+            }
+
+            $result = new NodeInfo($id, $parentId, $level, $left, $right, $scope);
         }
 
         return $result;
@@ -428,6 +452,12 @@ class Zend2DbAdapter
         $dbAdapter = $this->getDbAdapter();
 
         $select = $this->getDefaultDbSelect();
+
+        if ($options->getScopeColumnName()) {
+            $select->where
+                ->equalTo($options->getScopeColumnName(), $nodeInfo->getScope());
+        }
+
         $select->where
                ->lessThanOrEqualTo($options->getLeftColumnName(), $nodeInfo->getLeft())
                ->AND
@@ -463,6 +493,10 @@ class Zend2DbAdapter
         $select = $this->getDefaultDbSelect();
         $select->order($options->getLeftColumnName() . ' ASC');
 
+        if ($options->getScopeColumnName()) {
+            $select->where
+                   ->equalTo($options->getScopeColumnName(), $nodeInfo->getScope());
+        }
 
         if (0 != $startLevel) {
             $level = $nodeInfo->getLevel() + (int) $startLevel;

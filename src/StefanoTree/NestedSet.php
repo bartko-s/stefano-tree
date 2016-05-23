@@ -61,15 +61,15 @@ class NestedSet
         return $this->adapter;
     }
 
-    public function createRootNode($data = array())
+    public function createRootNode($data = array(), $scope=null)
     {
-        if ($this->getRootNode()) {
+        if ($this->getRootNode($scope)) {
             throw new RootNodeAlreadyExistException(
                 'Root node already exist'
             );
         }
 
-        $nodeInfo = new NodeInfo(null, 0, 0, 1, 2);
+        $nodeInfo = new NodeInfo(null, 0, 0, 1, 2, $scope);
 
         return $this->getAdapter()->insert($nodeInfo, $data);
     }
@@ -118,9 +118,9 @@ class NestedSet
             }
 
             //make hole
-            $moveFromIndex = $addStrategy->moveIndexesFromIndex($targetNode);
-            $adapter->moveLeftIndexes($moveFromIndex, 2);
-            $adapter->moveRightIndexes($moveFromIndex, 2);
+            $moveFromIndex = $addStrategy->moveIndexesFromIndex();
+            $adapter->moveLeftIndexes($moveFromIndex, 2, $targetNode->getScope());
+            $adapter->moveRightIndexes($moveFromIndex, 2, $targetNode->getScope());
 
             //insert new node
             $newNodeInfo = new NodeInfo(
@@ -128,7 +128,8 @@ class NestedSet
                 $addStrategy->newParentId(),
                 $addStrategy->newLevel(),
                 $addStrategy->newLeftIndex(),
-                $addStrategy->newRightIndex()
+                $addStrategy->newRightIndex(),
+                $targetNode->getScope()
             );
             $lastGeneratedValue = $adapter->insert($newNodeInfo, $data);
 
@@ -220,6 +221,11 @@ class NestedSet
                 return false;
             }
 
+            // scope are different
+            if ($sourceNodeInfo->getScope() != $targetNodeInfo->getScope()) {
+                throw new InvalidArgumentException('Cannot move node between scopes');
+            }
+
             $moveStrategy = $this->getMoveStrategy($sourceNodeInfo, $targetNodeInfo, $placement);
 
             if (!$moveStrategy->canMoveBranch()) {
@@ -244,23 +250,23 @@ class NestedSet
 
             //update levels
             $adapter->updateLevels($sourceNodeInfo->getLeft(), $sourceNodeInfo->getRight(),
-                    $moveStrategy->getLevelShift());
+                    $moveStrategy->getLevelShift(), $sourceNodeInfo->getScope());
 
             //make hole
             $adapter->moveLeftIndexes($moveStrategy->makeHoleFromIndex(),
-                        $moveStrategy->getIndexShift());
+                        $moveStrategy->getIndexShift(), $sourceNodeInfo->getScope());
             $adapter->moveRightIndexes($moveStrategy->makeHoleFromIndex(),
-                        $moveStrategy->getIndexShift());
+                        $moveStrategy->getIndexShift(), $sourceNodeInfo->getScope());
 
             //move branch to the hole
-            $adapter->moveBranch($moveStrategy->getHoleLeftIndex(),
-                $moveStrategy->getHoleRightIndex(), $moveStrategy->getSourceNodeIndexShift());
+            $adapter->moveBranch($moveStrategy->getHoleLeftIndex(), $moveStrategy->getHoleRightIndex(),
+                $moveStrategy->getSourceNodeIndexShift(), $sourceNodeInfo->getScope());
 
             //patch hole
             $adapter->moveLeftIndexes($moveStrategy->fixHoleFromIndex(),
-                        ($moveStrategy->getIndexShift() * -1));
+                        ($moveStrategy->getIndexShift() * -1), $sourceNodeInfo->getScope());
             $adapter->moveRightIndexes($moveStrategy->fixHoleFromIndex(),
-                        ($moveStrategy->getIndexShift() * -1));
+                        ($moveStrategy->getIndexShift() * -1), $sourceNodeInfo->getScope());
 
             $adapter->commitTransaction();
             $adapter->unlockTable();
@@ -340,13 +346,13 @@ class NestedSet
             // delete branch
             $leftIndex = $nodeInfo->getLeft();
             $rightIndex = $nodeInfo->getRight();
-            $adapter->delete($leftIndex, $rightIndex);
+            $adapter->delete($leftIndex, $rightIndex, $nodeInfo->getScope());
 
             //patch hole
             $moveFromIndex = $nodeInfo->getLeft();
             $shift = $nodeInfo->getLeft() - $nodeInfo->getRight() - 1;
-            $adapter->moveLeftIndexes($moveFromIndex, $shift);
-            $adapter->moveRightIndexes($moveFromIndex, $shift);
+            $adapter->moveLeftIndexes($moveFromIndex, $shift, $nodeInfo->getScope());
+            $adapter->moveRightIndexes($moveFromIndex, $shift, $nodeInfo->getScope());
 
             $adapter->commitTransaction();
             $adapter->unlockTable();
@@ -383,9 +389,15 @@ class NestedSet
         return $this->getDescendants($nodeId, 1, 1);
     }
 
-    public function getRootNode()
+    public function getRootNode($scope=null)
     {
         return $this->getAdapter()
-                    ->getRoot();
+                    ->getRoot($scope);
+    }
+
+    public function getRoots()
+    {
+        return $this->getAdapter()
+                    ->getRoots();
     }
 }

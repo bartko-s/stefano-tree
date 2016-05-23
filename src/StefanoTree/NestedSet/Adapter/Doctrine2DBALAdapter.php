@@ -62,6 +62,7 @@ class Doctrine2DBALAdapter
             $options->getRightColumnName(),
             $options->getLevelColumnName(),
             $options->getParentIdColumnName(),
+            $options->getScopeColumnName(),
         );
 
         return array_diff_key($data, array_flip($disallowedDataKeys));
@@ -159,20 +160,13 @@ class Doctrine2DBALAdapter
              ->rollBack();
     }
 
-    public function update($nodeId, array $data, NodeInfo $nodeInfo = null)
+    public function update($nodeId, array $data)
     {
         $options = $this->getOptions();
 
         $connection = $this->getConnection();
 
-        if (null == $nodeInfo) {
-            $data = $this->cleanData($data);
-        } else {
-            $data[$options->getParentIdColumnName()] = $nodeInfo->getParentId();
-            $data[$options->getLevelColumnName()]    = $nodeInfo->getLevel();
-            $data[$options->getLeftColumnName()]     = $nodeInfo->getLeft();
-            $data[$options->getRightColumnName()]    = $nodeInfo->getRight();
-        }
+        $data = $this->cleanData($data);
 
         $sql = $connection->createQueryBuilder();
 
@@ -199,12 +193,16 @@ class Doctrine2DBALAdapter
         $data[$options->getLeftColumnName()]     = $nodeInfo->getLeft();
         $data[$options->getRightColumnName()]    = $nodeInfo->getRight();
 
+        if ($options->getScopeColumnName()) {
+            $data[$options->getScopeColumnName()] = $nodeInfo->getScope();
+        }
+
         $connection->insert($options->getTableName(), $data);
 
         return $connection->lastInsertId($options->getSequenceName());
     }
 
-    public function delete($leftIndex, $rightIndex)
+    public function delete($leftIndex, $rightIndex, $scope=null)
     {
         $options = $this->getOptions();
 
@@ -220,26 +218,15 @@ class Doctrine2DBALAdapter
             ':rightIndex' => $rightIndex,
         );
 
-        $connection->executeQuery($sql, $params);
-    }
-
-    public function deleteAll($expectNodeId)
-    {
-        $options = $this->getOptions();
-        $connection = $this->getConnection();
-
-        $sql = $connection->createQueryBuilder();
-        $sql->delete($options->getTableName())
-            ->where($options->getIdColumnName() . ' != :nodeId');
-
-        $params = array(
-            ':nodeId' => $expectNodeId,
-        );
+        if ($options->getScopeColumnName()) {
+            $sql->andWhere($options->getScopeColumnName() . ' = :scope');
+            $params[':scope'] = $scope;
+        }
 
         $connection->executeQuery($sql, $params);
     }
 
-    public function moveLeftIndexes($fromIndex, $shift)
+    public function moveLeftIndexes($fromIndex, $shift, $scope=null)
     {
         $options = $this->getOptions();
 
@@ -259,10 +246,15 @@ class Doctrine2DBALAdapter
             ':fromIndex' => $fromIndex,
         );
 
+        if ($options->getScopeColumnName()) {
+            $sql->andWhere($options->getScopeColumnName() . ' = :scope');
+            $params[':scope'] = $scope;
+        }
+
         $connection->executeUpdate($sql, $params);
     }
 
-    public function moveRightIndexes($fromIndex, $shift)
+    public function moveRightIndexes($fromIndex, $shift, $scope=null)
     {
         $options = $this->getOptions();
 
@@ -281,6 +273,11 @@ class Doctrine2DBALAdapter
             ':shift' => $shift,
             ':fromIndex' => $fromIndex,
         );
+
+        if ($options->getScopeColumnName()) {
+            $sql->andWhere($options->getScopeColumnName() . ' = :scope');
+            $params[':scope'] = $scope;
+        }
 
         $connection->executeUpdate($sql, $params);
     }
@@ -304,7 +301,7 @@ class Doctrine2DBALAdapter
         $connection->executeUpdate($sql, $params);
     }
 
-    public function updateLevels($leftIndexFrom, $rightIndexTo, $shift)
+    public function updateLevels($leftIndexFrom, $rightIndexTo, $shift, $scope=null)
     {
         $options = $this->getOptions();
 
@@ -326,10 +323,15 @@ class Doctrine2DBALAdapter
             ':rightTo' => $rightIndexTo,
         );
 
+        if ($options->getScopeColumnName()) {
+            $sql->andWhere($options->getScopeColumnName() . ' = :scope');
+            $params[':scope'] = $scope;
+        }
+
         $connection->executeUpdate($sql, $params);
     }
 
-    public function moveBranch($leftIndexFrom, $rightIndexTo, $shift)
+    public function moveBranch($leftIndexFrom, $rightIndexTo, $shift, $scope=null)
     {
         if (0 == $shift) {
             return;
@@ -352,27 +354,43 @@ class Doctrine2DBALAdapter
             ':rightTo' => $rightIndexTo,
         );
 
+        if ($options->getScopeColumnName()) {
+            $sql->andWhere($options->getScopeColumnName() . ' = :scope');
+            $params[':scope'] = $scope;
+        }
+
         $connection->executeUpdate($sql, $params);
     }
 
-    public function getRoot()
+    public function getRoots($scope=null)
     {
         $options = $this->getOptions();
 
         $connection = $this->getConnection();
 
         $sql = $this->getDefaultDbSelect();
-        $sql->where($options->getParentIdColumnName() . ' = :' . $options->getParentIdColumnName());
+        $sql->where($options->getParentIdColumnName() . ' = :parentId');
 
         $params = array(
-            $options->getParentIdColumnName() => 0,
+            'parentId' => 0,
         );
+
+        if (null != $scope && $options->getScopeColumnName()) {
+            $sql->where($options->getScopeColumnName() . ' = :scope');
+            $params[':scope'] = $scope;
+        }
 
         $stmt = $connection->executeQuery($sql, $params);
 
-        $node = $stmt->fetch();
+        $node = $stmt->fetchAll();
 
-        return (is_array($node)) ?  $node : array();
+        return $node;
+    }
+
+    public function getRoot($scope=null)
+    {
+        $roots = $this->getRoots($scope);
+        return ($roots) ?  $roots[0] : array();
     }
 
     public function getNode($nodeId)
@@ -414,7 +432,13 @@ class Doctrine2DBALAdapter
             $left      = $result[$options->getLeftColumnName()];
             $right     = $result[$options->getRightColumnName()];
 
-            $result = new NodeInfo($id, $parentId, $level, $left, $right);
+            if (isset($result[$options->getScopeColumnName()])) {
+                $scope = $result[$options->getScopeColumnName()];
+            } else {
+                $scope = null;
+            }
+
+            $result = new NodeInfo($id, $parentId, $level, $left, $right, $scope);
         }
 
         return $result;
@@ -477,6 +501,11 @@ class Doctrine2DBALAdapter
         $sql->orderBy($options->getLeftColumnName(), 'ASC');
 
         $params = array();
+
+        if ($options->getScopeColumnName()) {
+            $sql->andWhere($options->getScopeColumnName() . ' = :scope');
+            $params['scope'] = $nodeInfo->getScope();
+        }
 
         if (0 != $startLevel) {
             $sql->andWhere($options->getLevelColumnName() . ' >= :startLevel');

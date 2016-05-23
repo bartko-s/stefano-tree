@@ -158,4 +158,20 @@ class NestedSetTest
 
         $this->assertEquals('seq', $optionsStub->getSequenceName());
     }
+
+    public function testGetDefaultScopeColumnName()
+    {
+        $optionsStub = $this->getOptionsWithDefaultSettings();
+
+        $this->assertEquals('', $optionsStub->getScopeColumnName());
+    }
+
+    public function testSetScopeColumnName()
+    {
+        $optionsStub = $this->getOptionsWithDefaultSettings();
+
+        $optionsStub->setScopeColumnName('   scope   ');
+
+        $this->assertEquals('scope', $optionsStub->getScopeColumnName());
+    }
 }

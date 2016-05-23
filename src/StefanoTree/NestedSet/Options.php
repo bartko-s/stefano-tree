@@ -14,6 +14,7 @@ class Options
     private $rightColumnName = 'rgt';
     private $levelColumnName = 'level';
     private $parentIdColumnName = 'parent_id';
+    private $scopeColumnName = '';
 
     /**
      * @param array $options
@@ -208,5 +209,21 @@ class Options
     public function getParentIdColumnName()
     {
         return $this->parentIdColumnName;
+    }
+
+    /**
+     * @param $scopeColumnName
+     */
+    public function setScopeColumnName($scopeColumnName)
+    {
+        $this->scopeColumnName = trim($scopeColumnName);
+    }
+
+    /**
+     * @return string
+     */
+    public function getScopeColumnName()
+    {
+        return $this->scopeColumnName;
     }
 }

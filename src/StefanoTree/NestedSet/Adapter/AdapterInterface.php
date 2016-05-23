@@ -45,10 +45,9 @@ interface AdapterInterface
      *
      * @param int $nodeId
      * @param array $data
-     * @param NodeInfo $nodeInfo
      * @return void
      */
-    public function update($nodeId, array $data, NodeInfo $nodeInfo = null);
+    public function update($nodeId, array $data);
 
     /**
      * @param NodeInfo $nodeInfo
@@ -62,29 +61,26 @@ interface AdapterInterface
      *
      * @param int $leftIndex Left index greater or equal to
      * @param int $rightIndex Right index greater or equal to
+     * @param int $scope null if scope is not used
      * @return void
      */
-    public function delete($leftIndex, $rightIndex);
-
-    /**
-     * @param int $expectNodeId Delete all expect this node
-     * @return void
-     */
-    public function deleteAll($expectNodeId);
+    public function delete($leftIndex, $rightIndex, $scope=null);
 
     /**
      * @param int $fromIndex Left index is greater than
      * @param int $shift
+     * @param int $scope null if scope is not used
      * @return void
      */
-    public function moveLeftIndexes($fromIndex, $shift);
+    public function moveLeftIndexes($fromIndex, $shift, $scope=null);
 
     /**
      * @param int $fromIndex Right index is greater than
      * @param int $shift
+     * @param int $scope null if scope is not used
      * @return void
      */
-    public function moveRightIndexes($fromIndex, $shift);
+    public function moveRightIndexes($fromIndex, $shift, $scope=null);
 
     /**
      * @param int $nodeId
@@ -97,17 +93,19 @@ interface AdapterInterface
      * @param int $leftIndexFrom from left index or equal
      * @param int $rightIndexTo to right index or equal
      * @param int $shift shift
+     * @param int $scope null if scope is not used
      * @return void
      */
-    public function updateLevels($leftIndexFrom, $rightIndexTo, $shift);
+    public function updateLevels($leftIndexFrom, $rightIndexTo, $shift, $scope=null);
 
     /**
      * @param int $leftIndexFrom from left index
      * @param int $rightIndexTo to right index
      * @param int $shift
+     * @param int $scope null if scope is not used 
      * @return void
      */
-    public function moveBranch($leftIndexFrom, $rightIndexTo, $shift);
+    public function moveBranch($leftIndexFrom, $rightIndexTo, $shift, $scope=null);
 
     /**
      * @param int $nodeId
@@ -140,7 +138,14 @@ interface AdapterInterface
     public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranch = null);
 
     /**
+     * @param int $scope null if scope is not used
      * @return array
      */
-    public function getRoot();
+    public function getRoot($scope=null);
+
+    /**
+     * @param $scope int if defined return root only for defined scope
+     * @return array
+     */
+    public function getRoots($scope=null);
 }

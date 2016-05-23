@@ -13,9 +13,21 @@ interface TreeInterface
     /**
      * @throws RootNodeAlreadyExistException if root already exist
      * @param array $data
+     * @param int $scope Required if scope is used
      * @return int Id of new created root
      */
-    public function createRootNode($data = array());
+    public function createRootNode($data = array(), $scope=null);
+
+    /**
+     * @param int $scope Required if scope is used
+     * @return array
+     */
+    public function getRootNode($scope=null);
+
+    /**
+     * @return array
+     */
+    public function getRoots();
 
     /**
      * @param int $nodeId
@@ -114,9 +126,4 @@ interface TreeInterface
      * @return null|array
      */
     public function getChildren($nodeId);
-
-    /**
-     * @return array
-     */
-    public function getRootNode();
 }

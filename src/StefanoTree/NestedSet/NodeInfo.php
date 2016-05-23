@@ -8,14 +8,16 @@ class NodeInfo
     private $level;
     private $left;
     private $right;
+    private $scope;
 
-    public function __construct($id, $parentId, $level, $left, $right)
+    public function __construct($id, $parentId, $level, $left, $right, $scope=null)
     {
         $this->id       = $id;
         $this->parentId = $parentId;
         $this->level    = $level;
         $this->left     = $left;
         $this->right    = $right;
+        $this->scope    = $scope;
     }
 
     /**
@@ -58,6 +60,17 @@ class NodeInfo
         return $this->right;
     }
 
+    /**
+     * @return null|int
+     */
+    public function getScope()
+    {
+        return $this->scope;
+    }
+
+    /**
+     * @return bool
+     */
     public function isRoot()
     {
         if (0 == $this->getParentId()) {
