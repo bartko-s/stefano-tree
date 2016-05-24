@@ -98,7 +98,7 @@ class NestedSet
         $adapter->beginTransaction();
         try {
             $targetNode = $adapter->getNodeInfo($targetNodeId);
-            if($targetNode) {
+            if ($targetNode) {
                 $scope = $targetNode->getScope();
                 $adapter->lockTree($scope);
             }
@@ -207,7 +207,7 @@ class NestedSet
         $adapter->beginTransaction();
         try {
             $sourceNode = $adapter->getNodeInfo($sourceNodeId);
-            if($sourceNode) {
+            if ($sourceNode) {
                 $scope = $sourceNode->getScope();
                 $adapter->lockTree($scope);
             }
@@ -327,7 +327,7 @@ class NestedSet
         $adapter->beginTransaction();
         try {
             $node = $adapter->getNodeInfo($nodeId);
-            if($node) {
+            if ($node) {
                 $scope = $node->getScope();
                 $adapter->lockTree($scope);
             }

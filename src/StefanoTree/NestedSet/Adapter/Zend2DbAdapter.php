@@ -2,8 +2,6 @@
 namespace StefanoTree\NestedSet\Adapter;
 
 use StefanoDb\Adapter\Adapter as DbAdapter;
-use StefanoLockTable\Adapter\AdapterInterface as LockSqlBuilderInterface;
-use StefanoLockTable\Factory as LockSqlBuilderFactory;
 use StefanoTree\NestedSet\NodeInfo;
 use StefanoTree\NestedSet\Options;
 use Zend\Db;

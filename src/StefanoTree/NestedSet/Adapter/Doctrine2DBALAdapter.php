@@ -3,8 +3,6 @@ namespace StefanoTree\NestedSet\Adapter;
 
 use Doctrine\DBAL\Connection as DbConnection;
 use Doctrine\DBAL\Query\QueryBuilder;
-use StefanoLockTable\Adapter\AdapterInterface as LockSqlBuilderInterface;
-use StefanoLockTable\Factory as LockSqlBuilderFactory;
 use StefanoTree\NestedSet\NodeInfo;
 use StefanoTree\NestedSet\Options;
 
