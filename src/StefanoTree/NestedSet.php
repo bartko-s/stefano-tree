@@ -162,11 +162,9 @@ class NestedSet
                 return new AddStrategy\ChildBottom($targetNode);
             case self::PLACEMENT_CHILD_TOP:
                 return new AddStrategy\ChildTop($targetNode);
-        // @codeCoverageIgnoreStart
             default:
                 throw new InvalidArgumentException('Unknown placement "' . $placement . '"');
         }
-        // @codeCoverageIgnoreEnd
     }
 
     public function addNodePlacementBottom($targetNodeId, $data = array())
@@ -317,11 +315,9 @@ class NestedSet
                 return new MoveStrategy\ChildBottom($sourceNode, $targetNode);
             case self::PLACEMENT_CHILD_TOP:
                 return new MoveStrategy\ChildTop($sourceNode, $targetNode);
-        // @codeCoverageIgnoreStart
             default:
                 throw new InvalidArgumentException('Unknown placement "' . $placement . '"');
         }
-        // @codeCoverageIgnoreEnd
     }
 
     public function deleteBranch($nodeId)
