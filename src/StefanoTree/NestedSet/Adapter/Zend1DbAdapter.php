@@ -17,8 +17,6 @@ class Zend1DbAdapter
 
     protected $defaultDbSelect;
 
-    protected $lockSqlBuilder;
-
     public function __construct(Options $options, ZendDbAdapter $dbAdapter)
     {
         $this->options = $options;
@@ -41,40 +39,22 @@ class Zend1DbAdapter
         return $this->dbAdapter;
     }
 
-    /**
-     * @return LockSqlBuilderInterface
-     */
-    private function getLockSqlBuilder()
-    {
-        if (null == $this->lockSqlBuilder) {
-            $adapterClassName = get_class($this->getDbAdapter());
-            $parts = explode('_', $adapterClassName);
-            $vendorName = end($parts);
-
-            $factory = new LockSqlBuilderFactory();
-            $this->lockSqlBuilder = $factory->createAdapter($vendorName);
-        }
-
-        return $this->lockSqlBuilder;
-    }
-
-    public function lockTable()
+    public function lockTree($scope)
     {
         $options = $this->getOptions();
-        $sql = $this->getLockSqlBuilder()->getLockSqlString($options->getTableName());
 
-        if (null != $sql) {
-            $this->getDbAdapter()->query($sql);
+        $dbAdapter = $this->getDbAdapter();
+
+        $select = $this->getDefaultDbSelect()
+                       ->reset(\Zend_Db_Select::COLUMNS)
+                       ->columns(array('i' => $options->getIdColumnName()))
+                       ->forUpdate(true);
+
+        if ($options->getScopeColumnName()) {
+            $select->where($options->getScopeColumnName() . ' = ?', $scope);
         }
-    }
 
-    public function unlockTable()
-    {
-        $sql = $this->getLockSqlBuilder()->getUnlockSqlString();
-
-        if (null != $sql) {
-            $this->getDbAdapter()->query($sql);
-        }
+        $dbAdapter->fetchAll($select);
     }
 
     protected function _isInTransaction()

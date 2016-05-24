@@ -17,8 +17,6 @@ class Doctrine2DBALAdapter
 
     private $defaultDbSelect;
 
-    private $lockSqlBuilder;
-
     /**
      * @param Options $options
      * @param DbConnection $connection
@@ -100,46 +98,22 @@ class Doctrine2DBALAdapter
         return $dbSelect;
     }
 
-    /**
-     * @return LockSqlBuilderInterface
-     */
-    private function getLockSqlBuilder()
+    public function lockTree($scope)
     {
-        if (null == $this->lockSqlBuilder) {
-            $vendorName = $this->getConnection()
-                               ->getDatabasePlatform()
-                               ->getName();
+        $options = $this->getOptions();
 
-            $factory = new LockSqlBuilderFactory();
-            $this->lockSqlBuilder = $factory->createAdapter($vendorName);
+        $connection = $this->getConnection();
+
+        $sql = $this->getDefaultDbSelect();
+        $sql->select($options->getIdColumnName() . ' AS i');
+
+        if ($options->getScopeColumnName()) {
+            $sql->where($options->getScopeColumnName() . ' = ' . $connection->quote($scope));
         }
 
-        return $this->lockSqlBuilder;
-    }
+        $sql = $sql->getSQL() . ' FOR UPDATE';
 
-    public function lockTable()
-    {
-        $tableName = $this->getOptions()
-                          ->getTableName();
-
-        $sql = $this->getLockSqlBuilder()
-                    ->getLockSqlString($tableName);
-
-        if (null != $sql) {
-            $this->getConnection()
-                 ->executeQuery($sql);
-        }
-    }
-
-    public function unlockTable()
-    {
-        $sql = $this->getLockSqlBuilder()
-                    ->getUnlockSqlString();
-
-        if (null != $sql) {
-            $this->getConnection()
-                 ->executeQuery($sql);
-        }
+        $connection->executeQuery($sql);
     }
 
     public function beginTransaction()

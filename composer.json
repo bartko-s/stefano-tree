@@ -21,8 +21,7 @@
         }
     ],
     "require": {
-        "php": ">=5.6.0",
-        "stefano/stefano-lock-table": "0.*"
+        "php": ">=5.6.0"
     },
     "suggest": {
         "doctrine/dbal": "If you want to use Doctrine DBAL",

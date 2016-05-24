@@ -17,8 +17,6 @@ class Zend2DbAdapter
 
     private $defaultDbSelect = null;
 
-    private $lockSqlBuilder;
-
     public function __construct(Options $options, DbAdapter $dbAdapter)
     {
         $this->options = $options;
@@ -89,46 +87,26 @@ class Zend2DbAdapter
         return $dbSelect;
     }
 
-    /**
-    * @return LockSqlBuilderInterface
-    */
-    private function getLockSqlBuilder()
+    public function lockTree($scope)
     {
-        if (null == $this->lockSqlBuilder) {
-            $vendorName = $this->getDbAdapter()
-                               ->getDriver()
-                               ->getDatabasePlatformName();
+        $options = $this->getOptions();
 
-            $factory = new LockSqlBuilderFactory();
-            $this->lockSqlBuilder = $factory->createAdapter($vendorName);
+        $dbAdapter = $this->getDbAdapter();
+
+        $select = $this->getDefaultDbSelect();
+        $select->columns(array(
+            'i' => $options->getIdColumnName(),
+        ));
+
+        if ($options->getScopeColumnName()) {
+            $select->where(array(
+                $options->getScopeColumnName() => $scope,
+            ));
         }
 
-        return $this->lockSqlBuilder;
-    }
+        $sql = $select->getSqlString($dbAdapter->getPlatform()) . ' FOR UPDATE';
 
-    public function lockTable()
-    {
-        $tableName = $this->getOptions()
-                          ->getTableName();
-
-        $sql = $this->getLockSqlBuilder()
-                    ->getLockSqlString($tableName);
-
-        if (null != $sql) {
-            $this->getDbAdapter()
-                 ->query($sql, DbAdapter::QUERY_MODE_EXECUTE);
-        }
-    }
-
-    public function unlockTable()
-    {
-        $sql = $this->getLockSqlBuilder()
-                    ->getUnlockSqlString();
-
-        if (null != $sql) {
-            $this->getDbAdapter()
-                 ->query($sql, DbAdapter::QUERY_MODE_EXECUTE);
-        }
+        $dbAdapter->query($sql, DbAdapter::QUERY_MODE_EXECUTE);
     }
 
     public function beginTransaction()

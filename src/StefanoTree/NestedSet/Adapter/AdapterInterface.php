@@ -11,16 +11,12 @@ use StefanoTree\NestedSet\NodeInfo;
 interface AdapterInterface
 {
     /**
-     * Lock tree table
+     * Lock tree for update. This prevent race condition issue
+     *
+     * @param $scope int null if scope is not used
      * @return void
      */
-    public function lockTable();
-
-    /**
-     * Unlock tree table
-     * @return void
-     */
-    public function unlockTable();
+    public function lockTree($scope);
 
     /**
      * Begin db transaction only if transaction has not been started before

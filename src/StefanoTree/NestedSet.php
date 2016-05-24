@@ -97,13 +97,16 @@ class NestedSet
 
         $adapter->beginTransaction();
         try {
-            $adapter->lockTable();
+            $targetNode = $adapter->getNodeInfo($targetNodeId);
+            if($targetNode) {
+                $scope = $targetNode->getScope();
+                $adapter->lockTree($scope);
+            }
 
             $targetNode = $adapter->getNodeInfo($targetNodeId);
 
             if (null == $targetNode) {
                 $adapter->commitTransaction();
-                $adapter->unlockTable();
 
                 return false;
             }
@@ -112,7 +115,6 @@ class NestedSet
 
             if (false == $addStrategy->canAddNewNode()) {
                 $adapter->commitTransaction();
-                $adapter->unlockTable();
 
                 return false;
             }
@@ -134,10 +136,8 @@ class NestedSet
             $lastGeneratedValue = $adapter->insert($newNodeInfo, $data);
 
             $adapter->commitTransaction();
-            $adapter->unlockTable();
         } catch (Exception $e) {
             $adapter->rollbackTransaction();
-            $adapter->unlockTable();
 
             throw $e;
         }
@@ -208,7 +208,11 @@ class NestedSet
 
         $adapter->beginTransaction();
         try {
-            $adapter->lockTable();
+            $sourceNode = $adapter->getNodeInfo($sourceNodeId);
+            if($sourceNode) {
+                $scope = $sourceNode->getScope();
+                $adapter->lockTree($scope);
+            }
 
             $sourceNodeInfo = $adapter->getNodeInfo($sourceNodeId);
             $targetNodeInfo = $adapter->getNodeInfo($targetNodeId);
@@ -216,7 +220,6 @@ class NestedSet
             //source node or target node does not exist
             if (!$sourceNodeInfo || !$targetNodeInfo) {
                 $adapter->commitTransaction();
-                $adapter->unlockTable();
 
                 return false;
             }
@@ -230,14 +233,12 @@ class NestedSet
 
             if (!$moveStrategy->canMoveBranch()) {
                 $adapter->commitTransaction();
-                $adapter->unlockTable();
 
                 return false;
             }
 
             if ($moveStrategy->isSourceNodeAtRequiredPosition()) {
                 $adapter->commitTransaction();
-                $adapter->unlockTable();
 
                 return true;
             }
@@ -269,10 +270,8 @@ class NestedSet
                         ($moveStrategy->getIndexShift() * -1), $sourceNodeInfo->getScope());
 
             $adapter->commitTransaction();
-            $adapter->unlockTable();
         } catch (Exception $e) {
             $adapter->rollbackTransaction();
-            $adapter->unlockTable();
 
             throw $e;
         }
@@ -331,14 +330,17 @@ class NestedSet
 
         $adapter->beginTransaction();
         try {
-            $adapter->lockTable();
+            $node = $adapter->getNodeInfo($nodeId);
+            if($node) {
+                $scope = $node->getScope();
+                $adapter->lockTree($scope);
+            }
 
-            // node does not exist
             $nodeInfo = $adapter->getNodeInfo($nodeId);
 
+            // node does not exist
             if (!$nodeInfo) {
                 $adapter->commitTransaction();
-                $adapter->unlockTable();
 
                 return false;
             }
@@ -355,10 +357,8 @@ class NestedSet
             $adapter->moveRightIndexes($moveFromIndex, $shift, $nodeInfo->getScope());
 
             $adapter->commitTransaction();
-            $adapter->unlockTable();
         } catch (Exception $e) {
             $adapter->rollbackTransaction();
-            $adapter->unlockTable();
 
             throw $e;
         }
