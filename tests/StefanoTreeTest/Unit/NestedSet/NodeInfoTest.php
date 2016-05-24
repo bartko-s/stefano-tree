@@ -6,17 +6,6 @@ use StefanoTree\NestedSet\NodeInfo;
 class NodeInfoTest
     extends \PHPUnit_Framework_TestCase
 {
-    public function testNodeInfo()
-    {
-        $nodeInfo = new NodeInfo(11, 29, 33, 44, 62);
-
-        $this->assertEquals(11, $nodeInfo->getId());
-        $this->assertEquals(29, $nodeInfo->getParentId());
-        $this->assertEquals(33, $nodeInfo->getLevel());
-        $this->assertEquals(44, $nodeInfo->getLeft());
-        $this->assertEquals(62, $nodeInfo->getRight());
-    }
-
     public function testNodeInfoWithScope()
     {
         $nodeInfo = new NodeInfo(11, 29, 33, 44, 62, 45);
@@ -31,14 +20,14 @@ class NodeInfoTest
 
     public function testIsNotRoot()
     {
-        $nodeInfo = new NodeInfo(11, 29, 33, 44, 62);
+        $nodeInfo = new NodeInfo(11, 29, 33, 44, 62, null);
 
         $this->assertFalse($nodeInfo->isRoot());
     }
 
     public function testIsRoot()
     {
-        $nodeInfo = new NodeInfo(125, 0, 0, 1, 156);
+        $nodeInfo = new NodeInfo(125, 0, 0, 1, 156, null);
 
         $this->assertTrue($nodeInfo->isRoot());
     }
