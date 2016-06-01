@@ -76,7 +76,7 @@ class Zend2DbAdapter
     {
         $options = $this->getOptions();
 
-        if (null == $this->defaultDbSelect) {
+        if (null === $this->defaultDbSelect) {
             $this->defaultDbSelect = new Db\Sql\Select($options->getTableName());
         }
 
@@ -169,7 +169,7 @@ class Zend2DbAdapter
         return $lastGeneratedValue;
     }
 
-    public function delete($leftIndex, $rightIndex, $scope=null)
+    public function delete($leftIndex, $rightIndex, $scope = null)
     {
         $options = $this->getOptions();
 
@@ -191,12 +191,12 @@ class Zend2DbAdapter
             DbAdapter::QUERY_MODE_EXECUTE);
     }
 
-    public function moveLeftIndexes($fromIndex, $shift, $scope=null)
+    public function moveLeftIndexes($fromIndex, $shift, $scope = null)
     {
         $options = $this->getOptions();
 
         if (0 == $shift) {
-            return;
+            return null;
         }
 
         $dbAdapter = $this->getDbAdapter();
@@ -222,12 +222,12 @@ class Zend2DbAdapter
                   ->execute($binds);
     }
 
-    public function moveRightIndexes($fromIndex, $shift, $scope=null)
+    public function moveRightIndexes($fromIndex, $shift, $scope = null)
     {
         $options = $this->getOptions();
 
         if (0 == $shift) {
-            return;
+            return null;
         }
 
         $dbAdapter = $this->getDbAdapter();
@@ -271,12 +271,12 @@ class Zend2DbAdapter
             DbAdapter::QUERY_MODE_EXECUTE);
     }
 
-    public function updateLevels($leftIndexFrom, $rightIndexTo, $shift, $scope=null)
+    public function updateLevels($leftIndexFrom, $rightIndexTo, $shift, $scope = null)
     {
         $options = $this->getOptions();
 
         if (0 == $shift) {
-            return;
+            return null;
         }
 
         $dbAdapter = $this->getDbAdapter();
@@ -304,10 +304,10 @@ class Zend2DbAdapter
                   ->execute($binds);
     }
 
-    public function moveBranch($leftIndexFrom, $rightIndexTo, $shift, $scope=null)
+    public function moveBranch($leftIndexFrom, $rightIndexTo, $shift, $scope = null)
     {
         if (0 == $shift) {
-            return;
+            return null;
         }
 
         $options = $this->getOptions();
@@ -339,7 +339,7 @@ class Zend2DbAdapter
                   ->execute($binds);
     }
 
-    public function getRoots($scope=null)
+    public function getRoots($scope = null)
     {
         $options = $this->getOptions();
 
@@ -360,7 +360,7 @@ class Zend2DbAdapter
         return $result->toArray();
     }
 
-    public function getRoot($scope=null)
+    public function getRoot($scope = null)
     {
         $roots = $this->getRoots($scope);
 
@@ -383,9 +383,7 @@ class Zend2DbAdapter
 
         $array = $result->toArray();
 
-        if (0 < count($array)) {
-            return $array[0];
-        }
+        return (0 < count($array)) ? $array[0] : null;
     }
 
     /**
@@ -444,7 +442,7 @@ class Zend2DbAdapter
             $options->getParentIdColumnName() => $parentNodeId
         ));
 
-        $data= $dbAdapter->query($select->getSqlString($dbAdapter->getPlatform()),
+        $data = $dbAdapter->query($select->getSqlString($dbAdapter->getPlatform()),
             DbAdapter::QUERY_MODE_EXECUTE);
 
         $result = array();
@@ -486,7 +484,7 @@ class Zend2DbAdapter
 
         // node does not exist
         if (!$nodeInfo = $this->getNodeInfo($nodeId)) {
-            return;
+            return null;
         }
 
         $dbAdapter = $this->getDbAdapter();
@@ -526,7 +524,7 @@ class Zend2DbAdapter
         $options = $this->getOptions();
 
         if (!$nodeInfo = $this->getNodeInfo($nodeId)) {
-            return;
+            return null;
         }
 
         $dbAdapter = $this->getDbAdapter();
@@ -579,8 +577,6 @@ class Zend2DbAdapter
 
         $resultArray = $result->toArray();
 
-        if (0 < count($resultArray)) {
-            return $resultArray;
-        }
+        return (0 < count($resultArray)) ? $resultArray : null;
     }
 }

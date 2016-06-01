@@ -16,13 +16,13 @@ interface TreeInterface
      * @param int $scope Required if scope is used
      * @return int Id of new created root
      */
-    public function createRootNode($data = array(), $scope=null);
+    public function createRootNode($data = array(), $scope = null);
 
     /**
      * @param int $scope Required if scope is used
      * @return array
      */
-    public function getRootNode($scope=null);
+    public function getRootNode($scope = null);
 
     /**
      * @return array

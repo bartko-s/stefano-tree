@@ -60,7 +60,7 @@ interface AdapterInterface
      * @param int $scope null if scope is not used
      * @return void
      */
-    public function delete($leftIndex, $rightIndex, $scope=null);
+    public function delete($leftIndex, $rightIndex, $scope = null);
 
     /**
      * @param int $fromIndex Left index is greater than
@@ -68,7 +68,7 @@ interface AdapterInterface
      * @param int $scope null if scope is not used
      * @return void
      */
-    public function moveLeftIndexes($fromIndex, $shift, $scope=null);
+    public function moveLeftIndexes($fromIndex, $shift, $scope = null);
 
     /**
      * @param int $fromIndex Right index is greater than
@@ -76,7 +76,7 @@ interface AdapterInterface
      * @param int $scope null if scope is not used
      * @return void
      */
-    public function moveRightIndexes($fromIndex, $shift, $scope=null);
+    public function moveRightIndexes($fromIndex, $shift, $scope = null);
 
     /**
      * @param int $nodeId
@@ -92,7 +92,7 @@ interface AdapterInterface
      * @param int $scope null if scope is not used
      * @return void
      */
-    public function updateLevels($leftIndexFrom, $rightIndexTo, $shift, $scope=null);
+    public function updateLevels($leftIndexFrom, $rightIndexTo, $shift, $scope = null);
 
     /**
      * @param int $leftIndexFrom from left index
@@ -101,7 +101,7 @@ interface AdapterInterface
      * @param int $scope null if scope is not used 
      * @return void
      */
-    public function moveBranch($leftIndexFrom, $rightIndexTo, $shift, $scope=null);
+    public function moveBranch($leftIndexFrom, $rightIndexTo, $shift, $scope = null);
 
     /**
      * @param int $nodeId
@@ -153,11 +153,11 @@ interface AdapterInterface
      * @param int $scope null if scope is not used
      * @return array
      */
-    public function getRoot($scope=null);
+    public function getRoot($scope = null);
 
     /**
      * @param $scope int if defined return root only for defined scope
      * @return array
      */
-    public function getRoots($scope=null);
+    public function getRoots($scope = null);
 }

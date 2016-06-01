@@ -36,7 +36,7 @@ class Validator
      * @param array $_tree
      * @return array
      */
-    private function _buildFlatTree(NodeInfo $nodeInfo, $_tree=array())
+    private function _buildFlatTree(NodeInfo $nodeInfo, $_tree = array())
     {
         $children = $this->_getAdapter()
                          ->getChildrenNodeInfo($nodeInfo->getId());

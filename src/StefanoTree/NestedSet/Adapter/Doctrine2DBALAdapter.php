@@ -81,7 +81,7 @@ class Doctrine2DBALAdapter
     {
         $options = $this->getOptions();
 
-        if (null == $this->defaultDbSelect) {
+        if (null === $this->defaultDbSelect) {
             $queryBuilder = $this->getConnection()
                                  ->createQueryBuilder();
 
@@ -174,7 +174,7 @@ class Doctrine2DBALAdapter
         return $connection->lastInsertId($options->getSequenceName());
     }
 
-    public function delete($leftIndex, $rightIndex, $scope=null)
+    public function delete($leftIndex, $rightIndex, $scope = null)
     {
         $options = $this->getOptions();
 
@@ -198,7 +198,7 @@ class Doctrine2DBALAdapter
         $connection->executeQuery($sql, $params);
     }
 
-    public function moveLeftIndexes($fromIndex, $shift, $scope=null)
+    public function moveLeftIndexes($fromIndex, $shift, $scope = null)
     {
         $options = $this->getOptions();
 
@@ -226,7 +226,7 @@ class Doctrine2DBALAdapter
         $connection->executeUpdate($sql, $params);
     }
 
-    public function moveRightIndexes($fromIndex, $shift, $scope=null)
+    public function moveRightIndexes($fromIndex, $shift, $scope = null)
     {
         $options = $this->getOptions();
 
@@ -273,7 +273,7 @@ class Doctrine2DBALAdapter
         $connection->executeUpdate($sql, $params);
     }
 
-    public function updateLevels($leftIndexFrom, $rightIndexTo, $shift, $scope=null)
+    public function updateLevels($leftIndexFrom, $rightIndexTo, $shift, $scope = null)
     {
         $options = $this->getOptions();
 
@@ -303,7 +303,7 @@ class Doctrine2DBALAdapter
         $connection->executeUpdate($sql, $params);
     }
 
-    public function moveBranch($leftIndexFrom, $rightIndexTo, $shift, $scope=null)
+    public function moveBranch($leftIndexFrom, $rightIndexTo, $shift, $scope = null)
     {
         if (0 == $shift) {
             return;
@@ -334,7 +334,7 @@ class Doctrine2DBALAdapter
         $connection->executeUpdate($sql, $params);
     }
 
-    public function getRoots($scope=null)
+    public function getRoots($scope = null)
     {
         $options = $this->getOptions();
 
@@ -359,7 +359,7 @@ class Doctrine2DBALAdapter
         return $node;
     }
 
-    public function getRoot($scope=null)
+    public function getRoot($scope = null)
     {
         $roots = $this->getRoots($scope);
         return ($roots) ?  $roots[0] : array();
@@ -446,7 +446,7 @@ class Doctrine2DBALAdapter
 
         $stmt = $connection->executeQuery($sql, $params);
 
-        $data= $stmt->fetchAll();
+        $data = $stmt->fetchAll();
 
         $result = array();
 
@@ -484,7 +484,8 @@ class Doctrine2DBALAdapter
         $startLevel = (int) $startLevel;
 
         // node does not exist
-        if (!$nodeInfo = $this->getNodeInfo($nodeId)) {
+        $nodeInfo = $this->getNodeInfo($nodeId);
+        if (!$nodeInfo) {
             return;
         }
 
@@ -516,9 +517,7 @@ class Doctrine2DBALAdapter
 
         $result = $stmt->fetchAll();
 
-        if (is_array($result)) {
-            return $result;
-        }
+        return (is_array($result)) ? $result : null;
     }
 
     public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranch = null)
@@ -573,8 +572,6 @@ class Doctrine2DBALAdapter
 
         $result = $stmt->fetchAll();
 
-        if (0 < count($result)) {
-            return $result;
-        }
+        return (0 < count($result)) ? $result : null;
     }
 }

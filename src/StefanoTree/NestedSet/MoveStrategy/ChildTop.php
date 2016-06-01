@@ -18,62 +18,40 @@ class ChildTop
 
     public function getHoleLeftIndex()
     {
-        if ($this->isMovedToRoot()) {
-            return $this->getSourceNode()->getLeft() + $this->getIndexShift();
-        } elseif ($this->isMovedUp()) {
+        if ($this->isMovedToRoot() || $this->isMovedUp()) {
             return $this->getSourceNode()->getLeft() + $this->getIndexShift();
         } elseif ($this->isMovedDown()) {
             return $this->getSourceNode()->getLeft();
         } else {
-            // @codeCoverageIgnoreStart
             throw new Exception\BaseException('Cannot move node');
-            // @codeCoverageIgnoreEnd
         }
     }
 
     public function getHoleRightIndex()
     {
-        if ($this->isMovedToRoot()) {
-            return $this->getSourceNode()->getRight() + $this->getIndexShift();
-        } elseif ($this->isMovedUp()) {
+        if ($this->isMovedToRoot() || $this->isMovedUp()) {
             return $this->getSourceNode()->getRight() + $this->getIndexShift();
         } elseif ($this->isMovedDown()) {
             return $this->getSourceNode()->getRight();
         } else {
-            // @codeCoverageIgnoreStart
             throw new Exception\BaseException('Cannot move node');
-            // @codeCoverageIgnoreEnd
         }
     }
 
     public function getSourceNodeIndexShift()
     {
-        if ($this->isMovedToRoot()) {
-            return $this->getTargetNode()->getLeft() - $this->getSourceNode()->getRight();
-        } elseif ($this->isMovedUp()) {
+        if ($this->isMovedToRoot() || $this->isMovedUp()) {
             return $this->getTargetNode()->getLeft() - $this->getSourceNode()->getRight();
         } elseif ($this->isMovedDown()) {
             return $this->getTargetNode()->getLeft() - $this->getSourceNode()->getLeft() + 1;
         } else {
-            // @codeCoverageIgnoreStart
             throw new Exception\BaseException('Cannot move node');
-            // @codeCoverageIgnoreEnd
         }
     }
 
     public function fixHoleFromIndex()
     {
-        if ($this->isMovedToRoot()) {
-            return $this->getSourceNode()->getRight();
-        } elseif ($this->isMovedUp()) {
-            return $this->getSourceNode()->getRight();
-        } elseif ($this->isMovedDown()) {
-            return $this->getSourceNode()->getRight();
-        } else {
-            // @codeCoverageIgnoreStart
-            throw new Exception\BaseException('Cannot move node');
-            // @codeCoverageIgnoreEnd
-        }
+        return $this->getSourceNode()->getRight();
     }
 
     public function makeHoleFromIndex()

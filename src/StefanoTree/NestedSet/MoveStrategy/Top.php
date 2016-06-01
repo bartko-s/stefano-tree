@@ -18,46 +18,34 @@ class Top
 
     public function getHoleLeftIndex()
     {
-        if ($this->isMovedToRoot()) {
-            return $this->getSourceNode()->getLeft() + $this->getIndexShift();
-        } elseif ($this->isMovedUp()) {
+        if ($this->isMovedToRoot() || $this->isMovedUp()) {
             return $this->getSourceNode()->getLeft() + $this->getIndexShift();
         } elseif ($this->isMovedDown()) {
             return $this->getSourceNode()->getLeft();
         } else {
-            // @codeCoverageIgnoreStart
             throw new Exception\BaseException('Cannot move node');
-            // @codeCoverageIgnoreEnd
         }
     }
 
     public function getHoleRightIndex()
     {
-        if ($this->isMovedToRoot()) {
-            return $this->getSourceNode()->getRight() + $this->getIndexShift();
-        } elseif ($this->isMovedUp()) {
+        if ($this->isMovedToRoot() || $this->isMovedUp()) {
             return $this->getSourceNode()->getRight() + $this->getIndexShift();
         } elseif ($this->isMovedDown()) {
             return $this->getSourceNode()->getRight();
         } else {
-            // @codeCoverageIgnoreStart
             throw new Exception\BaseException('Cannot move node');
-            // @codeCoverageIgnoreEnd
         }
     }
 
     public function getSourceNodeIndexShift()
     {
-        if ($this->isMovedToRoot()) {
-            return $this->getTargetNode()->getLeft() - $this->getSourceNode()->getRight() - 1;
-        } elseif ($this->isMovedUp()) {
+        if ($this->isMovedToRoot() || $this->isMovedUp()) {
             return $this->getTargetNode()->getLeft() - $this->getSourceNode()->getRight() - 1;
         } elseif ($this->isMovedDown()) {
             return $this->getTargetNode()->getLeft() - $this->getSourceNode()->getLeft();
         } else {
-            // @codeCoverageIgnoreStart
             throw new Exception\BaseException('Cannot move node');
-            // @codeCoverageIgnoreEnd
         }
     }
 
@@ -70,9 +58,7 @@ class Top
         } elseif ($this->isMovedDown()) {
             return $this->getSourceNode()->getLeft();
         } else {
-            // @codeCoverageIgnoreStart
             throw new Exception\BaseException('Cannot move node');
-            // @codeCoverageIgnoreEnd
         }
     }
 

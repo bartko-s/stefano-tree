@@ -91,7 +91,7 @@ class Zend1DbAdapter
         $dbAdapter->update($options->getTableName(), $data, $where);
     }
 
-    public function moveLeftIndexes($fromIndex, $shift, $scope=null)
+    public function moveLeftIndexes($fromIndex, $shift, $scope = null)
     {
         $options = $this->getOptions();
 
@@ -116,7 +116,7 @@ class Zend1DbAdapter
         $dbAdapter->prepare($sql)->execute($binds);
     }
 
-    public function moveRightIndexes($fromIndex, $shift, $scope=null)
+    public function moveRightIndexes($fromIndex, $shift, $scope = null)
     {
         $options = $this->getOptions();
 
@@ -159,7 +159,7 @@ class Zend1DbAdapter
         $dbAdapter->update($options->getTableName(), $bind, $where);
     }
 
-    public function getRoots($scope=null)
+    public function getRoots($scope = null)
     {
         $options = $this->getOptions();
 
@@ -175,7 +175,7 @@ class Zend1DbAdapter
         return $dbAdapter->fetchAll($select);
     }
 
-    public function getRoot($scope=null)
+    public function getRoot($scope = null)
     {
         $result = $this->getRoots($scope);
 
@@ -252,7 +252,7 @@ class Zend1DbAdapter
         $select->order($options->getLeftColumnName());
         $select->where($options->getParentIdColumnName() . ' = ?', $parentNodeId);
 
-        $data= $dbAdapter->fetchAll($select);
+        $data = $dbAdapter->fetchAll($select);
 
         $result = array();
 
@@ -349,7 +349,7 @@ class Zend1DbAdapter
         return $lastGeneratedValue;
     }
 
-    public function delete($leftIndex, $rightIndex, $scope=null)
+    public function delete($leftIndex, $rightIndex, $scope = null)
     {
         $options = $this->getOptions();
 
@@ -367,12 +367,12 @@ class Zend1DbAdapter
         $dbAdapter->delete($options->getTableName(), $where);
     }
 
-    public function updateLevels($leftIndexFrom, $rightIndexTo, $shift, $scope=null)
+    public function updateLevels($leftIndexFrom, $rightIndexTo, $shift, $scope = null)
     {
         $options = $this->getOptions();
 
         if (0 == $shift) {
-            return;
+            return null;
         }
 
         $dbAdapter = $this->getDbAdapter();
@@ -397,10 +397,10 @@ class Zend1DbAdapter
         $dbAdapter->prepare($sql)->execute($binds);
     }
 
-    public function moveBranch($leftIndexFrom, $rightIndexTo, $shift, $scope=null)
+    public function moveBranch($leftIndexFrom, $rightIndexTo, $shift, $scope = null)
     {
         if (0 == $shift) {
-            return;
+            return null;
         }
 
         $options = $this->getOptions();
@@ -436,7 +436,7 @@ class Zend1DbAdapter
 
         // node does not exist
         if (!$nodeInfo = $this->getNodeInfo($nodeId)) {
-            return;
+            return null;
         }
 
         $dbAdapter = $this->getDbAdapter();
@@ -472,7 +472,7 @@ class Zend1DbAdapter
         $options = $this->getOptions();
 
         if (!$nodeInfo = $this->getNodeInfo($nodeId)) {
-            return;
+            return null;
         }
 
         $dbAdapter = $this->getDbAdapter();
@@ -520,9 +520,7 @@ class Zend1DbAdapter
 
         $resultArray = $dbAdapter->fetchAll($select);
 
-        if (0 < count($resultArray)) {
-            return $resultArray;
-        }
+        return (0 < count($resultArray)) ? $resultArray : null;
     }
 
     protected function getWhereBetween($column, $first, $second)

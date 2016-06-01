@@ -77,7 +77,7 @@ class NestedSet
         return $this->validator;
     }
 
-    public function createRootNode($data = array(), $scope=null)
+    public function createRootNode($data = array(), $scope = null)
     {
         if ($this->getRootNode($scope)) {
             throw new RootNodeAlreadyExistException(
@@ -401,7 +401,7 @@ class NestedSet
         return $this->getDescendants($nodeId, 1, 1);
     }
 
-    public function getRootNode($scope=null)
+    public function getRootNode($scope = null)
     {
         return $this->getAdapter()
                     ->getRoot($scope);
