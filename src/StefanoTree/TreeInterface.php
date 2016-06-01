@@ -126,4 +126,20 @@ interface TreeInterface
      * @return null|array
      */
     public function getChildren($nodeId);
+
+    /**
+     * Check if left index, right index, level is in consistent state
+     *
+     * @param $rootNodeId int
+     * @return bool
+     */
+    public function isValid($rootNodeId);
+
+    /**
+     * Repair broken tree. 
+     *
+     * @param $rootNodeId int
+     * @return void
+     */
+    public function rebuild($rootNodeId);
 }

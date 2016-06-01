@@ -10,6 +10,8 @@ class NodeInfo
     private $right;
     private $scope;
 
+    private $needUpdate = false;
+
     /**
      * NodeInfo constructor.
      * @param $id int
@@ -46,6 +48,14 @@ class NodeInfo
     }
 
     /**
+     * @param $level int
+     */
+    public function setLevel($level)
+    {
+        $this->level = $level;
+    }
+
+    /**
      * @return int
      */
     public function getLevel()
@@ -54,11 +64,27 @@ class NodeInfo
     }
 
     /**
+     * @param $left int
+     */
+    public function setLeft($left)
+    {
+        $this->left = $left;
+    }
+
+    /**
      * @return int
      */
     public function getLeft()
     {
         return $this->left;
+    }
+
+    /**
+     * @param $right int
+     */
+    public function setRight($right)
+    {
+        $this->right = $right;
     }
 
     /**
@@ -87,5 +113,21 @@ class NodeInfo
         } else {
             return false;
         }
+    }
+
+    /**
+     * @param $bool bool
+     */
+    public function setNeedUpdate($bool)
+    {
+        $this->needUpdate = (bool) $bool;
+    }
+
+    /**
+     * @return bool
+     */
+    public function needUpdate()
+    {
+        return $this->needUpdate;
     }
 }

@@ -32,7 +32,13 @@ abstract class AbstractScopeTest
 
     protected function getDataSet()
     {
-        return $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/with_scope/initDataSet.xml');
+        switch ($this->getName()) {
+            case 'testInvalidTree':
+            case 'testRebuildTree':
+                return $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/with_scope/initDataSetBrokenTreeIndexes.xml');
+            default:
+                return $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/with_scope/initDataSet.xml');
+        }
     }
 
     public function testCreateRoot()
@@ -237,5 +243,25 @@ abstract class AbstractScopeTest
              ->updateNode(4, $data);
 
         $this->assertEquals($excepted, $this->treeAdapter->getNode(4));
+    }
+
+    public function testIsTreeValid()
+    {
+        $this->assertTrue($this->treeAdapter->isValid(1));
+    }
+
+    public function testInvalidTree()
+    {
+        $this->assertFalse($this->treeAdapter->isValid(1));
+    }
+
+    public function testRebuildTree()
+    {
+        $this->treeAdapter
+             ->rebuild(1);
+
+        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal_with_scope'));
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/with_scope/testRebuildTree.xml');
+        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
     }
 }

@@ -16,12 +16,16 @@ use StefanoTree\NestedSet\MoveStrategy;
 use StefanoTree\NestedSet\MoveStrategy\MoveStrategyInterface;
 use StefanoTree\NestedSet\NodeInfo;
 use StefanoTree\NestedSet\Options;
+use StefanoTree\NestedSet\Validator\Validator;
+use StefanoTree\NestedSet\Validator\ValidatorInterface;
 use Zend_Db_Adapter_Abstract;
 
 class NestedSet
     implements TreeInterface
 {
     private $adapter;
+
+    private $validator;
 
     /**
      * @param Options $options
@@ -59,6 +63,18 @@ class NestedSet
     public function getAdapter()
     {
         return $this->adapter;
+    }
+
+    /**
+     * @return ValidatorInterface
+     */
+    private function _getValidator()
+    {
+        if (null == $this->validator) {
+            $this->validator = new Validator($this->getAdapter());
+        }
+
+        return $this->validator;
     }
 
     public function createRootNode($data = array(), $scope=null)
@@ -395,5 +411,17 @@ class NestedSet
     {
         return $this->getAdapter()
                     ->getRoots();
+    }
+
+    public function isValid($rootNodeId)
+    {
+        return $this->_getValidator()
+                    ->isValid($rootNodeId);
+    }
+
+    public function rebuild($rootNodeId)
+    {
+        $this->_getValidator()
+             ->rebuild($rootNodeId);
     }
 }

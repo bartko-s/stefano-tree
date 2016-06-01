@@ -116,6 +116,22 @@ interface AdapterInterface
     public function getNodeInfo($nodeId);
 
     /**
+     * Children must be find by parent ID column and order by left index !!!
+     *
+     * @param $parentNodeId int
+     * @return array
+     */
+    public function getChildrenNodeInfo($parentNodeId);
+
+    /**
+     * Update left index, right index, level. Other columns must be ignored.
+     * 
+     * @param NodeInfo $nodeInfo
+     * @return void
+     */
+    public function updateNodeMetadata(NodeInfo $nodeInfo);
+
+    /**
      * @param int $nodeId
      * @param int $startLevel 0 = include root
      * @param boolean $excludeLastNode

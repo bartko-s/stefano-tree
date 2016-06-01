@@ -197,30 +197,88 @@ class Zend1DbAdapter
         return $row ? $row : null;
     }
 
-    public function getNodeInfo($nodeId)
+    /**
+     * @param array $data
+     * @return NodeInfo
+     */
+    private function _buildNodeInfoObject(array $data)
     {
         $options = $this->getOptions();
-        $result = $this->getNode($nodeId);
 
-        if (null == $result) {
-            $result = null;
+        $id        = $data[$options->getIdColumnName()];
+        $parentId  = $data[$options->getParentIdColumnName()];
+        $level     = $data[$options->getLevelColumnName()];
+        $left      = $data[$options->getLeftColumnName()];
+        $right     = $data[$options->getRightColumnName()];
+
+        if (isset($data[$options->getScopeColumnName()])) {
+            $scope = $data[$options->getScopeColumnName()];
         } else {
-            $id = $result[$options->getIdColumnName()];
-            $parentId = $result[$options->getParentIdColumnName()];
-            $level = $result[$options->getLevelColumnName()];
-            $left = $result[$options->getLeftColumnName()];
-            $right = $result[$options->getRightColumnName()];
+            $scope = null;
+        }
 
-            if (isset($result[$options->getScopeColumnName()])) {
-                $scope = $result[$options->getScopeColumnName()];
-            } else {
-                $scope = null;
-            }
+        return new NodeInfo($id, $parentId, $level, $left, $right, $scope);
+    }
 
-            $result = new NodeInfo($id, $parentId, $level, $left, $right, $scope);
+    public function getNodeInfo($nodeId)
+    {
+        $data = $this->getNode($nodeId);
+
+        $result = ($data) ? $this->_buildNodeInfoObject($data) : null;
+
+        return $result;
+    }
+
+    public function getChildrenNodeInfo($parentNodeId)
+    {
+        $dbAdapter = $this->getDbAdapter();
+        $options = $this->getOptions();
+
+        $columns = array(
+            $options->getIdColumnName(),
+            $options->getLeftColumnName(),
+            $options->getRightColumnName(),
+            $options->getParentIdColumnName(),
+            $options->getLevelColumnName(),
+        );
+
+        if ($options->getScopeColumnName()) {
+            $columns[] = $options->getScopeColumnName();
+        }
+
+        $select = $this->getDefaultDbSelect();
+        $select->reset(\Zend_Db_Select::COLUMNS);
+        $select->columns($columns);
+        $select->order($options->getLeftColumnName());
+        $select->where($options->getParentIdColumnName() . ' = ?', $parentNodeId);
+
+        $data= $dbAdapter->fetchAll($select);
+
+        $result = array();
+
+        foreach ($data as $nodeData) {
+            $result[] = $this->_buildNodeInfoObject($nodeData);
         }
 
         return $result;
+    }
+
+    public function updateNodeMetadata(NodeInfo $nodeInfo)
+    {
+        $dbAdapter = $this->getDbAdapter();
+        $options = $this->getOptions();
+
+        $bind = array(
+            $options->getRightColumnName() => $nodeInfo->getRight(),
+            $options->getLeftColumnName() => $nodeInfo->getLeft(),
+            $options->getLevelColumnName() => $nodeInfo->getLevel(),
+        );
+
+        $where = array(
+            $dbAdapter->quoteIdentifier($options->getIdColumnName()) . ' = ?' => $nodeInfo->getId(),
+        );
+
+        $dbAdapter->update($options->getTableName(), $bind, $where);
     }
 
     /**

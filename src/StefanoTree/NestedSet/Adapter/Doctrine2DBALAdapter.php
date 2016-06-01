@@ -385,35 +385,96 @@ class Doctrine2DBALAdapter
 
         $node = $stmt->fetch();
 
-        if (is_array($node)) {
-            return $node;
+        return is_array($node) ? $node : null;
+    }
+
+    /**
+     * @param array $data
+     * @return NodeInfo
+     */
+    private function _buildNodeInfoObject(array $data)
+    {
+        $options = $this->getOptions();
+
+        $id        = $data[$options->getIdColumnName()];
+        $parentId  = $data[$options->getParentIdColumnName()];
+        $level     = $data[$options->getLevelColumnName()];
+        $left      = $data[$options->getLeftColumnName()];
+        $right     = $data[$options->getRightColumnName()];
+
+        if (isset($data[$options->getScopeColumnName()])) {
+            $scope = $data[$options->getScopeColumnName()];
+        } else {
+            $scope = null;
         }
+
+        return new NodeInfo($id, $parentId, $level, $left, $right, $scope);
     }
 
     public function getNodeInfo($nodeId)
     {
+        $data = $this->getNode($nodeId);
+
+        $result = ($data) ? $this->_buildNodeInfoObject($data) : null;
+
+        return $result;
+    }
+
+    public function getChildrenNodeInfo($parentNodeId)
+    {
+        $connection = $this->getConnection();
         $options = $this->getOptions();
-        $result = $this->getNode($nodeId);
 
-        if (null == $result) {
-            $result = null;
-        } else {
-            $id        = $result[$options->getIdColumnName()];
-            $parentId  = $result[$options->getParentIdColumnName()];
-            $level     = $result[$options->getLevelColumnName()];
-            $left      = $result[$options->getLeftColumnName()];
-            $right     = $result[$options->getRightColumnName()];
+        $queryBuilder = $connection->createQueryBuilder();
 
-            if (isset($result[$options->getScopeColumnName()])) {
-                $scope = $result[$options->getScopeColumnName()];
-            } else {
-                $scope = null;
-            }
+        $columns = array(
+            $options->getIdColumnName(),
+            $options->getLeftColumnName(),
+            $options->getRightColumnName(),
+            $options->getParentIdColumnName(),
+            $options->getLevelColumnName(),
+        );
 
-            $result = new NodeInfo($id, $parentId, $level, $left, $right, $scope);
+        $sql = $queryBuilder->select($columns)
+                            ->from($options->getTableName())
+                            ->where($options->getParentIdColumnName() . ' = :parentId')
+                            ->orderBy($options->getLeftColumnName(), 'ASC');
+
+        $params = array(
+            'parentId' => $parentNodeId,
+        );
+
+        $stmt = $connection->executeQuery($sql, $params);
+
+        $data= $stmt->fetchAll();
+
+        $result = array();
+
+        foreach ($data as $nodeData) {
+            $result[] = $this->_buildNodeInfoObject($nodeData);
         }
 
         return $result;
+    }
+
+    public function updateNodeMetadata(NodeInfo $nodeInfo)
+    {
+        $options = $this->getOptions();
+
+        $connection = $this->getConnection();
+
+        $sql = $connection->createQueryBuilder();
+        $sql->update($options->getTableName())
+            ->set($options->getRightColumnName(), $nodeInfo->getRight())
+            ->set($options->getLeftColumnName(), $nodeInfo->getLeft())
+            ->set($options->getLevelColumnName(), $nodeInfo->getLevel())
+            ->where($options->getIdColumnName() . ' = :nodeId');
+
+        $params = array(
+            ':nodeId' => $nodeInfo->getId(),
+        );
+
+        $connection->executeUpdate($sql, $params);
     }
 
     public function getPath($nodeId, $startLevel = 0, $excludeLastNode = false)
