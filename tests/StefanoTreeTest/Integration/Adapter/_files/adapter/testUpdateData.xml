@@ -1,0 +1,207 @@
+<?xml version="1.0"?>
+<mysqldump xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <database name="stefano_tests">
+        <table_data name="tree_traversal">
+            <row>
+                <field name="tree_traversal_id">1</field>
+                <field name="name" xsi:nil="true" />
+                <field name="lft">1</field>
+                <field name="rgt">50</field>
+                <field name="parent_id">0</field>
+                <field name="level">0</field>
+            </row>
+            <row>
+                <field name="tree_traversal_id">2</field>
+                <field name="name">changed</field>
+                <field name="lft">2</field>
+                <field name="rgt">15</field>
+                <field name="parent_id">1</field>
+                <field name="level">1</field>
+            </row>
+            <row>
+                <field name="tree_traversal_id">3</field>
+                <field name="name" xsi:nil="true" />
+                <field name="lft">16</field>
+                <field name="rgt">35</field>
+                <field name="parent_id">1</field>
+                <field name="level">1</field>
+            </row>
+            <row>
+                <field name="tree_traversal_id">4</field>
+                <field name="name" xsi:nil="true" />
+                <field name="lft">36</field>
+                <field name="rgt">49</field>
+                <field name="parent_id">1</field>
+                <field name="level">1</field>
+            </row>
+            <row>
+                <field name="tree_traversal_id">5</field>
+                <field name="name" xsi:nil="true" />
+                <field name="lft">3</field>
+                <field name="rgt">14</field>
+                <field name="parent_id">2</field>
+                <field name="level">2</field>
+            </row>
+            <row>
+                <field name="tree_traversal_id">6</field>
+                <field name="name" xsi:nil="true" />
+                <field name="lft">17</field>
+                <field name="rgt">32</field>
+                <field name="parent_id">3</field>
+                <field name="level">2</field>
+            </row>
+            <row>
+                <field name="tree_traversal_id">7</field>
+                <field name="name" xsi:nil="true" />
+                <field name="lft">33</field>
+                <field name="rgt">34</field>
+                <field name="parent_id">3</field>
+                <field name="level">2</field>
+            </row>
+            <row>
+                <field name="tree_traversal_id">8</field>
+                <field name="name" xsi:nil="true" />
+                <field name="lft">37</field>
+                <field name="rgt">38</field>
+                <field name="parent_id">4</field>
+                <field name="level">2</field>
+            </row>
+            <row>
+                <field name="tree_traversal_id">9</field>
+                <field name="name" xsi:nil="true" />
+                <field name="lft">39</field>
+                <field name="rgt">48</field>
+                <field name="parent_id">4</field>
+                <field name="level">2</field>
+            </row>
+            <row>
+                <field name="tree_traversal_id">10</field>
+                <field name="name" xsi:nil="true" />
+                <field name="lft">4</field>
+                <field name="rgt">11</field>
+                <field name="parent_id">5</field>
+                <field name="level">3</field>
+            </row>
+            <row>
+                <field name="tree_traversal_id">11</field>
+                <field name="name" xsi:nil="true" />
+                <field name="lft">12</field>
+                <field name="rgt">13</field>
+                <field name="parent_id">5</field>
+                <field name="level">3</field>
+            </row>
+            <row>
+                <field name="tree_traversal_id">12</field>
+                <field name="name" xsi:nil="true" />
+                <field name="lft">18</field>
+                <field name="rgt">29</field>
+                <field name="parent_id">6</field>
+                <field name="level">3</field>
+            </row>
+            <row>
+                <field name="tree_traversal_id">13</field>
+                <field name="name" xsi:nil="true" />
+                <field name="lft">30</field>
+                <field name="rgt">31</field>
+                <field name="parent_id">6</field>
+                <field name="level">3</field>
+            </row>
+            <row>
+                <field name="tree_traversal_id">14</field>
+                <field name="name" xsi:nil="true" />
+                <field name="lft">40</field>
+                <field name="rgt">45</field>
+                <field name="parent_id">9</field>
+                <field name="level">3</field>
+            </row>
+            <row>
+                <field name="tree_traversal_id">15</field>
+                <field name="name" xsi:nil="true" />
+                <field name="lft">46</field>
+                <field name="rgt">47</field>
+                <field name="parent_id">9</field>
+                <field name="level">3</field>
+            </row>
+            <row>
+                <field name="tree_traversal_id">16</field>
+                <field name="name" xsi:nil="true" />
+                <field name="lft">5</field>
+                <field name="rgt">8</field>
+                <field name="parent_id">10</field>
+                <field name="level">4</field>
+            </row>
+            <row>
+                <field name="tree_traversal_id">17</field>
+                <field name="name" xsi:nil="true" />
+                <field name="lft">9</field>
+                <field name="rgt">10</field>
+                <field name="parent_id">10</field>
+                <field name="level">4</field>
+            </row>
+            <row>
+                <field name="tree_traversal_id">18</field>
+                <field name="name" xsi:nil="true" />
+                <field name="lft">19</field>
+                <field name="rgt">28</field>
+                <field name="parent_id">12</field>
+                <field name="level">4</field>
+            </row>
+            <row>
+                <field name="tree_traversal_id">19</field>
+                <field name="name" xsi:nil="true" />
+                <field name="lft">41</field>
+                <field name="rgt">44</field>
+                <field name="parent_id">14</field>
+                <field name="level">4</field>
+            </row>
+            <row>
+                <field name="tree_traversal_id">20</field>
+                <field name="name" xsi:nil="true" />
+                <field name="lft">6</field>
+                <field name="rgt">7</field>
+                <field name="parent_id">16</field>
+                <field name="level">5</field>
+            </row>
+            <row>
+                <field name="tree_traversal_id">21</field>
+                <field name="name" xsi:nil="true" />
+                <field name="lft">20</field>
+                <field name="rgt">25</field>
+                <field name="parent_id">18</field>
+                <field name="level">5</field>
+            </row>
+            <row>
+                <field name="tree_traversal_id">22</field>
+                <field name="name" xsi:nil="true" />
+                <field name="lft">26</field>
+                <field name="rgt">27</field>
+                <field name="parent_id">18</field>
+                <field name="level">5</field>
+            </row>
+            <row>
+                <field name="tree_traversal_id">23</field>
+                <field name="name" xsi:nil="true" />
+                <field name="lft">42</field>
+                <field name="rgt">43</field>
+                <field name="parent_id">19</field>
+                <field name="level">5</field>
+            </row>
+            <row>
+                <field name="tree_traversal_id">24</field>
+                <field name="name" xsi:nil="true" />
+                <field name="lft">21</field>
+                <field name="rgt">22</field>
+                <field name="parent_id">21</field>
+                <field name="level">6</field>
+            </row>
+            <row>
+                <field name="tree_traversal_id">25</field>
+                <field name="name" xsi:nil="true" />
+                <field name="lft">23</field>
+                <field name="rgt">24</field>
+                <field name="parent_id">21</field>
+                <field name="level">6</field>
+            </row>
+        </table_data>
+    </database>
+</mysqldump>
