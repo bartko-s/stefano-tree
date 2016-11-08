@@ -1,17 +1,21 @@
 <?php
-namespace StefanoTreeTest\Integration;
+namespace StefanoTreeTest\Integration\Adapter;
 
-use StefanoTree\NestedSet as TreeAdapter;
-use StefanoTree\NestedSet\Adapter\Doctrine2DBALAdapter;
+use Doctrine\DBAL;
+use StefanoTree\NestedSet\Adapter\AdapterInterface as TreeAdapterInterface;
+use StefanoTree\NestedSet\Adapter\Doctrine2DBAL as NestedSetAdapter;
 use StefanoTree\NestedSet\Options;
 
-class NestedSetWithDoctrine2DbAdapterAndScopeTest
-    extends AbstractScopeTest
-{
-    protected function getTreeAdapter()
-    {
-        $config = new \Doctrine\DBAL\Configuration();
 
+class Doctrine2DBALWithScopeTest
+    extends AdapterWithScopeTestAbstract
+{
+    /**
+     * @return TreeAdapterInterface
+     */
+    protected function getAdapter()
+    {
+        $config = new DBAL\Configuration();
         $connectionParams = array(
             'dbname' => TEST_STEFANO_DB_DB_NAME,
             'user' => TEST_STEFANO_DB_USER,
@@ -20,7 +24,7 @@ class NestedSetWithDoctrine2DbAdapterAndScopeTest
             'driver' => 'pdo_' . strtolower(TEST_STEFANO_DB_ADAPTER),
         );
 
-        $connection = \Doctrine\DBAL\DriverManager::getConnection($connectionParams, $config);
+        $connection = DBAL\DriverManager::getConnection($connectionParams, $config);
 
         $options = new Options(array(
             'tableName' => 'tree_traversal_with_scope',
@@ -32,6 +36,6 @@ class NestedSetWithDoctrine2DbAdapterAndScopeTest
             $options->setSequenceName('tree_traversal_with_scope_tree_traversal_id_seq');
         }
 
-        return new TreeAdapter(new Doctrine2DBALAdapter($options, $connection));
+        return new NestedSetAdapter($options, $connection);
     }
 }

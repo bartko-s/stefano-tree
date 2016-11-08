@@ -10,16 +10,20 @@ class NestedSetTest
     {
         return array(
             array(
+                '\Zend\Db\Adapter\Adapter',
+                '\StefanoTree\NestedSet\Adapter\Zend2',
+            ),
+            array(
                 '\StefanoDb\Adapter\Adapter',
-                '\StefanoTree\NestedSet\Adapter\Zend2DbAdapter',
+                '\StefanoTree\NestedSet\Adapter\StefanoDb',
             ),
             array(
                 '\Doctrine\DBAL\Connection',
-                '\StefanoTree\NestedSet\Adapter\Doctrine2DBALAdapter',
+                '\StefanoTree\NestedSet\Adapter\Doctrine2DBAL',
             ),
             array(
                 '\Zend_Db_Adapter_Abstract',
-                '\StefanoTree\NestedSet\Adapter\Zend1DbAdapter',
+                '\StefanoTree\NestedSet\Adapter\Zend1',
             ),
         );
     }

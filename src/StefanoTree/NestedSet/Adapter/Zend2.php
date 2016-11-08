@@ -1,12 +1,12 @@
 <?php
 namespace StefanoTree\NestedSet\Adapter;
 
-use StefanoDb\Adapter\Adapter as DbAdapter;
 use StefanoTree\NestedSet\NodeInfo;
 use StefanoTree\NestedSet\Options;
 use Zend\Db;
+use Zend\Db\Adapter\Adapter as DbAdapter;
 
-class Zend2DbAdapter
+class Zend2
     implements AdapterInterface
 {
     private $options;
@@ -32,7 +32,7 @@ class Zend2DbAdapter
     /**
      * @return DbAdapter
      */
-    private function getDbAdapter()
+    protected function getDbAdapter()
     {
         return $this->dbAdapter;
     }
@@ -60,6 +60,15 @@ class Zend2DbAdapter
     }
 
     /**
+     * Return base db select without any join, etc.
+     * @return Db\Sql\Select
+     */
+    public function getBlankDbSelect()
+    {
+        return new Db\Sql\Select($this->getOptions()->getTableName());
+    }
+
+    /**
      * @param Db\Sql\Select $dbSelect
      * @return void
      */
@@ -69,15 +78,13 @@ class Zend2DbAdapter
     }
 
     /**
-     * Return clone of default db select
+     * Return default db select
      * @return Db\Sql\Select
      */
     public function getDefaultDbSelect()
     {
-        $options = $this->getOptions();
-
         if (null === $this->defaultDbSelect) {
-            $this->defaultDbSelect = new Db\Sql\Select($options->getTableName());
+            $this->defaultDbSelect = $this->getBlankDbSelect();
         }
 
         $dbSelect = clone $this->defaultDbSelect;
@@ -91,7 +98,7 @@ class Zend2DbAdapter
 
         $dbAdapter = $this->getDbAdapter();
 
-        $select = $this->getDefaultDbSelect();
+        $select = $this->getBlankDbSelect();
         $select->columns(array(
             'i' => $options->getIdColumnName(),
         ));
@@ -110,18 +117,24 @@ class Zend2DbAdapter
     public function beginTransaction()
     {
         $this->getDbAdapter()
-             ->begin();
+             ->getDriver()
+             ->getConnection()
+             ->beginTransaction();
     }
 
     public function commitTransaction()
     {
         $this->getDbAdapter()
+             ->getDriver()
+             ->getConnection()
              ->commit();
     }
 
     public function rollbackTransaction()
     {
         $this->getDbAdapter()
+             ->getDriver()
+             ->getConnection()
              ->rollback();
     }
 
@@ -345,7 +358,7 @@ class Zend2DbAdapter
 
         $dbAdapter = $this->getDbAdapter();
 
-        $select = $this->getDefaultDbSelect();
+        $select = $this->getBlankDbSelect();
         $select->where
             ->equalTo($options->getParentIdColumnName(),  0);
 
@@ -411,9 +424,21 @@ class Zend2DbAdapter
 
     public function getNodeInfo($nodeId)
     {
-        $data = $this->getNode($nodeId);
+        $options = $this->getOptions();
 
-        $result = ($data) ? $this->_buildNodeInfoObject($data) : null;
+        $nodeId = (int) $nodeId;
+
+        $dbAdapter = $this->getDbAdapter();
+
+        $select = $this->getBlankDbSelect()
+            ->where(array($options->getIdColumnName() =>  $nodeId));
+
+        $result = $dbAdapter->query($select->getSqlString($dbAdapter->getPlatform()),
+            DbAdapter::QUERY_MODE_EXECUTE);
+
+        $array = $result->toArray();
+
+        $result = ($array) ? $this->_buildNodeInfoObject($array[0]) : null;
 
         return $result;
     }
@@ -435,7 +460,7 @@ class Zend2DbAdapter
             $columns[] = $options->getScopeColumnName();
         }
 
-        $select = $this->getDefaultDbSelect();
+        $select = $this->getBlankDbSelect();
         $select->columns($columns);
         $select->order($options->getLeftColumnName());
         $select->where(array(
@@ -475,7 +500,6 @@ class Zend2DbAdapter
             DbAdapter::QUERY_MODE_EXECUTE);
     }
 
-
     public function getPath($nodeId, $startLevel = 0, $excludeLastNode = false)
     {
         $options = $this->getOptions();
@@ -483,7 +507,8 @@ class Zend2DbAdapter
         $startLevel = (int) $startLevel;
 
         // node does not exist
-        if (!$nodeInfo = $this->getNodeInfo($nodeId)) {
+        $nodeInfo = $this->getNodeInfo($nodeId);
+        if (!$nodeInfo) {
             return array();
         }
 

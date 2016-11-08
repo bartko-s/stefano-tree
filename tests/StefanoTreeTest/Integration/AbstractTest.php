@@ -447,13 +447,15 @@ abstract class AbstractTest
         $this->assertTrue($return);
     }
 
-    public function testGetPathReturnEmptyArrayIfNodeDoesNotExist() {
+    public function testGetPathReturnEmptyArrayIfNodeDoesNotExist()
+    {
         $return = $this->treeAdapter
             ->getPath(123456789);
         $this->assertEquals(array(), $return);
     }
 
-    public function testGetPathReturnEmptyArrayIfNodeExistButHasNoPath() {
+    public function testGetPathReturnEmptyArrayIfNodeExistButHasNoPath()
+    {
         $return = $this->treeAdapter
             ->getPath(1, 0, True);
         $this->assertEquals(array(), $return);
@@ -539,13 +541,15 @@ abstract class AbstractTest
         $this->assertEquals($expected, $return);
     }
 
-    public function testGetDescendantsReturnEmptyArrayIfNodeDoesNotExist() {
+    public function testGetDescendantsReturnEmptyArrayIfNodeDoesNotExist()
+    {
         $return = $this->treeAdapter
             ->getDescendants(123456789);
         $this->assertEquals(array(), $return);
     }
 
-    public function testGetDescendantsReturnEmptyArrayNodeDoesNotHaveDescendants() {
+    public function testGetDescendantsReturnEmptyArrayNodeDoesNotHaveDescendants()
+    {
         $return = $this->treeAdapter
             ->getDescendants(8, 1);
         $this->assertEquals(array(), $return);
@@ -686,13 +690,15 @@ abstract class AbstractTest
         $this->assertEquals($expected, $return);
     }
 
-    public function testGetChildrenReturnEmptyArrayIfNodeDoesNotExist() {
+    public function testGetChildrenReturnEmptyArrayIfNodeDoesNotExist()
+    {
         $return = $this->treeAdapter
             ->getChildren(123456789);
         $this->assertEquals(array(), $return);
     }
 
-    public function testGetChildrenReturnEmptyArrayIfNodeDoesNotHaveChildren() {
+    public function testGetChildrenReturnEmptyArrayIfNodeDoesNotHaveChildren()
+    {
         $return = $this->treeAdapter
             ->getChildren(8);
         $this->assertEquals(array(), $return);

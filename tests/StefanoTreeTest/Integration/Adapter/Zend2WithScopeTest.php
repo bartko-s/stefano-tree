@@ -1,15 +1,19 @@
 <?php
-namespace StefanoTreeTest\Integration;
+namespace StefanoTreeTest\Integration\Adapter;
 
-use StefanoTree\NestedSet as TreeAdapter;
+use StefanoTree\NestedSet\Adapter\AdapterInterface as TreeAdapterInterface;
 use StefanoTree\NestedSet\Adapter\Zend2 as NestedSetAdapter;
 use StefanoTree\NestedSet\Options;
 use Zend\Db\Adapter\Adapter as DbAdapter;
 
-class NestedSetWithZend2DbAdapterTest
-    extends AbstractTest
+
+class Zend2WithScopeTest
+    extends AdapterWithScopeTestAbstract
 {
-    protected function getTreeAdapter()
+    /**
+     * @return TreeAdapterInterface
+     */
+    protected function getAdapter()
     {
         $dbAdapter = new DbAdapter(array(
             'driver' => 'Pdo_' . ucfirst(TEST_STEFANO_DB_ADAPTER),
@@ -20,14 +24,15 @@ class NestedSetWithZend2DbAdapterTest
         ));
 
         $options = new Options(array(
-            'tableName' => 'tree_traversal',
+            'tableName' => 'tree_traversal_with_scope',
             'idColumnName' => 'tree_traversal_id',
+            'scopeColumnName' => 'scope',
         ));
 
         if ('pgsql' == TEST_STEFANO_DB_ADAPTER) {
-            $options->setSequenceName('tree_traversal_tree_traversal_id_seq');
+            $options->setSequenceName('tree_traversal_with_scope_tree_traversal_id_seq');
         }
 
-        return new TreeAdapter(new NestedSetAdapter($options, $dbAdapter));
+        return new NestedSetAdapter($options, $dbAdapter);
     }
 }

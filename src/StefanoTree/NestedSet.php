@@ -3,13 +3,11 @@ namespace StefanoTree;
 
 use Doctrine\DBAL\Connection as DoctrineConnection;
 use Exception;
-use StefanoDb\Adapter\ExtendedAdapterInterface;
+use StefanoDb\Adapter\ExtendedAdapterInterface as StefanoExtendedDbAdapterInterface;
 use StefanoTree\Exception\InvalidArgumentException;
 use StefanoTree\Exception\RootNodeAlreadyExistException;
+use StefanoTree\NestedSet\Adapter;
 use StefanoTree\NestedSet\Adapter\AdapterInterface;
-use StefanoTree\NestedSet\Adapter\Doctrine2DBALAdapter;
-use StefanoTree\NestedSet\Adapter\Zend1DbAdapter;
-use StefanoTree\NestedSet\Adapter\Zend2DbAdapter;
 use StefanoTree\NestedSet\AddStrategy;
 use StefanoTree\NestedSet\AddStrategy\AddStrategyInterface;
 use StefanoTree\NestedSet\MoveStrategy;
@@ -18,7 +16,7 @@ use StefanoTree\NestedSet\NodeInfo;
 use StefanoTree\NestedSet\Options;
 use StefanoTree\NestedSet\Validator\Validator;
 use StefanoTree\NestedSet\Validator\ValidatorInterface;
-use Zend_Db_Adapter_Abstract;
+use Zend\Db\Adapter\Adapter as Zend2DbAdapter;
 
 class NestedSet
     implements TreeInterface
@@ -35,12 +33,14 @@ class NestedSet
      */
     public static function factory(Options $options, $dbAdapter)
     {
-        if ($dbAdapter instanceof ExtendedAdapterInterface) {
-            $adapter = new Zend2DbAdapter($options, $dbAdapter);
+        if ($dbAdapter instanceof StefanoExtendedDbAdapterInterface) {
+            $adapter = new Adapter\StefanoDb($options, $dbAdapter);
+        } elseif ($dbAdapter instanceof Zend2DbAdapter) {
+            $adapter = new Adapter\Zend2($options, $dbAdapter);
         } elseif ($dbAdapter instanceof DoctrineConnection) {
-            $adapter = new Doctrine2DBALAdapter($options, $dbAdapter);
-        } elseif ($dbAdapter instanceof Zend_Db_Adapter_Abstract) {
-            $adapter = new Zend1DbAdapter($options, $dbAdapter);
+            $adapter = new Adapter\Doctrine2DBAL($options, $dbAdapter);
+        } elseif ($dbAdapter instanceof \Zend_Db_Adapter_Abstract) {
+            $adapter = new Adapter\Zend1($options, $dbAdapter);
         } else {
             throw new InvalidArgumentException('Db adapter "' . get_class($dbAdapter)
                 . '" is not supported');
