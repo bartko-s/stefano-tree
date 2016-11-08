@@ -260,12 +260,12 @@ abstract class AdapterTestAbstract
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
     }
 
-    public function testGetPathReturnNullEmptyIfNodeDoestNotExist() // todo return array
+    public function testGetPathReturnEmptyArrayIfNodeDoestNotExist()
     {
         $path = $this->adapter
             ->getPath(1000);
 
-        $this->assertNull($path);
+        $this->assertEquals(array(), $path);
     }
 
     public function testGetPath()
@@ -301,12 +301,12 @@ abstract class AdapterTestAbstract
         $this->assertEquals($expected, $path);
     }
 
-    public function testGetDescendantsReturnNullIfNodeDoesNotExist() // todo return array
+    public function testGetDescendantsReturnEmptyArrayIfNodeDoesNotExist()
     {
         $nodes = $this->adapter
             ->getDescendants(1000);
 
-        $this->assertNull($nodes);
+        $this->assertEquals(array(), $nodes);
     }
 
     public function testGetDescendants()

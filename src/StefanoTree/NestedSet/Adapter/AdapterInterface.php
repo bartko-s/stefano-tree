@@ -135,7 +135,7 @@ interface AdapterInterface
      * @param int $nodeId
      * @param int $startLevel 0 = include root
      * @param boolean $excludeLastNode
-     * @return null|array
+     * @return array
      */
     public function getPath($nodeId, $startLevel = 0, $excludeLastNode = false);
 
@@ -145,7 +145,7 @@ interface AdapterInterface
      *                        2 = exclude 2 levels from result
      * @param int $levels Number of levels in the results relative to $startLevel
      * @param int $excludeBranch Exclude defined branch(node id) from result
-     * @return null|array
+     * @return array
      */
     public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranch = null);
 

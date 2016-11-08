@@ -484,7 +484,7 @@ class Zend2DbAdapter
 
         // node does not exist
         if (!$nodeInfo = $this->getNodeInfo($nodeId)) {
-            return null;
+            return array();
         }
 
         $dbAdapter = $this->getDbAdapter();
@@ -524,7 +524,7 @@ class Zend2DbAdapter
         $options = $this->getOptions();
 
         if (!$nodeInfo = $this->getNodeInfo($nodeId)) {
-            return null;
+            return array();
         }
 
         $dbAdapter = $this->getDbAdapter();
@@ -577,6 +577,6 @@ class Zend2DbAdapter
 
         $resultArray = $result->toArray();
 
-        return (0 < count($resultArray)) ? $resultArray : null;
+        return (0 < count($resultArray)) ? $resultArray : array();
     }
 }

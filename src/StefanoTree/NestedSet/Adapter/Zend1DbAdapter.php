@@ -436,7 +436,7 @@ class Zend1DbAdapter
 
         // node does not exist
         if (!$nodeInfo = $this->getNodeInfo($nodeId)) {
-            return null;
+            return array();
         }
 
         $dbAdapter = $this->getDbAdapter();
@@ -472,7 +472,7 @@ class Zend1DbAdapter
         $options = $this->getOptions();
 
         if (!$nodeInfo = $this->getNodeInfo($nodeId)) {
-            return null;
+            return array();
         }
 
         $dbAdapter = $this->getDbAdapter();
@@ -520,7 +520,7 @@ class Zend1DbAdapter
 
         $resultArray = $dbAdapter->fetchAll($select);
 
-        return (0 < count($resultArray)) ? $resultArray : null;
+        return (0 < count($resultArray)) ? $resultArray : array();
     }
 
     protected function getWhereBetween($column, $first, $second)

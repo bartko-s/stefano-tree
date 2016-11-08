@@ -486,7 +486,7 @@ class Doctrine2DBALAdapter
         // node does not exist
         $nodeInfo = $this->getNodeInfo($nodeId);
         if (!$nodeInfo) {
-            return;
+            return array();
         }
 
         $connection = $this->getConnection();
@@ -517,7 +517,7 @@ class Doctrine2DBALAdapter
 
         $result = $stmt->fetchAll();
 
-        return (is_array($result)) ? $result : null;
+        return (is_array($result)) ? $result : array();
     }
 
     public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranch = null)
@@ -525,7 +525,7 @@ class Doctrine2DBALAdapter
         $options = $this->getOptions();
 
         if (!$nodeInfo = $this->getNodeInfo($nodeId)) {
-            return;
+            return array();
         }
 
         $connection = $this->getConnection();
@@ -572,6 +572,6 @@ class Doctrine2DBALAdapter
 
         $result = $stmt->fetchAll();
 
-        return (0 < count($result)) ? $result : null;
+        return (0 < count($result)) ? $result : array();
     }
 }
