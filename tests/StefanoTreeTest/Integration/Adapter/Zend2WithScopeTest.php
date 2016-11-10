@@ -4,8 +4,7 @@ namespace StefanoTreeTest\Integration\Adapter;
 use StefanoTree\NestedSet\Adapter\AdapterInterface as TreeAdapterInterface;
 use StefanoTree\NestedSet\Adapter\Zend2 as NestedSetAdapter;
 use StefanoTree\NestedSet\Options;
-use Zend\Db\Adapter\Adapter as DbAdapter;
-
+use StefanoTreeTest\TestUtil;
 
 class Zend2WithScopeTest
     extends AdapterWithScopeTestAbstract
@@ -15,14 +14,6 @@ class Zend2WithScopeTest
      */
     protected function getAdapter()
     {
-        $dbAdapter = new DbAdapter(array(
-            'driver' => 'Pdo_' . ucfirst(TEST_STEFANO_DB_ADAPTER),
-            'hostname' => TEST_STEFANO_DB_HOSTNAME,
-            'database' => TEST_STEFANO_DB_DB_NAME,
-            'username' => TEST_STEFANO_DB_USER,
-            'password' => TEST_STEFANO_DB_PASSWORD
-        ));
-
         $options = new Options(array(
             'tableName' => 'tree_traversal_with_scope',
             'idColumnName' => 'tree_traversal_id',
@@ -33,6 +24,6 @@ class Zend2WithScopeTest
             $options->setSequenceName('tree_traversal_with_scope_tree_traversal_id_seq');
         }
 
-        return new NestedSetAdapter($options, $dbAdapter);
+        return new NestedSetAdapter($options, TestUtil::getZend2DbAdapter());
     }
 }

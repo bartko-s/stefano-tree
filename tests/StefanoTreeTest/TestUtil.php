@@ -1,11 +1,18 @@
 <?php
 namespace StefanoTreeTest;
 
+use Doctrine\DBAL;
 use PDO;
+use StefanoDb\Adapter\Adapter as StefanoDbAdapter;
+use Zend\Db\Adapter\Adapter as Zend2DbAdapter;
 
 class TestUtil
 {
     private static $dbConnection;
+    private static $zend2DbAdapter;
+    private static $zend1DbAdapter;
+    private static $stefanoDbAdapter;
+    private static $doctrine2Connection;
 
     public static function createDbScheme()
     {
@@ -98,5 +105,79 @@ class TestUtil
             );
         }
         return self::$dbConnection;
+    }
+
+    /**
+     * Singleton
+     * @return Zend2DbAdapter
+     */
+    public static function getZend2DbAdapter()
+    {
+        if (null == self::$zend2DbAdapter) {
+            self::$zend2DbAdapter = new Zend2DbAdapter(array(
+                'driver' => 'Pdo_' . ucfirst(TEST_STEFANO_DB_ADAPTER),
+                'hostname' => TEST_STEFANO_DB_HOSTNAME,
+                'database' => TEST_STEFANO_DB_DB_NAME,
+                'username' => TEST_STEFANO_DB_USER,
+                'password' => TEST_STEFANO_DB_PASSWORD
+            ));
+        }
+        return self::$zend2DbAdapter;
+    }
+
+    /**
+     * Singleton
+     * @return \Zend_Db_Adapter_Abstract
+     */
+    public static function getZend1DbAdapter()
+    {
+        if (null == self::$zend1DbAdapter) {
+            self::$zend1DbAdapter = \Zend_Db::factory('Pdo_' . ucfirst(TEST_STEFANO_DB_ADAPTER), array(
+                'host' => TEST_STEFANO_DB_HOSTNAME,
+                'dbname' => TEST_STEFANO_DB_DB_NAME,
+                'username' => TEST_STEFANO_DB_USER,
+                'password' => TEST_STEFANO_DB_PASSWORD
+            ));
+        }
+        return self::$zend1DbAdapter;
+    }
+
+    /**
+     * Singleton
+     * @return StefanoDbAdapter
+     */
+    public static function getStefanoDbAdapter()
+    {
+        if (null == self::$stefanoDbAdapter) {
+            self::$stefanoDbAdapter = new StefanoDbAdapter(array(
+                'driver' => 'Pdo_' . ucfirst(TEST_STEFANO_DB_ADAPTER),
+                'hostname' => TEST_STEFANO_DB_HOSTNAME,
+                'database' => TEST_STEFANO_DB_DB_NAME,
+                'username' => TEST_STEFANO_DB_USER,
+                'password' => TEST_STEFANO_DB_PASSWORD
+            ));
+        }
+        return self::$stefanoDbAdapter;
+    }
+
+    /**
+     * Singleton
+     * @return DBAL\Connection
+     */
+    public static function getDoctrine2Connection()
+    {
+        if (null == self::$doctrine2Connection) {
+            $config = new DBAL\Configuration();
+            $connectionParams = array(
+                'dbname' => TEST_STEFANO_DB_DB_NAME,
+                'user' => TEST_STEFANO_DB_USER,
+                'password' => TEST_STEFANO_DB_PASSWORD,
+                'host' => TEST_STEFANO_DB_HOSTNAME,
+                'driver' => 'pdo_' . strtolower(TEST_STEFANO_DB_ADAPTER),
+            );
+
+            self::$doctrine2Connection = DBAL\DriverManager::getConnection($connectionParams, $config);
+        }
+        return self::$doctrine2Connection;
     }
 }
