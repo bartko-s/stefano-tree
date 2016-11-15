@@ -5,7 +5,7 @@ use StefanoTree\NestedSet\NodeInfo;
 
 /**
  * Lock, Unlock db table
- * Begin, Commit, Rollback Db Transaction (must support nested transaction)
+ * Begin, Commit, Rollback Db Transaction
  * Other methods which manipulate with trees
  */
 interface AdapterInterface
@@ -13,19 +13,19 @@ interface AdapterInterface
     /**
      * Lock tree for update. This prevent race condition issue
      *
-     * @param $scope int null if scope is not used
+     * @param $scope null|string|int null if scope is not used
      * @return void
      */
     public function lockTree($scope);
 
     /**
-     * Begin db transaction only if transaction has not been started before
+     * Begin db transaction
      * @return void
      */
     public function beginTransaction();
 
     /**
-     * Commit db transaction. Only if transaction start this class
+     * Commit db transaction
      * @return void
      */
     public function commitTransaction();
@@ -57,7 +57,7 @@ interface AdapterInterface
      *
      * @param int $leftIndex Left index greater or equal to
      * @param int $rightIndex Right index greater or equal to
-     * @param int $scope null if scope is not used
+     * @param null|string|int $scope null if scope is not used
      * @return void
      */
     public function delete($leftIndex, $rightIndex, $scope = null);
@@ -65,7 +65,7 @@ interface AdapterInterface
     /**
      * @param int $fromIndex Left index is greater than
      * @param int $shift
-     * @param int $scope null if scope is not used
+     * @param null|string|int $scope null if scope is not used
      * @return void
      */
     public function moveLeftIndexes($fromIndex, $shift, $scope = null);
@@ -73,7 +73,7 @@ interface AdapterInterface
     /**
      * @param int $fromIndex Right index is greater than
      * @param int $shift
-     * @param int $scope null if scope is not used
+     * @param null|string|int $scope null if scope is not used
      * @return void
      */
     public function moveRightIndexes($fromIndex, $shift, $scope = null);
@@ -89,7 +89,7 @@ interface AdapterInterface
      * @param int $leftIndexFrom from left index or equal
      * @param int $rightIndexTo to right index or equal
      * @param int $shift shift
-     * @param int $scope null if scope is not used
+     * @param null|string|int $scope null if scope is not used
      * @return void
      */
     public function updateLevels($leftIndexFrom, $rightIndexTo, $shift, $scope = null);
@@ -98,7 +98,7 @@ interface AdapterInterface
      * @param int $leftIndexFrom from left index
      * @param int $rightIndexTo to right index
      * @param int $shift
-     * @param int $scope null if scope is not used 
+     * @param null|string|int $scope null if scope is not used
      * @return void
      */
     public function moveBranch($leftIndexFrom, $rightIndexTo, $shift, $scope = null);
@@ -143,20 +143,20 @@ interface AdapterInterface
      * @param int $nodeId
      * @param int $startLevel Relative level from $nodeId. 1 = exclude $nodeId from result.
      *                        2 = exclude 2 levels from result
-     * @param int $levels Number of levels in the results relative to $startLevel
-     * @param int $excludeBranch Exclude defined branch(node id) from result
+     * @param null|int $levels Number of levels in the results relative to $startLevel
+     * @param null|int $excludeBranch Exclude defined branch(node id) from result
      * @return array
      */
     public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranch = null);
 
     /**
-     * @param int $scope null if scope is not used
+     * @param null|string|int $scope null if scope is not used
      * @return array
      */
     public function getRoot($scope = null);
 
     /**
-     * @param $scope int if defined return root only for defined scope
+     * @param null|string|int $scope if defined return root only for defined scope
      * @return array
      */
     public function getRoots($scope = null);

@@ -13,13 +13,13 @@ interface TreeInterface
     /**
      * @throws RootNodeAlreadyExistException if root already exist
      * @param array $data
-     * @param int $scope Required if scope is used
+     * @param null|string|int $scope Required if scope is used
      * @return int Id of new created root
      */
     public function createRootNode($data = array(), $scope = null);
 
     /**
-     * @param int $scope Required if scope is used
+     * @param null|string|int $scope Required if scope is used
      * @return array
      */
     public function getRootNode($scope = null);
@@ -115,8 +115,8 @@ interface TreeInterface
      * @param int $nodeId
      * @param int $startLevel Relative level from $nodeId. 1 = exclude $nodeId from result.
      *                        2 = exclude 2 levels from result
-     * @param int $levels Number of levels in the results relative to $startLevel
-     * @param int $excludeBranch Exclude defined branch(node id) from result
+     * @param null|int $levels Number of levels in the results relative to $startLevel
+     * @param null|int $excludeBranch Exclude defined branch(node id) from result
      * @return array
      */
     public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranch = null);
@@ -136,7 +136,7 @@ interface TreeInterface
     public function isValid($rootNodeId);
 
     /**
-     * Repair broken tree. 
+     * Repair broken tree. Works only if [id, parent_id] pair is not broken
      *
      * @param $rootNodeId int
      * @return void
