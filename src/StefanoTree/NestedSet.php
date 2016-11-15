@@ -80,9 +80,13 @@ class NestedSet
     public function createRootNode($data = array(), $scope = null)
     {
         if ($this->getRootNode($scope)) {
-            throw new RootNodeAlreadyExistException(
-                'Root node already exist'
-            );
+            if($scope) {
+                $errorMessage = sprintf('Root node for scope "%s" already exist', $scope);
+            } else {
+                $errorMessage = 'Root node already exist';
+            }
+
+            throw new RootNodeAlreadyExistException($errorMessage);
         }
 
         $nodeInfo = new NodeInfo(null, 0, 0, 1, 2, $scope);
