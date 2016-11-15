@@ -64,9 +64,7 @@ abstract class AbstractTest
 
     public function testCreateRootRootAlreadyExist()
     {
-        $this->expectException(
-            '\StefanoTree\Exception\RootNodeAlreadyExistException'
-        );
+        $this->expectException('\StefanoTree\Exception\RootNodeAlreadyExistException');
         $this->expectExceptionMessage('Root node already exist');
 
 
