@@ -1,6 +1,6 @@
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
-
+-- *****************************
+--        WITHOUT SCOPE
+-- *****************************
 CREATE TABLE `tree_traversal` (
   `tree_traversal_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_bin DEFAULT NULL,
@@ -12,9 +12,27 @@ CREATE TABLE `tree_traversal` (
   KEY `parent_id` (`parent_id`),
   KEY `level` (`level`),
   KEY `lft` (`lft`),
-  KEY `rgt` (`rgt`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=2 ;
+  KEY `rgt` (`rgt`),
+  CONSTRAINT `tree_traversal_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `tree_traversal` (`tree_traversal_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-INSERT INTO `tree_traversal` (`tree_traversal_id`, `name`, `lft`, `rgt`, `parent_id`, `level`) VALUES
-(1, NULL, 1, 2, 0, 0);
 
+-- *****************************
+--        WITH SCOPE
+-- *****************************
+CREATE TABLE `tree_traversal_with_scope` (
+  `tree_traversal_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `lft` int(11) NOT NULL,
+  `rgt` int(11) NOT NULL,
+  `parent_id` int(11) DEFAULT NULL,
+  `level` int(11) DEFAULT NULL,
+  `scope` int(11) NOT NULL,
+  PRIMARY KEY (`tree_traversal_id`),
+  KEY `parent_id` (`parent_id`),
+  KEY `level` (`level`),
+  KEY `lft` (`lft`),
+  KEY `rgt` (`rgt`),
+  KEY `scope` (`scope`),
+  CONSTRAINT `tree_traversal_with_scope_ibfk_1` FOREIGN KEY (`parent_id`) REFERENCES `tree_traversal_with_scope` (`tree_traversal_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
