@@ -157,20 +157,15 @@ class Zend1
         return $lastGeneratedValue;
     }
 
-    public function delete($leftIndex, $rightIndex, $scope = null)
+    public function delete($nodeId)
     {
         $options = $this->getOptions();
 
         $dbAdapter = $this->getDbAdapter();
 
         $where = array(
-            $dbAdapter->quoteIdentifier($options->getLeftColumnName()) . ' >= ?' => $leftIndex,
-            $dbAdapter->quoteIdentifier($options->getRightColumnName()) . ' <= ?' => $rightIndex,
+            $dbAdapter->quoteIdentifier($options->getIdColumnName()) . ' = ?' => $nodeId,
         );
-
-        if ($options->getScopeColumnName()) {
-            $where[$dbAdapter->quoteIdentifier($options->getScopeColumnName()) . ' = ?'] = $scope;
-        }
 
         $dbAdapter->delete($options->getTableName(), $where);
     }

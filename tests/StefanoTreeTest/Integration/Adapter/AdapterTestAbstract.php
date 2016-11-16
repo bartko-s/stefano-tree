@@ -114,7 +114,7 @@ abstract class AdapterTestAbstract
     public function testDeleteBranch()
     {
         $this->adapter
-            ->delete(16, 35);
+            ->delete(3);
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
         $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/adapter/testDeleteBranch.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);

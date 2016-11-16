@@ -55,12 +55,10 @@ interface AdapterInterface
     /**
      * Delete branch
      *
-     * @param int $leftIndex Left index greater or equal to
-     * @param int $rightIndex Right index greater or equal to
-     * @param null|string|int $scope null if scope is not used
+     * @param int $nodeId
      * @return void
      */
-    public function delete($leftIndex, $rightIndex, $scope = null);
+    public function delete($nodeId);
 
     /**
      * @param int $fromIndex Left index is greater than

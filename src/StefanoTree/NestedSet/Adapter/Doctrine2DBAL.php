@@ -181,7 +181,7 @@ class Doctrine2DBAL
         return $connection->lastInsertId($options->getSequenceName());
     }
 
-    public function delete($leftIndex, $rightIndex, $scope = null)
+    public function delete($nodeId)
     {
         $options = $this->getOptions();
 
@@ -189,18 +189,11 @@ class Doctrine2DBAL
 
         $sql = $connection->createQueryBuilder();
         $sql->delete($options->getTableName())
-            ->where($options->getLeftColumnName() . ' >= :leftIndex'
-                . ' AND ' . $options->getRightColumnName() . ' <= :rightIndex');
+            ->where($options->getIdColumnName() . ' = :id');
 
         $params = array(
-            ':leftIndex' => $leftIndex,
-            ':rightIndex' => $rightIndex,
+            ':id' => $nodeId,
         );
-
-        if ($options->getScopeColumnName()) {
-            $sql->andWhere($options->getScopeColumnName() . ' = :scope');
-            $params[':scope'] = $scope;
-        }
 
         $connection->executeQuery($sql, $params);
     }

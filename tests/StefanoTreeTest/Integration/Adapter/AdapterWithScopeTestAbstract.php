@@ -83,7 +83,7 @@ abstract class AdapterWithScopeTestAbstract
     public function testDeleteBranch()
     {
         $this->adapter
-            ->delete(2, 9, 2);
+            ->delete(2);
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal_with_scope'));
         $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/adapter/with_scope/testDeleteBranch.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);

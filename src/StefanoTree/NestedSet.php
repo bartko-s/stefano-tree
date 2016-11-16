@@ -365,9 +365,7 @@ class NestedSet
             }
 
             // delete branch
-            $leftIndex = $nodeInfo->getLeft();
-            $rightIndex = $nodeInfo->getRight();
-            $adapter->delete($leftIndex, $rightIndex, $nodeInfo->getScope());
+            $adapter->delete($nodeInfo->getId());
 
             //patch hole
             $moveFromIndex = $nodeInfo->getLeft();

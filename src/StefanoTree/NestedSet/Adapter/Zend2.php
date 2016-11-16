@@ -182,7 +182,7 @@ class Zend2
         return $lastGeneratedValue;
     }
 
-    public function delete($leftIndex, $rightIndex, $scope = null)
+    public function delete($nodeId)
     {
         $options = $this->getOptions();
 
@@ -190,15 +190,7 @@ class Zend2
 
         $delete = new Db\Sql\Delete($options->getTableName());
         $delete->where
-               ->greaterThanOrEqualTo($options->getLeftColumnName(), $leftIndex)
-               ->AND
-               ->lessThanOrEqualTo($options->getRightColumnName(), $rightIndex);
-
-        if ($options->getScopeColumnName()) {
-            $delete->where
-                   ->AND
-                   ->equalTo($options->getScopeColumnName(), $scope);
-        }
+               ->equalTo($options->getIdColumnName(), $nodeId);
 
         $dbAdapter->query($delete->getSqlString($dbAdapter->getPlatform()),
             DbAdapter::QUERY_MODE_EXECUTE);
