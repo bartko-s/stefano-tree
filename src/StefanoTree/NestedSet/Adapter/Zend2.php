@@ -360,7 +360,8 @@ class Zend2
 
         $select = $this->getBlankDbSelect();
         $select->where
-            ->equalTo($options->getParentIdColumnName(),  0);
+            ->isNull($options->getParentIdColumnName());
+        $select->order($options->getIdColumnName());
 
         if (null != $scope && $options->getScopeColumnName()) {
             $select->where

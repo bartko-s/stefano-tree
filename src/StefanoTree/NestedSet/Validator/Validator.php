@@ -58,10 +58,12 @@ class Validator
         $nodeIdVsLevel = array(0 => -1);
 
         foreach ($tree as &$nodeInfo) {
-            $nodeIdVsLevel[$nodeInfo->getId()] = $nodeIdVsLevel[$nodeInfo->getParentId()] + 1;
+            $parentId = $nodeInfo->getParentId() ? $nodeInfo->getParentId() : 0;
+
+            $nodeIdVsLevel[$nodeInfo->getId()] = $nodeIdVsLevel[$parentId] + 1;
 
             $currentLevel = $nodeInfo->getLevel();
-            $expectedLevel = $nodeIdVsLevel[$nodeInfo->getParentId()] + 1;
+            $expectedLevel = $nodeIdVsLevel[$parentId] + 1;
 
             if ($currentLevel != $expectedLevel) {
                 $nodeInfo->setLevel($expectedLevel);

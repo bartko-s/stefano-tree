@@ -187,7 +187,7 @@ abstract class AbstractScopeTest
                 'name' => null,
                 'lft' => '1',
                 'rgt' => '10',
-                'parent_id' => '0',
+                'parent_id' => NULL,
                 'level' => '0',
                 'scope' => '2',
             ),

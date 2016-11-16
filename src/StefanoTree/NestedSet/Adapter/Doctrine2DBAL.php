@@ -348,11 +348,10 @@ class Doctrine2DBAL
         $connection = $this->getConnection();
 
         $sql = $this->getBlankDbSelect();
-        $sql->where($options->getParentIdColumnName() . ' = :parentId');
+        $sql->where($options->getParentIdColumnName() . ' IS NULL');
+        $sql->orderBy($options->getIdColumnName());
 
-        $params = array(
-            'parentId' => 0,
-        );
+        $params = array();
 
         if (null != $scope && $options->getScopeColumnName()) {
             $sql->where($options->getScopeColumnName() . ' = :scope');

@@ -4,6 +4,6 @@ return array (
   'name' => NULL,
   'lft' => '1',
   'rgt' => '50',
-  'parent_id' => '0',
+  'parent_id' => NULL,
   'level' => '0',
 );

@@ -311,7 +311,8 @@ class Zend1
         $dbAdapter = $this->getDbAdapter();
 
         $select = $this->getBlankDbSelect()
-            ->where($options->getParentIdColumnName() . ' = ?', 0);
+            ->where($options->getParentIdColumnName() . ' IS NULL')
+            ->order($options->getIdColumnName());
 
         if (null != $scope && $options->getScopeColumnName()) {
             $select->where($options->getScopeColumnName() . ' = ?', $scope);

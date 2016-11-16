@@ -38,6 +38,11 @@ class TestUtil
                 KEY `rgt` (`rgt`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin';
 
+            $queries[] = 'ALTER TABLE `tree_traversal`
+                ADD FOREIGN KEY (`parent_id`) 
+                REFERENCES `tree_traversal` (`tree_traversal_id`) 
+                ON DELETE CASCADE ON UPDATE CASCADE';
+
             $queries[] =  'CREATE TABLE `tree_traversal_with_scope` (
                 `tree_traversal_id` int(11) NOT NULL AUTO_INCREMENT,
                 `name` varchar(255) COLLATE utf8_bin DEFAULT NULL,
@@ -53,6 +58,11 @@ class TestUtil
                 KEY `rgt` (`rgt`),
                 KEY `scope` (`scope`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin';
+
+            $queries[] = 'ALTER TABLE `tree_traversal_with_scope`
+                ADD FOREIGN KEY (`parent_id`) 
+                REFERENCES `tree_traversal_with_scope` (`tree_traversal_id`) 
+                ON DELETE CASCADE ON UPDATE CASCADE';
         } elseif ('pgsql' == TEST_STEFANO_DB_ADAPTER) {
             $queries[] = 'DROP TABLE IF EXISTS tree_traversal';
             $queries[] = 'DROP TABLE IF EXISTS tree_traversal_with_scope';
@@ -64,8 +74,27 @@ class TestUtil
                   rgt integer NOT NULL,
                   parent_id integer,
                   level integer,
-                  CONSTRAINT tree_traversal_pkey PRIMARY KEY (tree_traversal_id)
+                  CONSTRAINT tree_traversal_pkey PRIMARY KEY (tree_traversal_id),
+                  CONSTRAINT tree_traversal_parent_id_fkey FOREIGN KEY (parent_id)
+                    REFERENCES public.tree_traversal (tree_traversal_id) MATCH SIMPLE
+                    ON UPDATE CASCADE ON DELETE CASCADE
                 )';
+
+            $queries[] = 'CREATE INDEX tree_traversal_level
+                ON public.tree_traversal
+                USING btree (level)';
+
+            $queries[] = 'CREATE INDEX tree_traversal_lft
+                ON public.tree_traversal
+                USING btree (lft)';
+
+            $queries[] = 'CREATE INDEX tree_traversal_parent_id
+                ON public.tree_traversal
+                USING btree (parent_id)';
+
+            $queries[] = 'CREATE INDEX tree_traversal_rgt
+                  ON public.tree_traversal
+                  USING btree (rgt)';
 
             $queries[] = 'CREATE TABLE tree_traversal_with_scope (
                   tree_traversal_id serial NOT NULL,
@@ -75,8 +104,31 @@ class TestUtil
                   parent_id integer,
                   level integer,
                   scope integer NOT NULL,
-                  CONSTRAINT tree_traversal_with_scope_pkey PRIMARY KEY (tree_traversal_id)
+                  CONSTRAINT tree_traversal_with_scope_pkey PRIMARY KEY (tree_traversal_id),
+                  CONSTRAINT tree_traversal_with_scope_parent_id_fkey FOREIGN KEY (parent_id)
+                    REFERENCES public.tree_traversal_with_scope (tree_traversal_id) MATCH SIMPLE
+                    ON UPDATE CASCADE ON DELETE CASCADE
                 )';
+
+            $queries[] = 'CREATE INDEX tree_traversal_with_scope_level
+                  ON public.tree_traversal_with_scope
+                  USING btree (level)';
+
+            $queries[] = 'CREATE INDEX tree_traversal_with_scope_lft
+                  ON public.tree_traversal_with_scope
+                  USING btree (lft)';
+
+            $queries[] = 'CREATE INDEX tree_traversal_with_scope_parent_id
+                  ON public.tree_traversal_with_scope
+                  USING btree (parent_id)';
+
+            $queries[] = 'CREATE INDEX tree_traversal_with_scope_rgt
+                  ON public.tree_traversal_with_scope
+                  USING btree (rgt)';
+
+            $queries[] = 'CREATE INDEX tree_traversal_with_scope_scope
+                  ON public.tree_traversal_with_scope
+                  USING btree (scope)';
         } else {
             throw new \Exception(sprintf('Unsupported vendor %s', TEST_STEFANO_DB_ADAPTER));
         }

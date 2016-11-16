@@ -470,7 +470,7 @@ abstract class AbstractTest
                 'name' => null,
                 'lft' => '1',
                 'rgt' => '50',
-                'parent_id' => '0',
+                'parent_id' => NULL,
                 'level' => '0',
             ),
             array(
@@ -524,7 +524,7 @@ abstract class AbstractTest
                 'name' => null,
                 'lft' => '1',
                 'rgt' => '50',
-                'parent_id' => '0',
+                'parent_id' => NULL,
                 'level' => '0',
             ),
             array(
@@ -776,7 +776,7 @@ abstract class AbstractTest
             'name' => '',
             'lft' => '1',
             'rgt' => '50',
-            'parent_id' => '0',
+            'parent_id' => NULL,
             'level' => '0',
         );
         $this->assertEquals($expected, $return);

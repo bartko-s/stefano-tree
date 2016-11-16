@@ -62,7 +62,7 @@ abstract class AdapterWithScopeTestAbstract
 
     public function testInsertDataDoesNotChangeMetadata()
     {
-        $nodeInfo = new NodeInfo(null, 1000, 1001, 1002, 1003, 1004);
+        $nodeInfo = new NodeInfo(null, 6, 1001, 1002, 1003, 1004);
 
         $data = array(
             'name' => 'some-name',
