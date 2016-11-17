@@ -13,10 +13,9 @@ interface AdapterInterface
     /**
      * Lock tree for update. This prevent race condition issue
      *
-     * @param $scope null|string|int null if scope is not used
      * @return void
      */
-    public function lockTree($scope);
+    public function lockTree();
 
     /**
      * Begin db transaction

@@ -86,7 +86,7 @@ class Zend1
         return $dbSelect;
     }
 
-    public function lockTree($scope)
+    public function lockTree()
     {
         $options = $this->getOptions();
 
@@ -96,10 +96,6 @@ class Zend1
             ->reset(\Zend_Db_Select::COLUMNS)
             ->columns(array('i' => $options->getIdColumnName()))
             ->forUpdate(true);
-
-        if ($options->getScopeColumnName()) {
-            $select->where($options->getScopeColumnName() . ' = ?', $scope);
-        }
 
         $dbAdapter->fetchAll($select);
     }

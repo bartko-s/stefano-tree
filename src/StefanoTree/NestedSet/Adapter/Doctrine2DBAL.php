@@ -103,7 +103,7 @@ class Doctrine2DBAL
         return $dbSelect;
     }
 
-    public function lockTree($scope)
+    public function lockTree()
     {
         $options = $this->getOptions();
 
@@ -111,10 +111,6 @@ class Doctrine2DBAL
 
         $sql = $this->getBlankDbSelect();
         $sql->select($options->getIdColumnName() . ' AS i');
-
-        if ($options->getScopeColumnName()) {
-            $sql->where($options->getScopeColumnName() . ' = ' . $connection->quote($scope));
-        }
 
         $sql = $sql->getSQL() . ' FOR UPDATE';
 

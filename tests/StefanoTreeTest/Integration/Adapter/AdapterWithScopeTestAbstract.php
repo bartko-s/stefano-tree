@@ -36,12 +36,6 @@ abstract class AdapterWithScopeTestAbstract
         return $this->createMySQLXMLDataSet(__DIR__ . '/_files/adapter/with_scope/initDataSet.xml');
     }
 
-    public function testLockTreeDoesNotFail()
-    {
-        $this->adapter
-            ->lockTree(2);
-    }
-
     public function testUpdateDataDoesNotChangeMetadata()
     {
         $data = array(

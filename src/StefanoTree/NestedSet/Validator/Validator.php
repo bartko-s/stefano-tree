@@ -158,14 +158,10 @@ class Validator
     public function isValid($rootNodeId)
     {
         $adapter = $this->_getAdapter();
-        $nodeInfo = $adapter->getNodeInfo($rootNodeId);
 
         $adapter->beginTransaction();
         try {
-            if ($nodeInfo) {
-                $scope = $nodeInfo->getScope();
-                $adapter->lockTree($scope);
-            }
+            $adapter->lockTree();
 
             $result = $this->_isValid($rootNodeId);
 
@@ -201,14 +197,10 @@ class Validator
     public function rebuild($rootNodeId)
     {
         $adapter = $this->_getAdapter();
-        $nodeInfo = $adapter->getNodeInfo($rootNodeId);
 
         $adapter->beginTransaction();
         try {
-            if ($nodeInfo) {
-                $scope = $nodeInfo->getScope();
-                $adapter->lockTree($scope);
-            }
+            $adapter->lockTree();
 
             $this->_isValid($rootNodeId);
 

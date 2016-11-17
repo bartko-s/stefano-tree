@@ -39,7 +39,7 @@ abstract class AdapterTestAbstract
     public function testLockTreeDoesNotFail()
     {
         $this->adapter
-            ->lockTree(null);
+            ->lockTree();
     }
 
     public function testDbTransactionDoesNotFail()

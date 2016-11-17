@@ -92,7 +92,7 @@ class Zend2
         return $dbSelect;
     }
 
-    public function lockTree($scope)
+    public function lockTree()
     {
         $options = $this->getOptions();
 
@@ -102,12 +102,6 @@ class Zend2
         $select->columns(array(
             'i' => $options->getIdColumnName(),
         ));
-
-        if ($options->getScopeColumnName()) {
-            $select->where(array(
-                $options->getScopeColumnName() => $scope,
-            ));
-        }
 
         $sql = $select->getSqlString($dbAdapter->getPlatform()) . ' FOR UPDATE';
 
