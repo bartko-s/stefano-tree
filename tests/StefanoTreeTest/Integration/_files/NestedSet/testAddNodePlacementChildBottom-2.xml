@@ -7,7 +7,7 @@
                 <field name="name" xsi:nil="true" />
                 <field name="lft">1</field>
                 <field name="rgt">54</field>
-                <field name="parent_id">0</field>
+                <field name="parent_id" xsi:nil="true" />
                 <field name="level">0</field>
             </row>
             <row>

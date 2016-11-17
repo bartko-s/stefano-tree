@@ -3,13 +3,11 @@ namespace StefanoTree;
 
 use Doctrine\DBAL\Connection as DoctrineConnection;
 use Exception;
-use StefanoDb\Adapter\ExtendedAdapterInterface;
+use StefanoDb\Adapter\ExtendedAdapterInterface as StefanoExtendedDbAdapterInterface;
 use StefanoTree\Exception\InvalidArgumentException;
 use StefanoTree\Exception\RootNodeAlreadyExistException;
+use StefanoTree\NestedSet\Adapter;
 use StefanoTree\NestedSet\Adapter\AdapterInterface;
-use StefanoTree\NestedSet\Adapter\Doctrine2DBALAdapter;
-use StefanoTree\NestedSet\Adapter\Zend1DbAdapter;
-use StefanoTree\NestedSet\Adapter\Zend2DbAdapter;
 use StefanoTree\NestedSet\AddStrategy;
 use StefanoTree\NestedSet\AddStrategy\AddStrategyInterface;
 use StefanoTree\NestedSet\MoveStrategy;
@@ -18,7 +16,7 @@ use StefanoTree\NestedSet\NodeInfo;
 use StefanoTree\NestedSet\Options;
 use StefanoTree\NestedSet\Validator\Validator;
 use StefanoTree\NestedSet\Validator\ValidatorInterface;
-use Zend_Db_Adapter_Abstract;
+use Zend\Db\Adapter\Adapter as Zend2DbAdapter;
 
 class NestedSet
     implements TreeInterface
@@ -35,12 +33,14 @@ class NestedSet
      */
     public static function factory(Options $options, $dbAdapter)
     {
-        if ($dbAdapter instanceof ExtendedAdapterInterface) {
-            $adapter = new Zend2DbAdapter($options, $dbAdapter);
+        if ($dbAdapter instanceof StefanoExtendedDbAdapterInterface) {
+            $adapter = new Adapter\StefanoDb($options, $dbAdapter);
+        } elseif ($dbAdapter instanceof Zend2DbAdapter) {
+            $adapter = new Adapter\Zend2($options, $dbAdapter);
         } elseif ($dbAdapter instanceof DoctrineConnection) {
-            $adapter = new Doctrine2DBALAdapter($options, $dbAdapter);
-        } elseif ($dbAdapter instanceof Zend_Db_Adapter_Abstract) {
-            $adapter = new Zend1DbAdapter($options, $dbAdapter);
+            $adapter = new Adapter\Doctrine2DBAL($options, $dbAdapter);
+        } elseif ($dbAdapter instanceof \Zend_Db_Adapter_Abstract) {
+            $adapter = new Adapter\Zend1($options, $dbAdapter);
         } else {
             throw new InvalidArgumentException('Db adapter "' . get_class($dbAdapter)
                 . '" is not supported');
@@ -80,12 +80,16 @@ class NestedSet
     public function createRootNode($data = array(), $scope = null)
     {
         if ($this->getRootNode($scope)) {
-            throw new RootNodeAlreadyExistException(
-                'Root node already exist'
-            );
+            if ($scope) {
+                $errorMessage = sprintf('Root node for scope "%s" already exist', $scope);
+            } else {
+                $errorMessage = 'Root node already exist';
+            }
+
+            throw new RootNodeAlreadyExistException($errorMessage);
         }
 
-        $nodeInfo = new NodeInfo(null, 0, 0, 1, 2, $scope);
+        $nodeInfo = new NodeInfo(null, null, 0, 1, 2, $scope);
 
         return $this->getAdapter()->insert($nodeInfo, $data);
     }
@@ -111,14 +115,9 @@ class NestedSet
     {
         $adapter = $this->getAdapter();
 
-        $targetNode = $adapter->getNodeInfo($targetNodeId);
-
         $adapter->beginTransaction();
         try {
-            if ($targetNode) {
-                $scope = $targetNode->getScope();
-                $adapter->lockTree($scope);
-            }
+            $adapter->lockTree();
 
             $targetNode = $adapter->getNodeInfo($targetNodeId);
 
@@ -221,14 +220,9 @@ class NestedSet
             return false;
         }
 
-        $sourceNode = $adapter->getNodeInfo($sourceNodeId);
-
         $adapter->beginTransaction();
         try {
-            if ($sourceNode) {
-                $scope = $sourceNode->getScope();
-                $adapter->lockTree($scope);
-            }
+            $adapter->lockTree();
 
             $sourceNodeInfo = $adapter->getNodeInfo($sourceNodeId);
             $targetNodeInfo = $adapter->getNodeInfo($targetNodeId);
@@ -342,14 +336,9 @@ class NestedSet
     {
         $adapter = $this->getAdapter();
 
-        $node = $adapter->getNodeInfo($nodeId);
-
         $adapter->beginTransaction();
         try {
-            if ($node) {
-                $scope = $node->getScope();
-                $adapter->lockTree($scope);
-            }
+            $adapter->lockTree();
 
             $nodeInfo = $adapter->getNodeInfo($nodeId);
 
@@ -361,9 +350,7 @@ class NestedSet
             }
 
             // delete branch
-            $leftIndex = $nodeInfo->getLeft();
-            $rightIndex = $nodeInfo->getRight();
-            $adapter->delete($leftIndex, $rightIndex, $nodeInfo->getScope());
+            $adapter->delete($nodeInfo->getId());
 
             //patch hole
             $moveFromIndex = $nodeInfo->getLeft();

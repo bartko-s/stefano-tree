@@ -6,7 +6,7 @@ use Doctrine\DBAL\Query\QueryBuilder;
 use StefanoTree\NestedSet\NodeInfo;
 use StefanoTree\NestedSet\Options;
 
-class Doctrine2DBALAdapter
+class Doctrine2DBAL
     implements AdapterInterface
 {
     private $options;
@@ -65,6 +65,21 @@ class Doctrine2DBALAdapter
     }
 
     /**
+     * Return base db select without any join, etc.
+     * @return QueryBuilder
+     */
+    public function getBlankDbSelect()
+    {
+        $queryBuilder = $this->getConnection()
+            ->createQueryBuilder();
+
+        $queryBuilder->select('*')
+            ->from($this->getOptions()->getTableName(), null);
+
+        return $queryBuilder;
+    }
+
+    /**
      * @param QueryBuilder $dbSelect
      * @return void
      */
@@ -79,16 +94,8 @@ class Doctrine2DBALAdapter
      */
     public function getDefaultDbSelect()
     {
-        $options = $this->getOptions();
-
         if (null === $this->defaultDbSelect) {
-            $queryBuilder = $this->getConnection()
-                                 ->createQueryBuilder();
-
-            $queryBuilder->select('*')
-                         ->from($options->getTableName(), null);
-
-            $this->defaultDbSelect = $queryBuilder;
+            $this->defaultDbSelect = $this->getBlankDbSelect();
         }
 
         $dbSelect = clone $this->defaultDbSelect;
@@ -96,18 +103,14 @@ class Doctrine2DBALAdapter
         return $dbSelect;
     }
 
-    public function lockTree($scope)
+    public function lockTree()
     {
         $options = $this->getOptions();
 
         $connection = $this->getConnection();
 
-        $sql = $this->getDefaultDbSelect();
+        $sql = $this->getBlankDbSelect();
         $sql->select($options->getIdColumnName() . ' AS i');
-
-        if ($options->getScopeColumnName()) {
-            $sql->where($options->getScopeColumnName() . ' = ' . $connection->quote($scope));
-        }
 
         $sql = $sql->getSQL() . ' FOR UPDATE';
 
@@ -117,19 +120,19 @@ class Doctrine2DBALAdapter
     public function beginTransaction()
     {
         $this->getConnection()
-             ->beginTransaction();
+            ->beginTransaction();
     }
 
     public function commitTransaction()
     {
         $this->getConnection()
-             ->commit();
+            ->commit();
     }
 
     public function rollbackTransaction()
     {
         $this->getConnection()
-             ->rollBack();
+            ->rollBack();
     }
 
     public function update($nodeId, array $data)
@@ -174,7 +177,7 @@ class Doctrine2DBALAdapter
         return $connection->lastInsertId($options->getSequenceName());
     }
 
-    public function delete($leftIndex, $rightIndex, $scope = null)
+    public function delete($nodeId)
     {
         $options = $this->getOptions();
 
@@ -182,18 +185,11 @@ class Doctrine2DBALAdapter
 
         $sql = $connection->createQueryBuilder();
         $sql->delete($options->getTableName())
-            ->where($options->getLeftColumnName() . ' >= :leftIndex'
-                . ' AND ' . $options->getRightColumnName() . ' <= :rightIndex');
+            ->where($options->getIdColumnName() . ' = :id');
 
         $params = array(
-            ':leftIndex' => $leftIndex,
-            ':rightIndex' => $rightIndex,
+            ':id' => $nodeId,
         );
-
-        if ($options->getScopeColumnName()) {
-            $sql->andWhere($options->getScopeColumnName() . ' = :scope');
-            $params[':scope'] = $scope;
-        }
 
         $connection->executeQuery($sql, $params);
     }
@@ -287,7 +283,7 @@ class Doctrine2DBALAdapter
         $sql->update($options->getTableName())
             ->set($options->getLevelColumnName(), $options->getLevelColumnName() . ' + :shift')
             ->where($options->getLeftColumnName() . ' >= :leftFrom'
-                    . ' AND ' . $options->getRightColumnName() . ' <= :rightTo');
+                . ' AND ' . $options->getRightColumnName() . ' <= :rightTo');
 
         $params = array(
             ':shift' => $shift,
@@ -340,12 +336,11 @@ class Doctrine2DBALAdapter
 
         $connection = $this->getConnection();
 
-        $sql = $this->getDefaultDbSelect();
-        $sql->where($options->getParentIdColumnName() . ' = :parentId');
+        $sql = $this->getBlankDbSelect();
+        $sql->where($options->getParentIdColumnName() . ' IS NULL');
+        $sql->orderBy($options->getIdColumnName());
 
-        $params = array(
-            'parentId' => 0,
-        );
+        $params = array();
 
         if (null != $scope && $options->getScopeColumnName()) {
             $sql->where($options->getScopeColumnName() . ' = :scope');
@@ -413,7 +408,25 @@ class Doctrine2DBALAdapter
 
     public function getNodeInfo($nodeId)
     {
-        $data = $this->getNode($nodeId);
+        $options = $this->getOptions();
+
+        $nodeId = (int) $nodeId;
+
+        $connection = $this->getConnection();
+
+
+        $sql = $this->getBlankDbSelect();
+        $sql->where($options->getIdColumnName() . ' = :' . $options->getIdColumnName());
+
+        $params = array(
+            $options->getIdColumnName() => $nodeId,
+        );
+
+        $stmt = $connection->executeQuery($sql, $params);
+
+        $node = $stmt->fetch();
+
+        $data = is_array($node) ? $node : null;
 
         $result = ($data) ? $this->_buildNodeInfoObject($data) : null;
 
@@ -436,9 +449,9 @@ class Doctrine2DBALAdapter
         );
 
         $sql = $queryBuilder->select($columns)
-                            ->from($options->getTableName())
-                            ->where($options->getParentIdColumnName() . ' = :parentId')
-                            ->orderBy($options->getLeftColumnName(), 'ASC');
+            ->from($options->getTableName())
+            ->where($options->getParentIdColumnName() . ' = :parentId')
+            ->orderBy($options->getLeftColumnName(), 'ASC');
 
         $params = array(
             'parentId' => $parentNodeId,
@@ -486,20 +499,25 @@ class Doctrine2DBALAdapter
         // node does not exist
         $nodeInfo = $this->getNodeInfo($nodeId);
         if (!$nodeInfo) {
-            return;
+            return array();
         }
 
         $connection = $this->getConnection();
 
         $sql = $this->getDefaultDbSelect();
-        $sql->where($options->getLeftColumnName() . ' <= :leftIndex')
+        $params = array();
+
+        if ($options->getScopeColumnName()) {
+            $sql->andWhere($options->getScopeColumnName() . ' = :scope');
+            $params['scope'] = $nodeInfo->getScope();
+        }
+
+        $sql->andWhere($options->getLeftColumnName() . ' <= :leftIndex')
             ->andWhere($options->getRightColumnName() . ' >= :rightIndex')
             ->orderBy($options->getLeftColumnName(), 'ASC');
 
-        $params = array(
-            'leftIndex' => $nodeInfo->getLeft(),
-            'rightIndex' => $nodeInfo->getRight(),
-        );
+        $params['leftIndex'] = $nodeInfo->getLeft();
+        $params['rightIndex'] = $nodeInfo->getRight();
 
         if (0 < $startLevel) {
             $sql->andWhere($options->getLevelColumnName() . ' >= :startLevel');
@@ -517,7 +535,7 @@ class Doctrine2DBALAdapter
 
         $result = $stmt->fetchAll();
 
-        return (is_array($result)) ? $result : null;
+        return (is_array($result)) ? $result : array();
     }
 
     public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranch = null)
@@ -525,7 +543,7 @@ class Doctrine2DBALAdapter
         $options = $this->getOptions();
 
         if (!$nodeInfo = $this->getNodeInfo($nodeId)) {
-            return;
+            return array();
         }
 
         $connection = $this->getConnection();
@@ -552,7 +570,7 @@ class Doctrine2DBALAdapter
 
         if (null != $excludeBranch && null != ($excludeNodeInfo = $this->getNodeInfo($excludeBranch))) {
             $sql->andWhere('(' . $options->getLeftColumnName() . ' BETWEEN :left AND :exLeftMinusOne'
-                    . ') OR (' . $options->getLeftColumnName() . ' BETWEEN :exRightPlusOne AND :right)')
+                . ') OR (' . $options->getLeftColumnName() . ' BETWEEN :exRightPlusOne AND :right)')
                 ->andWhere('(' . $options->getRightColumnName() . ' BETWEEN :exRightPlusOne AND :right'
                     . ') OR (' . $options->getRightColumnName() . ' BETWEEN :left AND :exLeftMinusOne)');
 
@@ -572,6 +590,6 @@ class Doctrine2DBALAdapter
 
         $result = $stmt->fetchAll();
 
-        return (0 < count($result)) ? $result : null;
+        return (0 < count($result)) ? $result : array();
     }
 }

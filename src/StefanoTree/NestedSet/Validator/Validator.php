@@ -1,14 +1,13 @@
 <?php
 namespace StefanoTree\NestedSet\Validator;
 
+use Exception;
 use StefanoTree\NestedSet\Adapter\AdapterInterface;
 use StefanoTree\NestedSet\NodeInfo;
 
 class Validator
     implements ValidatorInterface
 {
-    private $rootId = null;
-
     private $isValid = true;
 
     private $tree = array();
@@ -59,10 +58,12 @@ class Validator
         $nodeIdVsLevel = array(0 => -1);
 
         foreach ($tree as &$nodeInfo) {
-            $nodeIdVsLevel[$nodeInfo->getId()] = $nodeIdVsLevel[$nodeInfo->getParentId()] + 1;
+            $parentId = $nodeInfo->getParentId() ? $nodeInfo->getParentId() : 0;
+
+            $nodeIdVsLevel[$nodeInfo->getId()] = $nodeIdVsLevel[$parentId] + 1;
 
             $currentLevel = $nodeInfo->getLevel();
-            $expectedLevel = $nodeIdVsLevel[$nodeInfo->getParentId()] + 1;
+            $expectedLevel = $nodeIdVsLevel[$parentId] + 1;
 
             if ($currentLevel != $expectedLevel) {
                 $nodeInfo->setLevel($expectedLevel);
@@ -156,8 +157,30 @@ class Validator
 
     public function isValid($rootNodeId)
     {
+        $adapter = $this->_getAdapter();
+
+        $adapter->beginTransaction();
+        try {
+            $adapter->lockTree();
+
+            $result = $this->_isValid($rootNodeId);
+
+            $adapter->commitTransaction();
+        } catch (Exception $e) {
+            $adapter->rollbackTransaction();
+            throw $e;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param $rootNodeId
+     * @return bool True if tree is valid
+     */
+    protected function _isValid($rootNodeId)
+    {
         $this->isValid = True;
-        $this->rootId = $rootNodeId;
 
         $rootNodeInfo = $this->_getAdapter()->getNodeInfo($rootNodeId);
         $tree = $this->_buildFlatTree($rootNodeInfo);
@@ -173,19 +196,29 @@ class Validator
 
     public function rebuild($rootNodeId)
     {
-        if ($this->rootId != $rootNodeId) {
-            $this->isValid($rootNodeId);
-        }
+        $adapter = $this->_getAdapter();
 
-        if ($this->isValid) {
-            return;
-        }
+        $adapter->beginTransaction();
+        try {
+            $adapter->lockTree();
 
-        foreach ($this->tree as $nodeInfo) {
-            if ($nodeInfo->needUpdate()) {
-                $this->_getAdapter()
-                     ->updateNodeMetadata($nodeInfo);
+            $this->_isValid($rootNodeId);
+
+            if ($this->isValid) {
+                $adapter->commitTransaction();
+                return;
             }
+
+            foreach ($this->tree as $nodeInfo) {
+                if ($nodeInfo->needUpdate()) {
+                    $this->_getAdapter()
+                         ->updateNodeMetadata($nodeInfo);
+                }
+            }
+            $adapter->commitTransaction();
+        } catch (Exception $e) {
+            $adapter->rollbackTransaction();
+            throw $e;
         }
     }
 }

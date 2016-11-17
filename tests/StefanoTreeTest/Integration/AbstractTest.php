@@ -64,9 +64,7 @@ abstract class AbstractTest
 
     public function testCreateRootRootAlreadyExist()
     {
-        $this->expectException(
-            '\StefanoTree\Exception\RootNodeAlreadyExistException'
-        );
+        $this->expectException('\StefanoTree\Exception\RootNodeAlreadyExistException');
         $this->expectExceptionMessage('Root node already exist');
 
 
@@ -447,13 +445,22 @@ abstract class AbstractTest
         $this->assertTrue($return);
     }
 
+    public function testGetPathReturnEmptyArrayIfNodeDoesNotExist()
+    {
+        $return = $this->treeAdapter
+            ->getPath(123456789);
+        $this->assertEquals(array(), $return);
+    }
+
+    public function testGetPathReturnEmptyArrayIfNodeExistButHasNoPath()
+    {
+        $return = $this->treeAdapter
+            ->getPath(1, 0, True);
+        $this->assertEquals(array(), $return);
+    }
+
     public function testGetPath()
     {
-        //test
-        $return = $this->treeAdapter
-                       ->getPath(123456789);
-        $this->assertNull($return);
-
         //test
         $return = $this->treeAdapter
                        ->getPath(6);
@@ -463,7 +470,7 @@ abstract class AbstractTest
                 'name' => null,
                 'lft' => '1',
                 'rgt' => '50',
-                'parent_id' => '0',
+                'parent_id' => NULL,
                 'level' => '0',
             ),
             array(
@@ -517,7 +524,7 @@ abstract class AbstractTest
                 'name' => null,
                 'lft' => '1',
                 'rgt' => '50',
-                'parent_id' => '0',
+                'parent_id' => NULL,
                 'level' => '0',
             ),
             array(
@@ -532,18 +539,22 @@ abstract class AbstractTest
         $this->assertEquals($expected, $return);
     }
 
+    public function testGetDescendantsReturnEmptyArrayIfNodeDoesNotExist()
+    {
+        $return = $this->treeAdapter
+            ->getDescendants(123456789);
+        $this->assertEquals(array(), $return);
+    }
+
+    public function testGetDescendantsReturnEmptyArrayNodeDoesNotHaveDescendants()
+    {
+        $return = $this->treeAdapter
+            ->getDescendants(8, 1);
+        $this->assertEquals(array(), $return);
+    }
+
     public function testGetDescendants()
     {
-        //test
-        $return = $this->treeAdapter
-                       ->getDescendants(123456789);
-        $this->assertNull($return);
-
-        //test
-        $return = $this->treeAdapter
-                       ->getDescendants(1, 100000);
-        $this->assertNull($return);
-
         //test whole branche
         $return = $this->treeAdapter
                        ->getDescendants(21);
@@ -677,13 +688,22 @@ abstract class AbstractTest
         $this->assertEquals($expected, $return);
     }
 
+    public function testGetChildrenReturnEmptyArrayIfNodeDoesNotExist()
+    {
+        $return = $this->treeAdapter
+            ->getChildren(123456789);
+        $this->assertEquals(array(), $return);
+    }
+
+    public function testGetChildrenReturnEmptyArrayIfNodeDoesNotHaveChildren()
+    {
+        $return = $this->treeAdapter
+            ->getChildren(8);
+        $this->assertEquals(array(), $return);
+    }
+
     public function testGetChildren()
     {
-        //test
-        $return = $this->treeAdapter
-                       ->getChildren(123456789);
-        $this->assertNull($return);
-
         //test exclude node
         $return = $this->treeAdapter
                        ->getChildren(18);
@@ -756,7 +776,7 @@ abstract class AbstractTest
             'name' => '',
             'lft' => '1',
             'rgt' => '50',
-            'parent_id' => '0',
+            'parent_id' => NULL,
             'level' => '0',
         );
         $this->assertEquals($expected, $return);

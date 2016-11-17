@@ -1,12 +1,12 @@
 <?php
 namespace StefanoTree\NestedSet\Adapter;
 
-use StefanoDb\Adapter\Adapter as DbAdapter;
 use StefanoTree\NestedSet\NodeInfo;
 use StefanoTree\NestedSet\Options;
 use Zend\Db;
+use Zend\Db\Adapter\Adapter as DbAdapter;
 
-class Zend2DbAdapter
+class Zend2
     implements AdapterInterface
 {
     private $options;
@@ -32,7 +32,7 @@ class Zend2DbAdapter
     /**
      * @return DbAdapter
      */
-    private function getDbAdapter()
+    protected function getDbAdapter()
     {
         return $this->dbAdapter;
     }
@@ -60,6 +60,15 @@ class Zend2DbAdapter
     }
 
     /**
+     * Return base db select without any join, etc.
+     * @return Db\Sql\Select
+     */
+    public function getBlankDbSelect()
+    {
+        return new Db\Sql\Select($this->getOptions()->getTableName());
+    }
+
+    /**
      * @param Db\Sql\Select $dbSelect
      * @return void
      */
@@ -69,15 +78,13 @@ class Zend2DbAdapter
     }
 
     /**
-     * Return clone of default db select
+     * Return default db select
      * @return Db\Sql\Select
      */
     public function getDefaultDbSelect()
     {
-        $options = $this->getOptions();
-
         if (null === $this->defaultDbSelect) {
-            $this->defaultDbSelect = new Db\Sql\Select($options->getTableName());
+            $this->defaultDbSelect = $this->getBlankDbSelect();
         }
 
         $dbSelect = clone $this->defaultDbSelect;
@@ -85,22 +92,16 @@ class Zend2DbAdapter
         return $dbSelect;
     }
 
-    public function lockTree($scope)
+    public function lockTree()
     {
         $options = $this->getOptions();
 
         $dbAdapter = $this->getDbAdapter();
 
-        $select = $this->getDefaultDbSelect();
+        $select = $this->getBlankDbSelect();
         $select->columns(array(
             'i' => $options->getIdColumnName(),
         ));
-
-        if ($options->getScopeColumnName()) {
-            $select->where(array(
-                $options->getScopeColumnName() => $scope,
-            ));
-        }
 
         $sql = $select->getSqlString($dbAdapter->getPlatform()) . ' FOR UPDATE';
 
@@ -110,18 +111,24 @@ class Zend2DbAdapter
     public function beginTransaction()
     {
         $this->getDbAdapter()
-             ->begin();
+             ->getDriver()
+             ->getConnection()
+             ->beginTransaction();
     }
 
     public function commitTransaction()
     {
         $this->getDbAdapter()
+             ->getDriver()
+             ->getConnection()
              ->commit();
     }
 
     public function rollbackTransaction()
     {
         $this->getDbAdapter()
+             ->getDriver()
+             ->getConnection()
              ->rollback();
     }
 
@@ -169,7 +176,7 @@ class Zend2DbAdapter
         return $lastGeneratedValue;
     }
 
-    public function delete($leftIndex, $rightIndex, $scope = null)
+    public function delete($nodeId)
     {
         $options = $this->getOptions();
 
@@ -177,15 +184,7 @@ class Zend2DbAdapter
 
         $delete = new Db\Sql\Delete($options->getTableName());
         $delete->where
-               ->greaterThanOrEqualTo($options->getLeftColumnName(), $leftIndex)
-               ->AND
-               ->lessThanOrEqualTo($options->getRightColumnName(), $rightIndex);
-
-        if ($options->getScopeColumnName()) {
-            $delete->where
-                   ->AND
-                   ->equalTo($options->getScopeColumnName(), $scope);
-        }
+               ->equalTo($options->getIdColumnName(), $nodeId);
 
         $dbAdapter->query($delete->getSqlString($dbAdapter->getPlatform()),
             DbAdapter::QUERY_MODE_EXECUTE);
@@ -345,9 +344,10 @@ class Zend2DbAdapter
 
         $dbAdapter = $this->getDbAdapter();
 
-        $select = $this->getDefaultDbSelect();
+        $select = $this->getBlankDbSelect();
         $select->where
-            ->equalTo($options->getParentIdColumnName(),  0);
+            ->isNull($options->getParentIdColumnName());
+        $select->order($options->getIdColumnName());
 
         if (null != $scope && $options->getScopeColumnName()) {
             $select->where
@@ -411,9 +411,21 @@ class Zend2DbAdapter
 
     public function getNodeInfo($nodeId)
     {
-        $data = $this->getNode($nodeId);
+        $options = $this->getOptions();
 
-        $result = ($data) ? $this->_buildNodeInfoObject($data) : null;
+        $nodeId = (int) $nodeId;
+
+        $dbAdapter = $this->getDbAdapter();
+
+        $select = $this->getBlankDbSelect()
+            ->where(array($options->getIdColumnName() =>  $nodeId));
+
+        $result = $dbAdapter->query($select->getSqlString($dbAdapter->getPlatform()),
+            DbAdapter::QUERY_MODE_EXECUTE);
+
+        $array = $result->toArray();
+
+        $result = ($array) ? $this->_buildNodeInfoObject($array[0]) : null;
 
         return $result;
     }
@@ -435,7 +447,7 @@ class Zend2DbAdapter
             $columns[] = $options->getScopeColumnName();
         }
 
-        $select = $this->getDefaultDbSelect();
+        $select = $this->getBlankDbSelect();
         $select->columns($columns);
         $select->order($options->getLeftColumnName());
         $select->where(array(
@@ -475,7 +487,6 @@ class Zend2DbAdapter
             DbAdapter::QUERY_MODE_EXECUTE);
     }
 
-
     public function getPath($nodeId, $startLevel = 0, $excludeLastNode = false)
     {
         $options = $this->getOptions();
@@ -483,8 +494,9 @@ class Zend2DbAdapter
         $startLevel = (int) $startLevel;
 
         // node does not exist
-        if (!$nodeInfo = $this->getNodeInfo($nodeId)) {
-            return null;
+        $nodeInfo = $this->getNodeInfo($nodeId);
+        if (!$nodeInfo) {
+            return array();
         }
 
         $dbAdapter = $this->getDbAdapter();
@@ -524,7 +536,7 @@ class Zend2DbAdapter
         $options = $this->getOptions();
 
         if (!$nodeInfo = $this->getNodeInfo($nodeId)) {
-            return null;
+            return array();
         }
 
         $dbAdapter = $this->getDbAdapter();
@@ -577,6 +589,6 @@ class Zend2DbAdapter
 
         $resultArray = $result->toArray();
 
-        return (0 < count($resultArray)) ? $resultArray : null;
+        return (0 < count($resultArray)) ? $resultArray : array();
     }
 }

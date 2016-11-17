@@ -33,6 +33,8 @@ abstract class AbstractScopeTest
     protected function getDataSet()
     {
         switch ($this->getName()) {
+            case 'testValidateTreeRaiseExceptionIfIdParentIdIsBroken':
+                return $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/with_scope/initDataSetBrokenParents.xml');
             case 'testInvalidTree':
             case 'testRebuildTree':
                 return $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/with_scope/initDataSetBrokenTreeIndexes.xml');
@@ -53,10 +55,8 @@ abstract class AbstractScopeTest
 
     public function testCreateRootRootWithSomeScopeAlreadyExist()
     {
-        $this->expectException(
-            '\StefanoTree\Exception\RootNodeAlreadyExistException'
-        );
-        $this->expectExceptionMessage('Root node already exist');
+        $this->expectException('\StefanoTree\Exception\RootNodeAlreadyExistException');
+        $this->expectExceptionMessage('Root node for scope "123" already exist');
 
         $this->treeAdapter
             ->createRootNode(array(), 123);
@@ -116,10 +116,8 @@ abstract class AbstractScopeTest
 
     public function testCannotMoveNodeBetweenScopes()
     {
-        $this->expectException(
-            '\StefanoTree\Exception\InvalidArgumentException',
-            'Cannot move node between scopes'
-        );
+        $this->expectException('\StefanoTree\Exception\InvalidArgumentException');
+        $this->expectExceptionMessage('Cannot move node between scopes');
 
         $this->treeAdapter
              ->moveNodePlacementChildBottom(4, 8);
@@ -189,7 +187,7 @@ abstract class AbstractScopeTest
                 'name' => null,
                 'lft' => '1',
                 'rgt' => '10',
-                'parent_id' => '0',
+                'parent_id' => NULL,
                 'level' => '0',
                 'scope' => '2',
             ),

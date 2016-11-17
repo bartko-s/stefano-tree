@@ -1,13 +1,14 @@
 {
     "name": "stefano/stefano-tree",
-    "description": "Library for managing tree structures",
-    "version": "1.6.1",
+    "description": "Framework agnostic library for managing tree structures",
+    "version": "dev-develop",
     "license": "BSD-3-Clause",
     "keywords": [
         "tree",
         "mptt",
         "nested set",
         "zend",
+        "zend framework",
         "doctrine"
     ],
     "support": {
@@ -26,7 +27,8 @@
     "suggest": {
         "doctrine/dbal": "If you want to use Doctrine DBAL",
         "stefano/stefano-db": "If you want to use Stefano DB",
-        "zf1/zend-db": "If you want to use Zend_Db"
+        "zf1/zend-db": "If you want to use Zend1 Db",
+        "zendframework/zend-db": "If you want to use Zend2 Db"
     },
     "require-dev": {
         "doctrine/dbal": "2.*",
@@ -37,7 +39,8 @@
         "satooshi/php-coveralls": "^1.0",
         "zf1/zend-db": "^1.12",
         "fabpot/php-cs-fixer": "^1.11",
-        "phpunit/phpcov": "^3.0"
+        "phpunit/phpcov": "^3.0",
+        "zendframework/zend-db": "2.*"
     },
     "autoload": {
         "psr-0": {

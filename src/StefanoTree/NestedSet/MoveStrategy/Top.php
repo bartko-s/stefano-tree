@@ -23,7 +23,7 @@ class Top
         } elseif ($this->isMovedDown()) {
             return $this->getSourceNode()->getLeft();
         } else {
-            throw new Exception\BaseException('Cannot move node');
+            throw new Exception\TreeIsBrokenException();
         }
     }
 
@@ -34,7 +34,7 @@ class Top
         } elseif ($this->isMovedDown()) {
             return $this->getSourceNode()->getRight();
         } else {
-            throw new Exception\BaseException('Cannot move node');
+            throw new Exception\TreeIsBrokenException();
         }
     }
 
@@ -45,7 +45,7 @@ class Top
         } elseif ($this->isMovedDown()) {
             return $this->getTargetNode()->getLeft() - $this->getSourceNode()->getLeft();
         } else {
-            throw new Exception\BaseException('Cannot move node');
+            throw new Exception\TreeIsBrokenException();
         }
     }
 
@@ -58,7 +58,7 @@ class Top
         } elseif ($this->isMovedDown()) {
             return $this->getSourceNode()->getLeft();
         } else {
-            throw new Exception\BaseException('Cannot move node');
+            throw new Exception\TreeIsBrokenException();
         }
     }
 

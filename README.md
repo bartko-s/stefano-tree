@@ -4,34 +4,29 @@
 | :---: | :---: | :---: | :---: |
 | [![Test Status](https://secure.travis-ci.org/bartko-s/stefano-tree.png?branch=master)](https://travis-ci.org/bartko-s/stefano-tree) | [![Code Coverage](https://coveralls.io/repos/bartko-s/stefano-tree/badge.png?branch=master)](https://coveralls.io/r/bartko-s/stefano-tree?branch=master) | [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bartko-s/stefano-tree/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/bartko-s/stefano-tree/?branch=master) | [![Dependency Status](https://www.versioneye.com/user/projects/53d26035851c5679c9000267/badge.svg?style=flat)](https://www.versioneye.com/user/projects/53d26035851c5679c9000267) |
 
-This library is implementation of [Nested Set](https://en.wikipedia.org/wiki/Nested_set_model) pattern for PHP.
+[Nested Set](https://en.wikipedia.org/wiki/Nested_set_model) implementation for PHP.
+
+ONLINE DEMO (soon)
 
 ## Features
 
  - NestedSet(MPTT - Modified Preorder Tree Traversal)
+ - Support scopes (multiple independent tree in one db table)
+ - Rebuild broken tree
  - Tested with MySQL and PostgreSQL but should work with any database vendor which support transaction
+ - Support Frameworks [Zend Framework 1](https://framework.zend.com/manual/1.12/en/zend.db.html), [Zend Framework 2](https://framework.zend.com/manual/2.4/en/index.html#zend-db), [Doctrine 2 DBAL](http://docs.doctrine-project.org/projects/doctrine-dbal/en/latest/), [Stefano Db](https://github.com/bartko-s/stefano-db)
+ - It is easy to implement support for any framework
 
 ## Dependencies
+- Stefano Tree has no external dependencies only Php and your framework is required
 
-- Optional [Stefano DB](https://github.com/bartko-s/stefano-db) This repository is 100% compatible with Zend Framework 2 DB package
-- Optional [Doctrine DBAL](https://github.com/doctrine/dbal)
-- Optional [Zend Framework 1 - Db package](https://github.com/zf1/zend-db.git)
+## Installation
 
-## Installation using Composer
-
-1. Add following line to your composer.json file  ``` "stefano/stefano-tree": "~1.0.0" ```
-2. Add following line to your composer.json file ``` "doctrine/dbal": "2.*" ``` if you want to use this library with Doctrine DBAL
-3. Add following line to your composer.json file ``` "stefano/stefano-db": "~1.4.0" ``` if you want to use this library with Stefano DB
-4. Add following line to your composer.json file ``` "zf1/zend-db": "*" ``` if you want to use this library with Zend Framework 1
-5. Create db scheme [example db scheme](https://github.com/bartko-s/stefano-tree/tree/master/sql)
-
-## Usage
-
-
-### Create tree adapter
+1. Add following line to your composer.json file "stefano/stefano-tree": "~2.0.0"
+2. Create db scheme [example db scheme](https://github.com/bartko-s/stefano-tree/tree/master/sql). Name of table, columns are fully customizable.
+3. Create tree adapter
 
 - Use static factory method
-
 ```
 $options = new \StefanoTree\NestedSet\Options(array(
     'tableName'    => 'tree_traversal', //required
@@ -44,31 +39,23 @@ $options = new \StefanoTree\NestedSet\Options(array(
     'scopeColumnName' => 'scope', //optional
 ));
 
-// One of this
-//Stefano Db
-$dbAdapter = new \StefanoDb\Adapter\Adapter(...);
-// or Doctrine DBAL
-$dbAdapter = new \Doctrine\DBAL\Connection(...);
-// or Zend 1 DB package
-$dbAdapter = Zend_Db::factory(...)
-
+$dbAdapter = ... supported db adapter ...
 
 $tree = \StefanoTree\NestedSet::factory($options, $dbAdapter);
 ```
 
 - or create tree adapter directly
-
 ```
 $options = new \StefanoTree\NestedSet\Options(array(...);
 
-$dbAdapter = new \StefanoDb\Adapter\Adapter(array(...));
+$dbAdapter = ... supported db adapter ...
 
-$nestedSetAdapter = new \StefanoTree\NestedSet\Adapter\Zend2DbAdapter($options, $dbAdapter);
+$nestedSetAdapter = new \StefanoTree\NestedSet\Adapter\Zend2($options, $dbAdapter);
 
 $tree = new \StefanoTree\NestedSet($nestedSetAdapter);
 ```
 
-- You can join table
+- You can join table. Example is for Zend Framework 2 but it works similar for other supported frameworks.
 ```
 $defaultDbSelect = $nestedSetAdapter->getDefaultDbSelect();
 
@@ -77,6 +64,8 @@ $defaultDbSelect = $nestedSetAdapter->getDefaultDbSelect();
 $defaultDbSelect->join($name, $on, $columns, $type);
 $nestedSetAdapter->setDefaultDbSelect($defaultDbSelect);
 ```
+
+## API
 
 ### Creating nodes
 

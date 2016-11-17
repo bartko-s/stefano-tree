@@ -1,18 +1,22 @@
 <?php
 namespace StefanoTreeTest\Unit\NestedSet\Adapter;
 
-use StefanoTree\NestedSet\Adapter\Zend2DbAdapter;
+use Mockery;
+use StefanoTree\NestedSet\Adapter\Zend2 as NestedSetAdapter;
 use StefanoTree\NestedSet\Options;
+use Zend\Db\Adapter\Adapter as DbAdapter;
+use Zend\Db\Sql\Select as SqlSelect;
 
-class Zend2DbAdapterTest
+
+class Zend2Test
     extends \PHPUnit_Framework_TestCase
 {
     protected function tearDown()
     {
-        \Mockery::close();
+        Mockery::close();
     }
 
-    public function testGetDefaultDbSelect()
+    public function testGetBlankDbSelect()
     {
         $options = new Options(array(
             'tableName'    => 'tableName',
@@ -20,10 +24,10 @@ class Zend2DbAdapterTest
         ));
 
         $dbAdapter = $this->getDbAdapterMock();
-        $adapter = new Zend2DbAdapter($options, $dbAdapter);
+        $adapter = new NestedSetAdapter($options, $dbAdapter);
 
         $this->assertEquals('SELECT "tableName".* FROM "tableName"',
-            $adapter->getDefaultDbSelect()->getSqlString());
+            $adapter->getBlankDbSelect()->getSqlString());
     }
 
     public function testGetDefaultDbSelectMustAlwaysReturnNewInstance()
@@ -34,7 +38,7 @@ class Zend2DbAdapterTest
         ));
 
         $dbAdapter = $this->getDbAdapterMock();
-        $adapter = new Zend2DbAdapter($options, $dbAdapter);
+        $adapter = new NestedSetAdapter($options, $dbAdapter);
 
         $this->assertNotSame($adapter->getDefaultDbSelect(), $adapter->getDefaultDbSelect());
     }
@@ -47,9 +51,9 @@ class Zend2DbAdapterTest
         ));
 
         $dbAdapter = $this->getDbAdapterMock();
-        $adapter = new Zend2DbAdapter($options, $dbAdapter);
+        $adapter = new NestedSetAdapter($options, $dbAdapter);
 
-        $select = new \Zend\Db\Sql\Select('table');
+        $select = new SqlSelect('table');
 
         $adapter->setDefaultDbSelect($select);
 
@@ -57,16 +61,16 @@ class Zend2DbAdapterTest
     }
 
     /**
-    * @return \StefanoDb\Adapter\Adapter
-    */
+     * @return DbAdapter
+     */
     private function getDbAdapterMock()
     {
-        $dbA = new \StefanoDb\Adapter\Adapter(array(
+        $dbA = new DbAdapter(array(
             'driver' => 'Pdo_Sqlite',
             'database' => ':memory:',
         ));
 
-        $dbAdapterMock = \Mockery::mock($dbA);
+        $dbAdapterMock = Mockery::mock($dbA);
         $dbAdapterMock->makePartial();
 
         return $dbAdapterMock;

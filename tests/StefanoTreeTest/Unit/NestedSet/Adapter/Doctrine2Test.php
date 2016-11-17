@@ -1,7 +1,8 @@
 <?php
 namespace StefanoTreeTest\Unit\NestedSet\Adapter;
 
-use StefanoTree\NestedSet\Adapter\Doctrine2DBALAdapter;
+use Doctrine\DBAL;
+use StefanoTree\NestedSet\Adapter\Doctrine2DBAL;
 use StefanoTree\NestedSet\Options;
 
 class Doctrine2DBALAdapterTest
@@ -12,12 +13,12 @@ class Doctrine2DBALAdapterTest
         \Mockery::close();
     }
 
-    public function testGetDefaultDbSelect()
+    public function testGetBlankDbSelect()
     {
         $adapter = $this->getAdapter();
 
         $this->assertEquals('SELECT * FROM tableName',
-            trim($adapter->getDefaultDbSelect()->getSQL()));
+            trim($adapter->getBlankDbSelect()->getSQL()));
     }
 
     public function testGetDefaultDbSelectMustAlwaysReturnNewInstance()
@@ -31,9 +32,9 @@ class Doctrine2DBALAdapterTest
         $adapter = $this->getAdapter();
 
         $select = $this->getConnection()
-                       ->createQueryBuilder()
-                       ->select('*')
-                       ->from('someTable', null);
+            ->createQueryBuilder()
+            ->select('*')
+            ->from('someTable', null);
 
         $adapter->setDefaultDbSelect($select);
 
@@ -41,7 +42,7 @@ class Doctrine2DBALAdapterTest
     }
 
     /**
-     * @return Doctrine2DBALAdapter
+     * @return Doctrine2DBAL
      */
     private function getAdapter()
     {
@@ -50,7 +51,7 @@ class Doctrine2DBALAdapterTest
             'idColumnName' => 'id',
         ));
 
-        return new Doctrine2DBALAdapter($options, $this->getConnection());
+        return new Doctrine2DBAL($options, $this->getConnection());
     }
 
     /**
@@ -58,13 +59,13 @@ class Doctrine2DBALAdapterTest
      */
     private function getConnection()
     {
-        $config = new \Doctrine\DBAL\Configuration();
+        $config = new DBAL\Configuration();
 
         $connectionParams = array(
             'dbname' => ':memory:',
             'driver' => 'pdo_sqlite',
         );
 
-        return  \Doctrine\DBAL\DriverManager::getConnection($connectionParams, $config);
+        return  DBAL\DriverManager::getConnection($connectionParams, $config);
     }
 }

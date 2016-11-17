@@ -3,160 +3,169 @@
     <database name="stefano_tests">
         <table_data name="tree_traversal_with_scope">
             <row>
-                <field name="tree_traversal_id">1</field>
+                <!--<field name="tree_traversal_id">1</field>-->
                 <field name="name" xsi:nil="true" />
-                <field name="lft">0</field>
+                <field name="lft">10</field>
                 <field name="rgt">0</field>
-                <field name="parent_id">0</field>
+                <field name="parent_id" xsi:nil="true" />
                 <field name="level">0</field>
                 <field name="scope">1</field>
             </row>
             <row>
-                <field name="tree_traversal_id">2</field>
+                <!--<field name="tree_traversal_id">2</field>-->
                 <field name="name" xsi:nil="true" />
-                <field name="lft">0</field>
-                <field name="rgt">0</field>
-                <field name="parent_id">1</field>
-                <field name="level">0</field>
-                <field name="scope">1</field>
-            </row>
-            <row>
-                <field name="tree_traversal_id">4</field>
-                <field name="name" xsi:nil="true" />
-                <field name="lft">0</field>
+                <field name="lft">11</field>
                 <field name="rgt">0</field>
                 <field name="parent_id">1</field>
                 <field name="level">0</field>
                 <field name="scope">1</field>
             </row>
             <row>
-                <field name="tree_traversal_id">5</field>
+                <!--<field name="tree_traversal_id">3</field>-->
                 <field name="name" xsi:nil="true" />
-                <field name="lft">0</field>
-                <field name="rgt">0</field>
-                <field name="parent_id">1</field>
-                <field name="level">0</field>
-                <field name="scope">1</field>
-            </row>
-            <row>
-                <field name="tree_traversal_id">6</field>
-                <field name="name" xsi:nil="true" />
-                <field name="lft">0</field>
-                <field name="rgt">0</field>
-                <field name="parent_id">16</field>
-                <field name="level">0</field>
-                <field name="scope">1</field>
-            </row>
-            <row>
-                <field name="tree_traversal_id">7</field>
-                <field name="name" xsi:nil="true" />
-                <field name="lft">0</field>
-                <field name="rgt">0</field>
-                <field name="parent_id">1</field>
-                <field name="level">0</field>
-                <field name="scope">1</field>
-            </row>
-            <row>
-                <field name="tree_traversal_id">8</field>
-                <field name="name" xsi:nil="true" />
-                <field name="lft">0</field>
+                <field name="lft">12</field>
                 <field name="rgt">0</field>
                 <field name="parent_id">2</field>
                 <field name="level">0</field>
                 <field name="scope">1</field>
             </row>
             <row>
-                <field name="tree_traversal_id">9</field>
+                <!--<field name="tree_traversal_id">4</field>-->
                 <field name="name" xsi:nil="true" />
-                <field name="lft">0</field>
+                <field name="lft">13</field>
+                <field name="rgt">0</field>
+                <field name="parent_id">1</field>
+                <field name="level">0</field>
+                <field name="scope">1</field>
+            </row>
+            <row>
+                <!--<field name="tree_traversal_id">5</field>-->
+                <field name="name" xsi:nil="true" />
+                <field name="lft">14</field>
+                <field name="rgt">0</field>
+                <field name="parent_id">1</field>
+                <field name="level">0</field>
+                <field name="scope">1</field>
+            </row>
+            <row>
+                <!--<field name="tree_traversal_id">6</field>-->
+                <field name="name" xsi:nil="true" />
+                <field name="lft">15</field>
+                <field name="rgt">0</field>
+                <field name="parent_id">5</field>
+                <field name="level">0</field>
+                <field name="scope">1</field>
+            </row>
+            <row>
+                <!--<field name="tree_traversal_id">7</field>-->
+                <field name="name" xsi:nil="true" />
+                <field name="lft">16</field>
+                <field name="rgt">0</field>
+                <field name="parent_id">1</field>
+                <field name="level">0</field>
+                <field name="scope">1</field>
+            </row>
+            <row>
+                <!--<field name="tree_traversal_id">8</field>-->
+                <field name="name" xsi:nil="true" />
+                <field name="lft">17</field>
                 <field name="rgt">0</field>
                 <field name="parent_id">2</field>
                 <field name="level">0</field>
                 <field name="scope">1</field>
             </row>
             <row>
-                <field name="tree_traversal_id">10</field>
+                <!--<field name="tree_traversal_id">9</field>-->
                 <field name="name" xsi:nil="true" />
-                <field name="lft">0</field>
+                <field name="lft">18</field>
+                <field name="rgt">0</field>
+                <field name="parent_id">2</field>
+                <field name="level">0</field>
+                <field name="scope">1</field>
+            </row>
+            <row>
+                <!--<field name="tree_traversal_id">10</field>-->
+                <field name="name" xsi:nil="true" />
+                <field name="lft">19</field>
                 <field name="rgt">0</field>
                 <field name="parent_id">1</field>
                 <field name="level">0</field>
                 <field name="scope">1</field>
             </row>
             <row>
-                <field name="tree_traversal_id">11</field>
+                <!--<field name="tree_traversal_id">11</field>-->
                 <field name="name" xsi:nil="true" />
-                <field name="lft">0</field>
+                <field name="lft">20</field>
                 <field name="rgt">0</field>
                 <field name="parent_id">1</field>
                 <field name="level">0</field>
                 <field name="scope">1</field>
             </row>
             <row>
-                <field name="tree_traversal_id">12</field>
+                <!--<field name="tree_traversal_id">12</field>-->
                 <field name="name" xsi:nil="true" />
-                <field name="lft">0</field>
+                <field name="lft">21</field>
                 <field name="rgt">0</field>
                 <field name="parent_id">5</field>
                 <field name="level">0</field>
                 <field name="scope">1</field>
             </row>
             <row>
-                <field name="tree_traversal_id">13</field>
+                <!--<field name="tree_traversal_id">13</field>-->
                 <field name="name" xsi:nil="true" />
-                <field name="lft">0</field>
+                <field name="lft">22</field>
                 <field name="rgt">0</field>
                 <field name="parent_id">5</field>
                 <field name="level">0</field>
                 <field name="scope">1</field>
             </row>
             <row>
-                <field name="tree_traversal_id">14</field>
+                <!--<field name="tree_traversal_id">14</field>-->
                 <field name="name" xsi:nil="true" />
-                <field name="lft">0</field>
+                <field name="lft">23</field>
                 <field name="rgt">0</field>
                 <field name="parent_id">1</field>
                 <field name="level">0</field>
                 <field name="scope">1</field>
             </row>
             <row>
-                <field name="tree_traversal_id">15</field>
+                <!--<field name="tree_traversal_id">15</field>-->
                 <field name="name" xsi:nil="true" />
-                <field name="lft">0</field>
+                <field name="lft">24</field>
                 <field name="rgt">0</field>
                 <field name="parent_id">1</field>
                 <field name="level">0</field>
                 <field name="scope">1</field>
             </row>
             <row>
-                <field name="tree_traversal_id">16</field>
+                <!--<field name="tree_traversal_id">16</field>-->
                 <field name="name" xsi:nil="true" />
-                <field name="lft">0</field>
+                <field name="lft">25</field>
                 <field name="rgt">0</field>
                 <field name="parent_id">4</field>
                 <field name="level">0</field>
                 <field name="scope">1</field>
             </row>
             <row>
-                <field name="tree_traversal_id">17</field>
+                <!--<field name="tree_traversal_id">17</field>-->
                 <field name="name" xsi:nil="true" />
-                <field name="lft">0</field>
+                <field name="lft">26</field>
                 <field name="rgt">0</field>
                 <field name="parent_id">4</field>
                 <field name="level">0</field>
                 <field name="scope">1</field>
             </row>
             <row>
-                <field name="tree_traversal_id">18</field>
+                <!--<field name="tree_traversal_id">18</field>-->
                 <field name="name" xsi:nil="true" />
                 <field name="lft">1</field>
                 <field name="rgt">6</field>
-                <field name="parent_id">0</field>
+                <field name="parent_id" xsi:nil="true" />
                 <field name="level">0</field>
                 <field name="scope">2</field>
             </row>
             <row>
-                <field name="tree_traversal_id">19</field>
+                <!--<field name="tree_traversal_id">19</field>-->
                 <field name="name" xsi:nil="true" />
                 <field name="lft">2</field>
                 <field name="rgt">5</field>
@@ -165,7 +174,7 @@
                 <field name="scope">2</field>
             </row>
             <row>
-                <field name="tree_traversal_id">20</field>
+                <!--<field name="tree_traversal_id">20</field>-->
                 <field name="name" xsi:nil="true" />
                 <field name="lft">3</field>
                 <field name="rgt">4</field>
