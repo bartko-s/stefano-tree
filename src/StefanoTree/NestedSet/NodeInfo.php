@@ -10,8 +10,6 @@ class NodeInfo
     private $right;
     private $scope;
 
-    private $needUpdate = false;
-
     /**
      * NodeInfo constructor.
      * @param $id int
@@ -113,21 +111,5 @@ class NodeInfo
         } else {
             return false;
         }
-    }
-
-    /**
-     * @param $bool bool
-     */
-    public function setNeedUpdate($bool)
-    {
-        $this->needUpdate = (bool) $bool;
-    }
-
-    /**
-     * @return bool
-     */
-    public function needUpdate()
-    {
-        return $this->needUpdate;
     }
 }

@@ -253,6 +253,14 @@ abstract class AbstractScopeTest
         $this->assertFalse($this->treeAdapter->isValid(1));
     }
 
+    public function testValidateTreeGivenNodeIdIsNotRoot()
+    {
+        $this->expectException('\StefanoTree\Exception\InvalidArgumentException');
+        $this->expectExceptionMessage('Given node id "2" is not root id');
+
+        $this->treeAdapter->isValid(2);
+    }
+
     public function testRebuildTree()
     {
         $this->treeAdapter
@@ -261,5 +269,13 @@ abstract class AbstractScopeTest
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal_with_scope'));
         $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/with_scope/testRebuildTree.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+    }
+
+    public function testRebuildTreeGivenNodeIdIsNotRoot()
+    {
+        $this->expectException('\StefanoTree\Exception\InvalidArgumentException');
+        $this->expectExceptionMessage('Given node id "5" is not root id');
+
+        $this->treeAdapter->isValid(5);
     }
 }

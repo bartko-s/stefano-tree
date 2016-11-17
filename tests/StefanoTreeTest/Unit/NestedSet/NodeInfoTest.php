@@ -55,22 +55,4 @@ class NodeInfoTest
 
         $this->assertTrue($nodeInfo->isRoot());
     }
-
-    public function testDefaultNeedUpdate()
-    {
-        $nodeInfo = new NodeInfo(0, 0, 0, 0, 0, 0);
-
-        $this->assertEquals(false, $nodeInfo->needUpdate());
-    }
-
-    public function testSetNeedUpdate()
-    {
-        $nodeInfo = new NodeInfo(0, 0, 0, 0, 0, 0);
-
-        $nodeInfo->setNeedUpdate(false);
-        $this->assertEquals(false, $nodeInfo->needUpdate());
-
-        $nodeInfo->setNeedUpdate(true);
-        $this->assertEquals(true, $nodeInfo->needUpdate());
-    }
 }
