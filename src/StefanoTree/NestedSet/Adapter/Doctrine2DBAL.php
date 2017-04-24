@@ -71,10 +71,10 @@ class Doctrine2DBAL
     public function getBlankDbSelect()
     {
         $queryBuilder = $this->getConnection()
-            ->createQueryBuilder();
+                             ->createQueryBuilder();
 
         $queryBuilder->select('*')
-            ->from($this->getOptions()->getTableName(), null);
+                     ->from($this->getOptions()->getTableName(), null);
 
         return $queryBuilder;
     }
@@ -120,19 +120,19 @@ class Doctrine2DBAL
     public function beginTransaction()
     {
         $this->getConnection()
-            ->beginTransaction();
+             ->beginTransaction();
     }
 
     public function commitTransaction()
     {
         $this->getConnection()
-            ->commit();
+             ->commit();
     }
 
     public function rollbackTransaction()
     {
         $this->getConnection()
-            ->rollBack();
+             ->rollBack();
     }
 
     public function update($nodeId, array $data)
@@ -154,7 +154,7 @@ class Doctrine2DBAL
 
         $data[$options->getIdColumnName()] = $nodeId;
 
-        $connection->executeUpdate($sql, $data);
+        $connection->executeUpdate($sql->getSQL(), $data);
     }
 
     public function insert(NodeInfo $nodeInfo, array $data)
@@ -191,7 +191,7 @@ class Doctrine2DBAL
             ':id' => $nodeId,
         );
 
-        $connection->executeQuery($sql, $params);
+        $connection->executeQuery($sql->getSQL(), $params);
     }
 
     public function moveLeftIndexes($fromIndex, $shift, $scope = null)
@@ -219,7 +219,7 @@ class Doctrine2DBAL
             $params[':scope'] = $scope;
         }
 
-        $connection->executeUpdate($sql, $params);
+        $connection->executeUpdate($sql->getSQL(), $params);
     }
 
     public function moveRightIndexes($fromIndex, $shift, $scope = null)
@@ -247,7 +247,7 @@ class Doctrine2DBAL
             $params[':scope'] = $scope;
         }
 
-        $connection->executeUpdate($sql, $params);
+        $connection->executeUpdate($sql->getSQL(), $params);
     }
 
     public function updateParentId($nodeId, $newParentId)
@@ -266,7 +266,7 @@ class Doctrine2DBAL
             ':nodeId' => $nodeId,
         );
 
-        $connection->executeUpdate($sql, $params);
+        $connection->executeUpdate($sql->getSQL(), $params);
     }
 
     public function updateLevels($leftIndexFrom, $rightIndexTo, $shift, $scope = null)
@@ -283,7 +283,7 @@ class Doctrine2DBAL
         $sql->update($options->getTableName())
             ->set($options->getLevelColumnName(), $options->getLevelColumnName() . ' + :shift')
             ->where($options->getLeftColumnName() . ' >= :leftFrom'
-                . ' AND ' . $options->getRightColumnName() . ' <= :rightTo');
+                    . ' AND ' . $options->getRightColumnName() . ' <= :rightTo');
 
         $params = array(
             ':shift' => $shift,
@@ -296,7 +296,7 @@ class Doctrine2DBAL
             $params[':scope'] = $scope;
         }
 
-        $connection->executeUpdate($sql, $params);
+        $connection->executeUpdate($sql->getSQL(), $params);
     }
 
     public function moveBranch($leftIndexFrom, $rightIndexTo, $shift, $scope = null)
@@ -314,7 +314,7 @@ class Doctrine2DBAL
             ->set($options->getLeftColumnName(), $options->getLeftColumnName() . ' + :shift')
             ->set($options->getRightColumnName(), $options->getRightColumnName() . ' + :shift')
             ->where($options->getLeftColumnName() . ' >= :leftFrom'
-                . ' AND ' . $options->getRightColumnName() . ' <= :rightTo');
+                    . ' AND ' . $options->getRightColumnName() . ' <= :rightTo');
 
         $params = array(
             ':shift' => $shift,
@@ -327,7 +327,7 @@ class Doctrine2DBAL
             $params[':scope'] = $scope;
         }
 
-        $connection->executeUpdate($sql, $params);
+        $connection->executeUpdate($sql->getSQL(), $params);
     }
 
     public function getRoots($scope = null)
@@ -347,7 +347,7 @@ class Doctrine2DBAL
             $params[':scope'] = $scope;
         }
 
-        $stmt = $connection->executeQuery($sql, $params);
+        $stmt = $connection->executeQuery($sql->getSQL(), $params);
 
         $node = $stmt->fetchAll();
 
@@ -376,7 +376,7 @@ class Doctrine2DBAL
             $options->getIdColumnName() => $nodeId,
         );
 
-        $stmt = $connection->executeQuery($sql, $params);
+        $stmt = $connection->executeQuery($sql->getSQL(), $params);
 
         $node = $stmt->fetch();
 
@@ -422,7 +422,7 @@ class Doctrine2DBAL
             $options->getIdColumnName() => $nodeId,
         );
 
-        $stmt = $connection->executeQuery($sql, $params);
+        $stmt = $connection->executeQuery($sql->getSQL(), $params);
 
         $node = $stmt->fetch();
 
@@ -449,15 +449,15 @@ class Doctrine2DBAL
         );
 
         $sql = $queryBuilder->select($columns)
-            ->from($options->getTableName())
-            ->where($options->getParentIdColumnName() . ' = :parentId')
-            ->orderBy($options->getLeftColumnName(), 'ASC');
+                            ->from($options->getTableName())
+                            ->where($options->getParentIdColumnName() . ' = :parentId')
+                            ->orderBy($options->getLeftColumnName(), 'ASC');
 
         $params = array(
             'parentId' => $parentNodeId,
         );
 
-        $stmt = $connection->executeQuery($sql, $params);
+        $stmt = $connection->executeQuery($sql->getSQL(), $params);
 
         $data = $stmt->fetchAll();
 
@@ -487,7 +487,7 @@ class Doctrine2DBAL
             ':nodeId' => $nodeInfo->getId(),
         );
 
-        $connection->executeUpdate($sql, $params);
+        $connection->executeUpdate($sql->getSQL(), $params);
     }
 
     public function getPath($nodeId, $startLevel = 0, $excludeLastNode = false)
@@ -531,7 +531,7 @@ class Doctrine2DBAL
             $params['level'] = $nodeInfo->getLevel();
         }
 
-        $stmt = $connection->executeQuery($sql, $params);
+        $stmt = $connection->executeQuery($sql->getSQL(), $params);
 
         $result = $stmt->fetchAll();
 
@@ -570,9 +570,9 @@ class Doctrine2DBAL
 
         if (null != $excludeBranch && null != ($excludeNodeInfo = $this->getNodeInfo($excludeBranch))) {
             $sql->andWhere('(' . $options->getLeftColumnName() . ' BETWEEN :left AND :exLeftMinusOne'
-                . ') OR (' . $options->getLeftColumnName() . ' BETWEEN :exRightPlusOne AND :right)')
+                           . ') OR (' . $options->getLeftColumnName() . ' BETWEEN :exRightPlusOne AND :right)')
                 ->andWhere('(' . $options->getRightColumnName() . ' BETWEEN :exRightPlusOne AND :right'
-                    . ') OR (' . $options->getRightColumnName() . ' BETWEEN :left AND :exLeftMinusOne)');
+                           . ') OR (' . $options->getRightColumnName() . ' BETWEEN :left AND :exLeftMinusOne)');
 
             $params['left']           = $nodeInfo->getLeft();
             $params['exLeftMinusOne'] = $excludeNodeInfo->getLeft() - 1;
@@ -586,7 +586,7 @@ class Doctrine2DBAL
             $params['right'] = $nodeInfo->getRight();
         }
 
-        $stmt = $connection->executeQuery($sql, $params);
+        $stmt = $connection->executeQuery($sql->getSQL(), $params);
 
         $result = $stmt->fetchAll();
 
