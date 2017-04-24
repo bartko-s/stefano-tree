@@ -192,3 +192,8 @@ $tree->isValid($rootNodeId);
 ```
 $tree->rebuild($rootNodeId);
 ```
+## Helping project
+
+If this project helps you reduce time to develop and/or you want to help the maintainer of this project, you can make a donation. Thank you.
+
+[![Donation](https://pledgie.com/campaigns/33410.png?skin_name=chrome)](https://pledgie.com/campaigns/33410)
