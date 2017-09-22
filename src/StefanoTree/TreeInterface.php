@@ -1,4 +1,5 @@
 <?php
+
 namespace StefanoTree;
 
 use StefanoTree\Exception\RootNodeAlreadyExistException;
@@ -12,14 +13,17 @@ interface TreeInterface
 
     /**
      * @throws RootNodeAlreadyExistException if root already exist
-     * @param array $data
+     *
+     * @param array           $data
      * @param null|string|int $scope Required if scope is used
+     *
      * @return int Id of new created root
      */
     public function createRootNode($data = array(), $scope = null);
 
     /**
      * @param null|string|int $scope Required if scope is used
+     *
      * @return array
      */
     public function getRootNode($scope = null);
@@ -30,35 +34,39 @@ interface TreeInterface
     public function getRoots();
 
     /**
-     * @param int $nodeId
+     * @param int   $nodeId
      * @param array $data
      */
     public function updateNode($nodeId, $data);
 
     /**
-     * @param int $targetNodeId
+     * @param int   $targetNodeId
      * @param array $data
+     *
      * @return int|false Id of new created node. False if node has not been created
      */
     public function addNodePlacementBottom($targetNodeId, $data = array());
 
     /**
-     * @param int $targetNodeId
+     * @param int   $targetNodeId
      * @param array $data
+     *
      * @return int|false Id of new created node. False if node has not been created
      */
     public function addNodePlacementTop($targetNodeId, $data = array());
 
     /**
-     * @param int $targetNodeId
+     * @param int   $targetNodeId
      * @param array $data
+     *
      * @return int|false Id of new created node. False if node has not been created
      */
     public function addNodePlacementChildBottom($targetNodeId, $data = array());
 
     /**
-     * @param int $targetNodeId
+     * @param int   $targetNodeId
      * @param array $data
+     *
      * @return int|false Id of new created node. False if node has not been created
      */
     public function addNodePlacementChildTop($targetNodeId, $data = array());
@@ -66,80 +74,89 @@ interface TreeInterface
     /**
      * @param int $sourceNodeId
      * @param int $targetNodeId
-     * @return boolean
+     *
+     * @return bool
      */
     public function moveNodePlacementBottom($sourceNodeId, $targetNodeId);
 
     /**
      * @param int $sourceNodeId
      * @param int $targetNodeId
-     * @return boolean
+     *
+     * @return bool
      */
     public function moveNodePlacementTop($sourceNodeId, $targetNodeId);
 
     /**
      * @param int $sourceNodeId
      * @param int $targetNodeId
-     * @return boolean
+     *
+     * @return bool
      */
     public function moveNodePlacementChildBottom($sourceNodeId, $targetNodeId);
 
     /**
      * @param int $sourceNodeId
      * @param int $targetNodeId
-     * @return boolean
+     *
+     * @return bool
      */
     public function moveNodePlacementChildTop($sourceNodeId, $targetNodeId);
 
     /**
      * @param int $nodeId
-     * @return boolean
+     *
+     * @return bool
      */
     public function deleteBranch($nodeId);
 
     /**
-     * @param int $nodeId
-     * @param int $startLevel 0 = including root node
-     * @param boolean $excludeLastNode
+     * @param int  $nodeId
+     * @param int  $startLevel      0 = including root node
+     * @param bool $excludeLastNode
+     *
      * @return array
      */
     public function getPath($nodeId, $startLevel = 0, $excludeLastNode = false);
 
     /**
      * @param int $nodeId
+     *
      * @return null|array
      */
     public function getNode($nodeId);
 
     /**
-     * @param int $nodeId
-     * @param int $startLevel Relative level from $nodeId. 1 = exclude $nodeId from result.
-     *                        2 = exclude 2 levels from result
-     * @param null|int $levels Number of levels in the results relative to $startLevel
+     * @param int      $nodeId
+     * @param int      $startLevel    Relative level from $nodeId. 1 = exclude $nodeId from result.
+     *                                2 = exclude 2 levels from result
+     * @param null|int $levels        Number of levels in the results relative to $startLevel
      * @param null|int $excludeBranch Exclude defined branch(node id) from result
+     *
      * @return array
      */
     public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranch = null);
 
     /**
      * @param int $nodeId
+     *
      * @return array
      */
     public function getChildren($nodeId);
 
     /**
-     * Check if left index, right index, level is in consistent state
+     * Check if left index, right index, level is in consistent state.
      *
      * @param $rootNodeId int
+     *
      * @return bool
      */
     public function isValid($rootNodeId);
 
     /**
-     * Repair broken tree. Works only if [id, parent_id] pair is not broken
+     * Repair broken tree. Works only if [id, parent_id] pair is not broken.
      *
      * @param $rootNodeId int
-     * @return void
      */
     public function rebuild($rootNodeId);
 }

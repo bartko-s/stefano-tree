@@ -1,12 +1,12 @@
 <?php
+
 namespace StefanoTree\NestedSet\Adapter;
 
 use StefanoTree\NestedSet\NodeInfo;
 use StefanoTree\NestedSet\Options;
 use Zend_Db_Adapter_Abstract as ZendDbAdapter;
 
-class Zend1
-    implements AdapterInterface
+class Zend1 implements AdapterInterface
 {
     protected $options;
 
@@ -54,6 +54,7 @@ class Zend1
 
     /**
      * Return base db select without any join, etc.
+     *
      * @return \Zend_Db_Select
      */
     public function getBlankDbSelect()
@@ -63,7 +64,6 @@ class Zend1
 
     /**
      * @param \Zend_Db_Select $dbSelect
-     * @return void
      */
     public function setDefaultDbSelect(\Zend_Db_Select $dbSelect)
     {
@@ -71,7 +71,7 @@ class Zend1
     }
 
     /**
-     * Return clone of default select
+     * Return clone of default select.
      *
      * @return \Zend_Db_Select
      */
@@ -124,7 +124,7 @@ class Zend1
         $data = $this->cleanData($data);
 
         $where = array(
-            $dbAdapter->quoteIdentifier($options->getIdColumnName()) . ' = ?' => $nodeId,
+            $dbAdapter->quoteIdentifier($options->getIdColumnName()).' = ?' => $nodeId,
         );
         $dbAdapter->update($options->getTableName(), $data, $where);
     }
@@ -160,7 +160,7 @@ class Zend1
         $dbAdapter = $this->getDbAdapter();
 
         $where = array(
-            $dbAdapter->quoteIdentifier($options->getIdColumnName()) . ' = ?' => $nodeId,
+            $dbAdapter->quoteIdentifier($options->getIdColumnName()).' = ?' => $nodeId,
         );
 
         $dbAdapter->delete($options->getTableName(), $where);
@@ -175,13 +175,13 @@ class Zend1
         }
 
         $dbAdapter = $this->getDbAdapter();
-        $sql = 'UPDATE ' . $dbAdapter->quoteIdentifier($options->getTableName())
-            . ' SET ' . $dbAdapter->quoteIdentifier($options->getLeftColumnName())
-            . ' = ' . $dbAdapter->quoteIdentifier($options->getLeftColumnName()) . ' + :shift'
-            . ' WHERE ' . $dbAdapter->quoteIdentifier($options->getLeftColumnName()) . ' > :fromIndex';
+        $sql = 'UPDATE '.$dbAdapter->quoteIdentifier($options->getTableName())
+            .' SET '.$dbAdapter->quoteIdentifier($options->getLeftColumnName())
+            .' = '.$dbAdapter->quoteIdentifier($options->getLeftColumnName()).' + :shift'
+            .' WHERE '.$dbAdapter->quoteIdentifier($options->getLeftColumnName()).' > :fromIndex';
 
         if ($options->getScopeColumnName()) {
-            $sql .= ' AND '. $dbAdapter->quoteIdentifier($options->getScopeColumnName()) . ' = ' . $dbAdapter->quote($scope);
+            $sql .= ' AND '.$dbAdapter->quoteIdentifier($options->getScopeColumnName()).' = '.$dbAdapter->quote($scope);
         }
 
         $binds = array(
@@ -201,13 +201,13 @@ class Zend1
 
         $dbAdapter = $this->getDbAdapter();
 
-        $sql = 'UPDATE ' . $dbAdapter->quoteIdentifier($options->getTableName())
-            . ' SET ' . $dbAdapter->quoteIdentifier($options->getRightColumnName())
-            . ' = ' . $dbAdapter->quoteIdentifier($options->getRightColumnName()) . ' + :shift'
-            . ' WHERE ' . $dbAdapter->quoteIdentifier($options->getRightColumnName()) . ' > :fromIndex';
+        $sql = 'UPDATE '.$dbAdapter->quoteIdentifier($options->getTableName())
+            .' SET '.$dbAdapter->quoteIdentifier($options->getRightColumnName())
+            .' = '.$dbAdapter->quoteIdentifier($options->getRightColumnName()).' + :shift'
+            .' WHERE '.$dbAdapter->quoteIdentifier($options->getRightColumnName()).' > :fromIndex';
 
         if ($options->getScopeColumnName()) {
-            $sql .= ' AND '. $dbAdapter->quoteIdentifier($options->getScopeColumnName()) . ' = ' . $dbAdapter->quote($scope);
+            $sql .= ' AND '.$dbAdapter->quoteIdentifier($options->getScopeColumnName()).' = '.$dbAdapter->quote($scope);
         }
 
         $binds = array(
@@ -229,7 +229,7 @@ class Zend1
         );
 
         $where = array(
-            $dbAdapter->quoteIdentifier($options->getIdColumnName()) . ' = ?' => $nodeId,
+            $dbAdapter->quoteIdentifier($options->getIdColumnName()).' = ?' => $nodeId,
         );
         $dbAdapter->update($options->getTableName(), $bind, $where);
     }
@@ -244,15 +244,15 @@ class Zend1
 
         $dbAdapter = $this->getDbAdapter();
 
-        $sql = 'UPDATE ' . $dbAdapter->quoteIdentifier($options->getTableName())
-            . ' SET ' . $dbAdapter->quoteIdentifier($options->getLevelColumnName())
-            . ' = ' . $dbAdapter->quoteIdentifier($options->getLevelColumnName()) . ' + :shift'
-            . ' WHERE ' . $dbAdapter->quoteIdentifier($options->getLeftColumnName())
-            . ' >= :leftFrom' . ' AND ' . $dbAdapter->quoteIdentifier($options->getRightColumnName())
-            . ' <= :rightTo';
+        $sql = 'UPDATE '.$dbAdapter->quoteIdentifier($options->getTableName())
+            .' SET '.$dbAdapter->quoteIdentifier($options->getLevelColumnName())
+            .' = '.$dbAdapter->quoteIdentifier($options->getLevelColumnName()).' + :shift'
+            .' WHERE '.$dbAdapter->quoteIdentifier($options->getLeftColumnName())
+            .' >= :leftFrom'.' AND '.$dbAdapter->quoteIdentifier($options->getRightColumnName())
+            .' <= :rightTo';
 
         if ($options->getScopeColumnName()) {
-            $sql .= ' AND '. $dbAdapter->quoteIdentifier($options->getScopeColumnName()) . ' = ' . $dbAdapter->quote($scope);
+            $sql .= ' AND '.$dbAdapter->quoteIdentifier($options->getScopeColumnName()).' = '.$dbAdapter->quote($scope);
         }
 
         $binds = array(
@@ -274,16 +274,16 @@ class Zend1
 
         $dbAdapter = $this->getDbAdapter();
 
-        $sql = 'UPDATE ' . $dbAdapter->quoteIdentifier($options->getTableName())
-            . ' SET ' . $dbAdapter->quoteIdentifier($options->getLeftColumnName())
-            . ' = ' . $dbAdapter->quoteIdentifier($options->getLeftColumnName()) . ' + :shift, '
-            . $dbAdapter->quoteIdentifier($options->getRightColumnName())
-            . ' = ' . $dbAdapter->quoteIdentifier($options->getRightColumnName()) . ' + :shift'
-            . ' WHERE ' . $dbAdapter->quoteIdentifier($options->getLeftColumnName()) . ' >= :leftFrom'
-            . ' AND ' . $dbAdapter->quoteIdentifier($options->getRightColumnName()) . ' <= :rightTo';
+        $sql = 'UPDATE '.$dbAdapter->quoteIdentifier($options->getTableName())
+            .' SET '.$dbAdapter->quoteIdentifier($options->getLeftColumnName())
+            .' = '.$dbAdapter->quoteIdentifier($options->getLeftColumnName()).' + :shift, '
+            .$dbAdapter->quoteIdentifier($options->getRightColumnName())
+            .' = '.$dbAdapter->quoteIdentifier($options->getRightColumnName()).' + :shift'
+            .' WHERE '.$dbAdapter->quoteIdentifier($options->getLeftColumnName()).' >= :leftFrom'
+            .' AND '.$dbAdapter->quoteIdentifier($options->getRightColumnName()).' <= :rightTo';
 
         if ($options->getScopeColumnName()) {
-            $sql .= ' AND '. $dbAdapter->quoteIdentifier($options->getScopeColumnName()) . ' = ' . $dbAdapter->quote($scope);
+            $sql .= ' AND '.$dbAdapter->quoteIdentifier($options->getScopeColumnName()).' = '.$dbAdapter->quote($scope);
         }
 
         $binds = array(
@@ -302,11 +302,11 @@ class Zend1
         $dbAdapter = $this->getDbAdapter();
 
         $select = $this->getBlankDbSelect()
-            ->where($options->getParentIdColumnName() . ' IS NULL')
+            ->where($options->getParentIdColumnName().' IS NULL')
             ->order($options->getIdColumnName());
 
         if (null != $scope && $options->getScopeColumnName()) {
-            $select->where($options->getScopeColumnName() . ' = ?', $scope);
+            $select->where($options->getScopeColumnName().' = ?', $scope);
         }
 
         return $dbAdapter->fetchAll($select);
@@ -328,25 +328,27 @@ class Zend1
         $dbAdapter = $this->getDbAdapter();
 
         $select = $this->getDefaultDbSelect()
-            ->where($options->getIdColumnName() . ' = ?', $nodeId);
+            ->where($options->getIdColumnName().' = ?', $nodeId);
 
         $row = $dbAdapter->fetchRow($select);
+
         return $row ? $row : null;
     }
 
     /**
      * @param array $data
+     *
      * @return NodeInfo
      */
     private function _buildNodeInfoObject(array $data)
     {
         $options = $this->getOptions();
 
-        $id        = $data[$options->getIdColumnName()];
-        $parentId  = $data[$options->getParentIdColumnName()];
-        $level     = $data[$options->getLevelColumnName()];
-        $left      = $data[$options->getLeftColumnName()];
-        $right     = $data[$options->getRightColumnName()];
+        $id = $data[$options->getIdColumnName()];
+        $parentId = $data[$options->getParentIdColumnName()];
+        $level = $data[$options->getLevelColumnName()];
+        $left = $data[$options->getLeftColumnName()];
+        $right = $data[$options->getRightColumnName()];
 
         if (isset($data[$options->getScopeColumnName()])) {
             $scope = $data[$options->getScopeColumnName()];
@@ -366,7 +368,7 @@ class Zend1
         $dbAdapter = $this->getDbAdapter();
 
         $select = $this->getBlankDbSelect()
-            ->where($options->getIdColumnName() . ' = ?', $nodeId);
+            ->where($options->getIdColumnName().' = ?', $nodeId);
 
         $row = $dbAdapter->fetchRow($select);
 
@@ -398,7 +400,7 @@ class Zend1
         $select->reset(\Zend_Db_Select::COLUMNS);
         $select->columns($columns);
         $select->order($options->getLeftColumnName());
-        $select->where($options->getParentIdColumnName() . ' = ?', $parentNodeId);
+        $select->where($options->getParentIdColumnName().' = ?', $parentNodeId);
 
         $data = $dbAdapter->fetchAll($select);
 
@@ -423,7 +425,7 @@ class Zend1
         );
 
         $where = array(
-            $dbAdapter->quoteIdentifier($options->getIdColumnName()) . ' = ?' => $nodeInfo->getId(),
+            $dbAdapter->quoteIdentifier($options->getIdColumnName()).' = ?' => $nodeInfo->getId(),
         );
 
         $dbAdapter->update($options->getTableName(), $bind, $where);
@@ -445,24 +447,24 @@ class Zend1
         $select = $this->getDefaultDbSelect();
 
         if ($options->getScopeColumnName()) {
-            $select->where($options->getScopeColumnName() .' = ?', $nodeInfo->getScope());
+            $select->where($options->getScopeColumnName().' = ?', $nodeInfo->getScope());
         }
 
         $select->where(
-            $dbAdapter->quoteIdentifier($options->getLeftColumnName()) . ' <= ?', $nodeInfo->getLeft()
+            $dbAdapter->quoteIdentifier($options->getLeftColumnName()).' <= ?', $nodeInfo->getLeft()
         )->where(
-            $dbAdapter->quoteIdentifier($options->getRightColumnName()) . ' >= ?', $nodeInfo->getRight()
-        )->order($options->getLeftColumnName() . ' ASC');
+            $dbAdapter->quoteIdentifier($options->getRightColumnName()).' >= ?', $nodeInfo->getRight()
+        )->order($options->getLeftColumnName().' ASC');
 
         if (0 < $startLevel) {
             $select->where(
-                $dbAdapter->quoteIdentifier($options->getLevelColumnName()) . ' >= ?', $startLevel
+                $dbAdapter->quoteIdentifier($options->getLevelColumnName()).' >= ?', $startLevel
             );
         }
 
         if (true == $excludeLastNode) {
             $select->where(
-                $dbAdapter->quoteIdentifier($options->getLevelColumnName()) . ' < ?', $nodeInfo->getLevel()
+                $dbAdapter->quoteIdentifier($options->getLevelColumnName()).' < ?', $nodeInfo->getLevel()
             );
         }
 
@@ -481,29 +483,29 @@ class Zend1
 
         $dbAdapter = $this->getDbAdapter();
         $select = $this->getDefaultDbSelect();
-        $select->order($options->getLeftColumnName() . ' ASC');
+        $select->order($options->getLeftColumnName().' ASC');
 
         if ($options->getScopeColumnName()) {
-            $select->where($options->getScopeColumnName() . ' = ?', $nodeInfo->getScope());
+            $select->where($options->getScopeColumnName().' = ?', $nodeInfo->getScope());
         }
 
         if (0 != $startLevel) {
             $level = $nodeInfo->getLevel() + (int) $startLevel;
             $select->where(
-                $dbAdapter->quoteIdentifier($options->getLevelColumnName()) . ' >= ?', $level
+                $dbAdapter->quoteIdentifier($options->getLevelColumnName()).' >= ?', $level
             );
         }
 
         if (null != $levels) {
             $endLevel = $nodeInfo->getLevel() + (int) $startLevel + abs($levels);
             $select->where(
-                $dbAdapter->quoteIdentifier($options->getLevelColumnName()) . ' < ?', $endLevel
+                $dbAdapter->quoteIdentifier($options->getLevelColumnName()).' < ?', $endLevel
             );
         }
 
         if (null != $excludeBranch && null != ($excludeNodeInfo = $this->getNodeInfo($excludeBranch))) {
             $where = sprintf(
-                "(%s OR %s) AND (%s OR %s)",
+                '(%s OR %s) AND (%s OR %s)',
                 $this->getWhereBetween($options->getLeftColumnName(), $nodeInfo->getLeft(), $excludeNodeInfo->getLeft() - 1),
                 $this->getWhereBetween($options->getLeftColumnName(),
                     $excludeNodeInfo->getRight() + 1, $nodeInfo->getRight()),
@@ -515,10 +517,10 @@ class Zend1
             $select->where($where);
         } else {
             $select->where(
-                $dbAdapter->quoteIdentifier($options->getLeftColumnName()) . ' >= ?', $nodeInfo->getLeft()
+                $dbAdapter->quoteIdentifier($options->getLeftColumnName()).' >= ?', $nodeInfo->getLeft()
             );
             $select->where(
-                $dbAdapter->quoteIdentifier($options->getRightColumnName()) . ' <= ?', $nodeInfo->getRight()
+                $dbAdapter->quoteIdentifier($options->getRightColumnName()).' <= ?', $nodeInfo->getRight()
             );
         }
 
@@ -533,6 +535,7 @@ class Zend1
         $quotedColumn = $dbAdapter->quoteIdentifier($column);
         $quotedFirst = $dbAdapter->quote($first);
         $quotedSecond = $dbAdapter->quote($second);
+
         return sprintf('(%s BETWEEN %s AND %s)', $quotedColumn, $quotedFirst, $quotedSecond);
     }
 }

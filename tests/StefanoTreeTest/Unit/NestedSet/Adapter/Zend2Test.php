@@ -1,4 +1,5 @@
 <?php
+
 namespace StefanoTreeTest\Unit\NestedSet\Adapter;
 
 use Mockery;
@@ -7,9 +8,7 @@ use StefanoTree\NestedSet\Options;
 use Zend\Db\Adapter\Adapter as DbAdapter;
 use Zend\Db\Sql\Select as SqlSelect;
 
-
-class Zend2Test
-    extends \PHPUnit_Framework_TestCase
+class Zend2Test extends \PHPUnit_Framework_TestCase
 {
     protected function tearDown()
     {
@@ -19,7 +18,7 @@ class Zend2Test
     public function testGetBlankDbSelect()
     {
         $options = new Options(array(
-            'tableName'    => 'tableName',
+            'tableName' => 'tableName',
             'idColumnName' => 'id',
         ));
 
@@ -33,7 +32,7 @@ class Zend2Test
     public function testGetDefaultDbSelectMustAlwaysReturnNewInstance()
     {
         $options = new Options(array(
-            'tableName'    => 'tableName',
+            'tableName' => 'tableName',
             'idColumnName' => 'id',
         ));
 
@@ -46,7 +45,7 @@ class Zend2Test
     public function testSetDefaultDbSelect()
     {
         $options = new Options(array(
-            'tableName'    => 'tableName',
+            'tableName' => 'tableName',
             'idColumnName' => 'id',
         ));
 

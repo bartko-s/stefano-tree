@@ -1,8 +1,8 @@
 <?php
+
 namespace StefanoTree\NestedSet\AddStrategy;
 
-class ChildBottom
-    extends AddStrategyAbstract
+class ChildBottom extends AddStrategyAbstract
 {
     public function moveIndexesFromIndex()
     {

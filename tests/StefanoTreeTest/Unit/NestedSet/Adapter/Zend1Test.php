@@ -1,4 +1,5 @@
 <?php
+
 namespace StefanoTreeTest\Unit\NestedSet\Adapter;
 
 use StefanoTree\NestedSet\Adapter\Zend1;
@@ -66,7 +67,6 @@ class Zend1Test extends \PHPUnit_Framework_TestCase
             'database' => ':memory:',
             'dbname' => TEST_STEFANO_DB_DB_NAME,
         ));
-
 
         $dbAdapterMock = \Mockery::mock($dbA);
         $dbAdapterMock->makePartial();

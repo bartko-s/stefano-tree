@@ -1,4 +1,5 @@
 <?php
+
 namespace StefanoTree\NestedSet;
 
 use StefanoTree\Exception\InvalidArgumentException;
@@ -18,6 +19,7 @@ class Options
 
     /**
      * @param array $options
+     *
      * @throws InvalidArgumentException
      */
     public function __construct(array $options)
@@ -30,7 +32,7 @@ class Options
 
         if (count($missingKeys)) {
             throw new InvalidArgumentException(implode(', ', array_flip($missingKeys))
-                . ' must be set');
+                .' must be set');
         }
 
         $this->setOptions($options);
@@ -38,12 +40,11 @@ class Options
 
     /**
      * @param array $options
-     * @return void
      */
     protected function setOptions($options)
     {
         foreach ($options as $name => $value) {
-            $methodName = 'set' . ucfirst($name);
+            $methodName = 'set'.ucfirst($name);
             if (method_exists($this, $methodName)) {
                 $this->$methodName($value);
             }
@@ -52,7 +53,7 @@ class Options
 
     /**
      * @param string $tableName
-     * @return void
+     *
      * @throws InvalidArgumentException
      */
     public function setTableName($tableName)
@@ -76,7 +77,6 @@ class Options
 
     /**
      * @param string $sequenceName
-     * @return void
      */
     public function setSequenceName($sequenceName)
     {
@@ -93,7 +93,7 @@ class Options
 
     /**
      * @param string $idColumnName
-     * @return void
+     *
      * @throws InvalidArgumentException
      */
     public function setIdColumnName($idColumnName)
@@ -117,7 +117,7 @@ class Options
 
     /**
      * @param string $leftColumnName
-     * @return void
+     *
      * @throws InvalidArgumentException
      */
     public function setLeftColumnName($leftColumnName)
@@ -141,7 +141,7 @@ class Options
 
     /**
      * @param string $rightColumnName
-     * @return void
+     *
      * @throws InvalidArgumentException
      */
     public function setRightColumnName($rightColumnName)
@@ -165,7 +165,7 @@ class Options
 
     /**
      * @param string $levelColumnName
-     * @return void
+     *
      * @throws InvalidArgumentException
      */
     public function setLevelColumnName($levelColumnName)
@@ -189,7 +189,7 @@ class Options
 
     /**
      * @param string $parentIdColumnName
-     * @return void
+     *
      * @throws InvalidArgumentException
      */
     public function setParentIdColumnName($parentIdColumnName)

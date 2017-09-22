@@ -1,10 +1,10 @@
 <?php
+
 namespace StefanoTree\NestedSet\MoveStrategy;
 
 use StefanoTree\Exception;
 
-class Top
-    extends MoveStrategyAbstract
+class Top extends MoveStrategyAbstract
 {
     public function getNewParentId()
     {

@@ -1,8 +1,8 @@
 <?php
+
 namespace StefanoTree\NestedSet\Adapter;
 
-class StefanoDb
-    extends Zend2
+class StefanoDb extends Zend2
 {
     public function beginTransaction()
     {

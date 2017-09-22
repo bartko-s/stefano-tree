@@ -1,4 +1,5 @@
 <?php
+
 namespace StefanoTreeTest\Integration\Adapter;
 
 use StefanoTree\NestedSet\Adapter\AdapterInterface as TreeAdapterInterface;
@@ -6,8 +7,7 @@ use StefanoTree\NestedSet\Adapter\Doctrine2DBAL as NestedSetAdapter;
 use StefanoTree\NestedSet\Options;
 use StefanoTreeTest\TestUtil;
 
-class Doctrine2DBALTest
-    extends AdapterTestAbstract
+class Doctrine2DBALTest extends AdapterTestAbstract
 {
     /**
      * @return TreeAdapterInterface

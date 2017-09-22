@@ -1,15 +1,16 @@
 <?php
+
 namespace StefanoTree\NestedSet\MoveStrategy;
 
 interface MoveStrategyInterface
 {
     /**
-     * @return boolean
+     * @return bool
      */
     public function canMoveBranch();
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isSourceNodeAtRequiredPosition();
 
@@ -24,7 +25,7 @@ interface MoveStrategyInterface
     public function getLevelShift();
 
     /**
-     * hole for moved branch
+     * hole for moved branch.
      *
      * @return int
      */

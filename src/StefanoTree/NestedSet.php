@@ -1,4 +1,5 @@
 <?php
+
 namespace StefanoTree;
 
 use Doctrine\DBAL\Connection as DoctrineConnection;
@@ -18,8 +19,7 @@ use StefanoTree\NestedSet\Validator\Validator;
 use StefanoTree\NestedSet\Validator\ValidatorInterface;
 use Zend\Db\Adapter\Adapter as Zend2DbAdapter;
 
-class NestedSet
-    implements TreeInterface
+class NestedSet implements TreeInterface
 {
     private $adapter;
 
@@ -27,8 +27,10 @@ class NestedSet
 
     /**
      * @param Options $options
-     * @param object $dbAdapter
+     * @param object  $dbAdapter
+     *
      * @return TreeInterface
+     *
      * @throws InvalidArgumentException
      */
     public static function factory(Options $options, $dbAdapter)
@@ -42,8 +44,8 @@ class NestedSet
         } elseif ($dbAdapter instanceof \Zend_Db_Adapter_Abstract) {
             $adapter = new Adapter\Zend1($options, $dbAdapter);
         } else {
-            throw new InvalidArgumentException('Db adapter "' . get_class($dbAdapter)
-                . '" is not supported');
+            throw new InvalidArgumentException('Db adapter "'.get_class($dbAdapter)
+                .'" is not supported');
         }
 
         return new self($adapter);
@@ -95,7 +97,7 @@ class NestedSet
     }
 
     /**
-     * @param int $nodeId
+     * @param int   $nodeId
      * @param array $data
      */
     public function updateNode($nodeId, $data)
@@ -105,10 +107,12 @@ class NestedSet
     }
 
     /**
-     * @param int $targetNodeId
+     * @param int    $targetNodeId
      * @param string $placement
-     * @param array $data
+     * @param array  $data
+     *
      * @return int|false Id of new created node. False if node has not been created
+     *
      * @throws Exception
      */
     protected function addNode($targetNodeId, $placement, $data = array())
@@ -163,8 +167,10 @@ class NestedSet
 
     /**
      * @param NodeInfo $targetNode
-     * @param string $placement
+     * @param string   $placement
+     *
      * @return AddStrategyInterface
+     *
      * @throws InvalidArgumentException
      */
     private function getAddStrategy(NodeInfo $targetNode, $placement)
@@ -179,7 +185,7 @@ class NestedSet
             case self::PLACEMENT_CHILD_TOP:
                 return new AddStrategy\ChildTop($targetNode);
             default:
-                throw new InvalidArgumentException('Unknown placement "' . $placement . '"');
+                throw new InvalidArgumentException('Unknown placement "'.$placement.'"');
         }
     }
 
@@ -204,10 +210,12 @@ class NestedSet
     }
 
     /**
-     * @param int $sourceNodeId
-     * @param int $targetNodeId
+     * @param int    $sourceNodeId
+     * @param int    $targetNodeId
      * @param string $placement
-     * @return boolean
+     *
+     * @return bool
+     *
      * @throws Exception
      * @throws InvalidArgumentException
      */
@@ -312,8 +320,10 @@ class NestedSet
     /**
      * @param NodeInfo $sourceNode
      * @param NodeInfo $targetNode
-     * @param string $placement
+     * @param string   $placement
+     *
      * @return MoveStrategyInterface
+     *
      * @throws InvalidArgumentException
      */
     private function getMoveStrategy(NodeInfo $sourceNode, NodeInfo $targetNode, $placement)
@@ -328,7 +338,7 @@ class NestedSet
             case self::PLACEMENT_CHILD_TOP:
                 return new MoveStrategy\ChildTop($sourceNode, $targetNode);
             default:
-                throw new InvalidArgumentException('Unknown placement "' . $placement . '"');
+                throw new InvalidArgumentException('Unknown placement "'.$placement.'"');
         }
     }
 

@@ -1,12 +1,14 @@
 <?php
+
 namespace StefanoTree\NestedSet\AddStrategy;
 
 interface AddStrategyInterface
 {
     /**
-     * @return boolean
+     * @return bool
      */
     public function canAddNewNode();
+
     /**
      * @return int
      */

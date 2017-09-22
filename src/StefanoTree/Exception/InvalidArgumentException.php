@@ -1,7 +1,7 @@
 <?php
+
 namespace StefanoTree\Exception;
 
-class InvalidArgumentException
-    extends BaseException
+class InvalidArgumentException extends BaseException
 {
 }

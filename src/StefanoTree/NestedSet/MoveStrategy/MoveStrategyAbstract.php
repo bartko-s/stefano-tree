@@ -1,10 +1,10 @@
 <?php
+
 namespace StefanoTree\NestedSet\MoveStrategy;
 
 use StefanoTree\NestedSet\NodeInfo;
 
-abstract class MoveStrategyAbstract
-    implements MoveStrategyInterface
+abstract class MoveStrategyAbstract implements MoveStrategyInterface
 {
     protected $sourceNode;
     protected $targetNode;
@@ -36,7 +36,7 @@ abstract class MoveStrategyAbstract
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     protected function isMovedUp()
     {
@@ -45,7 +45,7 @@ abstract class MoveStrategyAbstract
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     protected function isMovedDown()
     {
@@ -54,7 +54,7 @@ abstract class MoveStrategyAbstract
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     protected function isMovedToRoot()
     {

@@ -1,4 +1,5 @@
 <?php
+
 namespace StefanoTreeTest\Integration;
 
 use StefanoTree\NestedSet as TreeAdapter;
@@ -6,8 +7,7 @@ use StefanoTree\NestedSet\Adapter\Zend2 as NestedSetAdapter;
 use StefanoTree\NestedSet\Options;
 use StefanoTreeTest\TestUtil;
 
-class NestedSetWithZend2DbAdapterAndScopeTest
-    extends AbstractScopeTest
+class NestedSetWithZend2DbAdapterAndScopeTest extends AbstractScopeTest
 {
     protected function getTreeAdapter()
     {

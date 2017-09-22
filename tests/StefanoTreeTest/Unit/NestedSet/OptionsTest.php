@@ -1,10 +1,10 @@
 <?php
+
 namespace StefanoTreeTest\Unit\NestedSet;
 
 use StefanoTree\NestedSet\Options;
 
-class NestedSetTest
-    extends \PHPUnit_Framework_TestCase
+class NestedSetTest extends \PHPUnit_Framework_TestCase
 {
     public function testThrowExceptionIfAllRequiredSettingsAreNotProvided()
     {

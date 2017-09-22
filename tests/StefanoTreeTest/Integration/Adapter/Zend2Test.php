@@ -1,4 +1,5 @@
 <?php
+
 namespace StefanoTreeTest\Integration\Adapter;
 
 use StefanoTree\NestedSet\Adapter\AdapterInterface as TreeAdapterInterface;
@@ -6,8 +7,7 @@ use StefanoTree\NestedSet\Adapter\Zend2 as NestedSetAdapter;
 use StefanoTree\NestedSet\Options;
 use StefanoTreeTest\TestUtil;
 
-class Zend2Test
-    extends AdapterTestAbstract
+class Zend2Test extends AdapterTestAbstract
 {
     /**
      * @return TreeAdapterInterface

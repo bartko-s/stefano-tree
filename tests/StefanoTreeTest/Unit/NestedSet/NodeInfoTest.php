@@ -1,10 +1,10 @@
 <?php
+
 namespace StefanoTreeTest\Unit\NestedSet;
 
 use StefanoTree\NestedSet\NodeInfo;
 
-class NodeInfoTest
-    extends \PHPUnit_Framework_TestCase
+class NodeInfoTest extends \PHPUnit_Framework_TestCase
 {
     public function testNodeInfoWithScope()
     {

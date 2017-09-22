@@ -1,10 +1,10 @@
 <?php
+
 namespace StefanoTree\NestedSet\AddStrategy;
 
 use StefanoTree\NestedSet\NodeInfo;
 
-abstract class AddStrategyAbstract
-    implements AddStrategyInterface
+abstract class AddStrategyAbstract implements AddStrategyInterface
 {
     protected $targetNode;
 

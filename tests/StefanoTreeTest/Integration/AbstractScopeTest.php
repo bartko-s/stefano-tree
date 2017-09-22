@@ -1,11 +1,11 @@
 <?php
+
 namespace StefanoTreeTest\Integration;
 
 use StefanoTree\NestedSet as TreeAdapter;
 use StefanoTreeTest\IntegrationTestCase;
 
-abstract class AbstractScopeTest
-    extends IntegrationTestCase
+abstract class AbstractScopeTest extends IntegrationTestCase
 {
     /**
      * @var TreeAdapter
@@ -34,12 +34,12 @@ abstract class AbstractScopeTest
     {
         switch ($this->getName()) {
             case 'testValidateTreeRaiseExceptionIfIdParentIdIsBroken':
-                return $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/with_scope/initDataSetBrokenParents.xml');
+                return $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/with_scope/initDataSetBrokenParents.xml');
             case 'testInvalidTree':
             case 'testRebuildTree':
-                return $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/with_scope/initDataSetBrokenTreeIndexes.xml');
+                return $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/with_scope/initDataSetBrokenTreeIndexes.xml');
             default:
-                return $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/with_scope/initDataSet.xml');
+                return $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/with_scope/initDataSet.xml');
         }
     }
 
@@ -49,7 +49,7 @@ abstract class AbstractScopeTest
              ->createRootNode(array(), 10);
 
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal_with_scope'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/with_scope/testCreateRoot.xml');
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/with_scope/testCreateRoot.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
     }
 
@@ -99,7 +99,7 @@ abstract class AbstractScopeTest
             ->addNodePlacementChildTop(1);
 
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal_with_scope'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/with_scope/testAddNodePlacementChildTop.xml');
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/with_scope/testAddNodePlacementChildTop.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
         $this->assertEquals(9, $lastGeneratedValue);
     }
@@ -110,7 +110,7 @@ abstract class AbstractScopeTest
              ->moveNodePlacementBottom(3, 5);
 
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal_with_scope'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/with_scope/testMoveNodePlacementBottom.xml');
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/with_scope/testMoveNodePlacementBottom.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
     }
 
@@ -129,7 +129,7 @@ abstract class AbstractScopeTest
             ->deleteBranch(2);
 
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal_with_scope'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/with_scope/testDeleteBranch.xml');
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/with_scope/testDeleteBranch.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
     }
 
@@ -187,7 +187,7 @@ abstract class AbstractScopeTest
                 'name' => null,
                 'lft' => '1',
                 'rgt' => '10',
-                'parent_id' => NULL,
+                'parent_id' => null,
                 'level' => '0',
                 'scope' => '2',
             ),
@@ -267,7 +267,7 @@ abstract class AbstractScopeTest
              ->rebuild(1);
 
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal_with_scope'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/with_scope/testRebuildTree.xml');
+        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/with_scope/testRebuildTree.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
     }
 

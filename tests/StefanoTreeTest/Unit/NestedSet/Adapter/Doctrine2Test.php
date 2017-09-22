@@ -1,12 +1,12 @@
 <?php
+
 namespace StefanoTreeTest\Unit\NestedSet\Adapter;
 
 use Doctrine\DBAL;
 use StefanoTree\NestedSet\Adapter\Doctrine2DBAL;
 use StefanoTree\NestedSet\Options;
 
-class Doctrine2DBALAdapterTest
-    extends \PHPUnit_Framework_TestCase
+class Doctrine2DBALAdapterTest extends \PHPUnit_Framework_TestCase
 {
     protected function tearDown()
     {
@@ -47,7 +47,7 @@ class Doctrine2DBALAdapterTest
     private function getAdapter()
     {
         $options = new Options(array(
-            'tableName'    => 'tableName',
+            'tableName' => 'tableName',
             'idColumnName' => 'id',
         ));
 

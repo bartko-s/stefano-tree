@@ -1,8 +1,8 @@
 <?php
+
 namespace StefanoTree\NestedSet\AddStrategy;
 
-class Bottom
-    extends AddStrategyAbstract
+class Bottom extends AddStrategyAbstract
 {
     public function canAddNewNode()
     {

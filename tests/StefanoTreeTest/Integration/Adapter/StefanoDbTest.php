@@ -1,4 +1,5 @@
 <?php
+
 namespace StefanoTreeTest\Integration\Adapter;
 
 use StefanoTree\NestedSet\Adapter\AdapterInterface as TreeAdapterInterface;
@@ -6,9 +7,7 @@ use StefanoTree\NestedSet\Adapter\StefanoDb as NestedSetAdapter;
 use StefanoTree\NestedSet\Options;
 use StefanoTreeTest\TestUtil;
 
-
-class StefanoDbTest
-    extends AdapterTestAbstract
+class StefanoDbTest extends AdapterTestAbstract
 {
     /**
      * @return TreeAdapterInterface

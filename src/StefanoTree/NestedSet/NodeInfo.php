@@ -1,4 +1,5 @@
 <?php
+
 namespace StefanoTree\NestedSet;
 
 class NodeInfo
@@ -12,6 +13,7 @@ class NodeInfo
 
     /**
      * NodeInfo constructor.
+     *
      * @param $id int
      * @param $parentId int
      * @param $level int
@@ -21,12 +23,12 @@ class NodeInfo
      */
     public function __construct($id, $parentId, $level, $left, $right, $scope)
     {
-        $this->id       = $id;
+        $this->id = $id;
         $this->parentId = $parentId;
-        $this->level    = $level;
-        $this->left     = $left;
-        $this->right    = $right;
-        $this->scope    = $scope;
+        $this->level = $level;
+        $this->left = $left;
+        $this->right = $right;
+        $this->scope = $scope;
     }
 
     /**

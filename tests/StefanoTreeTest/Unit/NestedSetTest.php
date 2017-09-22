@@ -1,10 +1,10 @@
 <?php
+
 namespace StefanoTreeTest\Unit;
 
 use StefanoTree\NestedSet;
 
-class NestedSetTest
-    extends \PHPUnit_Framework_TestCase
+class NestedSetTest extends \PHPUnit_Framework_TestCase
 {
     public function factoryDataProvider()
     {

@@ -1,4 +1,5 @@
 <?php
+
 namespace StefanoTree\NestedSet\Validator;
 
 use Exception;
@@ -7,8 +8,7 @@ use StefanoTree\Exception\TreeIsBrokenException;
 use StefanoTree\NestedSet\Adapter\AdapterInterface;
 use StefanoTree\NestedSet\NodeInfo;
 
-class Validator
-    implements ValidatorInterface
+class Validator implements ValidatorInterface
 {
     private $adapter = null;
 
@@ -39,20 +39,20 @@ class Validator
             $rootNodeInfo = $this->_getAdapter()->getNodeInfo($rootNodeId);
 
             $this->_checkIfNodeIsRootNode($rootNodeInfo);
-            $this->_rebuild($rootNodeInfo, True);
+            $this->_rebuild($rootNodeInfo, true);
 
             $adapter->commitTransaction();
         } catch (TreeIsBrokenException $e) {
             $adapter->rollbackTransaction();
-            return False;
+
+            return false;
         } catch (Exception $e) {
             $adapter->rollbackTransaction();
             throw $e;
         }
 
-        return True;
+        return true;
     }
-
 
     public function rebuild($rootNodeId)
     {
@@ -76,10 +76,12 @@ class Validator
 
     /**
      * @param NodeInfo $parentNodeInfo
-     * @param bool $onlyValidate
-     * @param int $left
-     * @param int $level
+     * @param bool     $onlyValidate
+     * @param int      $left
+     * @param int      $level
+     *
      * @return int|mixed
+     *
      * @throws TreeIsBrokenException if tree is broken and $onlyValidate is true
      */
     private function _rebuild(NodeInfo $parentNodeInfo, $onlyValidate = false, $left = 1, $level = 0)
@@ -113,6 +115,7 @@ class Validator
 
     /**
      * @param NodeInfo $node
+     *
      * @throws InvalidArgumentException
      */
     private function _checkIfNodeIsRootNode(NodeInfo $node)

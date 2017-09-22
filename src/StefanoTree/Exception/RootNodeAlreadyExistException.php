@@ -1,7 +1,7 @@
 <?php
+
 namespace StefanoTree\Exception;
 
-class RootNodeAlreadyExistException
-    extends BaseException
+class RootNodeAlreadyExistException extends BaseException
 {
 }
