@@ -38,6 +38,12 @@ class Validator implements ValidatorInterface
 
             $rootNodeInfo = $this->_getAdapter()->getNodeInfo($rootNodeId);
 
+            if (!$rootNodeInfo instanceof NodeInfo) {
+                throw new InvalidArgumentException(
+                    'Node with id "%s" does not exits', $rootNodeId
+                );
+            }
+
             $this->_checkIfNodeIsRootNode($rootNodeInfo);
             $this->_rebuild($rootNodeInfo, true);
 
@@ -63,6 +69,12 @@ class Validator implements ValidatorInterface
             $adapter->lockTree();
 
             $rootNodeInfo = $this->_getAdapter()->getNodeInfo($rootNodeId);
+
+            if (!$rootNodeInfo instanceof NodeInfo) {
+                throw new InvalidArgumentException(
+                    'Node with id "%s" does not exits', $rootNodeId
+                );
+            }
 
             $this->_checkIfNodeIsRootNode($rootNodeInfo);
             $this->_rebuild($rootNodeInfo);

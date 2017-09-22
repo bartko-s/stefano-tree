@@ -5,10 +5,11 @@ namespace StefanoTreeTest\Unit\NestedSet\Adapter;
 use Mockery;
 use StefanoTree\NestedSet\Adapter\Zend2 as NestedSetAdapter;
 use StefanoTree\NestedSet\Options;
+use StefanoTreeTest\UnitTestCase;
 use Zend\Db\Adapter\Adapter as DbAdapter;
 use Zend\Db\Sql\Select as SqlSelect;
 
-class Zend2Test extends \PHPUnit_Framework_TestCase
+class Zend2Test extends UnitTestCase
 {
     protected function tearDown()
     {

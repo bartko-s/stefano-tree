@@ -2,6 +2,7 @@
 
 namespace StefanoTree\NestedSet\Adapter;
 
+use StefanoTree\Exception\InvalidArgumentException;
 use StefanoTree\NestedSet\NodeInfo;
 use StefanoTree\NestedSet\Options;
 use Zend\Db;
@@ -15,10 +16,18 @@ class Zend2 implements AdapterInterface
 
     private $defaultDbSelect = null;
 
-    public function __construct(Options $options, DbAdapter $dbAdapter)
+    public function __construct(Options $options, $dbAdapter)
+    {
+        $this->setOptions($options);
+        $this->setDbAdapter($dbAdapter);
+    }
+
+    /**
+     * @param Options $options
+     */
+    private function setOptions(Options $options)
     {
         $this->options = $options;
-        $this->dbAdapter = $dbAdapter;
     }
 
     /**
@@ -27,6 +36,22 @@ class Zend2 implements AdapterInterface
     private function getOptions()
     {
         return $this->options;
+    }
+
+    /**
+     * @param DbAdapter $dbAdapter
+     *
+     * @throws InvalidArgumentException
+     */
+    protected function setDbAdapter($dbAdapter)
+    {
+        if (!$dbAdapter instanceof DbAdapter) {
+            throw new InvalidArgumentException(
+                'DbAdapter must be instance of "%s" but instance of "%s" was given', DbAdapter::class, get_class($dbAdapter)
+            );
+        }
+
+        $this->dbAdapter = $dbAdapter;
     }
 
     /**

@@ -4,8 +4,9 @@ namespace StefanoTreeTest\Unit\NestedSet\Adapter;
 
 use StefanoTree\NestedSet\Adapter\Zend1;
 use StefanoTree\NestedSet\Options;
+use StefanoTreeTest\UnitTestCase;
 
-class Zend1Test extends \PHPUnit_Framework_TestCase
+class Zend1Test extends UnitTestCase
 {
     protected function tearDown()
     {

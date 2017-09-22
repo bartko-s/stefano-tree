@@ -3,8 +3,9 @@
 namespace StefanoTreeTest\Unit;
 
 use StefanoTree\NestedSet;
+use StefanoTreeTest\UnitTestCase;
 
-class NestedSetTest extends \PHPUnit_Framework_TestCase
+class NestedSetTest extends UnitTestCase
 {
     public function factoryDataProvider()
     {
@@ -47,8 +48,8 @@ class NestedSetTest extends \PHPUnit_Framework_TestCase
         $optionsStub = \Mockery::mock('\StefanoTree\NestedSet\Options');
         $dbAdapter = new \DateTime();
 
-        $this->setExpectedException('\StefanoTree\Exception\InvalidArgumentException',
-            'Db adapter "DateTime" is not supported');
+        $this->expectException('\StefanoTree\Exception\InvalidArgumentException');
+        $this->expectExceptionMessage('Db adapter "DateTime" is not supported');
 
         NestedSet::factory($optionsStub, $dbAdapter);
     }

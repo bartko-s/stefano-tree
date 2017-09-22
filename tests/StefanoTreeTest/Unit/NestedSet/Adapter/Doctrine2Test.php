@@ -5,8 +5,9 @@ namespace StefanoTreeTest\Unit\NestedSet\Adapter;
 use Doctrine\DBAL;
 use StefanoTree\NestedSet\Adapter\Doctrine2DBAL;
 use StefanoTree\NestedSet\Options;
+use StefanoTreeTest\UnitTestCase;
 
-class Doctrine2DBALAdapterTest extends \PHPUnit_Framework_TestCase
+class Doctrine2DBALAdapterTest extends UnitTestCase
 {
     protected function tearDown()
     {

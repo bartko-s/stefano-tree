@@ -125,7 +125,7 @@ class NestedSet implements TreeInterface
 
             $targetNode = $adapter->getNodeInfo($targetNodeId);
 
-            if (null == $targetNode) {
+            if (!$targetNode instanceof NodeInfo) {
                 $adapter->commitTransaction();
 
                 return false;
