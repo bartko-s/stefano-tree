@@ -44,12 +44,16 @@
     },
     "autoload": {
         "psr-0": {
-            "StefanoTree\\": "src/",
-            "StefanoTreeTest\\": "tests/"
+            "StefanoTree\\": "src/"
         },
         "classmap": [
             "./src/"
         ]
+    },
+    "autoload-dev": {
+        "psr-0": {
+            "StefanoTreeTest\\": "tests/"
+        }
     },
     "scripts": {
         "cs-check": "php-cs-fixer --version && php-cs-fixer fix -v --diff --dry-run",
