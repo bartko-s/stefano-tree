@@ -312,7 +312,7 @@ abstract class AdapterTestAbstract extends IntegrationTestCase
     public function testGetDescendants()
     {
         $nodes = $this->adapter
-            ->getDescendants();
+            ->getDescendants(1);
 
         $this->assertCount(25, $nodes);
 

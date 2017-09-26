@@ -34,42 +34,52 @@ interface TreeInterface
     public function getRoots();
 
     /**
+     * Update node
+     *
      * @param int   $nodeId
      * @param array $data
      */
-    public function updateNode($nodeId, $data);
+    public function updateNode($nodeId, array $data);
 
     /**
+     * Create new node
+     *
      * @param int   $targetNodeId
      * @param array $data
      *
-     * @return int|false Id of new created node. False if node has not been created
+     * @return int|null Id of new created node. Null if node has not been created
      */
-    public function addNodePlacementBottom($targetNodeId, $data = array());
+    public function addNodePlacementBottom($targetNodeId, array $data = array());
 
     /**
+     * Create new node
+     *
      * @param int   $targetNodeId
      * @param array $data
      *
-     * @return int|false Id of new created node. False if node has not been created
+     * @return int|null Id of new created node. Null if node has not been created
      */
-    public function addNodePlacementTop($targetNodeId, $data = array());
+    public function addNodePlacementTop($targetNodeId, array $data = array());
 
     /**
+     * Create new node
+     *
      * @param int   $targetNodeId
      * @param array $data
      *
-     * @return int|false Id of new created node. False if node has not been created
+     * @return int|null Id of new created node. Null if node has not been created
      */
-    public function addNodePlacementChildBottom($targetNodeId, $data = array());
+    public function addNodePlacementChildBottom($targetNodeId, array $data = array());
 
     /**
+     * Create new node
+     *
      * @param int   $targetNodeId
      * @param array $data
      *
-     * @return int|false Id of new created node. False if node has not been created
+     * @return int|null Id of new created node. Null if node has not been created
      */
-    public function addNodePlacementChildTop($targetNodeId, $data = array());
+    public function addNodePlacementChildTop($targetNodeId, array $data = array());
 
     /**
      * @param int $sourceNodeId
@@ -127,6 +137,8 @@ interface TreeInterface
     public function getNode($nodeId);
 
     /**
+     * Fetch nodes
+     *
      * @param int      $nodeId
      * @param int      $startLevel    Relative level from $nodeId. 1 = exclude $nodeId from result.
      *                                2 = exclude 2 levels from result
@@ -135,7 +147,7 @@ interface TreeInterface
      *
      * @return array
      */
-    public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranch = null);
+    public function getDescendants($nodeId, $startLevel = 0, $levels = null, $excludeBranch = null);
 
     /**
      * @param int $nodeId

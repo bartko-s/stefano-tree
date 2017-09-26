@@ -198,7 +198,7 @@ abstract class AdapterWithScopeTestAbstract extends IntegrationTestCase
     public function testGetDescendants()
     {
         $nodes = $this->adapter
-            ->getDescendants();
+            ->getDescendants(1);
 
         $this->assertCount(5, $nodes);
 

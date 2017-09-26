@@ -138,7 +138,7 @@ interface AdapterInterface
      *
      * @return array
      */
-    public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranch = null);
+    public function getDescendants($nodeId, $startLevel = 0, $levels = null, $excludeBranch = null);
 
     /**
      * @param null|string|int $scope null if scope is not used

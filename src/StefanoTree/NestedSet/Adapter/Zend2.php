@@ -559,7 +559,7 @@ class Zend2 implements AdapterInterface
         return $result->toArray();
     }
 
-    public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranch = null)
+    public function getDescendants($nodeId, $startLevel = 0, $levels = null, $excludeBranch = null)
     {
         $options = $this->getOptions();
 

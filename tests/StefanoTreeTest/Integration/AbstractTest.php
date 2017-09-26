@@ -99,7 +99,7 @@ abstract class AbstractTest extends IntegrationTestCase
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
         $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
-        $this->assertFalse($return);
+        $this->assertNull($return);
     }
 
     public function testAddNodePlacementBottom()
@@ -110,7 +110,7 @@ abstract class AbstractTest extends IntegrationTestCase
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
         $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
-        $this->assertFalse($return);
+        $this->assertNull($return);
 
         //test 1
         $lastGeneratedValue = $this->treeAdapter
@@ -143,7 +143,7 @@ abstract class AbstractTest extends IntegrationTestCase
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
         $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
-        $this->assertFalse($return);
+        $this->assertNull($return);
 
         //test 1
         $lastGeneratedValue = $this->treeAdapter

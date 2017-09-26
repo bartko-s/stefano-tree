@@ -97,10 +97,9 @@ class NestedSet implements TreeInterface
     }
 
     /**
-     * @param int   $nodeId
-     * @param array $data
+     * {@inheritdoc}
      */
-    public function updateNode($nodeId, $data)
+    public function updateNode($nodeId, array $data)
     {
         $this->getAdapter()
              ->update($nodeId, $data);
@@ -111,11 +110,11 @@ class NestedSet implements TreeInterface
      * @param string $placement
      * @param array  $data
      *
-     * @return int|false Id of new created node. False if node has not been created
+     * @return int|null Id of new created node. Null if node has not been created
      *
      * @throws Exception
      */
-    protected function addNode($targetNodeId, $placement, $data = array())
+    protected function addNode($targetNodeId, string $placement, array $data = array())
     {
         $adapter = $this->getAdapter();
 
@@ -128,7 +127,7 @@ class NestedSet implements TreeInterface
             if (!$targetNode instanceof NodeInfo) {
                 $adapter->commitTransaction();
 
-                return false;
+                return null;
             }
 
             $addStrategy = $this->getAddStrategy($targetNode, $placement);
@@ -136,7 +135,7 @@ class NestedSet implements TreeInterface
             if (false == $addStrategy->canAddNewNode()) {
                 $adapter->commitTransaction();
 
-                return false;
+                return null;
             }
 
             //make hole
@@ -189,22 +188,34 @@ class NestedSet implements TreeInterface
         }
     }
 
-    public function addNodePlacementBottom($targetNodeId, $data = array())
+    /**
+     * {@inheritdoc}
+     */
+    public function addNodePlacementBottom($targetNodeId, array $data = array())
     {
         return $this->addNode($targetNodeId, self::PLACEMENT_BOTTOM, $data);
     }
 
-    public function addNodePlacementTop($targetNodeId, $data = array())
+    /**
+     * {@inheritdoc}
+     */
+    public function addNodePlacementTop($targetNodeId, array $data = array())
     {
         return $this->addNode($targetNodeId, self::PLACEMENT_TOP, $data);
     }
 
-    public function addNodePlacementChildBottom($targetNodeId, $data = array())
+    /**
+     * {@inheritdoc}
+     */
+    public function addNodePlacementChildBottom($targetNodeId, array $data = array())
     {
         return $this->addNode($targetNodeId, self::PLACEMENT_CHILD_BOTTOM, $data);
     }
 
-    public function addNodePlacementChildTop($targetNodeId, $data = array())
+    /**
+     * {@inheritdoc}
+     */
+    public function addNodePlacementChildTop($targetNodeId, array $data = array())
     {
         return $this->addNode($targetNodeId, self::PLACEMENT_CHILD_TOP, $data);
     }
@@ -390,7 +401,10 @@ class NestedSet implements TreeInterface
                     ->getNode($nodeId);
     }
 
-    public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranch = null)
+    /**
+     * {@inheritdoc}
+     */
+    public function getDescendants($nodeId, $startLevel = 0, $levels = null, $excludeBranch = null)
     {
         return $this->getAdapter()
                     ->getDescendants($nodeId, $startLevel, $levels, $excludeBranch);
