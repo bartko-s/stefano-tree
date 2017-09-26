@@ -12,6 +12,8 @@ interface TreeInterface
     const PLACEMENT_CHILD_BOTTOM = 'childBottom';
 
     /**
+     * Create root node.
+     *
      * @throws RootNodeAlreadyExistException if root already exist
      *
      * @param array           $data
@@ -22,6 +24,8 @@ interface TreeInterface
     public function createRootNode($data = array(), $scope = null);
 
     /**
+     * Get root note.
+     *
      * @param null|string|int $scope Required if scope is used
      *
      * @return array
@@ -29,12 +33,14 @@ interface TreeInterface
     public function getRootNode($scope = null);
 
     /**
+     * Get root nodes.
+     *
      * @return array
      */
     public function getRoots();
 
     /**
-     * Update node
+     * Update node.
      *
      * @param int   $nodeId
      * @param array $data
@@ -42,7 +48,7 @@ interface TreeInterface
     public function updateNode($nodeId, array $data);
 
     /**
-     * Create new node
+     * Create new node.
      *
      * @param int   $targetNodeId
      * @param array $data
@@ -52,7 +58,7 @@ interface TreeInterface
     public function addNodePlacementBottom($targetNodeId, array $data = array());
 
     /**
-     * Create new node
+     * Create new node.
      *
      * @param int   $targetNodeId
      * @param array $data
@@ -62,7 +68,7 @@ interface TreeInterface
     public function addNodePlacementTop($targetNodeId, array $data = array());
 
     /**
-     * Create new node
+     * Create new node.
      *
      * @param int   $targetNodeId
      * @param array $data
@@ -72,7 +78,7 @@ interface TreeInterface
     public function addNodePlacementChildBottom($targetNodeId, array $data = array());
 
     /**
-     * Create new node
+     * Create new node.
      *
      * @param int   $targetNodeId
      * @param array $data
@@ -82,6 +88,8 @@ interface TreeInterface
     public function addNodePlacementChildTop($targetNodeId, array $data = array());
 
     /**
+     * Move node.
+     *
      * @param int $sourceNodeId
      * @param int $targetNodeId
      *
@@ -90,6 +98,8 @@ interface TreeInterface
     public function moveNodePlacementBottom($sourceNodeId, $targetNodeId);
 
     /**
+     * Move node.
+     *
      * @param int $sourceNodeId
      * @param int $targetNodeId
      *
@@ -98,6 +108,8 @@ interface TreeInterface
     public function moveNodePlacementTop($sourceNodeId, $targetNodeId);
 
     /**
+     * Move node.
+     *
      * @param int $sourceNodeId
      * @param int $targetNodeId
      *
@@ -106,6 +118,8 @@ interface TreeInterface
     public function moveNodePlacementChildBottom($sourceNodeId, $targetNodeId);
 
     /**
+     * Move node.
+     *
      * @param int $sourceNodeId
      * @param int $targetNodeId
      *
@@ -114,6 +128,8 @@ interface TreeInterface
     public function moveNodePlacementChildTop($sourceNodeId, $targetNodeId);
 
     /**
+     * Delete node with nodeId and all its descendants.
+     *
      * @param int $nodeId
      *
      * @return bool
@@ -121,6 +137,8 @@ interface TreeInterface
     public function deleteBranch($nodeId);
 
     /**
+     * Return path for given nodeId.
+     *
      * @param int  $nodeId
      * @param int  $startLevel      0 = including root node
      * @param bool $excludeLastNode
@@ -130,6 +148,8 @@ interface TreeInterface
     public function getPath($nodeId, $startLevel = 0, $excludeLastNode = false);
 
     /**
+     * Return node.
+     *
      * @param int $nodeId
      *
      * @return null|array
@@ -137,7 +157,7 @@ interface TreeInterface
     public function getNode($nodeId);
 
     /**
-     * Fetch nodes
+     * Return all descendants of given nodeId which satisfy given conditions.
      *
      * @param int      $nodeId
      * @param int      $startLevel    Relative level from $nodeId. 1 = exclude $nodeId from result.
@@ -150,6 +170,8 @@ interface TreeInterface
     public function getDescendants($nodeId, $startLevel = 0, $levels = null, $excludeBranch = null);
 
     /**
+     * Return direct children nodes of given nodeId.
+     *
      * @param int $nodeId
      *
      * @return array
@@ -166,7 +188,8 @@ interface TreeInterface
     public function isValid($rootNodeId);
 
     /**
-     * Repair broken tree. Works only if [id, parent_id] pair is not broken.
+     * Repair broken tree.
+     * Works only if [id, parent_id] pair is not broken.
      *
      * @param $rootNodeId int
      */
