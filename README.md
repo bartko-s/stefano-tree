@@ -14,7 +14,7 @@ ONLINE DEMO (soon)
  - Support scopes (multiple independent tree in one db table)
  - Rebuild broken tree
  - Tested with MySQL and PostgreSQL but should work with any database vendor which support transaction
- - Support Frameworks [Zend Framework 1](https://framework.zend.com/manual/1.12/en/zend.db.html), [Zend Framework 2](https://framework.zend.com/manual/2.4/en/index.html#zend-db), [Doctrine 2 DBAL](http://docs.doctrine-project.org/projects/doctrine-dbal/en/latest/), [Stefano Db](https://github.com/bartko-s/stefano-db)
+ - Support Frameworks [Zend Framework 1](https://framework.zend.com/manual/1.12/en/zend.db.html), [Zend Framework 2](https://framework.zend.com/manual/2.4/en/index.html#zend-db), [Doctrine 2 DBAL](http://docs.doctrine-project.org/projects/doctrine-dbal/en/latest/)
  - It is easy to implement support for any framework
 
 ## Dependencies

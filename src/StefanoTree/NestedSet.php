@@ -4,7 +4,6 @@ namespace StefanoTree;
 
 use Doctrine\DBAL\Connection as DoctrineConnection;
 use Exception;
-use StefanoDb\Adapter\ExtendedAdapterInterface as StefanoExtendedDbAdapterInterface;
 use StefanoTree\Exception\InvalidArgumentException;
 use StefanoTree\Exception\RootNodeAlreadyExistException;
 use StefanoTree\NestedSet\Adapter;
@@ -35,9 +34,7 @@ class NestedSet implements TreeInterface
      */
     public static function factory(Options $options, $dbAdapter)
     {
-        if ($dbAdapter instanceof StefanoExtendedDbAdapterInterface) {
-            $adapter = new Adapter\StefanoDb($options, $dbAdapter);
-        } elseif ($dbAdapter instanceof Zend2DbAdapter) {
+        if ($dbAdapter instanceof Zend2DbAdapter) {
             $adapter = new Adapter\Zend2($options, $dbAdapter);
         } elseif ($dbAdapter instanceof DoctrineConnection) {
             $adapter = new Adapter\Doctrine2DBAL($options, $dbAdapter);

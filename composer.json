@@ -26,13 +26,11 @@
     },
     "suggest": {
         "doctrine/dbal": "If you want to use Doctrine DBAL",
-        "stefano/stefano-db": "If you want to use Stefano DB",
         "zf1/zend-db": "If you want to use Zend1 Db",
         "zendframework/zend-db": "If you want to use Zend2 Db"
     },
     "require-dev": {
         "doctrine/dbal": "2.*",
-        "stefano/stefano-db": "^1.4.0",
         "phpunit/PHPUnit": "^6.0.0",
         "phpunit/dbunit": "^3.0.0",
         "mockery/mockery": "^0.9.0",

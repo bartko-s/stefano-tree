@@ -6,8 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-### Removed
+### Removed (BC Breaks)
 - removed support for PHP version 5.6 and below
+- removed support for [Deprecated] library Stefano-Db
 
 ### Changed (BC Breaks)
 - \StefanoTree\TreeInterface::updateNode($nodeId, $data) is now \StefanoTree\TreeInterface::updateNode($nodeId, array $data)

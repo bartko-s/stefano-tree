@@ -15,10 +15,6 @@ class NestedSetTest extends UnitTestCase
                 '\StefanoTree\NestedSet\Adapter\Zend2',
             ),
             array(
-                '\StefanoDb\Adapter\Adapter',
-                '\StefanoTree\NestedSet\Adapter\StefanoDb',
-            ),
-            array(
                 '\Doctrine\DBAL\Connection',
                 '\StefanoTree\NestedSet\Adapter\Doctrine2DBAL',
             ),
