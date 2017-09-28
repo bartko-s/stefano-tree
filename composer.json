@@ -41,16 +41,16 @@
         "zendframework/zend-db": "2.*"
     },
     "autoload": {
-        "psr-0": {
-            "StefanoTree\\": "src/"
+        "psr-4": {
+            "": "src/"
         },
         "classmap": [
             "./src/"
         ]
     },
     "autoload-dev": {
-        "psr-0": {
-            "StefanoTreeTest\\": "tests/"
+        "psr-4": {
+            "": "tests/"
         }
     },
     "scripts": {
