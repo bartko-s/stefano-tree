@@ -1,36 +1,43 @@
 <?php
 
+declare(strict_types=1);
+
 namespace StefanoTree\NestedSet\AddStrategy;
+
+use StefanoTree\NestedSet\NodeInfo;
 
 class Top extends AddStrategyAbstract
 {
-    public function canAddNewNode()
+    /**
+     * {@inheritdoc}
+     */
+    protected function canCreateNewNode(NodeInfo $targetNode): bool
     {
-        return ($this->getTargetNode()->isRoot()) ? false : true;
+        return ($targetNode->isRoot()) ? false : true;
     }
 
-    public function moveIndexesFromIndex()
+    /**
+     * {@inheritdoc}
+     */
+    protected function makeHole(NodeInfo $targetNode): void
     {
-        return $this->getTargetNode()->getLeft() - 1;
+        $moveFromIndex = $targetNode->getLeft() - 1;
+        $this->getAdapter()->moveLeftIndexes($moveFromIndex, 2, $targetNode->getScope());
+        $this->getAdapter()->moveRightIndexes($moveFromIndex, 2, $targetNode->getScope());
     }
 
-    public function newParentId()
+    /**
+     * {@inheritdoc}
+     */
+    protected function createNewNodeNodeInfo(NodeInfo $targetNode): NodeInfo
     {
-        return $this->getTargetNode()->getParentId();
-    }
-
-    public function newLevel()
-    {
-        return $this->getTargetNode()->getLevel();
-    }
-
-    public function newLeftIndex()
-    {
-        return $this->getTargetNode()->getLeft();
-    }
-
-    public function newRightIndex()
-    {
-        return $this->getTargetNode()->getLeft() + 1;
+        return new NodeInfo(
+            null,
+            $targetNode->getParentId(),
+            $targetNode->getLevel(),
+            $targetNode->getLeft(),
+            $targetNode->getLeft() + 1,
+            $targetNode->getScope()
+        );
     }
 }

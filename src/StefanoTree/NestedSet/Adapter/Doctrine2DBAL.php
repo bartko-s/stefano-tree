@@ -161,7 +161,7 @@ class Doctrine2DBAL implements AdapterInterface
         $connection->executeUpdate($sql->getSQL(), $data);
     }
 
-    public function insert(NodeInfo $nodeInfo, array $data)
+    public function insert(NodeInfo $nodeInfo, array $data): int
     {
         $options = $this->getOptions();
 

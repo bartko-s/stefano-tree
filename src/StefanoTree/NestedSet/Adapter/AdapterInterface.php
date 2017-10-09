@@ -45,7 +45,7 @@ interface AdapterInterface
      *
      * @return int Last ID
      */
-    public function insert(NodeInfo $nodeInfo, array $data);
+    public function insert(NodeInfo $nodeInfo, array $data): int;
 
     /**
      * Delete branch.

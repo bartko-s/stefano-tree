@@ -1,36 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace StefanoTree\NestedSet\AddStrategy;
 
 interface AddStrategyInterface
 {
     /**
-     * @return bool
+     * @param int|string $targetNodeId
+     * @param array      $data
+     *
+     * @return int|string|null Id of new created node or null if node was not created
      */
-    public function canAddNewNode();
-
-    /**
-     * @return int
-     */
-    public function moveIndexesFromIndex();
-
-    /**
-     * @return int
-     */
-    public function newParentId();
-
-    /**
-     * @return int
-     */
-    public function newLevel();
-
-    /**
-     * @return int
-     */
-    public function newLeftIndex();
-
-    /**
-     * @return int
-     */
-    public function newRightIndex();
+    public function add($targetNodeId, array $data = array());
 }

@@ -132,7 +132,7 @@ class Zend1 implements AdapterInterface
         $dbAdapter->update($options->getTableName(), $data, $where);
     }
 
-    public function insert(NodeInfo $nodeInfo, array $data)
+    public function insert(NodeInfo $nodeInfo, array $data): int
     {
         $options = $this->getOptions();
         $dbAdapter = $this->getDbAdapter();

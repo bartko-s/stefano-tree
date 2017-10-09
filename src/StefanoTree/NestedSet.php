@@ -113,73 +113,29 @@ class NestedSet implements TreeInterface
      */
     protected function addNode($targetNodeId, string $placement, array $data = array())
     {
-        $adapter = $this->getAdapter();
-
-        $adapter->beginTransaction();
-        try {
-            $adapter->lockTree();
-
-            $targetNode = $adapter->getNodeInfo($targetNodeId);
-
-            if (!$targetNode instanceof NodeInfo) {
-                $adapter->commitTransaction();
-
-                return null;
-            }
-
-            $addStrategy = $this->getAddStrategy($targetNode, $placement);
-
-            if (false == $addStrategy->canAddNewNode()) {
-                $adapter->commitTransaction();
-
-                return null;
-            }
-
-            //make hole
-            $moveFromIndex = $addStrategy->moveIndexesFromIndex();
-            $adapter->moveLeftIndexes($moveFromIndex, 2, $targetNode->getScope());
-            $adapter->moveRightIndexes($moveFromIndex, 2, $targetNode->getScope());
-
-            //insert new node
-            $newNodeInfo = new NodeInfo(
-                null,
-                $addStrategy->newParentId(),
-                $addStrategy->newLevel(),
-                $addStrategy->newLeftIndex(),
-                $addStrategy->newRightIndex(),
-                $targetNode->getScope()
-            );
-            $lastGeneratedValue = $adapter->insert($newNodeInfo, $data);
-
-            $adapter->commitTransaction();
-        } catch (Exception $e) {
-            $adapter->rollbackTransaction();
-
-            throw $e;
-        }
-
-        return $lastGeneratedValue;
+        return $this->getAddStrategy($placement)->add($targetNodeId, $data);
     }
 
     /**
-     * @param NodeInfo $targetNode
-     * @param string   $placement
+     * @param string $placement
      *
      * @return AddStrategyInterface
      *
      * @throws InvalidArgumentException
      */
-    private function getAddStrategy(NodeInfo $targetNode, $placement)
+    protected function getAddStrategy(string $placement): AddStrategyInterface
     {
+        $adapter = $this->getAdapter();
+
         switch ($placement) {
             case self::PLACEMENT_BOTTOM:
-                return new AddStrategy\Bottom($targetNode);
+                return new AddStrategy\Bottom($adapter);
             case self::PLACEMENT_TOP:
-                return new AddStrategy\Top($targetNode);
+                return new AddStrategy\Top($adapter);
             case self::PLACEMENT_CHILD_BOTTOM:
-                return new AddStrategy\ChildBottom($targetNode);
+                return new AddStrategy\ChildBottom($adapter);
             case self::PLACEMENT_CHILD_TOP:
-                return new AddStrategy\ChildTop($targetNode);
+                return new AddStrategy\ChildTop($adapter);
             default:
                 throw new InvalidArgumentException('Unknown placement "'.$placement.'"');
         }

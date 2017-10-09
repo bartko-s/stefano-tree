@@ -180,7 +180,7 @@ class Zend2 implements AdapterInterface
                 DbAdapter::QUERY_MODE_EXECUTE);
     }
 
-    public function insert(NodeInfo $nodeInfo, array $data)
+    public function insert(NodeInfo $nodeInfo, array $data): int
     {
         $options = $this->getOptions();
 
