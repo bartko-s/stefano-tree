@@ -1,21 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace StefanoTree\NestedSet;
 
 use StefanoTree\Exception\InvalidArgumentException;
 
 class Options
 {
-    private $tableName = null;
+    private $tableName = '';
 
-    private $sequenceName = '';
+    private $sequenceName = null;
 
-    private $idColumnName = null;
+    private $idColumnName = '';
     private $leftColumnName = 'lft';
     private $rightColumnName = 'rgt';
     private $levelColumnName = 'level';
     private $parentIdColumnName = 'parent_id';
-    private $scopeColumnName = '';
+    private $scopeColumnName = null;
 
     /**
      * @param array $options
@@ -41,7 +43,7 @@ class Options
     /**
      * @param array $options
      */
-    protected function setOptions($options)
+    protected function setOptions(array $options): void
     {
         foreach ($options as $name => $value) {
             $methodName = 'set'.ucfirst($name);
@@ -56,7 +58,7 @@ class Options
      *
      * @throws InvalidArgumentException
      */
-    public function setTableName($tableName)
+    public function setTableName(string $tableName): void
     {
         $tableName = (string) trim($tableName);
 
@@ -70,7 +72,7 @@ class Options
     /**
      * @return string
      */
-    public function getTableName()
+    public function getTableName(): string
     {
         return $this->tableName;
     }
@@ -78,15 +80,15 @@ class Options
     /**
      * @param string $sequenceName
      */
-    public function setSequenceName($sequenceName)
+    public function setSequenceName(string $sequenceName): void
     {
         $this->sequenceName = (string) trim($sequenceName);
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getSequenceName()
+    public function getSequenceName(): ?string
     {
         return $this->sequenceName;
     }
@@ -96,7 +98,7 @@ class Options
      *
      * @throws InvalidArgumentException
      */
-    public function setIdColumnName($idColumnName)
+    public function setIdColumnName(string $idColumnName): void
     {
         $idColumnName = (string) trim($idColumnName);
 
@@ -110,7 +112,7 @@ class Options
     /**
      * @return string
      */
-    public function getIdColumnName()
+    public function getIdColumnName(): string
     {
         return $this->idColumnName;
     }
@@ -120,7 +122,7 @@ class Options
      *
      * @throws InvalidArgumentException
      */
-    public function setLeftColumnName($leftColumnName)
+    public function setLeftColumnName(string $leftColumnName): void
     {
         $leftColumnName = (string) trim($leftColumnName);
 
@@ -134,7 +136,7 @@ class Options
     /**
      * @return string
      */
-    public function getLeftColumnName()
+    public function getLeftColumnName(): string
     {
         return $this->leftColumnName;
     }
@@ -144,7 +146,7 @@ class Options
      *
      * @throws InvalidArgumentException
      */
-    public function setRightColumnName($rightColumnName)
+    public function setRightColumnName(string $rightColumnName): void
     {
         $rightColumnName = (string) trim($rightColumnName);
 
@@ -158,7 +160,7 @@ class Options
     /**
      * @return string
      */
-    public function getRightColumnName()
+    public function getRightColumnName(): string
     {
         return $this->rightColumnName;
     }
@@ -168,7 +170,7 @@ class Options
      *
      * @throws InvalidArgumentException
      */
-    public function setLevelColumnName($levelColumnName)
+    public function setLevelColumnName(string $levelColumnName): void
     {
         $levelColumnName = (string) trim($levelColumnName);
 
@@ -182,7 +184,7 @@ class Options
     /**
      * @return string
      */
-    public function getLevelColumnName()
+    public function getLevelColumnName(): string
     {
         return $this->levelColumnName;
     }
@@ -192,7 +194,7 @@ class Options
      *
      * @throws InvalidArgumentException
      */
-    public function setParentIdColumnName($parentIdColumnName)
+    public function setParentIdColumnName(string $parentIdColumnName): void
     {
         $parentIdColumnName = (string) trim($parentIdColumnName);
 
@@ -206,7 +208,7 @@ class Options
     /**
      * @return string
      */
-    public function getParentIdColumnName()
+    public function getParentIdColumnName(): string
     {
         return $this->parentIdColumnName;
     }
@@ -214,15 +216,15 @@ class Options
     /**
      * @param $scopeColumnName
      */
-    public function setScopeColumnName($scopeColumnName)
+    public function setScopeColumnName(string $scopeColumnName): void
     {
         $this->scopeColumnName = trim($scopeColumnName);
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getScopeColumnName()
+    public function getScopeColumnName(): ?string
     {
         return $this->scopeColumnName;
     }

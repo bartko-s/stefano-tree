@@ -46,8 +46,11 @@ class Zend1 implements AdapterInterface
             $options->getRightColumnName(),
             $options->getLevelColumnName(),
             $options->getParentIdColumnName(),
-            $options->getScopeColumnName(),
         );
+
+        if (null !== $options->getScopeColumnName()) {
+            $disallowedDataKeys[] = $options->getScopeColumnName();
+        }
 
         return array_diff_key($data, array_flip($disallowedDataKeys));
     }
