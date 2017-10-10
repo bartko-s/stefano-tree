@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace StefanoTree;
 
 use Doctrine\DBAL\Connection as DoctrineConnection;
@@ -32,7 +34,7 @@ class NestedSet implements TreeInterface
      *
      * @throws InvalidArgumentException
      */
-    public static function factory(Options $options, $dbAdapter)
+    public static function factory(Options $options, $dbAdapter): TreeInterface
     {
         if ($dbAdapter instanceof Zend2DbAdapter) {
             $adapter = new Adapter\Zend2($options, $dbAdapter);
@@ -59,7 +61,7 @@ class NestedSet implements TreeInterface
     /**
      * @return AdapterInterface
      */
-    public function getAdapter()
+    public function getAdapter(): AdapterInterface
     {
         return $this->adapter;
     }
@@ -67,7 +69,7 @@ class NestedSet implements TreeInterface
     /**
      * @return ValidatorInterface
      */
-    private function _getValidator()
+    private function _getValidator(): ValidatorInterface
     {
         if (null == $this->validator) {
             $this->validator = new Validator($this->getAdapter());
@@ -76,6 +78,9 @@ class NestedSet implements TreeInterface
         return $this->validator;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function createRootNode($data = array(), $scope = null)
     {
         if ($this->getRootNode($scope)) {
@@ -96,18 +101,18 @@ class NestedSet implements TreeInterface
     /**
      * {@inheritdoc}
      */
-    public function updateNode($nodeId, array $data)
+    public function updateNode($nodeId, array $data): void
     {
         $this->getAdapter()
              ->update($nodeId, $data);
     }
 
     /**
-     * @param int    $targetNodeId
-     * @param string $placement
-     * @param array  $data
+     * @param int|string $targetNodeId
+     * @param string     $placement
+     * @param array      $data
      *
-     * @return int|null Id of new created node. Null if node has not been created
+     * @return int|string|null Id of new created node. Null if node has not been created
      */
     protected function addNode($targetNodeId, string $placement, array $data = array())
     {
@@ -183,22 +188,34 @@ class NestedSet implements TreeInterface
         return $this->getMoveStrategy($placement)->move($sourceNodeId, $targetNodeId);
     }
 
-    public function moveNodePlacementBottom($sourceNodeId, $targetNodeId)
+    /**
+     * {@inheritdoc}
+     */
+    public function moveNodePlacementBottom($sourceNodeId, $targetNodeId): bool
     {
         return $this->moveNode($sourceNodeId, $targetNodeId, self::PLACEMENT_BOTTOM);
     }
 
-    public function moveNodePlacementTop($sourceNodeId, $targetNodeId)
+    /**
+     * {@inheritdoc}
+     */
+    public function moveNodePlacementTop($sourceNodeId, $targetNodeId): bool
     {
         return $this->moveNode($sourceNodeId, $targetNodeId, self::PLACEMENT_TOP);
     }
 
-    public function moveNodePlacementChildBottom($sourceNodeId, $targetNodeId)
+    /**
+     * {@inheritdoc}
+     */
+    public function moveNodePlacementChildBottom($sourceNodeId, $targetNodeId): bool
     {
         return $this->moveNode($sourceNodeId, $targetNodeId, self::PLACEMENT_CHILD_BOTTOM);
     }
 
-    public function moveNodePlacementChildTop($sourceNodeId, $targetNodeId)
+    /**
+     * {@inheritdoc}
+     */
+    public function moveNodePlacementChildTop($sourceNodeId, $targetNodeId): bool
     {
         return $this->moveNode($sourceNodeId, $targetNodeId, self::PLACEMENT_CHILD_TOP);
     }
@@ -228,7 +245,10 @@ class NestedSet implements TreeInterface
         }
     }
 
-    public function deleteBranch($nodeId)
+    /**
+     * {@inheritdoc}
+     */
+    public function deleteBranch($nodeId): bool
     {
         $adapter = $this->getAdapter();
 
@@ -264,13 +284,19 @@ class NestedSet implements TreeInterface
         return true;
     }
 
-    public function getPath($nodeId, $startLevel = 0, $excludeLastNode = false)
+    /**
+     * {@inheritdoc}
+     */
+    public function getPath($nodeId, int $startLevel = 0, bool $excludeLastNode = false): array
     {
         return $this->getAdapter()
                     ->getPath($nodeId, $startLevel, $excludeLastNode);
     }
 
-    public function getNode($nodeId)
+    /**
+     * {@inheritdoc}
+     */
+    public function getNode($nodeId): ?array
     {
         return $this->getAdapter()
                     ->getNode($nodeId);
@@ -279,36 +305,51 @@ class NestedSet implements TreeInterface
     /**
      * {@inheritdoc}
      */
-    public function getDescendants($nodeId, $startLevel = 0, $levels = null, $excludeBranch = null)
+    public function getDescendants($nodeId, int $startLevel = 0, ?int $levels = null, ?int $excludeBranch = null): array
     {
         return $this->getAdapter()
                     ->getDescendants($nodeId, $startLevel, $levels, $excludeBranch);
     }
 
-    public function getChildren($nodeId)
+    /**
+     * {@inheritdoc}
+     */
+    public function getChildren($nodeId): array
     {
         return $this->getDescendants($nodeId, 1, 1);
     }
 
-    public function getRootNode($scope = null)
+    /**
+     * {@inheritdoc}
+     */
+    public function getRootNode($scope = null): array
     {
         return $this->getAdapter()
                     ->getRoot($scope);
     }
 
-    public function getRoots()
+    /**
+     * {@inheritdoc}
+     */
+    public function getRoots(): array
     {
         return $this->getAdapter()
                     ->getRoots();
     }
 
-    public function isValid($rootNodeId)
+    /**
+     * {@inheritdoc}
+     */
+    public function isValid($rootNodeId): bool
     {
         return $this->_getValidator()
                     ->isValid($rootNodeId);
     }
 
-    public function rebuild($rootNodeId)
+    /**
+     * {@inheritdoc}
+     */
+    public function rebuild($rootNodeId): void
     {
         $this->_getValidator()
              ->rebuild($rootNodeId);
