@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace StefanoTreeTest\Integration;
 
-use StefanoTree\Exception\InvalidArgumentException;
 use StefanoTree\NestedSet as TreeAdapter;
 use StefanoTreeTest\IntegrationTestCase;
 
@@ -67,7 +66,7 @@ abstract class AbstractTest extends IntegrationTestCase
 
     public function testCreateRootRootAlreadyExist()
     {
-        $this->expectException('\StefanoTree\Exception\RootNodeAlreadyExistException');
+        $this->expectException(\StefanoTree\Exception\RootNodeAlreadyExistException::class);
         $this->expectExceptionMessage('Root node already exist');
 
         $this->treeAdapter
@@ -107,7 +106,7 @@ abstract class AbstractTest extends IntegrationTestCase
 
     public function testCreateNodePlacementStrategyDoesNotExists()
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\StefanoTree\Exception\InvalidArgumentException::class);
         $this->expectExceptionMessage('Unknown placement "unknown-placement"');
 
         $this->treeAdapter
@@ -284,7 +283,7 @@ abstract class AbstractTest extends IntegrationTestCase
 
     public function testMoveNodePlacementStrategyDoesNotExists()
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\StefanoTree\Exception\InvalidArgumentException::class);
         $this->expectExceptionMessage('Unknown placement "unknown-placement"');
 
         $this->treeAdapter

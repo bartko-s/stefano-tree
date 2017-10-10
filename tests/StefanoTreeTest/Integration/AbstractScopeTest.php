@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace StefanoTreeTest\Integration;
 
-use StefanoTree\Exception\InvalidArgumentException;
 use StefanoTree\NestedSet as TreeAdapter;
 use StefanoTreeTest\IntegrationTestCase;
 
@@ -58,7 +57,7 @@ abstract class AbstractScopeTest extends IntegrationTestCase
 
     public function testCreateRootRootWithSomeScopeAlreadyExist()
     {
-        $this->expectException('\StefanoTree\Exception\RootNodeAlreadyExistException');
+        $this->expectException(\StefanoTree\Exception\RootNodeAlreadyExistException::class);
         $this->expectExceptionMessage('Root node for scope "123" already exist');
 
         $this->treeAdapter
@@ -119,7 +118,7 @@ abstract class AbstractScopeTest extends IntegrationTestCase
 
     public function testCannotMoveNodeBetweenScopes()
     {
-        $this->expectException('\StefanoTree\Exception\InvalidArgumentException');
+        $this->expectException(\StefanoTree\Exception\InvalidArgumentException::class);
         $this->expectExceptionMessage('Cannot move node between scopes');
 
         $this->treeAdapter
@@ -258,7 +257,7 @@ abstract class AbstractScopeTest extends IntegrationTestCase
 
     public function testValidateTreeGivenNodeIdIsNotRoot()
     {
-        $this->expectException('\StefanoTree\Exception\InvalidArgumentException');
+        $this->expectException(\StefanoTree\Exception\InvalidArgumentException::class);
         $this->expectExceptionMessage('Given node id "2" is not root id');
 
         $this->treeAdapter->isValid(2);
@@ -276,7 +275,7 @@ abstract class AbstractScopeTest extends IntegrationTestCase
 
     public function testRebuildTreeGivenNodeIdIsNotRoot()
     {
-        $this->expectException('\StefanoTree\Exception\InvalidArgumentException');
+        $this->expectException(\StefanoTree\Exception\InvalidArgumentException::class);
         $this->expectExceptionMessage('Given node id "5" is not root id');
 
         $this->treeAdapter->rebuild(5);
@@ -284,7 +283,7 @@ abstract class AbstractScopeTest extends IntegrationTestCase
 
     public function testIsValidTreeGivenNodeIdIsNotRoot()
     {
-        $this->expectException('\StefanoTree\Exception\InvalidArgumentException');
+        $this->expectException(\StefanoTree\Exception\InvalidArgumentException::class);
         $this->expectExceptionMessage('Given node id "4" is not root id');
 
         $this->treeAdapter->isValid(4);
@@ -292,7 +291,7 @@ abstract class AbstractScopeTest extends IntegrationTestCase
 
     public function testRebuildTreeGivenNodeIdDoesNotExists()
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\StefanoTree\Exception\InvalidArgumentException::class);
         $this->expectExceptionMessage('Node with id "999" does not exits');
 
         $this->treeAdapter->rebuild(999);
@@ -300,7 +299,7 @@ abstract class AbstractScopeTest extends IntegrationTestCase
 
     public function testIsValidTreeGivenNodeIdDoesNotExists()
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\StefanoTree\Exception\InvalidArgumentException::class);
         $this->expectExceptionMessage('Node with id "555" does not exits');
 
         $this->treeAdapter->isValid(555);
