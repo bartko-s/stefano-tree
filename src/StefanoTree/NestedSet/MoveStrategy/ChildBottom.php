@@ -1,71 +1,100 @@
 <?php
 
+declare(strict_types=1);
+
 namespace StefanoTree\NestedSet\MoveStrategy;
 
-use StefanoTree\Exception;
+use StefanoTree\Exception\TreeIsBrokenException;
 
-class ChildBottom extends MoveStrategyAbstract
+class ChildBottom extends MoveStrategyAbstract implements MoveStrategyInterface
 {
-    public function getNewParentId()
+    /**
+     * {@inheritdoc}
+     */
+    protected function canMoveBranch(): bool
     {
-        return $this->getTargetNode()->getId();
+        return ($this->isTargetNodeInsideSourceBranch()) ? false : true;
     }
 
-    public function getLevelShift()
+    /**
+     * {@inheritdoc}
+     */
+    protected function isSourceNodeAtRequiredPosition(): bool
     {
-        return $this->getTargetNode()->getLevel() - $this->getSourceNode()->getLevel() + 1;
+        $source = $this->getSourceNodeInfo();
+        $target = $this->getTargetNodeInfo();
+
+        return ($source->getParentId() == $target->getId() && $source->getRight() == ($target->getRight() - 1)) ? true : false;
     }
 
-    public function getHoleLeftIndex()
+    /**
+     * {@inheritdoc}
+     */
+    protected function updateParentId(): void
     {
+        $newParentId = $this->getTargetNodeInfo()->getId();
+        $this->_updateParentId($this->getSourceNodeInfo(), $newParentId);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function updateLevels(): void
+    {
+        $source = $this->getSourceNodeInfo();
+
+        $levelShift = $this->getTargetNodeInfo()->getLevel() - $source->getLevel() + 1;
+        $this->_updateLevels($source, $levelShift);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function makeHole(): void
+    {
+        $holeFromIndex = $this->getTargetNodeInfo()->getRight() - 1;
+        $indexShift = $this->getIndexShift();
+        $scope = $this->getSourceNodeInfo()->getScope();
+
+        $this->_makeHole($holeFromIndex, $indexShift, $scope);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function moveBranchToTheHole(): void
+    {
+        $source = $this->getSourceNodeInfo();
+        $target = $this->getTargetNodeInfo();
+
         if ($this->isMovedToRoot() || $this->isMovedDown()) {
-            return $this->getSourceNode()->getLeft();
+            $leftIndex = $source->getLeft();
+            $rightIndex = $source->getRight();
+            $indexShift = $target->getRight() - $source->getLeft();
         } elseif ($this->isMovedUp()) {
-            return $this->getSourceNode()->getLeft() + $this->getIndexShift();
+            $leftIndex = $source->getLeft() + $this->getIndexShift();
+            $rightIndex = $source->getRight() + $this->getIndexShift();
+            $indexShift = $target->getRight() - $source->getRight() - 1;
         } else {
-            throw new Exception\TreeIsBrokenException();
+            throw new TreeIsBrokenException();
         }
+
+        $scope = $source->getScope();
+
+        $this->_moveBranchToTheHole($leftIndex, $rightIndex, $indexShift, $scope);
     }
 
-    public function getHoleRightIndex()
+    /**
+     * {@inheritdoc}
+     */
+    protected function patchHole(): void
     {
-        if ($this->isMovedToRoot() || $this->isMovedDown()) {
-            return $this->getSourceNode()->getRight();
-        } elseif ($this->isMovedUp()) {
-            return $this->getSourceNode()->getRight() + $this->getIndexShift();
-        } else {
-            throw new Exception\TreeIsBrokenException();
-        }
-    }
+        $source = $this->getSourceNodeInfo();
 
-    public function getSourceNodeIndexShift()
-    {
-        if ($this->isMovedToRoot() || $this->isMovedDown()) {
-            return $this->getTargetNode()->getRight() - $this->getSourceNode()->getLeft();
-        } elseif ($this->isMovedUp()) {
-            return $this->getTargetNode()->getRight() - $this->getSourceNode()->getRight() - 1;
-        } else {
-            throw new Exception\TreeIsBrokenException();
-        }
-    }
+        $fromIndex = $source->getRight();
+        $indexShift = $this->getIndexShift() * -1;
+        $scope = $source->getScope();
 
-    public function fixHoleFromIndex()
-    {
-        return $this->getSourceNode()->getRight();
-    }
-
-    public function makeHoleFromIndex()
-    {
-        return $this->getTargetNode()->getRight() - 1;
-    }
-
-    public function isSourceNodeAtRequiredPosition()
-    {
-        $sourceNode = $this->getSourceNode();
-        $targetNode = $this->getTargetNode();
-
-        return ($sourceNode->getParentId() == $targetNode->getId() &&
-                $sourceNode->getRight() == ($targetNode->getRight() - 1)) ?
-            true : false;
+        $this->_patchHole($fromIndex, $indexShift, $scope);
     }
 }

@@ -108,8 +108,6 @@ class NestedSet implements TreeInterface
      * @param array  $data
      *
      * @return int|null Id of new created node. Null if node has not been created
-     *
-     * @throws Exception
      */
     protected function addNode($targetNodeId, string $placement, array $data = array())
     {
@@ -179,86 +177,10 @@ class NestedSet implements TreeInterface
      * @param string $placement
      *
      * @return bool
-     *
-     * @throws Exception
-     * @throws InvalidArgumentException
      */
-    protected function moveNode($sourceNodeId, $targetNodeId, $placement)
+    protected function moveNode($sourceNodeId, $targetNodeId, string $placement): bool
     {
-        $adapter = $this->getAdapter();
-
-        //source node and target node are equal
-        if ($sourceNodeId == $targetNodeId) {
-            return false;
-        }
-
-        $adapter->beginTransaction();
-        try {
-            $adapter->lockTree();
-
-            $sourceNodeInfo = $adapter->getNodeInfo($sourceNodeId);
-            $targetNodeInfo = $adapter->getNodeInfo($targetNodeId);
-
-            //source node or target node does not exist
-            if (!$sourceNodeInfo || !$targetNodeInfo) {
-                $adapter->commitTransaction();
-
-                return false;
-            }
-
-            // scope are different
-            if ($sourceNodeInfo->getScope() != $targetNodeInfo->getScope()) {
-                throw new InvalidArgumentException('Cannot move node between scopes');
-            }
-
-            $moveStrategy = $this->getMoveStrategy($sourceNodeInfo, $targetNodeInfo, $placement);
-
-            if (!$moveStrategy->canMoveBranch()) {
-                $adapter->commitTransaction();
-
-                return false;
-            }
-
-            if ($moveStrategy->isSourceNodeAtRequiredPosition()) {
-                $adapter->commitTransaction();
-
-                return true;
-            }
-
-            //update parent id
-            $newParentId = $moveStrategy->getNewParentId();
-            if ($sourceNodeInfo->getParentId() != $newParentId) {
-                $adapter->updateParentId($sourceNodeId, $newParentId);
-            }
-
-            //update levels
-            $adapter->updateLevels($sourceNodeInfo->getLeft(), $sourceNodeInfo->getRight(),
-                    $moveStrategy->getLevelShift(), $sourceNodeInfo->getScope());
-
-            //make hole
-            $adapter->moveLeftIndexes($moveStrategy->makeHoleFromIndex(),
-                        $moveStrategy->getIndexShift(), $sourceNodeInfo->getScope());
-            $adapter->moveRightIndexes($moveStrategy->makeHoleFromIndex(),
-                        $moveStrategy->getIndexShift(), $sourceNodeInfo->getScope());
-
-            //move branch to the hole
-            $adapter->moveBranch($moveStrategy->getHoleLeftIndex(), $moveStrategy->getHoleRightIndex(),
-                $moveStrategy->getSourceNodeIndexShift(), $sourceNodeInfo->getScope());
-
-            //patch hole
-            $adapter->moveLeftIndexes($moveStrategy->fixHoleFromIndex(),
-                        ($moveStrategy->getIndexShift() * -1), $sourceNodeInfo->getScope());
-            $adapter->moveRightIndexes($moveStrategy->fixHoleFromIndex(),
-                        ($moveStrategy->getIndexShift() * -1), $sourceNodeInfo->getScope());
-
-            $adapter->commitTransaction();
-        } catch (Exception $e) {
-            $adapter->rollbackTransaction();
-
-            throw $e;
-        }
-
-        return true;
+        return $this->getMoveStrategy($placement)->move($sourceNodeId, $targetNodeId);
     }
 
     public function moveNodePlacementBottom($sourceNodeId, $targetNodeId)
@@ -282,25 +204,25 @@ class NestedSet implements TreeInterface
     }
 
     /**
-     * @param NodeInfo $sourceNode
-     * @param NodeInfo $targetNode
-     * @param string   $placement
+     * @param string $placement
      *
      * @return MoveStrategyInterface
      *
      * @throws InvalidArgumentException
      */
-    private function getMoveStrategy(NodeInfo $sourceNode, NodeInfo $targetNode, $placement)
+    protected function getMoveStrategy(string $placement): MoveStrategyInterface
     {
+        $adapter = $this->getAdapter();
+
         switch ($placement) {
             case self::PLACEMENT_BOTTOM:
-                return new MoveStrategy\Bottom($sourceNode, $targetNode);
+                return new MoveStrategy\Bottom($adapter);
             case self::PLACEMENT_TOP:
-                return new MoveStrategy\Top($sourceNode, $targetNode);
+                return new MoveStrategy\Top($adapter);
             case self::PLACEMENT_CHILD_BOTTOM:
-                return new MoveStrategy\ChildBottom($sourceNode, $targetNode);
+                return new MoveStrategy\ChildBottom($adapter);
             case self::PLACEMENT_CHILD_TOP:
-                return new MoveStrategy\ChildTop($sourceNode, $targetNode);
+                return new MoveStrategy\ChildTop($adapter);
             default:
                 throw new InvalidArgumentException('Unknown placement "'.$placement.'"');
         }
