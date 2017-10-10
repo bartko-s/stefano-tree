@@ -9,5 +9,6 @@ return PhpCsFixer\Config::create()
         '@PSR2' => true,
         '@Symfony' => true,
         'protected_to_private' => false,
+        'declare_strict_types' => true,
     ])
     ->setFinder($finder);
