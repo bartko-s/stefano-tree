@@ -25,7 +25,7 @@ class Validator implements ValidatorInterface
     /**
      * @return AdapterInterface
      */
-    private function _getAdapter(): AdapterInterface
+    private function getAdapter(): AdapterInterface
     {
         return $this->adapter;
     }
@@ -35,13 +35,13 @@ class Validator implements ValidatorInterface
      */
     public function isValid($rootNodeId): bool
     {
-        $adapter = $this->_getAdapter();
+        $adapter = $this->getAdapter();
 
         $adapter->beginTransaction();
         try {
             $adapter->lockTree();
 
-            $rootNodeInfo = $this->_getAdapter()->getNodeInfo($rootNodeId);
+            $rootNodeInfo = $this->getAdapter()->getNodeInfo($rootNodeId);
 
             if (!$rootNodeInfo instanceof NodeInfo) {
                 throw new InvalidArgumentException(
@@ -70,13 +70,13 @@ class Validator implements ValidatorInterface
      */
     public function rebuild($rootNodeId): void
     {
-        $adapter = $this->_getAdapter();
+        $adapter = $this->getAdapter();
 
         $adapter->beginTransaction();
         try {
             $adapter->lockTree();
 
-            $rootNodeInfo = $this->_getAdapter()->getNodeInfo($rootNodeId);
+            $rootNodeInfo = $this->getAdapter()->getNodeInfo($rootNodeId);
 
             if (!$rootNodeInfo instanceof NodeInfo) {
                 throw new InvalidArgumentException(
@@ -106,7 +106,7 @@ class Validator implements ValidatorInterface
      */
     private function _rebuild(NodeInfo $parentNodeInfo, bool $onlyValidate = false, int $left = 1, int $level = 0): int
     {
-        $adapter = $this->_getAdapter();
+        $adapter = $this->getAdapter();
 
         $right = $left + 1;
 

@@ -69,7 +69,7 @@ class NestedSet implements TreeInterface
     /**
      * @return ValidatorInterface
      */
-    private function _getValidator(): ValidatorInterface
+    private function getValidator(): ValidatorInterface
     {
         if (null == $this->validator) {
             $this->validator = new Validator($this->getAdapter());
@@ -270,7 +270,7 @@ class NestedSet implements TreeInterface
      */
     public function isValid($rootNodeId): bool
     {
-        return $this->_getValidator()
+        return $this->getValidator()
                     ->isValid($rootNodeId);
     }
 
@@ -279,7 +279,7 @@ class NestedSet implements TreeInterface
      */
     public function rebuild($rootNodeId): void
     {
-        $this->_getValidator()
+        $this->getValidator()
              ->rebuild($rootNodeId);
     }
 }
