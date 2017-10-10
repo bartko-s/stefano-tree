@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StefanoTreeTest\Integration;
 
+use StefanoTree\Exception\InvalidArgumentException;
 use StefanoTree\NestedSet as TreeAdapter;
 use StefanoTreeTest\IntegrationTestCase;
 
@@ -278,6 +279,30 @@ abstract class AbstractScopeTest extends IntegrationTestCase
         $this->expectException('\StefanoTree\Exception\InvalidArgumentException');
         $this->expectExceptionMessage('Given node id "5" is not root id');
 
-        $this->treeAdapter->isValid(5);
+        $this->treeAdapter->rebuild(5);
+    }
+
+    public function testIsValidTreeGivenNodeIdIsNotRoot()
+    {
+        $this->expectException('\StefanoTree\Exception\InvalidArgumentException');
+        $this->expectExceptionMessage('Given node id "4" is not root id');
+
+        $this->treeAdapter->isValid(4);
+    }
+
+    public function testRebuildTreeGivenNodeIdDoesNotExists()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Node with id "999" does not exits');
+
+        $this->treeAdapter->rebuild(999);
+    }
+
+    public function testIsValidTreeGivenNodeIdDoesNotExists()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Node with id "555" does not exits');
+
+        $this->treeAdapter->isValid(555);
     }
 }

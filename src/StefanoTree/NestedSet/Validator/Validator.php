@@ -45,7 +45,7 @@ class Validator implements ValidatorInterface
 
             if (!$rootNodeInfo instanceof NodeInfo) {
                 throw new InvalidArgumentException(
-                    'Node with id "%s" does not exits', $rootNodeId
+                    sprintf('Node with id "%s" does not exits', $rootNodeId)
                 );
             }
 
@@ -80,7 +80,7 @@ class Validator implements ValidatorInterface
 
             if (!$rootNodeInfo instanceof NodeInfo) {
                 throw new InvalidArgumentException(
-                    'Node with id "%s" does not exits', $rootNodeId
+                    sprintf('Node with id "%s" does not exits', $rootNodeId)
                 );
             }
 

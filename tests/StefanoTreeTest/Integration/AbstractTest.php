@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StefanoTreeTest\Integration;
 
+use StefanoTree\Exception\InvalidArgumentException;
 use StefanoTree\NestedSet as TreeAdapter;
 use StefanoTreeTest\IntegrationTestCase;
 
@@ -102,6 +103,15 @@ abstract class AbstractTest extends IntegrationTestCase
         $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
         $this->assertNull($return);
+    }
+
+    public function testCreateNodePlacementStrategyDoesNotExists()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unknown placement "unknown-placement"');
+
+        $this->treeAdapter
+            ->addNode(1, array(), 'unknown-placement');
     }
 
     public function testAddNodePlacementBottom()
@@ -270,6 +280,15 @@ abstract class AbstractTest extends IntegrationTestCase
 
         $this->assertDataSetsEqual($expectedDataSet, $dataSet, 'Source node does not exist');
         $this->assertFalse($return);
+    }
+
+    public function testMoveNodePlacementStrategyDoesNotExists()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unknown placement "unknown-placement"');
+
+        $this->treeAdapter
+            ->moveNode(11, 1, 'unknown-placement');
     }
 
     public function testMoveNodePlacementBottom()
