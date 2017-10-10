@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace StefanoTree\NestedSet\Validator;
 
 interface ValidatorInterface
@@ -7,16 +9,16 @@ interface ValidatorInterface
     /**
      * Check if tree indexes, levels is not corrupted.
      *
-     * @param $rootNodeId int
+     * @param int|string $rootNodeId
      *
      * @return bool
      */
-    public function isValid($rootNodeId);
+    public function isValid($rootNodeId): bool;
 
     /**
      * Rebuild broken tree left indexes, right indexes, levels.
      *
-     * @param $rootNodeId int
+     * @param int|string $rootNodeId
      */
-    public function rebuild($rootNodeId);
+    public function rebuild($rootNodeId): void;
 }

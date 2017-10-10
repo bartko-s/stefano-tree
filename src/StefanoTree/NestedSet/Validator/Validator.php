@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace StefanoTree\NestedSet\Validator;
 
 use Exception;
@@ -23,12 +25,15 @@ class Validator implements ValidatorInterface
     /**
      * @return AdapterInterface
      */
-    private function _getAdapter()
+    private function _getAdapter(): AdapterInterface
     {
         return $this->adapter;
     }
 
-    public function isValid($rootNodeId)
+    /**
+     * {@inheritdoc}
+     */
+    public function isValid($rootNodeId): bool
     {
         $adapter = $this->_getAdapter();
 
@@ -60,7 +65,10 @@ class Validator implements ValidatorInterface
         return true;
     }
 
-    public function rebuild($rootNodeId)
+    /**
+     * {@inheritdoc}
+     */
+    public function rebuild($rootNodeId): void
     {
         $adapter = $this->_getAdapter();
 
@@ -92,11 +100,11 @@ class Validator implements ValidatorInterface
      * @param int      $left
      * @param int      $level
      *
-     * @return int|mixed
+     * @return int
      *
      * @throws TreeIsBrokenException if tree is broken and $onlyValidate is true
      */
-    private function _rebuild(NodeInfo $parentNodeInfo, $onlyValidate = false, $left = 1, $level = 0)
+    private function _rebuild(NodeInfo $parentNodeInfo, bool $onlyValidate = false, int $left = 1, int $level = 0): int
     {
         $adapter = $this->_getAdapter();
 
@@ -130,7 +138,7 @@ class Validator implements ValidatorInterface
      *
      * @throws InvalidArgumentException
      */
-    private function _checkIfNodeIsRootNode(NodeInfo $node)
+    private function _checkIfNodeIsRootNode(NodeInfo $node): void
     {
         if (null != $node->getParentId()) {
             throw new InvalidArgumentException(
