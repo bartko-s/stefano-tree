@@ -1,91 +1,40 @@
 <?php
 
+declare(strict_types=1);
+
 namespace StefanoTree\NestedSet\Adapter;
 
-use StefanoTree\Exception\InvalidArgumentException;
 use StefanoTree\NestedSet\NodeInfo;
 use StefanoTree\NestedSet\Options;
 use Zend\Db;
 use Zend\Db\Adapter\Adapter as DbAdapter;
 
-class Zend2 implements AdapterInterface
+class Zend2 extends AdapterAbstract implements AdapterInterface
 {
-    private $options;
-
     private $dbAdapter;
 
     private $defaultDbSelect = null;
 
-    public function __construct(Options $options, $dbAdapter)
+    public function __construct(Options $options, DbAdapter $dbAdapter)
     {
         $this->setOptions($options);
         $this->setDbAdapter($dbAdapter);
     }
 
     /**
-     * @param Options $options
-     */
-    private function setOptions(Options $options)
-    {
-        $this->options = $options;
-    }
-
-    /**
-     * @return Options
-     */
-    private function getOptions()
-    {
-        return $this->options;
-    }
-
-    /**
      * @param DbAdapter $dbAdapter
-     *
-     * @throws InvalidArgumentException
      */
-    protected function setDbAdapter($dbAdapter)
+    protected function setDbAdapter(DbAdapter $dbAdapter): void
     {
-        if (!$dbAdapter instanceof DbAdapter) {
-            throw new InvalidArgumentException(
-                'DbAdapter must be instance of "%s" but instance of "%s" was given', DbAdapter::class, get_class($dbAdapter)
-            );
-        }
-
         $this->dbAdapter = $dbAdapter;
     }
 
     /**
      * @return DbAdapter
      */
-    protected function getDbAdapter()
+    protected function getDbAdapter(): DbAdapter
     {
         return $this->dbAdapter;
-    }
-
-    /**
-     * Data cannot contain keys like idColumnName, levelColumnName, ...
-     *
-     * @param array $data
-     *
-     * @return array
-     */
-    private function cleanData(array $data)
-    {
-        $options = $this->getOptions();
-
-        $disallowedDataKeys = array(
-            $options->getIdColumnName(),
-            $options->getLeftColumnName(),
-            $options->getRightColumnName(),
-            $options->getLevelColumnName(),
-            $options->getParentIdColumnName(),
-        );
-
-        if (null !== $options->getScopeColumnName()) {
-            $disallowedDataKeys[] = $options->getScopeColumnName();
-        }
-
-        return array_diff_key($data, array_flip($disallowedDataKeys));
     }
 
     /**
@@ -93,7 +42,7 @@ class Zend2 implements AdapterInterface
      *
      * @return Db\Sql\Select
      */
-    public function getBlankDbSelect()
+    public function getBlankDbSelect(): Db\Sql\Select
     {
         return new Db\Sql\Select($this->getOptions()->getTableName());
     }
@@ -101,7 +50,7 @@ class Zend2 implements AdapterInterface
     /**
      * @param Db\Sql\Select $dbSelect
      */
-    public function setDefaultDbSelect(Db\Sql\Select $dbSelect)
+    public function setDefaultDbSelect(Db\Sql\Select $dbSelect): void
     {
         $this->defaultDbSelect = $dbSelect;
     }
@@ -122,7 +71,10 @@ class Zend2 implements AdapterInterface
         return $dbSelect;
     }
 
-    public function lockTree()
+    /**
+     * {@inheritdoc}
+     */
+    public function lockTree(): void
     {
         $options = $this->getOptions();
 
@@ -138,7 +90,10 @@ class Zend2 implements AdapterInterface
         $dbAdapter->query($sql, DbAdapter::QUERY_MODE_EXECUTE);
     }
 
-    public function beginTransaction()
+    /**
+     * {@inheritdoc}
+     */
+    public function beginTransaction(): void
     {
         $this->getDbAdapter()
              ->getDriver()
@@ -146,7 +101,10 @@ class Zend2 implements AdapterInterface
              ->beginTransaction();
     }
 
-    public function commitTransaction()
+    /**
+     * {@inheritdoc}
+     */
+    public function commitTransaction(): void
     {
         $this->getDbAdapter()
              ->getDriver()
@@ -154,7 +112,10 @@ class Zend2 implements AdapterInterface
              ->commit();
     }
 
-    public function rollbackTransaction()
+    /**
+     * {@inheritdoc}
+     */
+    public function rollbackTransaction(): void
     {
         $this->getDbAdapter()
              ->getDriver()
@@ -162,7 +123,10 @@ class Zend2 implements AdapterInterface
              ->rollback();
     }
 
-    public function update($nodeId, array $data)
+    /**
+     * {@inheritdoc}
+     */
+    public function update($nodeId, array $data): void
     {
         $options = $this->getOptions();
 
@@ -180,7 +144,10 @@ class Zend2 implements AdapterInterface
                 DbAdapter::QUERY_MODE_EXECUTE);
     }
 
-    public function insert(NodeInfo $nodeInfo, array $data): int
+    /**
+     * {@inheritdoc}
+     */
+    public function insert(NodeInfo $nodeInfo, array $data)
     {
         $options = $this->getOptions();
 
@@ -206,7 +173,10 @@ class Zend2 implements AdapterInterface
         return $lastGeneratedValue;
     }
 
-    public function delete($nodeId)
+    /**
+     * {@inheritdoc}
+     */
+    public function delete($nodeId): void
     {
         $options = $this->getOptions();
 
@@ -220,12 +190,15 @@ class Zend2 implements AdapterInterface
             DbAdapter::QUERY_MODE_EXECUTE);
     }
 
-    public function moveLeftIndexes($fromIndex, $shift, $scope = null)
+    /**
+     * {@inheritdoc}
+     */
+    public function moveLeftIndexes($fromIndex, $shift, $scope = null): void
     {
         $options = $this->getOptions();
 
         if (0 == $shift) {
-            return null;
+            return;
         }
 
         $dbAdapter = $this->getDbAdapter();
@@ -251,12 +224,15 @@ class Zend2 implements AdapterInterface
                   ->execute($binds);
     }
 
-    public function moveRightIndexes($fromIndex, $shift, $scope = null)
+    /**
+     * {@inheritdoc}
+     */
+    public function moveRightIndexes($fromIndex, $shift, $scope = null): void
     {
         $options = $this->getOptions();
 
         if (0 == $shift) {
-            return null;
+            return;
         }
 
         $dbAdapter = $this->getDbAdapter();
@@ -282,7 +258,10 @@ class Zend2 implements AdapterInterface
                   ->execute($binds);
     }
 
-    public function updateParentId($nodeId, $newParentId)
+    /**
+     * {@inheritdoc}
+     */
+    public function updateParentId($nodeId, $newParentId): void
     {
         $options = $this->getOptions();
 
@@ -300,12 +279,15 @@ class Zend2 implements AdapterInterface
             DbAdapter::QUERY_MODE_EXECUTE);
     }
 
-    public function updateLevels($leftIndexFrom, $rightIndexTo, $shift, $scope = null)
+    /**
+     * {@inheritdoc}
+     */
+    public function updateLevels(int $leftIndexFrom, int $rightIndexTo, int $shift, $scope = null): void
     {
         $options = $this->getOptions();
 
         if (0 == $shift) {
-            return null;
+            return;
         }
 
         $dbAdapter = $this->getDbAdapter();
@@ -333,10 +315,13 @@ class Zend2 implements AdapterInterface
                   ->execute($binds);
     }
 
-    public function moveBranch($leftIndexFrom, $rightIndexTo, $shift, $scope = null)
+    /**
+     * {@inheritdoc}
+     */
+    public function moveBranch(int $leftIndexFrom, int $rightIndexTo, int $shift, $scope = null): void
     {
         if (0 == $shift) {
-            return null;
+            return;
         }
 
         $options = $this->getOptions();
@@ -368,7 +353,10 @@ class Zend2 implements AdapterInterface
                   ->execute($binds);
     }
 
-    public function getRoots($scope = null)
+    /**
+     * {@inheritdoc}
+     */
+    public function getRoots($scope = null): array
     {
         $options = $this->getOptions();
 
@@ -390,14 +378,20 @@ class Zend2 implements AdapterInterface
         return $result->toArray();
     }
 
-    public function getRoot($scope = null)
+    /**
+     * {@inheritdoc}
+     */
+    public function getRoot($scope = null): array
     {
         $roots = $this->getRoots($scope);
 
         return (0 < count($roots)) ? $roots[0] : array();
     }
 
-    public function getNode($nodeId)
+    /**
+     * {@inheritdoc}
+     */
+    public function getNode($nodeId): ?array
     {
         $options = $this->getOptions();
 
@@ -417,30 +411,9 @@ class Zend2 implements AdapterInterface
     }
 
     /**
-     * @param array $data
-     *
-     * @return NodeInfo
+     * {@inheritdoc}
      */
-    private function _buildNodeInfoObject(array $data)
-    {
-        $options = $this->getOptions();
-
-        $id = $data[$options->getIdColumnName()];
-        $parentId = $data[$options->getParentIdColumnName()];
-        $level = $data[$options->getLevelColumnName()];
-        $left = $data[$options->getLeftColumnName()];
-        $right = $data[$options->getRightColumnName()];
-
-        if (isset($data[$options->getScopeColumnName()])) {
-            $scope = $data[$options->getScopeColumnName()];
-        } else {
-            $scope = null;
-        }
-
-        return new NodeInfo($id, $parentId, $level, $left, $right, $scope);
-    }
-
-    public function getNodeInfo($nodeId)
+    public function getNodeInfo($nodeId): ?NodeInfo
     {
         $options = $this->getOptions();
 
@@ -461,7 +434,10 @@ class Zend2 implements AdapterInterface
         return $result;
     }
 
-    public function getChildrenNodeInfo($parentNodeId)
+    /**
+     * {@inheritdoc}
+     */
+    public function getChildrenNodeInfo($parentNodeId): array
     {
         $dbAdapter = $this->getDbAdapter();
         $options = $this->getOptions();
@@ -497,7 +473,10 @@ class Zend2 implements AdapterInterface
         return $result;
     }
 
-    public function updateNodeMetadata(NodeInfo $nodeInfo)
+    /**
+     * {@inheritdoc}
+     */
+    public function updateNodeMetadata(NodeInfo $nodeInfo): void
     {
         $dbAdapter = $this->getDbAdapter();
         $options = $this->getOptions();
@@ -518,7 +497,10 @@ class Zend2 implements AdapterInterface
             DbAdapter::QUERY_MODE_EXECUTE);
     }
 
-    public function getPath($nodeId, $startLevel = 0, $excludeLastNode = false)
+    /**
+     * {@inheritdoc}
+     */
+    public function getPath($nodeId, int $startLevel = 0, bool $excludeLastNode = false): array
     {
         $options = $this->getOptions();
 
@@ -562,7 +544,10 @@ class Zend2 implements AdapterInterface
         return $result->toArray();
     }
 
-    public function getDescendants($nodeId, $startLevel = 0, $levels = null, $excludeBranch = null)
+    /**
+     * {@inheritdoc}
+     */
+    public function getDescendants($nodeId, int $startLevel = 0, ?int $levels = null, ?int $excludeBranch = null): array
     {
         $options = $this->getOptions();
 

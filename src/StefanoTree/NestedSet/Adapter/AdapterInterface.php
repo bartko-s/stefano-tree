@@ -1,78 +1,75 @@
 <?php
 
+declare(strict_types=1);
+
 namespace StefanoTree\NestedSet\Adapter;
 
 use StefanoTree\NestedSet\NodeInfo;
 
-/**
- * Lock, Unlock db table
- * Begin, Commit, Rollback Db Transaction
- * Other methods which manipulate with trees.
- */
 interface AdapterInterface
 {
     /**
      * Lock tree for update. This prevent race condition issue.
      */
-    public function lockTree();
+    public function lockTree(): void;
 
     /**
      * Begin db transaction.
      */
-    public function beginTransaction();
+    public function beginTransaction(): void;
 
     /**
      * Commit db transaction.
      */
-    public function commitTransaction();
+    public function commitTransaction(): void;
 
     /**
      * Rollback db transaction.
      */
-    public function rollbackTransaction();
+    public function rollbackTransaction(): void;
 
     /**
      * Update node data. Function must sanitize data from keys like level, leftIndex, ...
      *
-     * @param int   $nodeId
-     * @param array $data
+     * @param int|string $nodeId
+     * @param array      $data
      */
-    public function update($nodeId, array $data);
+    public function update($nodeId, array $data): void;
 
     /**
      * @param NodeInfo $nodeInfo
      * @param array    $data
      *
-     * @return int Last ID
+     * @return int|string Last ID
      */
-    public function insert(NodeInfo $nodeInfo, array $data): int;
+    public function insert(NodeInfo $nodeInfo, array $data);
 
     /**
      * Delete branch.
      *
-     * @param int $nodeId
+     * @param int|string $nodeId
      */
-    public function delete($nodeId);
+    public function delete($nodeId): void;
 
     /**
      * @param int             $fromIndex Left index is greater than
      * @param int             $shift
      * @param null|string|int $scope     null if scope is not used
      */
-    public function moveLeftIndexes($fromIndex, $shift, $scope = null);
+    public function moveLeftIndexes($fromIndex, $shift, $scope = null): void;
 
     /**
      * @param int             $fromIndex Right index is greater than
      * @param int             $shift
      * @param null|string|int $scope     null if scope is not used
      */
-    public function moveRightIndexes($fromIndex, $shift, $scope = null);
+    public function moveRightIndexes($fromIndex, $shift, $scope = null): void;
 
     /**
-     * @param int $nodeId
-     * @param int $newParentId
+     * @param int|string $nodeId
+     * @param int|string $newParentId
      */
-    public function updateParentId($nodeId, $newParentId);
+    public function updateParentId($nodeId, $newParentId): void;
 
     /**
      * @param int             $leftIndexFrom from left index or equal
@@ -80,7 +77,7 @@ interface AdapterInterface
      * @param int             $shift         shift
      * @param null|string|int $scope         null if scope is not used
      */
-    public function updateLevels($leftIndexFrom, $rightIndexTo, $shift, $scope = null);
+    public function updateLevels(int $leftIndexFrom, int $rightIndexTo, int $shift, $scope = null): void;
 
     /**
      * @param int             $leftIndexFrom from left index
@@ -88,69 +85,69 @@ interface AdapterInterface
      * @param int             $shift
      * @param null|string|int $scope         null if scope is not used
      */
-    public function moveBranch($leftIndexFrom, $rightIndexTo, $shift, $scope = null);
+    public function moveBranch(int $leftIndexFrom, int $rightIndexTo, int $shift, $scope = null): void;
 
     /**
-     * @param int $nodeId
+     * @param int|string $nodeId
      *
      * @return null|array
      */
-    public function getNode($nodeId);
+    public function getNode($nodeId): ?array;
 
     /**
-     * @param int $nodeId
+     * @param int|string $nodeId
      *
      * @return NodeInfo|null
      */
-    public function getNodeInfo($nodeId);
+    public function getNodeInfo($nodeId): ?NodeInfo;
 
     /**
      * Children must be find by parent ID column and order by left index !!!
      *
-     * @param $parentNodeId int
+     * @param int|string $parentNodeId
      *
-     * @return array
+     * @return NodeInfo[]
      */
-    public function getChildrenNodeInfo($parentNodeId);
+    public function getChildrenNodeInfo($parentNodeId): array;
 
     /**
      * Update left index, right index, level. Other columns must be ignored.
      *
      * @param NodeInfo $nodeInfo
      */
-    public function updateNodeMetadata(NodeInfo $nodeInfo);
+    public function updateNodeMetadata(NodeInfo $nodeInfo): void;
 
     /**
-     * @param int  $nodeId
-     * @param int  $startLevel      0 = include root
-     * @param bool $excludeLastNode
+     * @param int|string $nodeId
+     * @param int        $startLevel      0 = include root
+     * @param bool       $excludeLastNode
      *
      * @return array
      */
-    public function getPath($nodeId, $startLevel = 0, $excludeLastNode = false);
+    public function getPath($nodeId, int $startLevel = 0, bool $excludeLastNode = false): array;
 
     /**
-     * @param int      $nodeId
-     * @param int      $startLevel    Relative level from $nodeId. 1 = exclude $nodeId from result.
-     *                                2 = exclude 2 levels from result
-     * @param null|int $levels        Number of levels in the results relative to $startLevel
-     * @param null|int $excludeBranch Exclude defined branch(node id) from result
+     * @param int|string $nodeId
+     * @param int        $startLevel    Relative level from $nodeId. 1 = exclude $nodeId from result.
+     *                                  2 = exclude 2 levels from result
+     * @param null|int   $levels        Number of levels in the results relative to $startLevel
+     * @param null|int   $excludeBranch Exclude defined branch(node id) from result
      *
      * @return array
      */
-    public function getDescendants($nodeId, $startLevel = 0, $levels = null, $excludeBranch = null);
+    public function getDescendants($nodeId, int $startLevel = 0, ?int $levels = null, ?int $excludeBranch = null): array;
 
     /**
      * @param null|string|int $scope null if scope is not used
      *
      * @return array
      */
-    public function getRoot($scope = null);
+    public function getRoot($scope = null): array;
 
     /**
      * @param null|string|int $scope if defined return root only for defined scope
      *
      * @return array
      */
-    public function getRoots($scope = null);
+    public function getRoots($scope = null): array;
 }

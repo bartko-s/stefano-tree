@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace StefanoTree\NestedSet\Adapter;
 
 use Doctrine\DBAL\Connection as DbConnection;
@@ -7,10 +9,8 @@ use Doctrine\DBAL\Query\QueryBuilder;
 use StefanoTree\NestedSet\NodeInfo;
 use StefanoTree\NestedSet\Options;
 
-class Doctrine2DBAL implements AdapterInterface
+class Doctrine2DBAL extends AdapterAbstract implements AdapterInterface
 {
-    private $options;
-
     private $connection;
 
     private $defaultDbSelect;
@@ -21,50 +21,24 @@ class Doctrine2DBAL implements AdapterInterface
      */
     public function __construct(Options $options, DbConnection $connection)
     {
-        $this->options = $options;
-        $this->connection = $connection;
+        $this->setOptions($options);
+        $this->setConnection($connection);
     }
 
     /**
-     * @return Options
+     * @param DbConnection $dbAdapter
      */
-    private function getOptions()
+    protected function setConnection(DbConnection $dbAdapter): void
     {
-        return $this->options;
+        $this->connection = $dbAdapter;
     }
 
     /**
      * @return DbConnection
      */
-    private function getConnection()
+    private function getConnection(): DbConnection
     {
         return $this->connection;
-    }
-
-    /**
-     * Data cannot contain keys like idColumnName, levelColumnName, ...
-     *
-     * @param array $data
-     *
-     * @return array
-     */
-    private function cleanData(array $data)
-    {
-        $options = $this->getOptions();
-
-        $disallowedDataKeys = array(
-            $options->getIdColumnName(),
-            $options->getLeftColumnName(),
-            $options->getRightColumnName(),
-            $options->getLevelColumnName(),
-            $options->getParentIdColumnName(),
-        );
-
-        if (null !== $options->getScopeColumnName()) {
-            $disallowedDataKeys[] = $options->getScopeColumnName();
-        }
-
-        return array_diff_key($data, array_flip($disallowedDataKeys));
     }
 
     /**
@@ -72,7 +46,7 @@ class Doctrine2DBAL implements AdapterInterface
      *
      * @return QueryBuilder
      */
-    public function getBlankDbSelect()
+    public function getBlankDbSelect(): QueryBuilder
     {
         $queryBuilder = $this->getConnection()
                              ->createQueryBuilder();
@@ -86,7 +60,7 @@ class Doctrine2DBAL implements AdapterInterface
     /**
      * @param QueryBuilder $dbSelect
      */
-    public function setDefaultDbSelect(QueryBuilder $dbSelect)
+    public function setDefaultDbSelect(QueryBuilder $dbSelect): void
     {
         $this->defaultDbSelect = $dbSelect;
     }
@@ -96,7 +70,7 @@ class Doctrine2DBAL implements AdapterInterface
      *
      * @return QueryBuilder
      */
-    public function getDefaultDbSelect()
+    public function getDefaultDbSelect(): QueryBuilder
     {
         if (null === $this->defaultDbSelect) {
             $this->defaultDbSelect = $this->getBlankDbSelect();
@@ -107,7 +81,10 @@ class Doctrine2DBAL implements AdapterInterface
         return $dbSelect;
     }
 
-    public function lockTree()
+    /**
+     * {@inheritdoc}
+     */
+    public function lockTree(): void
     {
         $options = $this->getOptions();
 
@@ -121,25 +98,37 @@ class Doctrine2DBAL implements AdapterInterface
         $connection->executeQuery($sql);
     }
 
-    public function beginTransaction()
+    /**
+     * {@inheritdoc}
+     */
+    public function beginTransaction(): void
     {
         $this->getConnection()
              ->beginTransaction();
     }
 
-    public function commitTransaction()
+    /**
+     * {@inheritdoc}
+     */
+    public function commitTransaction(): void
     {
         $this->getConnection()
              ->commit();
     }
 
-    public function rollbackTransaction()
+    /**
+     * {@inheritdoc}
+     */
+    public function rollbackTransaction(): void
     {
         $this->getConnection()
              ->rollBack();
     }
 
-    public function update($nodeId, array $data)
+    /**
+     * {@inheritdoc}
+     */
+    public function update($nodeId, array $data): void
     {
         $options = $this->getOptions();
 
@@ -161,7 +150,10 @@ class Doctrine2DBAL implements AdapterInterface
         $connection->executeUpdate($sql->getSQL(), $data);
     }
 
-    public function insert(NodeInfo $nodeInfo, array $data): int
+    /**
+     * {@inheritdoc}
+     */
+    public function insert(NodeInfo $nodeInfo, array $data)
     {
         $options = $this->getOptions();
 
@@ -181,7 +173,10 @@ class Doctrine2DBAL implements AdapterInterface
         return $connection->lastInsertId($options->getSequenceName());
     }
 
-    public function delete($nodeId)
+    /**
+     * {@inheritdoc}
+     */
+    public function delete($nodeId): void
     {
         $options = $this->getOptions();
 
@@ -198,7 +193,10 @@ class Doctrine2DBAL implements AdapterInterface
         $connection->executeQuery($sql->getSQL(), $params);
     }
 
-    public function moveLeftIndexes($fromIndex, $shift, $scope = null)
+    /**
+     * {@inheritdoc}
+     */
+    public function moveLeftIndexes($fromIndex, $shift, $scope = null): void
     {
         $options = $this->getOptions();
 
@@ -226,7 +224,10 @@ class Doctrine2DBAL implements AdapterInterface
         $connection->executeUpdate($sql->getSQL(), $params);
     }
 
-    public function moveRightIndexes($fromIndex, $shift, $scope = null)
+    /**
+     * {@inheritdoc}
+     */
+    public function moveRightIndexes($fromIndex, $shift, $scope = null): void
     {
         $options = $this->getOptions();
 
@@ -254,7 +255,10 @@ class Doctrine2DBAL implements AdapterInterface
         $connection->executeUpdate($sql->getSQL(), $params);
     }
 
-    public function updateParentId($nodeId, $newParentId)
+    /**
+     * {@inheritdoc}
+     */
+    public function updateParentId($nodeId, $newParentId): void
     {
         $options = $this->getOptions();
 
@@ -273,7 +277,10 @@ class Doctrine2DBAL implements AdapterInterface
         $connection->executeUpdate($sql->getSQL(), $params);
     }
 
-    public function updateLevels($leftIndexFrom, $rightIndexTo, $shift, $scope = null)
+    /**
+     * {@inheritdoc}
+     */
+    public function updateLevels(int $leftIndexFrom, int $rightIndexTo, int $shift, $scope = null): void
     {
         $options = $this->getOptions();
 
@@ -303,7 +310,10 @@ class Doctrine2DBAL implements AdapterInterface
         $connection->executeUpdate($sql->getSQL(), $params);
     }
 
-    public function moveBranch($leftIndexFrom, $rightIndexTo, $shift, $scope = null)
+    /**
+     * {@inheritdoc}
+     */
+    public function moveBranch(int $leftIndexFrom, int $rightIndexTo, int $shift, $scope = null): void
     {
         if (0 == $shift) {
             return;
@@ -334,7 +344,10 @@ class Doctrine2DBAL implements AdapterInterface
         $connection->executeUpdate($sql->getSQL(), $params);
     }
 
-    public function getRoots($scope = null)
+    /**
+     * {@inheritdoc}
+     */
+    public function getRoots($scope = null): array
     {
         $options = $this->getOptions();
 
@@ -358,14 +371,20 @@ class Doctrine2DBAL implements AdapterInterface
         return $node;
     }
 
-    public function getRoot($scope = null)
+    /**
+     * {@inheritdoc}
+     */
+    public function getRoot($scope = null): array
     {
         $roots = $this->getRoots($scope);
 
         return ($roots) ? $roots[0] : array();
     }
 
-    public function getNode($nodeId)
+    /**
+     * {@inheritdoc}
+     */
+    public function getNode($nodeId): ?array
     {
         $options = $this->getOptions();
 
@@ -388,30 +407,9 @@ class Doctrine2DBAL implements AdapterInterface
     }
 
     /**
-     * @param array $data
-     *
-     * @return NodeInfo
+     * {@inheritdoc}
      */
-    private function _buildNodeInfoObject(array $data)
-    {
-        $options = $this->getOptions();
-
-        $id = $data[$options->getIdColumnName()];
-        $parentId = $data[$options->getParentIdColumnName()];
-        $level = $data[$options->getLevelColumnName()];
-        $left = $data[$options->getLeftColumnName()];
-        $right = $data[$options->getRightColumnName()];
-
-        if (isset($data[$options->getScopeColumnName()])) {
-            $scope = $data[$options->getScopeColumnName()];
-        } else {
-            $scope = null;
-        }
-
-        return new NodeInfo($id, $parentId, $level, $left, $right, $scope);
-    }
-
-    public function getNodeInfo($nodeId)
+    public function getNodeInfo($nodeId): ?NodeInfo
     {
         $options = $this->getOptions();
 
@@ -437,7 +435,10 @@ class Doctrine2DBAL implements AdapterInterface
         return $result;
     }
 
-    public function getChildrenNodeInfo($parentNodeId)
+    /**
+     * {@inheritdoc}
+     */
+    public function getChildrenNodeInfo($parentNodeId): array
     {
         $connection = $this->getConnection();
         $options = $this->getOptions();
@@ -474,7 +475,10 @@ class Doctrine2DBAL implements AdapterInterface
         return $result;
     }
 
-    public function updateNodeMetadata(NodeInfo $nodeInfo)
+    /**
+     * {@inheritdoc}
+     */
+    public function updateNodeMetadata(NodeInfo $nodeInfo): void
     {
         $options = $this->getOptions();
 
@@ -494,7 +498,10 @@ class Doctrine2DBAL implements AdapterInterface
         $connection->executeUpdate($sql->getSQL(), $params);
     }
 
-    public function getPath($nodeId, $startLevel = 0, $excludeLastNode = false)
+    /**
+     * {@inheritdoc}
+     */
+    public function getPath($nodeId, int $startLevel = 0, bool $excludeLastNode = false): array
     {
         $options = $this->getOptions();
 
@@ -542,7 +549,10 @@ class Doctrine2DBAL implements AdapterInterface
         return (is_array($result)) ? $result : array();
     }
 
-    public function getDescendants($nodeId, $startLevel = 0, $levels = null, $excludeBranch = null)
+    /**
+     * {@inheritdoc}
+     */
+    public function getDescendants($nodeId, int $startLevel = 0, ?int $levels = null, ?int $excludeBranch = null): array
     {
         $options = $this->getOptions();
 
