@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace StefanoTreeTest\Integration;
 
 use StefanoTree\NestedSet as TreeAdapter;

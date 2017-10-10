@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace StefanoTreeTest\Integration\Adapter;
 
 use StefanoTree\NestedSet\Adapter\AdapterInterface as TreeAdapterInterface;

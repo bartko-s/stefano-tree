@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace StefanoTreeTest\Unit\NestedSet;
 
 use StefanoTree\NestedSet\NodeInfo;

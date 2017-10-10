@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace StefanoTreeTest\Unit\NestedSet\Adapter;
 
 use StefanoTree\NestedSet\Adapter\Zend1;
