@@ -50,84 +50,22 @@ interface TreeInterface
     public function updateNode($nodeId, array $data): void;
 
     /**
-     * Create new node.
-     *
      * @param int|string $targetNodeId
      * @param array      $data
+     * @param string     $placement
      *
      * @return int|string|null Id of new created node. Null if node has not been created
      */
-    public function addNodePlacementBottom($targetNodeId, array $data = array());
+    public function addNode($targetNodeId, array $data = array(), string $placement = self::PLACEMENT_CHILD_TOP);
 
     /**
-     * Create new node.
-     *
-     * @param int|string $targetNodeId
-     * @param array      $data
-     *
-     * @return int|string|null Id of new created node. Null if node has not been created
-     */
-    public function addNodePlacementTop($targetNodeId, array $data = array());
-
-    /**
-     * Create new node.
-     *
-     * @param int|string $targetNodeId
-     * @param array      $data
-     *
-     * @return int|string|null Id of new created node. Null if node has not been created
-     */
-    public function addNodePlacementChildBottom($targetNodeId, array $data = array());
-
-    /**
-     * Create new node.
-     *
-     * @param int|string $targetNodeId
-     * @param array      $data
-     *
-     * @return int|string|null Id of new created node. Null if node has not been created
-     */
-    public function addNodePlacementChildTop($targetNodeId, array $data = array());
-
-    /**
-     * Move node.
-     *
-     * @param int|string $sourceNodeId
-     * @param int|string $targetNodeId
+     * @param int    $sourceNodeId
+     * @param int    $targetNodeId
+     * @param string $placement
      *
      * @return bool
      */
-    public function moveNodePlacementBottom($sourceNodeId, $targetNodeId): bool;
-
-    /**
-     * Move node.
-     *
-     * @param int|string $sourceNodeId
-     * @param int|string $targetNodeId
-     *
-     * @return bool
-     */
-    public function moveNodePlacementTop($sourceNodeId, $targetNodeId): bool;
-
-    /**
-     * Move node.
-     *
-     * @param int|string $sourceNodeId
-     * @param int|string $targetNodeId
-     *
-     * @return bool
-     */
-    public function moveNodePlacementChildBottom($sourceNodeId, $targetNodeId): bool;
-
-    /**
-     * Move node.
-     *
-     * @param int|string $sourceNodeId
-     * @param int|string $targetNodeId
-     *
-     * @return bool
-     */
-    public function moveNodePlacementChildTop($sourceNodeId, $targetNodeId): bool;
+    public function moveNode($sourceNodeId, $targetNodeId, string $placement = self::PLACEMENT_CHILD_TOP): bool;
 
     /**
      * Delete node with nodeId and all its descendants.

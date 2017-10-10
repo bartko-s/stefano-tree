@@ -108,13 +108,9 @@ class NestedSet implements TreeInterface
     }
 
     /**
-     * @param int|string $targetNodeId
-     * @param string     $placement
-     * @param array      $data
-     *
-     * @return int|string|null Id of new created node. Null if node has not been created
+     * {@inheritdoc}
      */
-    protected function addNode($targetNodeId, string $placement, array $data = array())
+    public function addNode($targetNodeId, array $data = array(), string $placement = self::PLACEMENT_CHILD_TOP)
     {
         return $this->getAddStrategy($placement)->add($targetNodeId, $data);
     }
@@ -147,77 +143,9 @@ class NestedSet implements TreeInterface
     /**
      * {@inheritdoc}
      */
-    public function addNodePlacementBottom($targetNodeId, array $data = array())
-    {
-        return $this->addNode($targetNodeId, self::PLACEMENT_BOTTOM, $data);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addNodePlacementTop($targetNodeId, array $data = array())
-    {
-        return $this->addNode($targetNodeId, self::PLACEMENT_TOP, $data);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addNodePlacementChildBottom($targetNodeId, array $data = array())
-    {
-        return $this->addNode($targetNodeId, self::PLACEMENT_CHILD_BOTTOM, $data);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addNodePlacementChildTop($targetNodeId, array $data = array())
-    {
-        return $this->addNode($targetNodeId, self::PLACEMENT_CHILD_TOP, $data);
-    }
-
-    /**
-     * @param int    $sourceNodeId
-     * @param int    $targetNodeId
-     * @param string $placement
-     *
-     * @return bool
-     */
-    protected function moveNode($sourceNodeId, $targetNodeId, string $placement): bool
+    public function moveNode($sourceNodeId, $targetNodeId, string $placement = self::PLACEMENT_CHILD_TOP): bool
     {
         return $this->getMoveStrategy($placement)->move($sourceNodeId, $targetNodeId);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function moveNodePlacementBottom($sourceNodeId, $targetNodeId): bool
-    {
-        return $this->moveNode($sourceNodeId, $targetNodeId, self::PLACEMENT_BOTTOM);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function moveNodePlacementTop($sourceNodeId, $targetNodeId): bool
-    {
-        return $this->moveNode($sourceNodeId, $targetNodeId, self::PLACEMENT_TOP);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function moveNodePlacementChildBottom($sourceNodeId, $targetNodeId): bool
-    {
-        return $this->moveNode($sourceNodeId, $targetNodeId, self::PLACEMENT_CHILD_BOTTOM);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function moveNodePlacementChildTop($sourceNodeId, $targetNodeId): bool
-    {
-        return $this->moveNode($sourceNodeId, $targetNodeId, self::PLACEMENT_CHILD_TOP);
     }
 
     /**

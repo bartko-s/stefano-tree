@@ -95,10 +95,10 @@ abstract class AbstractScopeTest extends IntegrationTestCase
         $this->assertEquals($expected, $roots);
     }
 
-    public function testAddNodePlacementChildTop()
+    public function testAddNodePlacementChildTopDefaultPlacement()
     {
         $lastGeneratedValue = $this->treeAdapter
-            ->addNodePlacementChildTop(1);
+            ->addNode(1);
 
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal_with_scope'));
         $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/with_scope/testAddNodePlacementChildTop.xml');
@@ -109,7 +109,7 @@ abstract class AbstractScopeTest extends IntegrationTestCase
     public function testMoveNodePlacementBottom()
     {
         $this->treeAdapter
-             ->moveNodePlacementBottom(3, 5);
+             ->moveNode(3, 5, TreeAdapter::PLACEMENT_BOTTOM);
 
         $dataSet = $this->getConnection()->createDataSet(array('tree_traversal_with_scope'));
         $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/with_scope/testMoveNodePlacementBottom.xml');
@@ -122,7 +122,7 @@ abstract class AbstractScopeTest extends IntegrationTestCase
         $this->expectExceptionMessage('Cannot move node between scopes');
 
         $this->treeAdapter
-             ->moveNodePlacementChildBottom(4, 8);
+             ->moveNode(4, 8, TreeAdapter::PLACEMENT_CHILD_BOTTOM);
     }
 
     public function testDeleteBranch()
