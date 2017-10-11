@@ -79,7 +79,9 @@ $tree->createRootNode(array());
 $tree->createRootNode(array(), $scope);
 ```
 
-- Create new node
+- Create new node. You can create new node at 4 different locations.
+
+![placements](./doc/placements.png)
 
 ```
 $targetNodeId = 10;
@@ -88,10 +90,10 @@ $data = array(
     //data
 );
 
-$tree->addNodePlacementBottom($targetNodeId, $data);
-$tree->addNodePlacementTop($targetNodeId, $data);
-$tree->addNodePlacementChildBottom($targetNodeId, $data);
-$tree->addNodePlacementTop($targetNodeId, $data);
+$tree->addNodePlacementTop($targetNodeId, $data, $tree::PLACEMENT_CHILD_TOP);
+$tree->addNodePlacementChildBottom($targetNodeId, $data, $tree::PLACEMENT_CHILD_BOTTOM);
+$tree->addNodePlacementTop($targetNodeId, $data, $tree::PLACEMENT_TOP);
+$tree->addNodePlacementBottom($targetNodeId, $data, $tree::PLACEMENT_BOTTOM);
 ```
 
 ### Update Node
@@ -108,14 +110,18 @@ $tree->updateNode($targetNodeId, $data);
 
 ### Move node
 
+- You can move node at 4 different locations.
+
+![placements](./doc/placements.png)
+
 ```
 $sourceNodeId = 15;
 $targetNodeId = 10;
 
-$tree->moveNodePlacementBottom($sourceNodeId, $targetNodeId);
-$tree->moveNodePlacementTop($sourceNodeId, $targetNodeId);
-$tree->moveNodePlacementChildBottom($sourceNodeId, $targetNodeId);
-$tree->moveNodePlacementChildTop($sourceNodeId, $targetNodeId);
+$tree->moveNode($sourceNodeId, $targetNodeId, $tree::PLACEMENT_CHILD_TOP);
+$tree->moveNode($sourceNodeId, $targetNodeId, $tree::PLACEMENT_CHILD_BOTTOM);
+$tree->moveNode($sourceNodeId, $targetNodeId, $tree::PLACEMENT_TOP);
+$tree->moveNode($sourceNodeId, $targetNodeId, $tree::PLACEMENT_BOTTOM);
 ```
 
 ### Delete node or branch
