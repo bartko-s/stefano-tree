@@ -1,5 +1,6 @@
 <?php
 $finder = PhpCsFixer\Finder::create()
+    ->in('examples')
     ->in('src')
     ->in('tests')
     ->notPath('_files');

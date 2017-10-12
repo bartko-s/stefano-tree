@@ -6,7 +6,7 @@
 
 [Nested Set](https://en.wikipedia.org/wiki/Nested_set_model) implementation for PHP.
 
-ONLINE DEMO (soon)
+[ONLINE DEMO](https://www.tree.stefanbartko.sk/)
 
 ## Features
 
@@ -22,9 +22,7 @@ ONLINE DEMO (soon)
 
 ## Installation
 
-1. Add following line to your composer.json file "stefano/stefano-tree": "~2.0.0"
-2. Create db scheme [example db scheme](https://github.com/bartko-s/stefano-tree/tree/master/sql). Name of table, columns are fully customizable.
-3. Create tree adapter
+Run following command `composer require stefano/stefano-tree`
 
 - Use static factory method
 ```
