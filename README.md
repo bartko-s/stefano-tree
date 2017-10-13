@@ -6,7 +6,7 @@
 
 [Nested Set](https://en.wikipedia.org/wiki/Nested_set_model) implementation for PHP.
 
-[ONLINE DEMO](https://www.tree.stefanbartko.sk/)
+[ONLINE DEMO](https://www.tree.stefanbartko.sk)
 
 ## Features
 
@@ -24,20 +24,28 @@
 
 Run following command `composer require stefano/stefano-tree`
 
+## Create Tree Adapter
+
+|        key         |  type  | required | default value | note                               |
+| :----------------: | :----: | :------: | :-----------: | :--------------------------------: |
+| tableName          | string | yes      |               |                                    |
+| idColumnName       | string | yes      |               |                                    |
+| leftColumnName     | string | no       | lft           |                                    |
+| rightColumnName    | string | no       | rgt           |                                    |
+| levelColumnName    | string | no       | level         |                                    |
+| parentIdColumnName | string | no       | parent_id     |                                    |
+| sequenceName       | string | see note |               | required for PostgreSQL            |
+| scopeColumnName    | string | see note |               | if empty scope support is disables |
+
 - Use static factory method
 ```
-$options = new \StefanoTree\NestedSet\Options(array(
-    'tableName'    => 'tree_traversal', //required
-    'idColumnName' => 'tree_traversal_id', //required
-    'leftColumnName' => 'lft', //optional (default lft)
-    'rightColumnName' => 'rgt', //optional (default rgt)
-    'levelColumnName' => 'level', //optional (default level)
-    'parentIdColumnName' => 'parent_id', //optional (default parent_id)
-    'sequenceName' => 'sequence_name_seq', //required for PostgreSQL
-    'scopeColumnName' => 'scope', //optional
-));
+$options = array(
+    'tableName'    => 'tree_traversal',
+    'idColumnName' => 'tree_traversal_id',
+    // other options
+);
 
-$dbAdapter = ... supported db adapter ...
+$dbAdapter = Zend2 Db Adapter or Zend1 Db Adapter or Doctrine DBAL Connection
 
 $tree = \StefanoTree\NestedSet::factory($options, $dbAdapter);
 ```

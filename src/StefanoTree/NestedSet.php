@@ -27,15 +27,23 @@ class NestedSet implements TreeInterface
     private $validator;
 
     /**
-     * @param Options $options
-     * @param object  $dbAdapter
+     * @param Options|array $options
+     * @param object        $dbAdapter
      *
      * @return TreeInterface
      *
      * @throws InvalidArgumentException
      */
-    public static function factory(Options $options, $dbAdapter): TreeInterface
+    public static function factory($options, $dbAdapter): TreeInterface
     {
+        if (is_array($options)) {
+            $options = new Options($options);
+        } elseif (!$options instanceof Options) {
+            throw new InvalidArgumentException(
+                sprintf('Options must be an array or instance of %s', Options::class)
+            );
+        }
+
         if ($dbAdapter instanceof Zend2DbAdapter) {
             $adapter = new Adapter\Zend2($options, $dbAdapter);
         } elseif ($dbAdapter instanceof DoctrineConnection) {
