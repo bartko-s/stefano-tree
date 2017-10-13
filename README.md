@@ -27,7 +27,7 @@ Run following command `composer require stefano/stefano-tree`
 ## Create Tree Adapter
 
 |        key         |  type  | required | default value | note                               |
-| :----------------: | :----: | :------: | :-----------: | :--------------------------------: |
+| :----------------- | :----: | :------: | :------------ | :--------------------------------- |
 | tableName          | string | yes      |               |                                    |
 | idColumnName       | string | yes      |               |                                    |
 | leftColumnName     | string | no       | lft           |                                    |
@@ -35,10 +35,12 @@ Run following command `composer require stefano/stefano-tree`
 | levelColumnName    | string | no       | level         |                                    |
 | parentIdColumnName | string | no       | parent_id     |                                    |
 | sequenceName       | string | see note |               | required for PostgreSQL            |
-| scopeColumnName    | string | see note |               | if empty scope support is disables |
+| scopeColumnName    | string | see note |               | if empty scope support is disabled |
 
 - Use static factory method
 ```
+use \StefanoTree\NestedSet;
+
 $options = array(
     'tableName'    => 'tree_traversal',
     'idColumnName' => 'tree_traversal_id',
@@ -47,18 +49,19 @@ $options = array(
 
 $dbAdapter = Zend2 Db Adapter or Zend1 Db Adapter or Doctrine DBAL Connection
 
-$tree = \StefanoTree\NestedSet::factory($options, $dbAdapter);
+$tree = NestedSet::factory($options, $dbAdapter);
 ```
 
 - or create tree adapter directly
 ```
-$options = new \StefanoTree\NestedSet\Options(array(...);
+use \StefanoTree\NestedSet;
+use \StefanoTree\NestedSet\Options;
+use \StefanoTree\NestedSet\Adapter\Zend2 as Zend2TreeDbAdapter;
 
+$options = new Options(array(...);
 $dbAdapter = ... supported db adapter ...
-
-$nestedSetAdapter = new \StefanoTree\NestedSet\Adapter\Zend2($options, $dbAdapter);
-
-$tree = new \StefanoTree\NestedSet($nestedSetAdapter);
+$nestedSetAdapter = new Zend2TreeDbAdapter($options, $dbAdapter);
+$tree = new NestedSet($nestedSetAdapter);
 ```
 
 - You can join table. Example is for Zend Framework 2 but it works similar for other supported frameworks.
@@ -78,11 +81,21 @@ $nestedSetAdapter->setDefaultDbSelect($defaultDbSelect);
 - Create root node
 
 ```
-// create root node. Scope support is disabled
-$tree->createRootNode(array());
+use StefanoTree\Exception\ValidationException;
 
-// create root node. Scope support is enabled
-$tree->createRootNode(array(), $scope);
+try {
+    $data = array(
+        // values
+    );
+    
+    // create root node.
+    $rootNodeId = $tree->createRootNode($data);
+    
+    // create root node. Second param "$scope" is required only if scope support is enabled.
+    $rootNodeId = $tree->createRootNode($data, $scope);    
+} catch (ValidationException $e) {
+    $errorMessage = $e->getMessage();
+}    
 ```
 
 - Create new node. You can create new node at 4 different locations.
@@ -90,28 +103,40 @@ $tree->createRootNode(array(), $scope);
 ![placements](./doc/placements.png)
 
 ```
-$targetNodeId = 10;
+use StefanoTree\Exception\ValidationException;
 
-$data = array(
-    //data
-);
+try {
+    $targetNodeId = 10;
+    
+    $data = array(
+        // values
+    );
 
-$tree->addNodePlacementTop($targetNodeId, $data, $tree::PLACEMENT_CHILD_TOP);
-$tree->addNodePlacementChildBottom($targetNodeId, $data, $tree::PLACEMENT_CHILD_BOTTOM);
-$tree->addNodePlacementTop($targetNodeId, $data, $tree::PLACEMENT_TOP);
-$tree->addNodePlacementBottom($targetNodeId, $data, $tree::PLACEMENT_BOTTOM);
+    $nodeId = $tree->addNodePlacementTop($targetNodeId, $data, $tree::PLACEMENT_CHILD_TOP);
+    $nodeId = $tree->addNodePlacementChildBottom($targetNodeId, $data, $tree::PLACEMENT_CHILD_BOTTOM);
+    $nodeId = $tree->addNodePlacementTop($targetNodeId, $data, $tree::PLACEMENT_TOP);
+    $nodeId = $tree->addNodePlacementBottom($targetNodeId, $data, $tree::PLACEMENT_BOTTOM);
+} catch (ValidationException $e) {
+    $errorMessage = $e->getMessage();
+}    
 ```
 
 ### Update Node
 
 ```
-$targetNodeId = 10;
+use StefanoTree\Exception\ValidationException;
 
-$data = array(
-    //data
-);
-
-$tree->updateNode($targetNodeId, $data);
+try {
+    $targetNodeId = 10;
+    
+    $data = array(
+        // values
+    );
+    
+    $tree->updateNode($targetNodeId, $data);
+} catch (ValidationException $e) {
+    $errorMessage = $e->getMessage();
+}    
 ```
 
 ### Move node
@@ -121,21 +146,33 @@ $tree->updateNode($targetNodeId, $data);
 ![placements](./doc/placements.png)
 
 ```
-$sourceNodeId = 15;
-$targetNodeId = 10;
+use StefanoTree\Exception\ValidationException;
 
-$tree->moveNode($sourceNodeId, $targetNodeId, $tree::PLACEMENT_CHILD_TOP);
-$tree->moveNode($sourceNodeId, $targetNodeId, $tree::PLACEMENT_CHILD_BOTTOM);
-$tree->moveNode($sourceNodeId, $targetNodeId, $tree::PLACEMENT_TOP);
-$tree->moveNode($sourceNodeId, $targetNodeId, $tree::PLACEMENT_BOTTOM);
+try {
+    $sourceNodeId = 15;
+    $targetNodeId = 10;
+    
+    $tree->moveNode($sourceNodeId, $targetNodeId, $tree::PLACEMENT_CHILD_TOP);
+    $tree->moveNode($sourceNodeId, $targetNodeId, $tree::PLACEMENT_CHILD_BOTTOM);
+    $tree->moveNode($sourceNodeId, $targetNodeId, $tree::PLACEMENT_TOP);
+    $tree->moveNode($sourceNodeId, $targetNodeId, $tree::PLACEMENT_BOTTOM);
+} catch (ValidationException $e) {
+    $errorMessage = $e->getMessage();
+}        
 ```
 
 ### Delete node or branch
 
 ```
-$nodeId = 15;
+use StefanoTree\Exception\ValidationException;
 
-$tree->deleteBranch($nodeId);
+try {
+    $nodeId = 15;
+    
+    $tree->deleteBranch($nodeId);
+} catch (ValidationException $e) {
+    $errorMessage = $e->getMessage();
+}    
 ```
 
 ### Getting nodes
@@ -196,11 +233,20 @@ $tree->getPath($nodeId, 0, true);
 - Check if tree is valid
 
 ```
-$tree->isValid($rootNodeId);
+use StefanoTree\Exception\ValidationException;
+
+try {
+    $satus = $tree->isValid($rootNodeId);
 ```
 
 - Rebuild broken tree
 
 ```
-$tree->rebuild($rootNodeId);
+use StefanoTree\Exception\ValidationException;
+
+try {
+    $tree->rebuild($rootNodeId);
+} catch (ValidationException $e) {
+    $errorMessage = $e->getMessage();
+}     
 ```
