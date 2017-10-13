@@ -7,7 +7,7 @@ namespace StefanoTree;
 use Doctrine\DBAL\Connection as DoctrineConnection;
 use Exception;
 use StefanoTree\Exception\InvalidArgumentException;
-use StefanoTree\Exception\RootNodeAlreadyExistException;
+use StefanoTree\Exception\ValidationException;
 use StefanoTree\NestedSet\Adapter;
 use StefanoTree\NestedSet\Adapter\AdapterInterface;
 use StefanoTree\NestedSet\AddStrategy;
@@ -93,12 +93,12 @@ class NestedSet implements TreeInterface
     {
         if ($this->getRootNode($scope)) {
             if ($scope) {
-                $errorMessage = sprintf('Root node for scope "%s" already exist', $scope);
+                $errorMessage = 'Root node for given scope already exist';
             } else {
                 $errorMessage = 'Root node already exist';
             }
 
-            throw new RootNodeAlreadyExistException($errorMessage);
+            throw new ValidationException($errorMessage);
         }
 
         $nodeInfo = new NodeInfo(null, null, 0, 1, 2, $scope);
@@ -151,9 +151,9 @@ class NestedSet implements TreeInterface
     /**
      * {@inheritdoc}
      */
-    public function moveNode($sourceNodeId, $targetNodeId, string $placement = self::PLACEMENT_CHILD_TOP): bool
+    public function moveNode($sourceNodeId, $targetNodeId, string $placement = self::PLACEMENT_CHILD_TOP): void
     {
-        return $this->getMoveStrategy($placement)->move($sourceNodeId, $targetNodeId);
+        $this->getMoveStrategy($placement)->move($sourceNodeId, $targetNodeId);
     }
 
     /**
@@ -184,7 +184,7 @@ class NestedSet implements TreeInterface
     /**
      * {@inheritdoc}
      */
-    public function deleteBranch($nodeId): bool
+    public function deleteBranch($nodeId): void
     {
         $adapter = $this->getAdapter();
 
@@ -198,10 +198,9 @@ class NestedSet implements TreeInterface
             if (!$nodeInfo) {
                 $adapter->commitTransaction();
 
-                return false;
+                return;
             }
 
-            // delete branch
             $adapter->delete($nodeInfo->getId());
 
             //patch hole
@@ -216,8 +215,6 @@ class NestedSet implements TreeInterface
 
             throw $e;
         }
-
-        return true;
     }
 
     /**

@@ -4,13 +4,17 @@ declare(strict_types=1);
 
 namespace StefanoTree\NestedSet\AddStrategy;
 
+use StefanoTree\Exception\ValidationException;
+
 interface AddStrategyInterface
 {
     /**
      * @param int|string $targetNodeId
      * @param array      $data
      *
-     * @return int|string|null Id of new created node or null if node was not created
+     * @throws ValidationException
+     *
+     * @return int|string Id of new created node
      */
     public function add($targetNodeId, array $data = array());
 }

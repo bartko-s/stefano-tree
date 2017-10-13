@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace StefanoTree\NestedSet\Validator;
 
 use Exception;
-use StefanoTree\Exception\InvalidArgumentException;
 use StefanoTree\Exception\TreeIsBrokenException;
+use StefanoTree\Exception\ValidationException;
 use StefanoTree\NestedSet\Adapter\AdapterInterface;
 use StefanoTree\NestedSet\NodeInfo;
 
@@ -44,9 +44,7 @@ class Validator implements ValidatorInterface
             $rootNodeInfo = $this->getAdapter()->getNodeInfo($rootNodeId);
 
             if (!$rootNodeInfo instanceof NodeInfo) {
-                throw new InvalidArgumentException(
-                    sprintf('Node with id "%s" does not exits', $rootNodeId)
-                );
+                throw new ValidationException('Node does not exists.');
             }
 
             $this->_checkIfNodeIsRootNode($rootNodeInfo);
@@ -79,9 +77,7 @@ class Validator implements ValidatorInterface
             $rootNodeInfo = $this->getAdapter()->getNodeInfo($rootNodeId);
 
             if (!$rootNodeInfo instanceof NodeInfo) {
-                throw new InvalidArgumentException(
-                    sprintf('Node with id "%s" does not exits', $rootNodeId)
-                );
+                throw new ValidationException('Node does not exists.');
             }
 
             $this->_checkIfNodeIsRootNode($rootNodeInfo);
@@ -136,14 +132,12 @@ class Validator implements ValidatorInterface
     /**
      * @param NodeInfo $node
      *
-     * @throws InvalidArgumentException
+     * @throws ValidationException
      */
     private function _checkIfNodeIsRootNode(NodeInfo $node): void
     {
         if (null != $node->getParentId()) {
-            throw new InvalidArgumentException(
-                sprintf('Given node id "%s" is not root id', $node->getId())
-            );
+            throw new ValidationException('Given node is not root node.');
         }
     }
 }

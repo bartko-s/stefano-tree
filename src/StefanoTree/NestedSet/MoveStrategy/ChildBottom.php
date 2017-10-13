@@ -5,15 +5,18 @@ declare(strict_types=1);
 namespace StefanoTree\NestedSet\MoveStrategy;
 
 use StefanoTree\Exception\TreeIsBrokenException;
+use StefanoTree\Exception\ValidationException;
 
 class ChildBottom extends MoveStrategyAbstract implements MoveStrategyInterface
 {
     /**
      * {@inheritdoc}
      */
-    protected function canMoveBranch(): bool
+    protected function canMoveBranch(): void
     {
-        return ($this->isTargetNodeInsideSourceBranch()) ? false : true;
+        if ($this->isTargetNodeInsideSourceBranch()) {
+            throw new ValidationException('Cannot move. Target node is inside source branch.');
+        }
     }
 
     /**

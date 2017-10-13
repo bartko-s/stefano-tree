@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace StefanoTree;
 
-use StefanoTree\Exception\RootNodeAlreadyExistException;
+use StefanoTree\Exception\ValidationException;
 
 interface TreeInterface
 {
@@ -16,10 +16,10 @@ interface TreeInterface
     /**
      * Create root node.
      *
-     * @throws RootNodeAlreadyExistException if root already exist
-     *
      * @param array           $data
      * @param null|string|int $scope Required if scope is used
+     *
+     * @throws ValidationException if root already exist
      *
      * @return int|string Id of new created root
      */
@@ -54,7 +54,9 @@ interface TreeInterface
      * @param array      $data
      * @param string     $placement
      *
-     * @return int|string|null Id of new created node. Null if node has not been created
+     * @throws ValidationException if node was not created
+     *
+     * @return int|string id of new created node
      */
     public function addNode($targetNodeId, array $data = array(), string $placement = self::PLACEMENT_CHILD_TOP);
 
@@ -63,18 +65,16 @@ interface TreeInterface
      * @param int    $targetNodeId
      * @param string $placement
      *
-     * @return bool
+     * @throws ValidationException if node was not moved
      */
-    public function moveNode($sourceNodeId, $targetNodeId, string $placement = self::PLACEMENT_CHILD_TOP): bool;
+    public function moveNode($sourceNodeId, $targetNodeId, string $placement = self::PLACEMENT_CHILD_TOP): void;
 
     /**
      * Delete node with nodeId and all its descendants.
      *
      * @param int|string $nodeId
-     *
-     * @return bool
      */
-    public function deleteBranch($nodeId): bool;
+    public function deleteBranch($nodeId): void;
 
     /**
      * Return path for given nodeId.
@@ -123,6 +123,8 @@ interface TreeInterface
      *
      * @param int|string $rootNodeId
      *
+     * @throws ValidationException if cannot validate tree
+     *
      * @return bool
      */
     public function isValid($rootNodeId): bool;
@@ -132,6 +134,8 @@ interface TreeInterface
      * Works only if [id, parent_id] pair is not broken.
      *
      * @param int|string $rootNodeId
+     *
+     * @throws ValidationException if cannot rebuilt tree
      */
     public function rebuild($rootNodeId): void;
 }

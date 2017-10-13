@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace StefanoTree\NestedSet\MoveStrategy;
 
-use StefanoTree\Exception\InvalidArgumentException;
+use StefanoTree\Exception\ValidationException;
 use StefanoTree\NestedSet\Adapter\AdapterInterface;
 use StefanoTree\NestedSet\NodeInfo;
 
@@ -26,13 +26,12 @@ abstract class MoveStrategyAbstract implements MoveStrategyInterface
     /**
      * {@inheritdoc}
      */
-    public function move($sourceNodeId, $targetNodeId): bool
+    public function move($sourceNodeId, $targetNodeId): void
     {
         $adapter = $this->getAdapter();
 
-        //source node and target node are equal
         if ($sourceNodeId == $targetNodeId) {
-            return false;
+            throw new ValidationException('Cannot move. Source node and Target node are equal.');
         }
 
         $adapter->beginTransaction();
@@ -42,31 +41,27 @@ abstract class MoveStrategyAbstract implements MoveStrategyInterface
             $sourceNodeInfo = $adapter->getNodeInfo($sourceNodeId);
             $targetNodeInfo = $adapter->getNodeInfo($targetNodeId);
 
-            //source node or target node does not exist
-            if (!$sourceNodeInfo || !$targetNodeInfo) {
-                $adapter->commitTransaction();
+            if (!$sourceNodeInfo) {
+                throw new ValidationException('Cannot move. Source node does not exists.');
+            }
 
-                return false;
+            if (!$targetNodeInfo) {
+                throw new ValidationException('Cannot move. Target node does not exists.');
             }
 
             $this->setSourceNodeInfo($sourceNodeInfo);
             $this->setTargetNodeInfo($targetNodeInfo);
 
-            // scope are different
             if ($sourceNodeInfo->getScope() != $targetNodeInfo->getScope()) {
-                throw new InvalidArgumentException('Cannot move node between scopes');
+                throw new ValidationException('Cannot move node between scopes.');
             }
 
-            if (!$this->canMoveBranch()) {
-                $adapter->commitTransaction();
-
-                return false;
-            }
+            $this->canMoveBranch();
 
             if ($this->isSourceNodeAtRequiredPosition()) {
                 $adapter->commitTransaction();
 
-                return true;
+                return;
             }
 
             $this->updateParentId();
@@ -81,16 +76,14 @@ abstract class MoveStrategyAbstract implements MoveStrategyInterface
 
             throw $e;
         }
-
-        return true;
     }
 
     /**
      * Check if can move node.
      *
-     * @return bool
+     * @throws ValidationException if cannot move branch
      */
-    abstract protected function canMoveBranch(): bool;
+    abstract protected function canMoveBranch(): void;
 
     /**
      * @return bool

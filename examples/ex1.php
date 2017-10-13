@@ -4,7 +4,7 @@
  */
 declare(strict_types=1);
 
-use StefanoTree\Exception\ExceptionInterface;
+use StefanoTree\Exception\ValidationException;
 use StefanoTree\TreeInterface;
 
 session_start();
@@ -76,7 +76,7 @@ class Service
         try {
             $this->getTreeAdapter()
                 ->createRootNode($data, $scope);
-        } catch (ExceptionInterface $e) {
+        } catch (ValidationException $e) {
             throw new ValidationError([$e->getMessage()]);
         }
     }
@@ -113,7 +113,7 @@ class Service
         try {
             $this->getTreeAdapter()
                 ->addNode($targetId, $data, $placement);
-        } catch (ExceptionInterface $e) {
+        } catch (ValidationException $e) {
             throw new ValidationError([$e->getMessage()]);
         }
     }
@@ -163,7 +163,7 @@ class Service
         try {
             $this->getTreeAdapter()
                 ->updateNode($nodeId, $data);
-        } catch (ExceptionInterface $e) {
+        } catch (ValidationException $e) {
             throw new ValidationError([$e->getMessage()]);
         }
     }
@@ -194,7 +194,7 @@ class Service
         try {
             $this->getTreeAdapter()
                 ->moveNode($sourceId, $targetId, $placement);
-        } catch (ExceptionInterface $e) {
+        } catch (ValidationException $e) {
             throw new ValidationError([$e->getMessage()]);
         }
     }

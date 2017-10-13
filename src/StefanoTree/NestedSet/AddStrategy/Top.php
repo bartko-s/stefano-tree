@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StefanoTree\NestedSet\AddStrategy;
 
+use StefanoTree\Exception\ValidationException;
 use StefanoTree\NestedSet\NodeInfo;
 
 class Top extends AddStrategyAbstract
@@ -11,9 +12,11 @@ class Top extends AddStrategyAbstract
     /**
      * {@inheritdoc}
      */
-    protected function canCreateNewNode(NodeInfo $targetNode): bool
+    protected function canCreateNewNode(NodeInfo $targetNode): void
     {
-        return ($targetNode->isRoot()) ? false : true;
+        if ($targetNode->isRoot()) {
+            throw new ValidationException('Cannot create node. Target node is root. Root node cannot have sibling.');
+        }
     }
 
     /**

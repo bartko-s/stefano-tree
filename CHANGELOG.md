@@ -25,4 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed (BC Breaks)
 - All library exceptions implements \StefanoTree\Exceptions\ExceptionInterface instead of \StefanoTree\Exceptions\BaseException 
 - \StefanoTree\TreeInterface::updateNode($nodeId, $data) is now \StefanoTree\TreeInterface::updateNode($nodeId, array $data)
-- \StefanoTree\TreeInterface::getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranch = null) is now \StefanoTree\TreeInterface::getDescendants($nodeId, $startLevel = 0, $levels = null, $excludeBranch = null) 
+- \StefanoTree\TreeInterface::getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranch = null) is now \StefanoTree\TreeInterface::getDescendants($nodeId, $startLevel = 0, $levels = null, $excludeBranch = null)
+- \StefanoTree\TreeInterface::createRoot throw \StefanoTree\Exception\ValidationException instead \StefanoTree\Exception\RootNodeAlreadyExistsException
+- \StefanoTree\TreeInterface::addNode throw \StefanoTree\Exception\ValidationException if node cannot be created
+- \StefanoTree\TreeInterface::moveNode throw \StefanoTree\Exception\ValidationException if node cannot be moved 

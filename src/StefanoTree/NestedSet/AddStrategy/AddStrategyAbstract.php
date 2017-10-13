@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StefanoTree\NestedSet\AddStrategy;
 
+use StefanoTree\Exception\ValidationException;
 use StefanoTree\NestedSet\Adapter\AdapterInterface;
 use StefanoTree\NestedSet\NodeInfo;
 
@@ -33,17 +34,10 @@ abstract class AddStrategyAbstract implements AddStrategyInterface
             $targetNodeInfo = $adapter->getNodeInfo($targetNodeId);
 
             if (!$targetNodeInfo instanceof NodeInfo) {
-                $adapter->commitTransaction();
-
-                return null;
+                throw new ValidationException('Target Node does not exists.');
             }
 
-            if (false == $this->canCreateNewNode($targetNodeInfo)) {
-                $adapter->commitTransaction();
-
-                return null;
-            }
-
+            $this->canCreateNewNode($targetNodeInfo);
             $this->makeHole($targetNodeInfo);
             $newNodeId = $adapter->insert($this->createNewNodeNodeInfo($targetNodeInfo), $data);
 
@@ -60,9 +54,9 @@ abstract class AddStrategyAbstract implements AddStrategyInterface
     /**
      * @param NodeInfo $targetNode
      *
-     * @return bool
+     * @throws ValidationException If cannot move node
      */
-    abstract protected function canCreateNewNode(NodeInfo $targetNode): bool;
+    abstract protected function canCreateNewNode(NodeInfo $targetNode): void;
 
     /**
      * @param NodeInfo $targetNode

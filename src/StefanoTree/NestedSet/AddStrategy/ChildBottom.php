@@ -11,9 +11,8 @@ class ChildBottom extends AddStrategyAbstract
     /**
      * {@inheritdoc}
      */
-    protected function canCreateNewNode(NodeInfo $targetNode): bool
+    protected function canCreateNewNode(NodeInfo $targetNode): void
     {
-        return true;
     }
 
     /**
