@@ -50,9 +50,7 @@ abstract class AbstractScopeTest extends IntegrationTestCase
         $this->treeAdapter
              ->createRootNode(array(), 10);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal_with_scope'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/with_scope/testCreateRoot.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/NestedSet/with_scope/testCreateRoot.xml');
     }
 
     public function testCreateRootRootWithSomeScopeAlreadyExist()
@@ -100,9 +98,7 @@ abstract class AbstractScopeTest extends IntegrationTestCase
         $lastGeneratedValue = $this->treeAdapter
             ->addNode(1);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal_with_scope'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/with_scope/testAddNodePlacementChildTop.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/NestedSet/with_scope/testAddNodePlacementChildTop.xml');
         $this->assertEquals(9, $lastGeneratedValue);
     }
 
@@ -111,9 +107,7 @@ abstract class AbstractScopeTest extends IntegrationTestCase
         $this->treeAdapter
              ->moveNode(3, 5, TreeAdapter::PLACEMENT_BOTTOM);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal_with_scope'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/with_scope/testMoveNodePlacementBottom.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/NestedSet/with_scope/testMoveNodePlacementBottom.xml');
     }
 
     public function testCannotMoveNodeBetweenScopes()
@@ -130,9 +124,7 @@ abstract class AbstractScopeTest extends IntegrationTestCase
         $this->treeAdapter
             ->deleteBranch(2);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal_with_scope'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/with_scope/testDeleteBranch.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/NestedSet/with_scope/testDeleteBranch.xml');
     }
 
     public function testGetDescendants()
@@ -268,9 +260,7 @@ abstract class AbstractScopeTest extends IntegrationTestCase
         $this->treeAdapter
              ->rebuild(1);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal_with_scope'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/with_scope/testRebuildTree.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/NestedSet/with_scope/testRebuildTree.xml');
     }
 
     public function testRebuildTreeGivenNodeIdIsNotRoot()

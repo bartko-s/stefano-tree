@@ -48,9 +48,8 @@ abstract class AbstractTest extends IntegrationTestCase
     {
         $newId = $this->treeAdapter
             ->createRootNode();
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/testCreateRootNode.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testCreateRootNode.xml');
         $this->assertEquals(1, $newId);
     }
 
@@ -58,9 +57,8 @@ abstract class AbstractTest extends IntegrationTestCase
     {
         $newId = $this->treeAdapter
             ->createRootNode(array('name' => 'This is root node'));
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/testCreateRootNodeWithCustomData.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testCreateRootNodeWithCustomData.xml');
         $this->assertEquals(1, $newId);
     }
 
@@ -90,6 +88,10 @@ abstract class AbstractTest extends IntegrationTestCase
                          ->getNode(12);
 
         $this->assertEquals($expectedNodeData, $nodeData);
+    }
+
+    public function testGetNodeNodeDoesNotExist()
+    {
         $this->assertNull($this->treeAdapter->getNode(123456789));
     }
 
@@ -102,10 +104,7 @@ abstract class AbstractTest extends IntegrationTestCase
             $this->treeAdapter
                 ->addNode(123456789, array(), TreeAdapter::PLACEMENT_BOTTOM);
         } catch (\Exception $e) {
-            $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-            $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
-            $this->assertDataSetsEqual($expectedDataSet, $dataSet);
-
+            $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
             throw $e;
         }
     }
@@ -128,37 +127,9 @@ abstract class AbstractTest extends IntegrationTestCase
             $this->treeAdapter
                 ->addNode(1, array(), TreeAdapter::PLACEMENT_BOTTOM);
         } catch (\Exception $e) {
-            $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-            $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
-            $this->assertDataSetsEqual($expectedDataSet, $dataSet);
-
+            $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
             throw $e;
         }
-    }
-
-    public function testAddNodePlacementBottom()
-    {
-        //test 1
-        $lastGeneratedValue = $this->treeAdapter
-                                   ->addNode(12, array(), TreeAdapter::PLACEMENT_BOTTOM);
-
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/testAddNodePlacementBottom-1.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
-        $this->assertEquals(26, $lastGeneratedValue);
-
-        //test 2 with data
-        $data = array(
-            'name' => 'ahoj',
-        );
-
-        $lastGeneratedValue = $this->treeAdapter
-                                   ->addNode(19, $data, TreeAdapter::PLACEMENT_BOTTOM);
-
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/testAddNodePlacementBottom-2.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
-        $this->assertEquals(27, $lastGeneratedValue);
     }
 
     public function testAddNodePlacementTopTargetNodeIsRoot()
@@ -170,12 +141,30 @@ abstract class AbstractTest extends IntegrationTestCase
             $this->treeAdapter
                 ->addNode(1, array(), TreeAdapter::PLACEMENT_TOP);
         } catch (\Exception $e) {
-            $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-            $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
-            $this->assertDataSetsEqual($expectedDataSet, $dataSet);
-
+            $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
             throw $e;
         }
+    }
+
+    public function testAddNodePlacementBottom()
+    {
+        //test 1
+        $lastGeneratedValue = $this->treeAdapter
+                                   ->addNode(12, array(), TreeAdapter::PLACEMENT_BOTTOM);
+
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testAddNodePlacementBottom-1.xml');
+        $this->assertEquals(26, $lastGeneratedValue);
+
+        //test 2 with data
+        $data = array(
+            'name' => 'ahoj',
+        );
+
+        $lastGeneratedValue = $this->treeAdapter
+                                   ->addNode(19, $data, TreeAdapter::PLACEMENT_BOTTOM);
+
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testAddNodePlacementBottom-2.xml');
+        $this->assertEquals(27, $lastGeneratedValue);
     }
 
     public function testAddNodePlacementTop()
@@ -184,9 +173,7 @@ abstract class AbstractTest extends IntegrationTestCase
         $lastGeneratedValue = $this->treeAdapter
                                    ->addNode(16, array(), TreeAdapter::PLACEMENT_TOP);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/testAddNodePlacementTop-1.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testAddNodePlacementTop-1.xml');
         $this->assertEquals(26, $lastGeneratedValue);
 
         //test 2 with data
@@ -196,9 +183,7 @@ abstract class AbstractTest extends IntegrationTestCase
         $lastGeneratedValue = $this->treeAdapter
                                    ->addNode(3, $data, TreeAdapter::PLACEMENT_TOP);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/testAddNodePlacementTop-2.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testAddNodePlacementTop-2.xml');
         $this->assertEquals(27, $lastGeneratedValue);
     }
 
@@ -208,9 +193,7 @@ abstract class AbstractTest extends IntegrationTestCase
         $lastGeneratedValue = $this->treeAdapter
                                    ->addNode(21, array(), TreeAdapter::PLACEMENT_CHILD_BOTTOM);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/testAddNodePlacementChildBottom-1.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testAddNodePlacementChildBottom-1.xml');
         $this->assertEquals(26, $lastGeneratedValue);
 
         //test 2 with data
@@ -220,9 +203,7 @@ abstract class AbstractTest extends IntegrationTestCase
         $lastGeneratedValue = $this->treeAdapter
                                    ->addNode(4, $data, TreeAdapter::PLACEMENT_CHILD_BOTTOM);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/testAddNodePlacementChildBottom-2.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testAddNodePlacementChildBottom-2.xml');
         $this->assertEquals(27, $lastGeneratedValue);
     }
 
@@ -232,9 +213,7 @@ abstract class AbstractTest extends IntegrationTestCase
         $lastGeneratedValue = $this->treeAdapter
                                    ->addNode(4);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/testAddNodePlacementChildTop-1.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testAddNodePlacementChildTop-1.xml');
         $this->assertEquals(26, $lastGeneratedValue);
 
         //test 2 with data
@@ -244,9 +223,7 @@ abstract class AbstractTest extends IntegrationTestCase
         $lastGeneratedValue = $this->treeAdapter
                                    ->addNode(10, $data);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/testAddNodePlacementChildTop-2.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testAddNodePlacementChildTop-2.xml');
         $this->assertEquals(27, $lastGeneratedValue);
     }
 
@@ -255,9 +232,7 @@ abstract class AbstractTest extends IntegrationTestCase
         $this->treeAdapter
             ->deleteBranch(123456789);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet, 'Not Exist Branch');
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
     }
 
     public function testDeleteBranch()
@@ -265,9 +240,7 @@ abstract class AbstractTest extends IntegrationTestCase
         $this->treeAdapter
                        ->deleteBranch(6);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/testDeleteBranch.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testDeleteBranch.xml');
     }
 
     public function testMoveNodeCannotMoveTargetNodeIsInsideSourceBranch()
@@ -279,10 +252,7 @@ abstract class AbstractTest extends IntegrationTestCase
             $this->treeAdapter
                 ->moveNode(1, 12);
         } catch (\Exception $e) {
-            $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-            $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
-            $this->assertDataSetsEqual($expectedDataSet, $dataSet);
-
+            $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
             throw $e;
         }
     }
@@ -296,10 +266,7 @@ abstract class AbstractTest extends IntegrationTestCase
             $this->treeAdapter
                 ->moveNode(10, 10);
         } catch (\Exception $e) {
-            $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-            $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
-            $this->assertDataSetsEqual($expectedDataSet, $dataSet);
-
+            $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
             throw $e;
         }
     }
@@ -313,10 +280,7 @@ abstract class AbstractTest extends IntegrationTestCase
             $this->treeAdapter
                 ->moveNode(5, 123456);
         } catch (\Exception $e) {
-            $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-            $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
-            $this->assertDataSetsEqual($expectedDataSet, $dataSet);
-
+            $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
             throw $e;
         }
     }
@@ -330,10 +294,7 @@ abstract class AbstractTest extends IntegrationTestCase
             $this->treeAdapter
                 ->moveNode(123456, 6);
         } catch (\Exception $e) {
-            $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-            $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
-            $this->assertDataSetsEqual($expectedDataSet, $dataSet);
-
+            $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
             throw $e;
         }
     }
@@ -371,152 +332,117 @@ abstract class AbstractTest extends IntegrationTestCase
             $this->treeAdapter
                 ->moveNode(11, 1, $placement);
         } catch (\Exception $e) {
-            $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-            $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
-            $this->assertDataSetsEqual($expectedDataSet, $dataSet);
-
+            $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
             throw $e;
         }
     }
 
     public function testMoveNodePlacementBottom()
     {
-        //test
+        //test source node is already at required position
         $this->treeAdapter
                        ->moveNode(3, 2, TreeAdapter::PLACEMENT_BOTTOM);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet, 'Source node is in required position');
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
 
         //test
         $this->treeAdapter
                        ->moveNode(14, 18, TreeAdapter::PLACEMENT_BOTTOM);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/testMoveNodePlacementBottom-1.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementBottom-1.xml');
 
         //test
         $this->treeAdapter
                        ->moveNode(16, 7, TreeAdapter::PLACEMENT_BOTTOM);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/testMoveNodePlacementBottom-2.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementBottom-2.xml');
 
         //test
         $this->treeAdapter
                        ->moveNode(14, 3, TreeAdapter::PLACEMENT_BOTTOM);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/testMoveNodePlacementBottom-3.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementBottom-3.xml');
     }
 
     public function testMoveNodePlacementTop()
     {
-        //test
+        //test source node is already at required position
         $this->treeAdapter
                        ->moveNode(3, 4, TreeAdapter::PLACEMENT_TOP);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet, 'Source node is in required position');
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
 
         //test
         $this->treeAdapter
                        ->moveNode(19, 12, TreeAdapter::PLACEMENT_TOP);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/testMoveNodePlacementTop-1.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementTop-1.xml');
 
         //test
         $this->treeAdapter
                        ->moveNode(10, 18, TreeAdapter::PLACEMENT_TOP);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/testMoveNodePlacementTop-2.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementTop-2.xml');
 
         //test
         $this->treeAdapter
                        ->moveNode(21, 6, TreeAdapter::PLACEMENT_TOP);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/testMoveNodePlacementTop-3.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementTop-3.xml');
     }
 
     public function testMoveNodePlacementChildBottom()
     {
-        //test
+        //test source node is already at required position
         $this->treeAdapter
                        ->moveNode(22, 18, TreeAdapter::PLACEMENT_CHILD_BOTTOM);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet, 'Source node is in required position');
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
 
         //test
         $this->treeAdapter
                        ->moveNode(9, 12, TreeAdapter::PLACEMENT_CHILD_BOTTOM);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/testMoveNodePlacementChildBottom-1.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementChildBottom-1.xml');
 
         //test
         $this->treeAdapter
                        ->moveNode(10, 3, TreeAdapter::PLACEMENT_CHILD_BOTTOM);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/testMoveNodePlacementChildBottom-2.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementChildBottom-2.xml');
 
         //test
         $this->treeAdapter
                        ->moveNode(21, 12, TreeAdapter::PLACEMENT_CHILD_BOTTOM);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/testMoveNodePlacementChildBottom-3.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementChildBottom-3.xml');
     }
 
     public function testMoveNodePlacementChildTopDefaultPlacement()
     {
-        //test
+        //test source node is already at required position
         $this->treeAdapter
                        ->moveNode(21, 18);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet, 'Source node is in required position');
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
 
         //test
         $this->treeAdapter
                        ->moveNode(9, 21);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/testMoveNodePlacementChildTop-1.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementChildTop-1.xml');
 
         //test
         $this->treeAdapter
                        ->moveNode(16, 3);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/testMoveNodePlacementChildTop-2.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementChildTop-2.xml');
 
         //test
         $this->treeAdapter
                ->moveNode(18, 3);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/testMoveNodePlacementChildTop-3.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementChildTop-3.xml');
     }
 
     public function testGetPathReturnEmptyArrayIfNodeDoesNotExist()
@@ -811,9 +737,7 @@ abstract class AbstractTest extends IntegrationTestCase
         $this->treeAdapter
              ->updateNode(3, $data);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/testUpdateNode-1.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testUpdateNode-1.xml');
 
         //test
         $data = array(
@@ -827,9 +751,7 @@ abstract class AbstractTest extends IntegrationTestCase
         $this->treeAdapter
              ->updateNode(3, $data);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/testUpdateNode-1.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testUpdateNode-1.xml');
     }
 
     public function testGetRootNodeRootDoesNotExist()
