@@ -25,7 +25,7 @@ class NestedSetTest extends UnitTestCase
         return new Options(array(
             'tableName' => 'table',
             'idColumnName' => 'id',
-            'dbAdapter' => \Mockery::mock('\StefanoDb\Adapter\Adapter'),
+            'dbAdapter' => \Mockery::mock(\StefanoDb\Adapter\Adapter::class),
         ));
     }
 

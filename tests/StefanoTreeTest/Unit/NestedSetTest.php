@@ -13,16 +13,16 @@ class NestedSetTest extends UnitTestCase
     {
         return array(
             array(
-                '\Zend\Db\Adapter\Adapter',
-                '\StefanoTree\NestedSet\Adapter\Zend2',
+                \Zend\Db\Adapter\Adapter::class,
+                \StefanoTree\NestedSet\Adapter\Zend2::class,
             ),
             array(
-                '\Doctrine\DBAL\Connection',
-                '\StefanoTree\NestedSet\Adapter\Doctrine2DBAL',
+                \Doctrine\DBAL\Connection::class,
+                \StefanoTree\NestedSet\Adapter\Doctrine2DBAL::class,
             ),
             array(
-                '\Zend_Db_Adapter_Abstract',
-                '\StefanoTree\NestedSet\Adapter\Zend1',
+                \Zend_Db_Adapter_Abstract::class,
+                \StefanoTree\NestedSet\Adapter\Zend1::class,
             ),
         );
     }
@@ -32,7 +32,7 @@ class NestedSetTest extends UnitTestCase
      */
     public function testFactoryMethod($dbAdapterClass, $expectedAdapterClass)
     {
-        $optionsStub = \Mockery::mock('\StefanoTree\NestedSet\Options');
+        $optionsStub = \Mockery::mock(\StefanoTree\NestedSet\Options::class);
         $dbAdapterStub = \Mockery::mock($dbAdapterClass);
 
         $tree = NestedSet::factory($optionsStub, $dbAdapterStub);
@@ -41,9 +41,9 @@ class NestedSetTest extends UnitTestCase
         $this->assertInstanceOf($expectedAdapterClass, $adapter);
     }
 
-    public function testThrowExceptionIfYouDbAdapterIsNotSupporter()
+    public function testThrowExceptionIfYourDbAdapterIsNotSupporter()
     {
-        $optionsStub = \Mockery::mock('\StefanoTree\NestedSet\Options');
+        $optionsStub = \Mockery::mock(\StefanoTree\NestedSet\Options::class);
         $dbAdapter = new \DateTime();
 
         $this->expectException(\StefanoTree\Exception\InvalidArgumentException::class);
