@@ -637,7 +637,7 @@ abstract class AbstractTest extends IntegrationTestCase
         //test limit depth
         $return = $this->treeAdapter
                        ->getDescendantsQueryBuilder()
-                       ->limitDepth(2)
+                       ->levelLimit(2)
                        ->get(18);
 
         $expected = array(
@@ -708,7 +708,7 @@ abstract class AbstractTest extends IntegrationTestCase
         $return = $this->treeAdapter
             ->getDescendantsQueryBuilder()
             ->excludeFirstNLevel(1)
-            ->limitDepth(1)
+            ->levelLimit(1)
             ->get(123456789);
 
         $this->assertEquals(array(), $return);
@@ -719,7 +719,7 @@ abstract class AbstractTest extends IntegrationTestCase
         $return = $this->treeAdapter
             ->getDescendantsQueryBuilder()
             ->excludeFirstNLevel(1)
-            ->limitDepth(1)
+            ->levelLimit(1)
             ->get(8);
 
         $this->assertEquals(array(), $return);
@@ -730,7 +730,7 @@ abstract class AbstractTest extends IntegrationTestCase
         //test exclude node
         $return = $this->treeAdapter
                        ->getDescendantsQueryBuilder()
-                       ->limitDepth(1)
+                       ->levelLimit(1)
                        ->excludeFirstNLevel(1)
                        ->get(18);
 

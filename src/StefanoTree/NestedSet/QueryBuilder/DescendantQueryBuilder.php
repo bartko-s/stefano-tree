@@ -44,7 +44,7 @@ class DescendantQueryBuilder implements DescendantQueryBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function limitDepth(int $count): DescendantQueryBuilderInterface
+    public function levelLimit(int $count): DescendantQueryBuilderInterface
     {
         $this->limitDepth = $count;
 

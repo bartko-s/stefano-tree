@@ -189,7 +189,7 @@ $tree->getDescendantsQueryBuilder()
 // only children     
 $tree->getDescendantsQueryBuilder()
      ->excludeFirstNLevel(1)
-     ->limitDepth(1)
+     ->levelLimit(1)
      ->get($nodeId);
 
 // exclude first level($nodeId) from result
@@ -202,9 +202,9 @@ $tree->getDescendantsQueryBuilder()
      ->excludeFirstNLevel(2)
      ->get($nodeId);
 
-// limit depth. Return first 4 level
+// return first 4 level
 $tree->getDescendantsQueryBuilder()
-     ->limitDepth(4)
+     ->levelLimit(4)
      ->get($nodeId);
 
 // exclude branch from  result

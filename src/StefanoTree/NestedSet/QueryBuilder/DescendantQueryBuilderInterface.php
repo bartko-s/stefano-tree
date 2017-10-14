@@ -31,7 +31,7 @@ interface DescendantQueryBuilderInterface
      *
      * @return DescendantQueryBuilderInterface
      */
-    public function limitDepth(int $count): DescendantQueryBuilderInterface;
+    public function levelLimit(int $count): DescendantQueryBuilderInterface;
 
     /**
      * Exclude specified branch from result.
