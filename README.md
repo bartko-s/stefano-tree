@@ -202,7 +202,7 @@ $tree->getDescendantsQueryBuilder()
      ->excludeFirstNLevel(2)
      ->get($nodeId);
 
-// limit depth. Returun first 4 level
+// limit depth. Return first 4 level
 $tree->getDescendantsQueryBuilder()
      ->limitDepth(4)
      ->get($nodeId);
@@ -240,6 +240,9 @@ use StefanoTree\Exception\ValidationException;
 
 try {
     $satus = $tree->isValid($rootNodeId);
+} catch (ValidationException $e) {
+    $errorMessage = $e->getMessage();
+}    
 ```
 
 - Rebuild broken tree
