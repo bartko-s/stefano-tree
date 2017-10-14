@@ -21,6 +21,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - removed method \StefanoTree\TreeInterface::moveNodePlacementTop
 - removed method \StefanoTree\TreeInterface::moveNodePlacementChildBottom
 - removed method \StefanoTree\TreeInterface::moveNodePlacementChildTop
+- removed method \StefanoTree\TreeInterface::getDescendants use \StefanoTree\TreeInterface::getDescendantsQueryBuilder instead 
+- removed method \StefanoTree\TreeInterface::getChildren use \StefanoTree\TreeInterface::getDescendantsQueryBuilder instead
 
 ### Changed (BC Breaks)
 - All library exceptions implements \StefanoTree\Exceptions\ExceptionInterface instead of \StefanoTree\Exceptions\BaseException 

@@ -542,22 +542,28 @@ abstract class AbstractTest extends IntegrationTestCase
     public function testGetDescendantsReturnEmptyArrayIfNodeDoesNotExist()
     {
         $return = $this->treeAdapter
-            ->getDescendants(123456789);
+            ->getDescendantsQueryBuilder()
+            ->get(123456789);
         $this->assertEquals(array(), $return);
     }
 
     public function testGetDescendantsReturnEmptyArrayNodeDoesNotHaveDescendants()
     {
         $return = $this->treeAdapter
-            ->getDescendants(8, 1);
+            ->getDescendantsQueryBuilder()
+            ->excludeFirstNLevel(1)
+            ->get(8);
+
         $this->assertEquals(array(), $return);
     }
 
     public function testGetDescendants()
     {
-        //test whole branche
+        //test whole branch
         $return = $this->treeAdapter
-                       ->getDescendants(21);
+                       ->getDescendantsQueryBuilder()
+                       ->get(21);
+
         $expected = array(
             array(
                 'tree_traversal_id' => '21',
@@ -586,9 +592,12 @@ abstract class AbstractTest extends IntegrationTestCase
         );
         $this->assertEquals($expected, $return);
 
-        //test different start node
+        //test exclude fist 3 levels
         $return = $this->treeAdapter
-                       ->getDescendants(6, 3);
+                       ->getDescendantsQueryBuilder()
+                       ->excludeFirstNLevel(3)
+                       ->get(6);
+
         $expected = array(
             array(
                 'tree_traversal_id' => '21',
@@ -625,9 +634,12 @@ abstract class AbstractTest extends IntegrationTestCase
         );
         $this->assertEquals($expected, $return);
 
-        //test custom levels
+        //test limit depth
         $return = $this->treeAdapter
-                       ->getDescendants(18, 0, 2);
+                       ->getDescendantsQueryBuilder()
+                       ->limitDepth(2)
+                       ->get(18);
+
         $expected = array(
             array(
                 'tree_traversal_id' => '18',
@@ -658,7 +670,10 @@ abstract class AbstractTest extends IntegrationTestCase
 
         //test exclude node
         $return = $this->treeAdapter
-                       ->getDescendants(12, 0, null, 21);
+                       ->getDescendantsQueryBuilder()
+                       ->excludeBranch(21)
+                       ->get(12);
+
         $expected = array(
             array(
                 'tree_traversal_id' => '12',
@@ -691,14 +706,22 @@ abstract class AbstractTest extends IntegrationTestCase
     public function testGetChildrenReturnEmptyArrayIfNodeDoesNotExist()
     {
         $return = $this->treeAdapter
-            ->getChildren(123456789);
+            ->getDescendantsQueryBuilder()
+            ->excludeFirstNLevel(1)
+            ->limitDepth(1)
+            ->get(123456789);
+
         $this->assertEquals(array(), $return);
     }
 
     public function testGetChildrenReturnEmptyArrayIfNodeDoesNotHaveChildren()
     {
         $return = $this->treeAdapter
-            ->getChildren(8);
+            ->getDescendantsQueryBuilder()
+            ->excludeFirstNLevel(1)
+            ->limitDepth(1)
+            ->get(8);
+
         $this->assertEquals(array(), $return);
     }
 
@@ -706,7 +729,11 @@ abstract class AbstractTest extends IntegrationTestCase
     {
         //test exclude node
         $return = $this->treeAdapter
-                       ->getChildren(18);
+                       ->getDescendantsQueryBuilder()
+                       ->limitDepth(1)
+                       ->excludeFirstNLevel(1)
+                       ->get(18);
+
         $expected = array(
             array(
                 'tree_traversal_id' => '21',

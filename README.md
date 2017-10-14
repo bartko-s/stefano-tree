@@ -10,7 +10,7 @@
 
 ## Features
 
- - NestedSet(MPTT - Modified Preorder Tree Traversal)
+ - NestedSet(MPTT - Modified Pre-order Tree Traversal)
  - Support scopes (multiple independent tree in one db table)
  - Rebuild broken tree
  - Tested with MySQL and PostgreSQL but should work with any database vendor which support transaction
@@ -177,37 +177,40 @@ try {
 
 ### Getting nodes
 
-- Get all children
-
-```
-$nodeId = 15;
-$tree->getChildren($nodeId);
-```
-
-- Get all descendants
+- Get descendants
 
 ```
 $nodeId = 15;
 
-//all descedants
-$tree->getDescendants($nodeId);
+// all descendants
+$tree->getDescendantsQueryBuilder()
+     ->get($nodeId);
+     
+// only children     
+$tree->getDescendantsQueryBuilder()
+     ->excludeFirstNLevel(1)
+     ->limitDepth(1)
+     ->get($nodeId);
 
-//exclude node $nodeId from result
-$tree->getDescendants($nodeId, 1);
+// exclude first level($nodeId) from result
+$tree->getDescendants()
+     ->excludeFirstNLevel(1)
+     ->get($nodeId);
 
-//exclude first two levels from result
-$tree->getDescendants($nodeId, 2);
+// exclude first two levels from result
+$tree->getDescendantsQueryBuilder()
+     ->excludeFirstNLevel(2)
+     ->get($nodeId);
 
-//get four levels
-$tree->getDescendants($nodeId, 0, 4);
-```
+// limit depth. Returun first 4 level
+$tree->getDescendantsQueryBuilder()
+     ->limitDepth(4)
+     ->get($nodeId);
 
-- Exclude branche from  result
-
-```
-$nodeId = 15;
-$excludeBranche = 22;
-$tree->getDescendants($nodeId, 0, null, $excludeBranche);
+// exclude branch from  result
+$tree->getDescendantsQueryBuilder()
+     ->excludeBranch(22)
+     ->get($nodeId);
 ```
 
 - Get Path

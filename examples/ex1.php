@@ -208,7 +208,8 @@ class Service
     public function getDescendants($nodeId): array
     {
         return $this->getTreeAdapter()
-            ->getDescendants($nodeId);
+            ->getDescendantsQueryBuilder()
+            ->get($nodeId);
     }
 }
 

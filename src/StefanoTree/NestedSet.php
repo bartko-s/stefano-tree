@@ -16,6 +16,8 @@ use StefanoTree\NestedSet\MoveStrategy;
 use StefanoTree\NestedSet\MoveStrategy\MoveStrategyInterface;
 use StefanoTree\NestedSet\NodeInfo;
 use StefanoTree\NestedSet\Options;
+use StefanoTree\NestedSet\QueryBuilder\DescendantQueryBuilder;
+use StefanoTree\NestedSet\QueryBuilder\DescendantQueryBuilderInterface;
 use StefanoTree\NestedSet\Validator\Validator;
 use StefanoTree\NestedSet\Validator\ValidatorInterface;
 use Zend\Db\Adapter\Adapter as Zend2DbAdapter;
@@ -238,18 +240,9 @@ class NestedSet implements TreeInterface
     /**
      * {@inheritdoc}
      */
-    public function getDescendants($nodeId, int $startLevel = 0, ?int $levels = null, ?int $excludeBranch = null): array
+    public function getDescendantsQueryBuilder(): DescendantQueryBuilderInterface
     {
-        return $this->getAdapter()
-                    ->getDescendants($nodeId, $startLevel, $levels, $excludeBranch);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getChildren($nodeId): array
-    {
-        return $this->getDescendants($nodeId, 1, 1);
+        return new DescendantQueryBuilder($this->getAdapter());
     }
 
     /**

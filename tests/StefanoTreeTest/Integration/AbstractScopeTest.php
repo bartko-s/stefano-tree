@@ -169,7 +169,9 @@ abstract class AbstractScopeTest extends IntegrationTestCase
         );
 
         $nodeData = $this->treeAdapter
-                       ->getDescendants(2);
+                       ->getDescendantsQueryBuilder()
+                       ->get(2);
+
         $this->assertEquals($expectedNodeData, $nodeData);
     }
 

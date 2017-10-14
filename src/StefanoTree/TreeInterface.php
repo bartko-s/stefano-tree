@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace StefanoTree;
 
 use StefanoTree\Exception\ValidationException;
+use StefanoTree\NestedSet\QueryBuilder\DescendantQueryBuilderInterface;
 
 interface TreeInterface
 {
@@ -97,26 +98,9 @@ interface TreeInterface
     public function getNode($nodeId): ?array;
 
     /**
-     * Return all descendants of given nodeId which satisfy given conditions.
-     *
-     * @param int|string $nodeId
-     * @param int        $startLevel    Relative level from $nodeId. 1 = exclude $nodeId from result.
-     *                                  2 = exclude 2 levels from result
-     * @param null|int   $levels        Number of levels in the results relative to $startLevel
-     * @param null|int   $excludeBranch Exclude defined branch(node id) from result
-     *
-     * @return array
+     * @return DescendantQueryBuilderInterface
      */
-    public function getDescendants($nodeId, int $startLevel = 0, ?int $levels = null, ?int $excludeBranch = null): array;
-
-    /**
-     * Return direct children nodes of given nodeId.
-     *
-     * @param int|string $nodeId
-     *
-     * @return array
-     */
-    public function getChildren($nodeId): array;
+    public function getDescendantsQueryBuilder(): DescendantQueryBuilderInterface;
 
     /**
      * Check if left index, right index, level is in consistent state.
