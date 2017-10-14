@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace StefanoTree;
 
 use StefanoTree\Exception\ValidationException;
+use StefanoTree\NestedSet\QueryBuilder\AncestorQueryBuilderInterface;
 use StefanoTree\NestedSet\QueryBuilder\DescendantQueryBuilderInterface;
 
 interface TreeInterface
@@ -78,17 +79,6 @@ interface TreeInterface
     public function deleteBranch($nodeId): void;
 
     /**
-     * Return path for given nodeId.
-     *
-     * @param int|string $nodeId
-     * @param int        $startLevel      0 = including root node
-     * @param bool       $excludeLastNode
-     *
-     * @return array
-     */
-    public function getPath($nodeId, int $startLevel = 0, bool $excludeLastNode = false): array;
-
-    /**
      * Return node.
      *
      * @param int|string $nodeId
@@ -96,6 +86,11 @@ interface TreeInterface
      * @return null|array
      */
     public function getNode($nodeId): ?array;
+
+    /**
+     * @return AncestorQueryBuilderInterface
+     */
+    public function getAncestorsQueryBuilder(): AncestorQueryBuilderInterface;
 
     /**
      * @return DescendantQueryBuilderInterface

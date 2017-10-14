@@ -16,6 +16,8 @@ use StefanoTree\NestedSet\MoveStrategy;
 use StefanoTree\NestedSet\MoveStrategy\MoveStrategyInterface;
 use StefanoTree\NestedSet\NodeInfo;
 use StefanoTree\NestedSet\Options;
+use StefanoTree\NestedSet\QueryBuilder\AncestorQueryBuilder;
+use StefanoTree\NestedSet\QueryBuilder\AncestorQueryBuilderInterface;
 use StefanoTree\NestedSet\QueryBuilder\DescendantQueryBuilder;
 use StefanoTree\NestedSet\QueryBuilder\DescendantQueryBuilderInterface;
 use StefanoTree\NestedSet\Validator\Validator;
@@ -222,19 +224,18 @@ class NestedSet implements TreeInterface
     /**
      * {@inheritdoc}
      */
-    public function getPath($nodeId, int $startLevel = 0, bool $excludeLastNode = false): array
+    public function getNode($nodeId): ?array
     {
         return $this->getAdapter()
-                    ->getPath($nodeId, $startLevel, $excludeLastNode);
+                    ->getNode($nodeId);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getNode($nodeId): ?array
+    public function getAncestorsQueryBuilder(): AncestorQueryBuilderInterface
     {
-        return $this->getAdapter()
-                    ->getNode($nodeId);
+        return new AncestorQueryBuilder($this->getAdapter());
     }
 
     /**

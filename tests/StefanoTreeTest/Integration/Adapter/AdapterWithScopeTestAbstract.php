@@ -180,7 +180,7 @@ abstract class AdapterWithScopeTestAbstract extends IntegrationTestCase
     public function testGetPath()
     {
         $path = $this->adapter
-            ->getPath(5);
+            ->getAncestors(5);
 
         $this->assertCount(3, $path);
 

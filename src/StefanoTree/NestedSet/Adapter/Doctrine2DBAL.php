@@ -501,7 +501,7 @@ class Doctrine2DBAL extends AdapterAbstract implements AdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function getPath($nodeId, int $startLevel = 0, bool $excludeLastNode = false): array
+    public function getAncestors($nodeId, int $startLevel = 0, bool $excludeLastNode = false): array
     {
         $options = $this->getOptions();
 

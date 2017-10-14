@@ -250,44 +250,44 @@ abstract class AdapterTestAbstract extends IntegrationTestCase
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testUpdateNodeMetadata.xml');
     }
 
-    public function testGetPathReturnEmptyArrayIfNodeDoestNotExist()
+    public function testGetAncestorsReturnEmptyArrayIfNodeDoestNotExist()
     {
         $path = $this->adapter
-            ->getPath(1000);
+            ->getAncestors(1000);
 
         $this->assertEquals(array(), $path);
     }
 
-    public function testGetPath()
+    public function testGetAncestors()
     {
         $path = $this->adapter
-            ->getPath(10);
+            ->getAncestors(10);
 
         $this->assertCount(4, $path);
 
-        $expected = include __DIR__.'/_files/adapter/testGetPath.php';
+        $expected = include __DIR__.'/_files/adapter/testGetAncestors.php';
         $this->assertEquals($expected, $path);
     }
 
-    public function testGetPathFromLevel()
+    public function testGetAncestorsFromLevel()
     {
         $path = $this->adapter
-            ->getPath(10, 2);
+            ->getAncestors(10, 2);
 
         $this->assertCount(2, $path);
 
-        $expected = include __DIR__.'/_files/adapter/testGetPathStartFromLevel.php';
+        $expected = include __DIR__.'/_files/adapter/testGetAncestorsStartFromLevel.php';
         $this->assertEquals($expected, $path);
     }
 
-    public function testGetPathExcludeLastNode()
+    public function testGetAncestorsExcludeLastNode()
     {
         $path = $this->adapter
-            ->getPath(10, 0, true);
+            ->getAncestors(10, 0, true);
 
         $this->assertCount(3, $path);
 
-        $expected = include __DIR__.'/_files/adapter/testGetPathExcludeLastNode.php';
+        $expected = include __DIR__.'/_files/adapter/testGetAncestorsExcludeLastNode.php';
         $this->assertEquals($expected, $path);
     }
 

@@ -124,7 +124,7 @@ interface AdapterInterface
      *
      * @return array
      */
-    public function getPath($nodeId, int $startLevel = 0, bool $excludeLastNode = false): array;
+    public function getAncestors($nodeId, int $startLevel = 0, bool $excludeLastNode = false): array;
 
     /**
      * @param int|string $nodeId

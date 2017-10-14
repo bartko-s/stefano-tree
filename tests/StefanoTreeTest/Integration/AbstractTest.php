@@ -445,25 +445,32 @@ abstract class AbstractTest extends IntegrationTestCase
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementChildTop-3.xml');
     }
 
-    public function testGetPathReturnEmptyArrayIfNodeDoesNotExist()
+    public function testGetAncestorsReturnEmptyArrayIfNodeDoesNotExist()
     {
         $return = $this->treeAdapter
-            ->getPath(123456789);
+            ->getAncestorsQueryBuilder()
+            ->get(123456789);
+
         $this->assertEquals(array(), $return);
     }
 
-    public function testGetPathReturnEmptyArrayIfNodeExistButHasNoPath()
+    public function testGetAncestorsReturnEmptyArrayIfNodeExistButHasNoPath()
     {
         $return = $this->treeAdapter
-            ->getPath(1, 0, true);
+            ->getAncestorsQueryBuilder()
+            ->excludeLastLevel()
+            ->get(1);
+
         $this->assertEquals(array(), $return);
     }
 
-    public function testGetPath()
+    public function testGetAncestor()
     {
         //test
         $return = $this->treeAdapter
-                       ->getPath(6);
+                       ->getAncestorsQueryBuilder()
+                       ->get(6);
+
         $expected = array(
             array(
                 'tree_traversal_id' => '1',
@@ -494,7 +501,10 @@ abstract class AbstractTest extends IntegrationTestCase
 
         //test
         $return = $this->treeAdapter
-                       ->getPath(6, 1);
+                       ->getAncestorsQueryBuilder()
+                       ->excludeFistNLevel(1)
+                       ->get(6);
+
         $expected = array(
             array(
                 'tree_traversal_id' => '3',
@@ -517,7 +527,10 @@ abstract class AbstractTest extends IntegrationTestCase
 
         //test
         $return = $this->treeAdapter
-                       ->getPath(6, 0, true);
+                       ->getAncestorsQueryBuilder()
+                       ->excludeLastLevel()
+                       ->get(6);
+
         $expected = array(
             array(
                 'tree_traversal_id' => '1',

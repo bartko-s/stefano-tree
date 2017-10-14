@@ -213,22 +213,24 @@ $tree->getDescendantsQueryBuilder()
      ->get($nodeId);
 ```
 
-- Get Path
+- Get Ancestors
 
 ```
 $nodeId = 15;
 
-//full path
-$tree->getPath($nodeId);
+// get all
+$tree->getAncestorsQueryBuilder()
+     ->get($nodeId);
 
-//exclude node $nodeId from result
-$tree->getPath($nodeId, 1);
+// exclude last node($nodeId) from result
+$tree->getAncestorsQueryBuilder()
+     ->excludeLastLevel()
+     ->getPath($nodeId);
 
-//exclude first two levels from result
-$tree->getPath($nodeId, 2);
-
-//exclude last node
-$tree->getPath($nodeId, 0, true);
+// exclude first two levels from result
+$tree->getAncestorsQueryBuilder()
+     ->excludeFistNLevel(2)
+     ->get($nodeId);
 ```
 
 ### Validation and Rebuild broken tree

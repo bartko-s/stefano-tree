@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - new addNode method with this signature \StefanoTree\TreeInterface::addNode($targetNodeId, array $data = array(), string $placement=self::PLACEMENT_CHILD_TOP): int|string
 - new moveNode method with this signature \StefanoTree\TreeInterface::moveNode($sourceNodeId, $targetNodeId, string $placement = self::PLACEMENT_CHILD_TOP): bool
+- new DescendantsQueryBuilder
+- new AncestorsQueryBuilder
 
 ### Removed (BC Breaks)
 - removed support for PHP version 7.0 and below
@@ -23,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - removed method \StefanoTree\TreeInterface::moveNodePlacementChildTop
 - removed method \StefanoTree\TreeInterface::getDescendants use \StefanoTree\TreeInterface::getDescendantsQueryBuilder instead 
 - removed method \StefanoTree\TreeInterface::getChildren use \StefanoTree\TreeInterface::getDescendantsQueryBuilder instead
+- removed method \StefanoTree\TreeInterface::getPath use \StefanoTree\TreeInterface::getAncestorsQueryBuilder instead
 
 ### Changed (BC Breaks)
 - All library exceptions implements \StefanoTree\Exceptions\ExceptionInterface instead of \StefanoTree\Exceptions\BaseException 

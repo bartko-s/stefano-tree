@@ -175,7 +175,7 @@ abstract class AbstractScopeTest extends IntegrationTestCase
         $this->assertEquals($expectedNodeData, $nodeData);
     }
 
-    public function testGetPath()
+    public function testGetAncestors()
     {
         $expectedNodeData = array(
             array(
@@ -208,7 +208,8 @@ abstract class AbstractScopeTest extends IntegrationTestCase
         );
 
         $nodeData = $this->treeAdapter
-            ->getPath(5);
+            ->getAncestorsQueryBuilder()
+            ->get(5);
         $this->assertEquals($expectedNodeData, $nodeData);
     }
 
