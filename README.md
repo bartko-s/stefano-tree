@@ -6,7 +6,7 @@
 
 [Nested Set](https://en.wikipedia.org/wiki/Nested_set_model) implementation for PHP.
 
-[ONLINE DEMO](https://www.tree.stefanbartko.sk)
+[![Live demo](./doc/live-demo.jpg)](https://www.tree.stefanbartko.sk)
 
 ## Features
 
