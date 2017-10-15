@@ -97,7 +97,7 @@ class Service
             $errors[] = 'Name is too long. Max length is 15 characters.';
         }
 
-        $placement = $_POST['placement'] ?? '';
+        $placement = $data['placement'] ?? '';
         if (0 == strlen($placement)) {
             $errors[] = 'Placement cannot be empty.';
         }
@@ -182,7 +182,7 @@ class Service
             $errors[] = 'Target Node cannot be empty.';
         }
 
-        $placement = $_POST['placement'] ?? '';
+        $placement = $data['placement'] ?? '';
         if (0 == strlen($placement)) {
             $errors[] = 'Placement cannot be empty.';
         }
@@ -210,6 +210,48 @@ class Service
         return $this->getTreeAdapter()
             ->getDescendantsQueryBuilder()
             ->get($nodeId);
+    }
+
+    public function findDescendants(array $criteria): array
+    {
+        $queryBuilder = $this->getTreeAdapter()
+            ->getDescendantsQueryBuilder();
+
+        $errors = array();
+
+        $nodeId = $criteria['node_id'] ?? '';
+        if (0 === strlen($nodeId)) {
+            $errors[] = 'Node cannot be empty.';
+        }
+
+        $excludeFirstNLevel = $criteria['exclude_first_n_level'] ?? null;
+        if (null !== $excludeFirstNLevel) {
+            if (!preg_match('|^[0-9]*$|', $excludeFirstNLevel)) {
+                $errors[] = 'Exclude First N Level  must be positive integer,';
+            } else {
+                $queryBuilder->excludeFirstNLevel((int) $excludeFirstNLevel);
+            }
+        }
+
+        $levelLimit = $criteria['level_limit'] ?? null;
+        if (null !== $levelLimit) {
+            if (!preg_match('|^[0-9]*$|', $levelLimit)) {
+                $errors[] = 'Level limit must be positive integer,';
+            } else {
+                $queryBuilder->levelLimit((int) $levelLimit);
+            }
+        }
+
+        $excludeBranch = $criteria['exclude_node_id'] ?? null;
+        if (null !== $excludeBranch) {
+            $queryBuilder->excludeBranch($excludeBranch);
+        }
+
+        if (count($errors)) {
+            throw new ValidationError($errors);
+        }
+
+        return $queryBuilder->get($nodeId);
     }
 }
 
@@ -377,6 +419,10 @@ try {
             $service->deleteNode($_GET);
             setFlashMessageAndRedirect('Branch/Node was successfully deleted.', '/');
             break;
+        case 'descendant-test':
+            $descendants = $service->findDescendants($_GET);
+            $showDescendantTestBlock = true;
+            break;
     }
 } catch (ValidationError $e) {
     $errorMessage = $e->getErrors();
@@ -488,7 +534,58 @@ $wh = new ViewHelper();
                         </form>
                     </div>
                 </div>
-                <?php echo $wh->renderTree($nodes); ?>
+
+                <hr />
+
+                <div class="row">
+                    <div class="col-sm-4">
+                        <h3>Descendant Test</h3>
+                        <form action="/" method="get">
+                            <div class="form-group">
+                                <label>Node</label>
+                                <select name="node_id" class="form-control"><?php echo $wh->renderSelectOptions($nodes); ?></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Exclude First N Level</label>
+                                <input type="number" min="0" step="1" name="exclude_first_n_level" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label>Level Limit</label>
+                                <input type="number" min="0" step="1" name="level_limit" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label>Exclude Branch</label>
+                                <select name="exclude_node_id" class="form-control"><?php echo $wh->renderSelectOptions($nodes); ?></select>
+                            </div>
+                            <input type="hidden" name="action" value="descendant-test" />
+                            <input type="hidden" name="scope" value="<?php echo $wh->escape($root['group_id']); ?>" />
+                            <input type="submit" value="Show" class="btn btn-primary" />
+                        </form>
+                    </div>
+                </div>
+
+                <hr />
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h3>Whole Tree</h3>
+                        <?php echo $wh->renderTree($nodes); ?>
+                    </div>
+                    <div class="col-sm-6">
+                        <?php
+                        if (($showDescendantTestBlock ?? false) && $root['group_id'] == $_GET['scope']) {
+                            ?>
+                            <h3>Descendants Test Result</h3>
+                            <?php
+                            if (0 == count($descendants)) {
+                                echo $wh->renderErrorMessages(['No descendants was found']);
+                            } else {
+                                echo $wh->renderTree($descendants);
+                            } ?>
+                        <?php
+                        } ?>
+                    </div>
+                </div>
             <?php
             }?>
         </div>
