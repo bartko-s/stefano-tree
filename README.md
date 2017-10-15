@@ -229,7 +229,7 @@ $tree->getAncestorsQueryBuilder()
 
 // exclude first two levels from result
 $tree->getAncestorsQueryBuilder()
-     ->excludeFistNLevel(2)
+     ->excludeFirstNLevel(2)
      ->get($nodeId);
 ```
 

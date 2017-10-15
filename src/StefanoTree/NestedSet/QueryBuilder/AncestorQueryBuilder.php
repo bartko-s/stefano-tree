@@ -27,7 +27,7 @@ class AncestorQueryBuilder implements AncestorQueryBuilderInterface
             ->getAncestors($nodeId, $this->excludeFirstNLevel, $this->excludeLastNLevel);
     }
 
-    public function excludeFistNLevel(int $count): AncestorQueryBuilderInterface
+    public function excludeFirstNLevel(int $count): AncestorQueryBuilderInterface
     {
         $this->excludeFirstNLevel = $count;
 

@@ -22,7 +22,7 @@ interface AncestorQueryBuilderInterface
      *
      * @return AncestorQueryBuilderInterface
      */
-    public function excludeFistNLevel(int $count): AncestorQueryBuilderInterface;
+    public function excludeFirstNLevel(int $count): AncestorQueryBuilderInterface;
 
     /**
      * Exclude last node from result.
