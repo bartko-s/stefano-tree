@@ -27,7 +27,9 @@ interface AncestorQueryBuilderInterface
     /**
      * Exclude last node from result.
      *
+     * @param int $count
+     *
      * @return AncestorQueryBuilderInterface
      */
-    public function excludeLastLevel(): AncestorQueryBuilderInterface;
+    public function excludeLastNLevel(int $count): AncestorQueryBuilderInterface;
 }

@@ -11,7 +11,7 @@ class AncestorQueryBuilder implements AncestorQueryBuilderInterface
     private $adapter;
 
     private $excludeFirstNLevel = 0;
-    private $excludeLastLevel = false;
+    private $excludeLastNLevel = 0;
 
     /**
      * @param AdapterInterface $adapter
@@ -24,7 +24,7 @@ class AncestorQueryBuilder implements AncestorQueryBuilderInterface
     public function get($nodeId): array
     {
         return $this->getAdapter()
-            ->getAncestors($nodeId, $this->excludeFirstNLevel, $this->excludeLastLevel);
+            ->getAncestors($nodeId, $this->excludeFirstNLevel, $this->excludeLastNLevel);
     }
 
     public function excludeFistNLevel(int $count): AncestorQueryBuilderInterface
@@ -34,9 +34,9 @@ class AncestorQueryBuilder implements AncestorQueryBuilderInterface
         return $this;
     }
 
-    public function excludeLastLevel(): AncestorQueryBuilderInterface
+    public function excludeLastNLevel(int $count): AncestorQueryBuilderInterface
     {
-        $this->excludeLastLevel = true;
+        $this->excludeLastNLevel = $count;
 
         return $this;
     }

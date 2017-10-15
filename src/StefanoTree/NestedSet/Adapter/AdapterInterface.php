@@ -119,12 +119,12 @@ interface AdapterInterface
 
     /**
      * @param int|string $nodeId
-     * @param int        $startLevel      0 = include root
-     * @param bool       $excludeLastNode
+     * @param int        $startLevel         0 = include root
+     * @param int        $excludeLastNLevels
      *
      * @return array
      */
-    public function getAncestors($nodeId, int $startLevel = 0, bool $excludeLastNode = false): array;
+    public function getAncestors($nodeId, int $startLevel = 0, int $excludeLastNLevels = 0): array;
 
     /**
      * @param int|string $nodeId

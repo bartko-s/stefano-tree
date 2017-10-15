@@ -224,7 +224,7 @@ $tree->getAncestorsQueryBuilder()
 
 // exclude last node($nodeId) from result
 $tree->getAncestorsQueryBuilder()
-     ->excludeLastLevel()
+     ->excludeLastNLevel(1)
      ->getPath($nodeId);
 
 // exclude first two levels from result

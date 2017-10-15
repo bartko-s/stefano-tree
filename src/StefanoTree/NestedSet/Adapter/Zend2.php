@@ -500,7 +500,7 @@ class Zend2 extends AdapterAbstract implements AdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function getAncestors($nodeId, int $startLevel = 0, bool $excludeLastNode = false): array
+    public function getAncestors($nodeId, int $startLevel = 0, int $excludeLastNLevels = 0): array
     {
         $options = $this->getOptions();
 
@@ -533,9 +533,9 @@ class Zend2 extends AdapterAbstract implements AdapterInterface
                    ->greaterThanOrEqualTo($options->getLevelColumnName(), $startLevel);
         }
 
-        if (true == $excludeLastNode) {
+        if (0 < $excludeLastNLevels) {
             $select->where
-                   ->lessThan($options->getLevelColumnName(), $nodeInfo->getLevel());
+                   ->lessThanOrEqualTo($options->getLevelColumnName(), $nodeInfo->getLevel() - $excludeLastNLevels);
         }
 
         $result = $dbAdapter->query($select->getSqlString($dbAdapter->getPlatform()),

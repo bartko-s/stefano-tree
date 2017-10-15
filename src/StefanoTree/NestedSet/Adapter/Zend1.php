@@ -449,7 +449,7 @@ class Zend1 extends AdapterAbstract implements AdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function getAncestors($nodeId, int $startLevel = 0, bool $excludeLastNode = false): array
+    public function getAncestors($nodeId, int $startLevel = 0, int $excludeLastNLevels = 0): array
     {
         $options = $this->getOptions();
 
@@ -480,9 +480,9 @@ class Zend1 extends AdapterAbstract implements AdapterInterface
             );
         }
 
-        if (true == $excludeLastNode) {
+        if (0 < $excludeLastNLevels) {
             $select->where(
-                $dbAdapter->quoteIdentifier($options->getLevelColumnName()).' < ?', $nodeInfo->getLevel()
+                $dbAdapter->quoteIdentifier($options->getLevelColumnName()).' <= ?', $nodeInfo->getLevel() - $excludeLastNLevels
             );
         }
 

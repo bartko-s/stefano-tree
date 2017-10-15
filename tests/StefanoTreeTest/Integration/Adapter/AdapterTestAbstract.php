@@ -282,12 +282,20 @@ abstract class AdapterTestAbstract extends IntegrationTestCase
 
     public function testGetAncestorsExcludeLastNode()
     {
+        // test exclude last node
         $path = $this->adapter
-            ->getAncestors(10, 0, true);
+            ->getAncestors(10, 0, 1);
 
         $this->assertCount(3, $path);
-
         $expected = include __DIR__.'/_files/adapter/testGetAncestorsExcludeLastNode.php';
+        $this->assertEquals($expected, $path);
+
+        // test exclude last two node
+        $path = $this->adapter
+            ->getAncestors(10, 0, 2);
+
+        $this->assertCount(2, $path);
+        $expected = include __DIR__.'/_files/adapter/testGetAncestorsExcludeTwoLastNode.php';
         $this->assertEquals($expected, $path);
     }
 

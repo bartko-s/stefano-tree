@@ -458,7 +458,7 @@ abstract class AbstractTest extends IntegrationTestCase
     {
         $return = $this->treeAdapter
             ->getAncestorsQueryBuilder()
-            ->excludeLastLevel()
+            ->excludeLastNLevel(1)
             ->get(1);
 
         $this->assertEquals(array(), $return);
@@ -528,7 +528,7 @@ abstract class AbstractTest extends IntegrationTestCase
         //test
         $return = $this->treeAdapter
                        ->getAncestorsQueryBuilder()
-                       ->excludeLastLevel()
+                       ->excludeLastNLevel(1)
                        ->get(6);
 
         $expected = array(

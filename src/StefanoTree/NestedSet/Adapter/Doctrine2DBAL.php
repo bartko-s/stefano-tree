@@ -501,7 +501,7 @@ class Doctrine2DBAL extends AdapterAbstract implements AdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function getAncestors($nodeId, int $startLevel = 0, bool $excludeLastNode = false): array
+    public function getAncestors($nodeId, int $startLevel = 0, int $excludeLastNLevels = 0): array
     {
         $options = $this->getOptions();
 
@@ -536,10 +536,10 @@ class Doctrine2DBAL extends AdapterAbstract implements AdapterInterface
             $params['startLevel'] = $startLevel;
         }
 
-        if (true == $excludeLastNode) {
-            $sql->andWhere($options->getLevelColumnName().' < :level');
+        if (0 < $excludeLastNLevels) {
+            $sql->andWhere($options->getLevelColumnName().' <= :level');
 
-            $params['level'] = $nodeInfo->getLevel();
+            $params['level'] = $nodeInfo->getLevel() - $excludeLastNLevels;
         }
 
         $stmt = $connection->executeQuery($sql->getSQL(), $params);
