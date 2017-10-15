@@ -552,7 +552,7 @@ class Doctrine2DBAL extends AdapterAbstract implements AdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function getDescendants($nodeId, int $startLevel = 0, ?int $levels = null, ?int $excludeBranch = null): array
+    public function getDescendants($nodeId, int $startLevel = 0, ?int $levels = null, $excludeBranch = null): array
     {
         $options = $this->getOptions();
 

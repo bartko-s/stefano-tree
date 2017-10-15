@@ -127,15 +127,15 @@ interface AdapterInterface
     public function getAncestors($nodeId, int $startLevel = 0, int $excludeLastNLevels = 0): array;
 
     /**
-     * @param int|string $nodeId
-     * @param int        $startLevel    Relative level from $nodeId. 1 = exclude $nodeId from result.
-     *                                  2 = exclude 2 levels from result
-     * @param null|int   $levels        Number of levels in the results relative to $startLevel
-     * @param null|int   $excludeBranch Exclude defined branch(node id) from result
+     * @param int|string      $nodeId
+     * @param int             $startLevel    Relative level from $nodeId. 1 = exclude $nodeId from result.
+     *                                       2 = exclude 2 levels from result
+     * @param null|int        $levels        Number of levels in the results relative to $startLevel
+     * @param null|int|string $excludeBranch Exclude defined branch(node id) from result
      *
      * @return array
      */
-    public function getDescendants($nodeId, int $startLevel = 0, ?int $levels = null, ?int $excludeBranch = null): array;
+    public function getDescendants($nodeId, int $startLevel = 0, ?int $levels = null, $excludeBranch = null): array;
 
     /**
      * @param null|string|int $scope null if scope is not used
