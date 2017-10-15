@@ -253,6 +253,43 @@ class Service
 
         return $queryBuilder->get($nodeId);
     }
+
+    public function findAncestors(array $criteria): array
+    {
+        $queryBuilder = $this->getTreeAdapter()
+            ->getAncestorsQueryBuilder();
+
+        $errors = array();
+
+        $nodeId = $criteria['node_id'] ?? '';
+        if (0 === strlen($nodeId)) {
+            $errors[] = 'Node cannot be empty.';
+        }
+
+        $excludeFirstNLevel = $criteria['exclude_first_n_level'] ?? null;
+        if (null !== $excludeFirstNLevel) {
+            if (!preg_match('|^[0-9]*$|', $excludeFirstNLevel)) {
+                $errors[] = 'Exclude First N Level  must be positive integer,';
+            } else {
+                $queryBuilder->excludeFirstNLevel((int) $excludeFirstNLevel);
+            }
+        }
+
+        $excludeLastNLevel = $criteria['exclude_last_n_level'] ?? null;
+        if (null !== $excludeLastNLevel) {
+            if (!preg_match('|^[0-9]*$|', $excludeLastNLevel)) {
+                $errors[] = 'Exclude Last N Level  must be positive integer,';
+            } else {
+                $queryBuilder->excludeLastNLevel((int) $excludeLastNLevel);
+            }
+        }
+
+        if (count($errors)) {
+            throw new ValidationError($errors);
+        }
+
+        return $queryBuilder->get($nodeId);
+    }
 }
 
 class ViewHelper
@@ -291,6 +328,17 @@ class ViewHelper
         }
 
         return $html;
+    }
+
+    public function renderBreadcrumbs(array $nodes): string
+    {
+        $html = '';
+
+        foreach ($nodes as $node) {
+            $html .= '<a class="breadcrumb-item" href="#">'.$this->escape($node['name']).'</a>';
+        }
+
+        return '<nav class="breadcrumb">'.$html.'</nav>';
     }
 
     public function renderSelectOptions(array $nodes): string
@@ -423,6 +471,10 @@ try {
             $descendants = $service->findDescendants($_GET);
             $showDescendantTestBlock = true;
             break;
+        case 'ancestor-test':
+            $ancestors = $service->findAncestors($_GET);
+            $showAncestorTestBlock = true;
+            break;
     }
 } catch (ValidationError $e) {
     $errorMessage = $e->getErrors();
@@ -479,7 +531,7 @@ $wh = new ViewHelper();
                 <h2>Scope - <?php echo $wh->escape($root['group_id']); ?></h2>
 
                 <div class="row">
-                    <div class="col-sm-4">
+                    <div class="col-sm-2">
                         <h3>Create</h3>
                         <form action="/?action=create-node" method="post">
                             <div class="form-group">
@@ -500,7 +552,7 @@ $wh = new ViewHelper();
                         </form>
                     </div>
 
-                    <div class="col-sm-4">
+                    <div class="col-sm-2">
                         <h3>Move</h3>
                         <form action="/?action=move-node" method="post">
                             <div class="form-group">
@@ -519,7 +571,7 @@ $wh = new ViewHelper();
                         </form>
                     </div>
 
-                    <div class="col-sm-4">
+                    <div class="col-sm-2">
                         <h3>Update</h3>
                         <form action="/?action=update-node" method="post">
                             <div class="form-group">
@@ -533,12 +585,8 @@ $wh = new ViewHelper();
                             <input type="submit" value="Update" class="btn btn-primary" />
                         </form>
                     </div>
-                </div>
 
-                <hr />
-
-                <div class="row">
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
                         <h3>Descendant Test</h3>
                         <form action="/" method="get">
                             <div class="form-group">
@@ -558,6 +606,27 @@ $wh = new ViewHelper();
                                 <select name="exclude_node_id" class="form-control"><?php echo $wh->renderSelectOptions($nodes); ?></select>
                             </div>
                             <input type="hidden" name="action" value="descendant-test" />
+                            <input type="hidden" name="scope" value="<?php echo $wh->escape($root['group_id']); ?>" />
+                            <input type="submit" value="Show" class="btn btn-primary" />
+                        </form>
+                    </div>
+
+                    <div class="col-sm-3">
+                        <h3>Ancestor Test</h3>
+                        <form action="/" method="get">
+                            <div class="form-group">
+                                <label>Node</label>
+                                <select name="node_id" class="form-control"><?php echo $wh->renderSelectOptions($nodes); ?></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Exclude First N Level</label>
+                                <input type="number" min="0" step="1" name="exclude_first_n_level" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label>Exclude Last N Level</label>
+                                <input type="number" min="0" step="1" name="exclude_last_n_level" class="form-control" />
+                            </div>
+                            <input type="hidden" name="action" value="ancestor-test" />
                             <input type="hidden" name="scope" value="<?php echo $wh->escape($root['group_id']); ?>" />
                             <input type="submit" value="Show" class="btn btn-primary" />
                         </form>
@@ -583,6 +652,20 @@ $wh = new ViewHelper();
                                 echo $wh->renderTree($descendants);
                             } ?>
                         <?php
+                        } ?>
+
+                        <?php
+                        if (($showAncestorTestBlock ?? false) && $root['group_id'] == $_GET['scope']) {
+                            ?>
+                            <h3>Ancestors Test Result</h3>
+                            <?php
+                            if (0 == count($ancestors)) {
+                                echo $wh->renderErrorMessages(['No ancestors was found']);
+                            } else {
+                                echo $wh->renderBreadcrumbs($ancestors);
+                                echo $wh->renderTree($ancestors);
+                            } ?>
+                            <?php
                         } ?>
                     </div>
                 </div>
