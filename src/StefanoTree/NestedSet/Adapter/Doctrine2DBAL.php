@@ -51,8 +51,8 @@ class Doctrine2DBAL extends AdapterAbstract implements AdapterInterface
         $queryBuilder = $this->getConnection()
                              ->createQueryBuilder();
 
-        $queryBuilder->select('*')
-                     ->from($this->getOptions()->getTableName(), null);
+        $queryBuilder->select(sprintf('%s.*', $this->getOptions()->getTableAlias()))
+                     ->from($this->getOptions()->getTableName(), $this->getOptions()->getTableAlias());
 
         return $queryBuilder;
     }
@@ -91,7 +91,7 @@ class Doctrine2DBAL extends AdapterAbstract implements AdapterInterface
         $connection = $this->getConnection();
 
         $sql = $this->getBlankDbSelect();
-        $sql->select($options->getIdColumnName().' AS i');
+        $sql->select($options->getIdColumnName(true).' AS i');
 
         $sql = $sql->getSQL().' FOR UPDATE';
 
@@ -354,13 +354,13 @@ class Doctrine2DBAL extends AdapterAbstract implements AdapterInterface
         $connection = $this->getConnection();
 
         $sql = $this->getBlankDbSelect();
-        $sql->where($options->getParentIdColumnName().' IS NULL');
+        $sql->where($options->getParentIdColumnName(true).' IS NULL');
         $sql->orderBy($options->getIdColumnName());
 
         $params = array();
 
         if (null != $scope && $options->getScopeColumnName()) {
-            $sql->where($options->getScopeColumnName().' = :scope');
+            $sql->where($options->getScopeColumnName(true).' = :scope');
             $params[':scope'] = $scope;
         }
 
@@ -393,10 +393,10 @@ class Doctrine2DBAL extends AdapterAbstract implements AdapterInterface
         $connection = $this->getConnection();
 
         $sql = $this->getDefaultDbSelect();
-        $sql->where($options->getIdColumnName().' = :'.$options->getIdColumnName());
+        $sql->where($options->getIdColumnName(true).' = :id');
 
         $params = array(
-            $options->getIdColumnName() => $nodeId,
+            'id' => $nodeId,
         );
 
         $stmt = $connection->executeQuery($sql->getSQL(), $params);
@@ -418,10 +418,10 @@ class Doctrine2DBAL extends AdapterAbstract implements AdapterInterface
         $connection = $this->getConnection();
 
         $sql = $this->getBlankDbSelect();
-        $sql->where($options->getIdColumnName().' = :'.$options->getIdColumnName());
+        $sql->where($options->getIdColumnName(true).' = :id');
 
         $params = array(
-            $options->getIdColumnName() => $nodeId,
+            'id' => $nodeId,
         );
 
         $stmt = $connection->executeQuery($sql->getSQL(), $params);
@@ -443,20 +443,10 @@ class Doctrine2DBAL extends AdapterAbstract implements AdapterInterface
         $connection = $this->getConnection();
         $options = $this->getOptions();
 
-        $queryBuilder = $connection->createQueryBuilder();
+        $sql = $this->getBlankDbSelect();
 
-        $columns = array(
-            $options->getIdColumnName(),
-            $options->getLeftColumnName(),
-            $options->getRightColumnName(),
-            $options->getParentIdColumnName(),
-            $options->getLevelColumnName(),
-        );
-
-        $sql = $queryBuilder->select($columns)
-                            ->from($options->getTableName())
-                            ->where($options->getParentIdColumnName().' = :parentId')
-                            ->orderBy($options->getLeftColumnName(), 'ASC');
+        $sql = $sql->where($options->getParentIdColumnName(true).' = :parentId')
+                   ->orderBy($options->getLeftColumnName(true), 'ASC');
 
         $params = array(
             'parentId' => $parentNodeId,
@@ -519,25 +509,25 @@ class Doctrine2DBAL extends AdapterAbstract implements AdapterInterface
         $params = array();
 
         if ($options->getScopeColumnName()) {
-            $sql->andWhere($options->getScopeColumnName().' = :scope');
+            $sql->andWhere($options->getScopeColumnName(true).' = :scope');
             $params['scope'] = $nodeInfo->getScope();
         }
 
-        $sql->andWhere($options->getLeftColumnName().' <= :leftIndex')
-            ->andWhere($options->getRightColumnName().' >= :rightIndex')
-            ->orderBy($options->getLeftColumnName(), 'ASC');
+        $sql->andWhere($options->getLeftColumnName(true).' <= :leftIndex')
+            ->andWhere($options->getRightColumnName(true).' >= :rightIndex')
+            ->orderBy($options->getLeftColumnName(true), 'ASC');
 
         $params['leftIndex'] = $nodeInfo->getLeft();
         $params['rightIndex'] = $nodeInfo->getRight();
 
         if (0 < $startLevel) {
-            $sql->andWhere($options->getLevelColumnName().' >= :startLevel');
+            $sql->andWhere($options->getLevelColumnName(true).' >= :startLevel');
 
             $params['startLevel'] = $startLevel;
         }
 
         if (0 < $excludeLastNLevels) {
-            $sql->andWhere($options->getLevelColumnName().' <= :level');
+            $sql->andWhere($options->getLevelColumnName(true).' <= :level');
 
             $params['level'] = $nodeInfo->getLevel() - $excludeLastNLevels;
         }
@@ -562,39 +552,39 @@ class Doctrine2DBAL extends AdapterAbstract implements AdapterInterface
 
         $connection = $this->getConnection();
         $sql = $this->getDefaultDbSelect();
-        $sql->orderBy($options->getLeftColumnName(), 'ASC');
+        $sql->orderBy($options->getLeftColumnName(true), 'ASC');
 
         $params = array();
 
         if ($options->getScopeColumnName()) {
-            $sql->andWhere($options->getScopeColumnName().' = :scope');
+            $sql->andWhere($options->getScopeColumnName(true).' = :scope');
             $params['scope'] = $nodeInfo->getScope();
         }
 
         if (0 != $startLevel) {
-            $sql->andWhere($options->getLevelColumnName().' >= :startLevel');
+            $sql->andWhere($options->getLevelColumnName(true).' >= :startLevel');
 
             $params['startLevel'] = $nodeInfo->getLevel() + (int) $startLevel;
         }
 
         if (null != $levels) {
-            $sql->andWhere($options->getLevelColumnName().'< :endLevel');
+            $sql->andWhere($options->getLevelColumnName(true).'< :endLevel');
             $params['endLevel'] = $nodeInfo->getLevel() + (int) $startLevel + abs($levels);
         }
 
         if (null != $excludeBranch && null != ($excludeNodeInfo = $this->getNodeInfo($excludeBranch))) {
-            $sql->andWhere('('.$options->getLeftColumnName().' BETWEEN :left AND :exLeftMinusOne'
-                           .') OR ('.$options->getLeftColumnName().' BETWEEN :exRightPlusOne AND :right)')
-                ->andWhere('('.$options->getRightColumnName().' BETWEEN :exRightPlusOne AND :right'
-                           .') OR ('.$options->getRightColumnName().' BETWEEN :left AND :exLeftMinusOne)');
+            $sql->andWhere('('.$options->getLeftColumnName(true).' BETWEEN :left AND :exLeftMinusOne'
+                           .') OR ('.$options->getLeftColumnName(true).' BETWEEN :exRightPlusOne AND :right)')
+                ->andWhere('('.$options->getRightColumnName(true).' BETWEEN :exRightPlusOne AND :right'
+                           .') OR ('.$options->getRightColumnName(true).' BETWEEN :left AND :exLeftMinusOne)');
 
             $params['left'] = $nodeInfo->getLeft();
             $params['exLeftMinusOne'] = $excludeNodeInfo->getLeft() - 1;
             $params['exRightPlusOne'] = $excludeNodeInfo->getRight() + 1;
             $params['right'] = $nodeInfo->getRight();
         } else {
-            $sql->andWhere($options->getLeftColumnName().' >= :left')
-                ->andWhere($options->getRightColumnName().' <= :right');
+            $sql->andWhere($options->getLeftColumnName(true).' >= :left')
+                ->andWhere($options->getRightColumnName(true).' <= :right');
 
             $params['left'] = $nodeInfo->getLeft();
             $params['right'] = $nodeInfo->getRight();

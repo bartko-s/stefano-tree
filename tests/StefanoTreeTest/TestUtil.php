@@ -64,6 +64,15 @@ class TestUtil
                 KEY `scope` (`scope`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin';
 
+            $queries[] = 'CREATE TABLE `tree_traversal_metadata` (
+                `tree_traversal_metadata_id` int(11) NOT NULL AUTO_INCREMENT,
+                `tree_traversal_id` int(11) NOT NULL,
+                `lft` int(11) DEFAULT NULL,
+                `name` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+                PRIMARY KEY (`tree_traversal_metadata_id`),
+                KEY `tree_traversal_id` (`tree_traversal_id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin';
+
             $queries[] = 'ALTER TABLE `tree_traversal_with_scope`
                 ADD FOREIGN KEY (`parent_id`) 
                 REFERENCES `tree_traversal_with_scope` (`tree_traversal_id`) 
@@ -72,6 +81,7 @@ class TestUtil
             // Run this workaround before each test. DbUnit has issue with postgres https://github.com/sebastianbergmann/dbunit/issues/58
             $queries[] = 'DROP TABLE IF EXISTS tree_traversal';
             $queries[] = 'DROP TABLE IF EXISTS tree_traversal_with_scope';
+            $queries[] = 'DROP TABLE IF EXISTS tree_traversal_metadata';
 
             $queries[] = 'CREATE TABLE tree_traversal (
                   tree_traversal_id serial NOT NULL,
@@ -135,6 +145,18 @@ class TestUtil
             $queries[] = 'CREATE INDEX tree_traversal_with_scope_scope
                   ON public.tree_traversal_with_scope
                   USING btree (scope)';
+
+            $queries[] = 'CREATE TABLE tree_traversal_metadata (
+                tree_traversal_metadata_id serial NOT NULL,
+                tree_traversal_id integer NOT NULL,
+                lft integer,
+                name character varying(255),
+                CONSTRAINT tree_traversal_metadata_pkey PRIMARY KEY (tree_traversal_metadata_id)
+            )';
+
+            $queries[] = 'CREATE INDEX tree_traversal_metadata_tree_traversal_id
+                  ON public.tree_traversal_metadata
+                  USING btree (tree_traversal_id)';
         } else {
             throw new \Exception(sprintf('Unsupported vendor %s', TEST_STEFANO_DB_ADAPTER));
         }

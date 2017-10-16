@@ -25,7 +25,7 @@ class Zend1Test extends UnitTestCase
         $dbAdapter = $this->getDbAdapterMock();
         $adapter = new Zend1($options, $dbAdapter);
 
-        $expectedQuery = 'SELECT "tableName".* FROM "tableName"';
+        $expectedQuery = 'SELECT "t".* FROM "tableName" AS "t"';
         $actualQuery = (string) $adapter->getBlankDbSelect();
         $this->assertEquals($expectedQuery,
             $actualQuery);

@@ -26,16 +26,17 @@ Run following command `composer require stefano/stefano-tree`
 
 ## Create Tree Adapter
 
-|        key         |  type  | required | default value | note                               |
-| :----------------- | :----: | :------: | :------------ | :--------------------------------- |
-| tableName          | string | yes      |               |                                    |
-| idColumnName       | string | yes      |               |                                    |
-| leftColumnName     | string | no       | lft           |                                    |
-| rightColumnName    | string | no       | rgt           |                                    |
-| levelColumnName    | string | no       | level         |                                    |
-| parentIdColumnName | string | no       | parent_id     |                                    |
-| sequenceName       | string | see note |               | required for PostgreSQL            |
-| scopeColumnName    | string | see note |               | if empty scope support is disabled |
+|        key         |  type  | required | default value | note                                                  |
+| :----------------- | :----: | :------: | :------------ | :---------------------------------------------------- |
+| tableName          | string | yes      |               |                                                       |
+| tableAlias         | string | no       | see note      | Default value is first char from lowercased tableName |
+| idColumnName       | string | yes      |               |                                                       |
+| leftColumnName     | string | no       | lft           |                                                       |
+| rightColumnName    | string | no       | rgt           |                                                       |
+| levelColumnName    | string | no       | level         |                                                       |
+| parentIdColumnName | string | no       | parent_id     |                                                       |
+| sequenceName       | string | see note |               | Required for PostgreSQL                               |
+| scopeColumnName    | string | see note |               | If empty scope support is disabled                    |
 
 - Use static factory method
 ```
@@ -66,12 +67,18 @@ $tree = new NestedSet($nestedSetAdapter);
 
 - You can join table. Example is for Zend Framework 2 but it works similar for other supported frameworks.
 ```
-$defaultDbSelect = $nestedSetAdapter->getDefaultDbSelect();
+use Zend\Db\Sql\Select;
 
-//zend framework select object
-//http://framework.zend.com/manual/2.2/en/modules/zend.db.sql.html#join
-$defaultDbSelect->join($name, $on, $columns, $type);
-$nestedSetAdapter->setDefaultDbSelect($defaultDbSelect);
+// @see https://docs.zendframework.com/zend-db/sql/#select
+$select = new Select(array('t' => 'tree_traversal'));
+$select->join(
+    array('m' => 'metadata'),
+    'm.tree_traversal_id = t.tree_traversal_id',
+    array('metadata' => 'name'),
+    $select::JOIN_LEFT
+    );
+
+$tree->getAdapter()->setDefaultDbSelect($select);
 ```
 
 ## API

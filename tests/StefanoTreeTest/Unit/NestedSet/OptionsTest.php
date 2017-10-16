@@ -176,4 +176,19 @@ class NestedSetTest extends UnitTestCase
 
         $this->assertEquals('scope', $optionsStub->getScopeColumnName());
     }
+
+    public function testGetDefaultTableAlias()
+    {
+        $optionsStub = $this->getOptionsWithDefaultSettings();
+        $this->assertEquals('t', $optionsStub->getTableAlias());
+    }
+
+    public function testSetTableAlias()
+    {
+        $optionsStub = $this->getOptionsWithDefaultSettings();
+
+        $optionsStub->setTableAlias('   tableAlias   ');
+
+        $this->assertEquals('tableAlias', $optionsStub->getTableAlias());
+    }
 }

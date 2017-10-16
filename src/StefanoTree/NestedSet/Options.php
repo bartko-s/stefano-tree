@@ -9,10 +9,12 @@ use StefanoTree\Exception\InvalidArgumentException;
 class Options
 {
     private $tableName = '';
+    private $tableAlias = null;
 
     private $sequenceName = null;
 
     private $idColumnName = '';
+
     private $leftColumnName = 'lft';
     private $rightColumnName = 'rgt';
     private $levelColumnName = 'level';
@@ -60,7 +62,7 @@ class Options
      */
     public function setTableName(string $tableName): void
     {
-        $tableName = (string) trim($tableName);
+        $tableName = trim($tableName);
 
         if (empty($tableName)) {
             throw new InvalidArgumentException('tableName cannot be empty');
@@ -78,11 +80,39 @@ class Options
     }
 
     /**
+     * @param string $tableAlias
+     */
+    public function setTableAlias(string $tableAlias): void
+    {
+        $tableAlias = trim($tableAlias);
+
+        if (empty($tableAlias)) {
+            throw new InvalidArgumentException('tableAlias cannot be empty');
+        }
+
+        $this->tableAlias = $tableAlias;
+    }
+
+    /**
+     * If alias was not set then first lower cased character from table name is returned.
+     *
+     * @return string
+     */
+    public function getTableAlias(): string
+    {
+        if (null === $this->tableAlias) {
+            $this->tableAlias = strtolower(substr($this->tableName, 0, 1));
+        }
+
+        return $this->tableAlias;
+    }
+
+    /**
      * @param string $sequenceName
      */
     public function setSequenceName(string $sequenceName): void
     {
-        $this->sequenceName = (string) trim($sequenceName);
+        $this->sequenceName = trim($sequenceName);
     }
 
     /**
@@ -100,7 +130,7 @@ class Options
      */
     public function setIdColumnName(string $idColumnName): void
     {
-        $idColumnName = (string) trim($idColumnName);
+        $idColumnName = trim($idColumnName);
 
         if (empty($idColumnName)) {
             throw new InvalidArgumentException('idColumnName cannot be empty');
@@ -110,11 +140,13 @@ class Options
     }
 
     /**
+     * @param bool $withTableAlias
+     *
      * @return string
      */
-    public function getIdColumnName(): string
+    public function getIdColumnName(bool $withTableAlias = false): string
     {
-        return $this->idColumnName;
+        return ($withTableAlias) ? $this->addTableAlias($this->idColumnName) : $this->idColumnName;
     }
 
     /**
@@ -124,7 +156,7 @@ class Options
      */
     public function setLeftColumnName(string $leftColumnName): void
     {
-        $leftColumnName = (string) trim($leftColumnName);
+        $leftColumnName = trim($leftColumnName);
 
         if (empty($leftColumnName)) {
             throw new InvalidArgumentException('leftColumnName cannot be empty');
@@ -134,11 +166,13 @@ class Options
     }
 
     /**
+     * @param bool $withTableAlias
+     *
      * @return string
      */
-    public function getLeftColumnName(): string
+    public function getLeftColumnName(bool $withTableAlias = false): string
     {
-        return $this->leftColumnName;
+        return ($withTableAlias) ? $this->addTableAlias($this->leftColumnName) : $this->leftColumnName;
     }
 
     /**
@@ -148,7 +182,7 @@ class Options
      */
     public function setRightColumnName(string $rightColumnName): void
     {
-        $rightColumnName = (string) trim($rightColumnName);
+        $rightColumnName = trim($rightColumnName);
 
         if (empty($rightColumnName)) {
             throw new InvalidArgumentException('rightColumnName cannot be empty');
@@ -158,11 +192,13 @@ class Options
     }
 
     /**
+     * @param bool $withTableAlias
+     *
      * @return string
      */
-    public function getRightColumnName(): string
+    public function getRightColumnName(bool $withTableAlias = false): string
     {
-        return $this->rightColumnName;
+        return ($withTableAlias) ? $this->addTableAlias($this->rightColumnName) : $this->rightColumnName;
     }
 
     /**
@@ -172,7 +208,7 @@ class Options
      */
     public function setLevelColumnName(string $levelColumnName): void
     {
-        $levelColumnName = (string) trim($levelColumnName);
+        $levelColumnName = trim($levelColumnName);
 
         if (empty($levelColumnName)) {
             throw new InvalidArgumentException('levelColumnName cannot be empty');
@@ -182,11 +218,13 @@ class Options
     }
 
     /**
+     * @param bool $withTableAlias
+     *
      * @return string
      */
-    public function getLevelColumnName(): string
+    public function getLevelColumnName(bool $withTableAlias = false): string
     {
-        return $this->levelColumnName;
+        return ($withTableAlias) ? $this->addTableAlias($this->levelColumnName) : $this->levelColumnName;
     }
 
     /**
@@ -196,7 +234,7 @@ class Options
      */
     public function setParentIdColumnName(string $parentIdColumnName): void
     {
-        $parentIdColumnName = (string) trim($parentIdColumnName);
+        $parentIdColumnName = trim($parentIdColumnName);
 
         if (empty($parentIdColumnName)) {
             throw new InvalidArgumentException('parentIdColumnName cannot be empty');
@@ -206,11 +244,13 @@ class Options
     }
 
     /**
+     * @param bool $withTableAlias
+     *
      * @return string
      */
-    public function getParentIdColumnName(): string
+    public function getParentIdColumnName(bool $withTableAlias = false): string
     {
-        return $this->parentIdColumnName;
+        return ($withTableAlias) ? $this->addTableAlias($this->parentIdColumnName) : $this->parentIdColumnName;
     }
 
     /**
@@ -222,10 +262,21 @@ class Options
     }
 
     /**
+     * @param bool $withTableAlias
+     *
      * @return string|null
      */
-    public function getScopeColumnName(): ?string
+    public function getScopeColumnName(bool $withTableAlias = false): ?string
     {
-        return $this->scopeColumnName;
+        return ($withTableAlias) ? $this->addTableAlias($this->scopeColumnName) : $this->scopeColumnName;
+    }
+
+    private function addTableAlias(?string $value): ?string
+    {
+        if (null === $value) {
+            return null;
+        }
+
+        return sprintf('%s.%s', $this->getTableAlias(), $value);
     }
 }

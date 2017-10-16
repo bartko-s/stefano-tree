@@ -44,7 +44,12 @@ class Zend1 extends AdapterAbstract implements AdapterInterface
      */
     public function getBlankDbSelect(): ZendDbSelect
     {
-        return $this->getDbAdapter()->select()->from($this->getOptions()->getTableName());
+        return $this->getDbAdapter()
+            ->select()
+            ->from(array(
+                $this->getOptions()->getTableAlias() => $this->getOptions()->getTableName(),
+                )
+            );
     }
 
     /**
@@ -82,7 +87,7 @@ class Zend1 extends AdapterAbstract implements AdapterInterface
 
         $select = $this->getBlankDbSelect()
             ->reset(\Zend_Db_Select::COLUMNS)
-            ->columns(array('i' => $options->getIdColumnName()))
+            ->columns(array('i' => $options->getIdColumnName(true)))
             ->forUpdate(true);
 
         $dbAdapter->fetchAll($select);
@@ -326,11 +331,11 @@ class Zend1 extends AdapterAbstract implements AdapterInterface
         $dbAdapter = $this->getDbAdapter();
 
         $select = $this->getBlankDbSelect()
-            ->where($options->getParentIdColumnName().' IS NULL')
-            ->order($options->getIdColumnName());
+            ->where($options->getParentIdColumnName(true).' IS NULL')
+            ->order($options->getIdColumnName(true));
 
         if (null != $scope && $options->getScopeColumnName()) {
-            $select->where($options->getScopeColumnName().' = ?', $scope);
+            $select->where($options->getScopeColumnName(true).' = ?', $scope);
         }
 
         return $dbAdapter->fetchAll($select);
@@ -358,7 +363,7 @@ class Zend1 extends AdapterAbstract implements AdapterInterface
         $dbAdapter = $this->getDbAdapter();
 
         $select = $this->getDefaultDbSelect()
-            ->where($options->getIdColumnName().' = ?', $nodeId);
+            ->where($options->getIdColumnName(true).' = ?', $nodeId);
 
         $row = $dbAdapter->fetchRow($select);
 
@@ -377,7 +382,7 @@ class Zend1 extends AdapterAbstract implements AdapterInterface
         $dbAdapter = $this->getDbAdapter();
 
         $select = $this->getBlankDbSelect()
-            ->where($options->getIdColumnName().' = ?', $nodeId);
+            ->where($options->getIdColumnName(true).' = ?', $nodeId);
 
         $row = $dbAdapter->fetchRow($select);
 
@@ -411,8 +416,8 @@ class Zend1 extends AdapterAbstract implements AdapterInterface
         $select = $this->getBlankDbSelect();
         $select->reset(\Zend_Db_Select::COLUMNS);
         $select->columns($columns);
-        $select->order($options->getLeftColumnName());
-        $select->where($options->getParentIdColumnName().' = ?', $parentNodeId);
+        $select->order($options->getLeftColumnName(true));
+        $select->where($options->getParentIdColumnName(true).' = ?', $parentNodeId);
 
         $data = $dbAdapter->fetchAll($select);
 
@@ -465,24 +470,24 @@ class Zend1 extends AdapterAbstract implements AdapterInterface
         $select = $this->getDefaultDbSelect();
 
         if ($options->getScopeColumnName()) {
-            $select->where($options->getScopeColumnName().' = ?', $nodeInfo->getScope());
+            $select->where($options->getScopeColumnName(true).' = ?', $nodeInfo->getScope());
         }
 
         $select->where(
-            $dbAdapter->quoteIdentifier($options->getLeftColumnName()).' <= ?', $nodeInfo->getLeft()
+            $dbAdapter->quoteIdentifier($options->getLeftColumnName(true)).' <= ?', $nodeInfo->getLeft()
         )->where(
-            $dbAdapter->quoteIdentifier($options->getRightColumnName()).' >= ?', $nodeInfo->getRight()
-        )->order($options->getLeftColumnName().' ASC');
+            $dbAdapter->quoteIdentifier($options->getRightColumnName(true)).' >= ?', $nodeInfo->getRight()
+        )->order($options->getLeftColumnName(true).' ASC');
 
         if (0 < $startLevel) {
             $select->where(
-                $dbAdapter->quoteIdentifier($options->getLevelColumnName()).' >= ?', $startLevel
+                $dbAdapter->quoteIdentifier($options->getLevelColumnName(true)).' >= ?', $startLevel
             );
         }
 
         if (0 < $excludeLastNLevels) {
             $select->where(
-                $dbAdapter->quoteIdentifier($options->getLevelColumnName()).' <= ?', $nodeInfo->getLevel() - $excludeLastNLevels
+                $dbAdapter->quoteIdentifier($options->getLevelColumnName(true)).' <= ?', $nodeInfo->getLevel() - $excludeLastNLevels
             );
         }
 
@@ -504,44 +509,44 @@ class Zend1 extends AdapterAbstract implements AdapterInterface
 
         $dbAdapter = $this->getDbAdapter();
         $select = $this->getDefaultDbSelect();
-        $select->order($options->getLeftColumnName().' ASC');
+        $select->order($options->getLeftColumnName(true).' ASC');
 
         if ($options->getScopeColumnName()) {
-            $select->where($options->getScopeColumnName().' = ?', $nodeInfo->getScope());
+            $select->where($options->getScopeColumnName(true).' = ?', $nodeInfo->getScope());
         }
 
         if (0 != $startLevel) {
             $level = $nodeInfo->getLevel() + (int) $startLevel;
             $select->where(
-                $dbAdapter->quoteIdentifier($options->getLevelColumnName()).' >= ?', $level
+                $dbAdapter->quoteIdentifier($options->getLevelColumnName(true)).' >= ?', $level
             );
         }
 
         if (null != $levels) {
             $endLevel = $nodeInfo->getLevel() + (int) $startLevel + abs($levels);
             $select->where(
-                $dbAdapter->quoteIdentifier($options->getLevelColumnName()).' < ?', $endLevel
+                $dbAdapter->quoteIdentifier($options->getLevelColumnName(true)).' < ?', $endLevel
             );
         }
 
         if (null != $excludeBranch && null != ($excludeNodeInfo = $this->getNodeInfo($excludeBranch))) {
             $where = sprintf(
                 '(%s OR %s) AND (%s OR %s)',
-                $this->getWhereBetween($options->getLeftColumnName(), $nodeInfo->getLeft(), $excludeNodeInfo->getLeft() - 1),
-                $this->getWhereBetween($options->getLeftColumnName(),
+                $this->getWhereBetween($options->getLeftColumnName(true), $nodeInfo->getLeft(), $excludeNodeInfo->getLeft() - 1),
+                $this->getWhereBetween($options->getLeftColumnName(true),
                     $excludeNodeInfo->getRight() + 1, $nodeInfo->getRight()),
-                $this->getWhereBetween($options->getRightColumnName(),
+                $this->getWhereBetween($options->getRightColumnName(true),
                     $excludeNodeInfo->getRight() + 1, $nodeInfo->getRight()),
-                $this->getWhereBetween($options->getRightColumnName(),
+                $this->getWhereBetween($options->getRightColumnName(true),
                     $nodeInfo->getLeft(), $excludeNodeInfo->getLeft() - 1)
             );
             $select->where($where);
         } else {
             $select->where(
-                $dbAdapter->quoteIdentifier($options->getLeftColumnName()).' >= ?', $nodeInfo->getLeft()
+                $dbAdapter->quoteIdentifier($options->getLeftColumnName(true)).' >= ?', $nodeInfo->getLeft()
             );
             $select->where(
-                $dbAdapter->quoteIdentifier($options->getRightColumnName()).' <= ?', $nodeInfo->getRight()
+                $dbAdapter->quoteIdentifier($options->getRightColumnName(true)).' <= ?', $nodeInfo->getRight()
             );
         }
 
@@ -550,9 +555,6 @@ class Zend1 extends AdapterAbstract implements AdapterInterface
         return (0 < count($resultArray)) ? $resultArray : array();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function getWhereBetween($column, $first, $second)
     {
         $dbAdapter = $this->getDbAdapter();

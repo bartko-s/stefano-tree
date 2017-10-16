@@ -22,14 +22,28 @@ $dbAdapter = \Doctrine\DBAL\DriverManager::getConnection(
  *    Tree Adapter
  **************************************/
 $treeAdapter = \StefanoTree\NestedSet::factory(
-    new \StefanoTree\NestedSet\Options(array(
+    array(
         'tableName' => 'categories',
         'idColumnName' => 'id',
         'sequenceName' => 'categories_id_seq',
         'scopeColumnName' => 'group_id',
-    )),
+    ),
     $dbAdapter
 );
+
+/***************************************
+ * Join example
+ ***************************************/
+/*
+$select = $dbAdapter->createQueryBuilder();
+$select->from('categories' ,'c')
+       ->select('c.*', '...')
+       ->leftJoin('c', 'metadata', 'm', 'm.id = c.id');
+
+$adapter = $treeAdapter
+    ->getAdapter()
+    ->setDefaultDbSelect($select);
+*/
 
 class Service
 {

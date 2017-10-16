@@ -44,7 +44,9 @@ class Zend2 extends AdapterAbstract implements AdapterInterface
      */
     public function getBlankDbSelect(): Db\Sql\Select
     {
-        return new Db\Sql\Select($this->getOptions()->getTableName());
+        return new Db\Sql\Select(
+            array($this->getOptions()->getTableAlias() => $this->getOptions()->getTableName())
+        );
     }
 
     /**
@@ -364,12 +366,12 @@ class Zend2 extends AdapterAbstract implements AdapterInterface
 
         $select = $this->getBlankDbSelect();
         $select->where
-            ->isNull($options->getParentIdColumnName());
-        $select->order($options->getIdColumnName());
+            ->isNull($options->getParentIdColumnName(true));
+        $select->order($options->getIdColumnName(true));
 
         if (null != $scope && $options->getScopeColumnName()) {
             $select->where
-                ->equalTo($options->getScopeColumnName(), $scope);
+                ->equalTo($options->getScopeColumnName(true), $scope);
         }
 
         $result = $dbAdapter->query($select->getSqlString($dbAdapter->getPlatform()),
@@ -400,7 +402,7 @@ class Zend2 extends AdapterAbstract implements AdapterInterface
         $dbAdapter = $this->getDbAdapter();
 
         $select = $this->getDefaultDbSelect()
-                       ->where(array($options->getIdColumnName() => $nodeId));
+                       ->where(array($options->getIdColumnName(true) => $nodeId));
 
         $result = $dbAdapter->query($select->getSqlString($dbAdapter->getPlatform()),
                 DbAdapter::QUERY_MODE_EXECUTE);
@@ -422,7 +424,7 @@ class Zend2 extends AdapterAbstract implements AdapterInterface
         $dbAdapter = $this->getDbAdapter();
 
         $select = $this->getBlankDbSelect()
-            ->where(array($options->getIdColumnName() => $nodeId));
+            ->where(array($options->getIdColumnName(true) => $nodeId));
 
         $result = $dbAdapter->query($select->getSqlString($dbAdapter->getPlatform()),
             DbAdapter::QUERY_MODE_EXECUTE);
@@ -456,9 +458,9 @@ class Zend2 extends AdapterAbstract implements AdapterInterface
 
         $select = $this->getBlankDbSelect();
         $select->columns($columns);
-        $select->order($options->getLeftColumnName());
+        $select->order($options->getLeftColumnName(true));
         $select->where(array(
-            $options->getParentIdColumnName() => $parentNodeId,
+            $options->getParentIdColumnName(true) => $parentNodeId,
         ));
 
         $data = $dbAdapter->query($select->getSqlString($dbAdapter->getPlatform()),
@@ -518,24 +520,24 @@ class Zend2 extends AdapterAbstract implements AdapterInterface
 
         if ($options->getScopeColumnName()) {
             $select->where
-                ->equalTo($options->getScopeColumnName(), $nodeInfo->getScope());
+                ->equalTo($options->getScopeColumnName(true), $nodeInfo->getScope());
         }
 
         $select->where
-               ->lessThanOrEqualTo($options->getLeftColumnName(), $nodeInfo->getLeft())
+               ->lessThanOrEqualTo($options->getLeftColumnName(true), $nodeInfo->getLeft())
                ->AND
-               ->greaterThanOrEqualTo($options->getRightColumnName(), $nodeInfo->getRight());
+               ->greaterThanOrEqualTo($options->getRightColumnName(true), $nodeInfo->getRight());
 
-        $select->order($options->getLeftColumnName().' ASC');
+        $select->order($options->getLeftColumnName(true).' ASC');
 
         if (0 < $startLevel) {
             $select->where
-                   ->greaterThanOrEqualTo($options->getLevelColumnName(), $startLevel);
+                   ->greaterThanOrEqualTo($options->getLevelColumnName(true), $startLevel);
         }
 
         if (0 < $excludeLastNLevels) {
             $select->where
-                   ->lessThanOrEqualTo($options->getLevelColumnName(), $nodeInfo->getLevel() - $excludeLastNLevels);
+                   ->lessThanOrEqualTo($options->getLevelColumnName(true), $nodeInfo->getLevel() - $excludeLastNLevels);
         }
 
         $result = $dbAdapter->query($select->getSqlString($dbAdapter->getPlatform()),
@@ -557,47 +559,47 @@ class Zend2 extends AdapterAbstract implements AdapterInterface
 
         $dbAdapter = $this->getDbAdapter();
         $select = $this->getDefaultDbSelect();
-        $select->order($options->getLeftColumnName().' ASC');
+        $select->order($options->getLeftColumnName(true).' ASC');
 
         if ($options->getScopeColumnName()) {
             $select->where
-                   ->equalTo($options->getScopeColumnName(), $nodeInfo->getScope());
+                   ->equalTo($options->getScopeColumnName(true), $nodeInfo->getScope());
         }
 
         if (0 != $startLevel) {
             $level = $nodeInfo->getLevel() + (int) $startLevel;
             $select->where
-                   ->greaterThanOrEqualTo($options->getLevelColumnName(), $level);
+                   ->greaterThanOrEqualTo($options->getLevelColumnName(true), $level);
         }
 
         if (null != $levels) {
             $endLevel = $nodeInfo->getLevel() + (int) $startLevel + abs($levels);
             $select->where
-                   ->lessThan($options->getLevelColumnName(), $endLevel);
+                   ->lessThan($options->getLevelColumnName(true), $endLevel);
         }
 
         if (null != $excludeBranch && null != ($excludeNodeInfo = $this->getNodeInfo($excludeBranch))) {
             $select->where
                    ->NEST
-                   ->between($options->getLeftColumnName(),
+                   ->between($options->getLeftColumnName(true),
                         $nodeInfo->getLeft(), $excludeNodeInfo->getLeft() - 1)
                    ->OR
-                   ->between($options->getLeftColumnName(),
+                   ->between($options->getLeftColumnName(true),
                         $excludeNodeInfo->getRight() + 1, $nodeInfo->getRight())
                    ->UNNEST
                    ->AND
                    ->NEST
-                   ->between($options->getRightColumnName(),
+                   ->between($options->getRightColumnName(true),
                         $excludeNodeInfo->getRight() + 1, $nodeInfo->getRight())
                    ->OR
-                   ->between($options->getRightColumnName(),
+                   ->between($options->getRightColumnName(true),
                         $nodeInfo->getLeft(), $excludeNodeInfo->getLeft() - 1)
                    ->UNNEST;
         } else {
             $select->where
-                   ->greaterThanOrEqualTo($options->getLeftColumnName(), $nodeInfo->getLeft())
+                   ->greaterThanOrEqualTo($options->getLeftColumnName(true), $nodeInfo->getLeft())
                    ->AND
-                   ->lessThanOrEqualTo($options->getRightColumnName(), $nodeInfo->getRight());
+                   ->lessThanOrEqualTo($options->getRightColumnName(true), $nodeInfo->getRight());
         }
 
         $result = $dbAdapter->query($select->getSqlString($dbAdapter->getPlatform()),
