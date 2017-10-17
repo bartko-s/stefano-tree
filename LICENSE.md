@@ -1,4 +1,4 @@
-Copyright (c) 2013-2016, Štefan Bartko
+Copyright (c) 2013-2017, Štefan Bartko
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

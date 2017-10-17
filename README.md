@@ -13,16 +13,18 @@
  - NestedSet(MPTT - Modified Pre-order Tree Traversal)
  - Support scopes (multiple independent tree in one db table)
  - Rebuild broken tree
- - Tested with MySQL and PostgreSQL but should work with any database vendor which support transaction
- - Support Frameworks [Zend Framework 1](https://framework.zend.com/manual/1.12/en/zend.db.html), [Zend Framework 2](https://framework.zend.com/manual/2.4/en/index.html#zend-db), [Doctrine 2 DBAL](http://docs.doctrine-project.org/projects/doctrine-dbal/en/latest/)
- - It is easy to implement support for any framework
+ - Tested with MySQL/MariaDB and PostgreSQL but should work with any database vendor which support transaction
+ - Supported Frameworks [Zend Framework 1](https://framework.zend.com/manual/1.12/en/zend.db.html), [Zend Framework 2](https://framework.zend.com/manual/2.4/en/index.html#zend-db), [Doctrine 2 DBAL](http://docs.doctrine-project.org/projects/doctrine-dbal/en/latest/). It is easy to implement support for any framework
 
 ## Dependencies
-- Stefano Tree has no external dependencies only Php and your framework is required
+- This library has no external dependencies only PHP and your favorite framework is required
 
 ## Installation
 
-Run following command `composer require stefano/stefano-tree`
+Run following command in terminal
+```
+composer require stefano/stefano-tree
+```
 
 ## Create Tree Adapter
 
@@ -232,7 +234,7 @@ $tree->getAncestorsQueryBuilder()
 // exclude last node($nodeId) from result
 $tree->getAncestorsQueryBuilder()
      ->excludeLastNLevel(1)
-     ->getPath($nodeId);
+     ->get($nodeId);
 
 // exclude first two levels from result
 $tree->getAncestorsQueryBuilder()
@@ -251,7 +253,7 @@ try {
     $satus = $tree->isValid($rootNodeId);
 } catch (ValidationException $e) {
     $errorMessage = $e->getMessage();
-}    
+}
 ```
 
 - Rebuild broken tree
@@ -263,5 +265,10 @@ try {
     $tree->rebuild($rootNodeId);
 } catch (ValidationException $e) {
     $errorMessage = $e->getMessage();
-}     
+}
 ```
+
+## Contributing
+
+Any contributions are welcome. If you find any issue don't hesitate to open a new issue or send a pull request.
+ 
