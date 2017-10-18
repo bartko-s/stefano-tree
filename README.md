@@ -31,7 +31,6 @@ composer require stefano/stefano-tree
 |        key         |  type  | required | default value | note                                                  |
 | :----------------- | :----: | :------: | :------------ | :---------------------------------------------------- |
 | tableName          | string | yes      |               |                                                       |
-| tableAlias         | string | no       | see note      | Default value is tableName                            |
 | idColumnName       | string | yes      |               |                                                       |
 | leftColumnName     | string | no       | lft           |                                                       |
 | rightColumnName    | string | no       | rgt           |                                                       |

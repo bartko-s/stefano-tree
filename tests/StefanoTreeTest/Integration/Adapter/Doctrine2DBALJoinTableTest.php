@@ -18,7 +18,6 @@ class Doctrine2DBALJoinTableTest extends AdapterJoinTableTestAbstract
     {
         $options = new Options(array(
             'tableName' => 'tree_traversal_with_scope',
-            'tableAlias' => 'ttws',
             'idColumnName' => 'tree_traversal_id',
             'scopeColumnName' => 'scope',
         ));
@@ -30,9 +29,9 @@ class Doctrine2DBALJoinTableTest extends AdapterJoinTableTestAbstract
         $adapter = new NestedSetAdapter($options, TestUtil::getDoctrine2Connection());
 
         $select = TestUtil::getDoctrine2Connection()->createQueryBuilder();
-        $select->select('ttws.*', 'ttm.name AS metadata')
-               ->from('tree_traversal_with_scope', 'ttws')
-               ->leftJoin('ttws', 'tree_traversal_metadata', 'ttm', 'ttm.tree_traversal_id = ttws.tree_traversal_id');
+        $select->select('tree_traversal_with_scope.*', 'ttm.name AS metadata')
+               ->from('tree_traversal_with_scope')
+               ->leftJoin('tree_traversal_with_scope', 'tree_traversal_metadata', 'ttm', 'ttm.tree_traversal_id = tree_traversal_with_scope.tree_traversal_id');
 
         $adapter->setDefaultDbSelect($select);
 

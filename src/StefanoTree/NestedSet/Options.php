@@ -9,7 +9,6 @@ use StefanoTree\Exception\InvalidArgumentException;
 class Options
 {
     private $tableName = '';
-    private $tableAlias = null;
 
     private $sequenceName = null;
 
@@ -80,34 +79,6 @@ class Options
     }
 
     /**
-     * @param string $tableAlias
-     */
-    public function setTableAlias(string $tableAlias): void
-    {
-        $tableAlias = trim($tableAlias);
-
-        if (empty($tableAlias)) {
-            throw new InvalidArgumentException('tableAlias cannot be empty');
-        }
-
-        $this->tableAlias = $tableAlias;
-    }
-
-    /**
-     * If alias was not set then table name is returned.
-     *
-     * @return string
-     */
-    public function getTableAlias(): string
-    {
-        if (null === $this->tableAlias) {
-            $this->tableAlias = $this->getTableName();
-        }
-
-        return $this->tableAlias;
-    }
-
-    /**
      * @param string $sequenceName
      */
     public function setSequenceName(string $sequenceName): void
@@ -140,13 +111,13 @@ class Options
     }
 
     /**
-     * @param bool $withTableAlias
+     * @param bool $withTableName
      *
      * @return string
      */
-    public function getIdColumnName(bool $withTableAlias = false): string
+    public function getIdColumnName(bool $withTableName = false): string
     {
-        return ($withTableAlias) ? $this->addTableAlias($this->idColumnName) : $this->idColumnName;
+        return ($withTableName) ? $this->addTableName($this->idColumnName) : $this->idColumnName;
     }
 
     /**
@@ -166,13 +137,13 @@ class Options
     }
 
     /**
-     * @param bool $withTableAlias
+     * @param bool $withTableName
      *
      * @return string
      */
-    public function getLeftColumnName(bool $withTableAlias = false): string
+    public function getLeftColumnName(bool $withTableName = false): string
     {
-        return ($withTableAlias) ? $this->addTableAlias($this->leftColumnName) : $this->leftColumnName;
+        return ($withTableName) ? $this->addTableName($this->leftColumnName) : $this->leftColumnName;
     }
 
     /**
@@ -192,13 +163,13 @@ class Options
     }
 
     /**
-     * @param bool $withTableAlias
+     * @param bool $withTableName
      *
      * @return string
      */
-    public function getRightColumnName(bool $withTableAlias = false): string
+    public function getRightColumnName(bool $withTableName = false): string
     {
-        return ($withTableAlias) ? $this->addTableAlias($this->rightColumnName) : $this->rightColumnName;
+        return ($withTableName) ? $this->addTableName($this->rightColumnName) : $this->rightColumnName;
     }
 
     /**
@@ -218,13 +189,13 @@ class Options
     }
 
     /**
-     * @param bool $withTableAlias
+     * @param bool $withTableName
      *
      * @return string
      */
-    public function getLevelColumnName(bool $withTableAlias = false): string
+    public function getLevelColumnName(bool $withTableName = false): string
     {
-        return ($withTableAlias) ? $this->addTableAlias($this->levelColumnName) : $this->levelColumnName;
+        return ($withTableName) ? $this->addTableName($this->levelColumnName) : $this->levelColumnName;
     }
 
     /**
@@ -244,13 +215,13 @@ class Options
     }
 
     /**
-     * @param bool $withTableAlias
+     * @param bool $withTableName
      *
      * @return string
      */
-    public function getParentIdColumnName(bool $withTableAlias = false): string
+    public function getParentIdColumnName(bool $withTableName = false): string
     {
-        return ($withTableAlias) ? $this->addTableAlias($this->parentIdColumnName) : $this->parentIdColumnName;
+        return ($withTableName) ? $this->addTableName($this->parentIdColumnName) : $this->parentIdColumnName;
     }
 
     /**
@@ -262,21 +233,21 @@ class Options
     }
 
     /**
-     * @param bool $withTableAlias
+     * @param bool $withTableName
      *
      * @return string|null
      */
-    public function getScopeColumnName(bool $withTableAlias = false): ?string
+    public function getScopeColumnName(bool $withTableName = false): ?string
     {
-        return ($withTableAlias) ? $this->addTableAlias($this->scopeColumnName) : $this->scopeColumnName;
+        return ($withTableName) ? $this->addTableName($this->scopeColumnName) : $this->scopeColumnName;
     }
 
-    private function addTableAlias(?string $value): ?string
+    private function addTableName(?string $value): ?string
     {
         if (null === $value) {
             return null;
         }
 
-        return sprintf('%s.%s', $this->getTableAlias(), $value);
+        return sprintf('%s.%s', $this->getTableName(), $value);
     }
 }

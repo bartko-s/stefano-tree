@@ -18,7 +18,6 @@ class Zend1JoinTableTest extends AdapterJoinTableTestAbstract
     {
         $options = new Options(array(
             'tableName' => 'tree_traversal_with_scope',
-            'tableAlias' => 'ttws',
             'idColumnName' => 'tree_traversal_id',
             'scopeColumnName' => 'scope',
         ));
@@ -30,10 +29,10 @@ class Zend1JoinTableTest extends AdapterJoinTableTestAbstract
         $adapter = new NestedSetAdapter($options, TestUtil::getZend1DbAdapter());
 
         $select = TestUtil::getZend1DbAdapter()->select();
-        $select->from(array('ttws' => 'tree_traversal_with_scope'))
+        $select->from(array('tree_traversal_with_scope'))
                ->joinLeft(
                    array('ttm' => 'tree_traversal_metadata'),
-                   'ttm.tree_traversal_id = ttws.tree_traversal_id',
+                   'ttm.tree_traversal_id = tree_traversal_with_scope.tree_traversal_id',
                    array('metadata' => 'name')
                );
 

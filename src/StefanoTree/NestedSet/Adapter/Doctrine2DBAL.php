@@ -51,8 +51,8 @@ class Doctrine2DBAL extends AdapterAbstract implements AdapterInterface
         $queryBuilder = $this->getConnection()
                              ->createQueryBuilder();
 
-        $queryBuilder->select(sprintf('%s.*', $this->getOptions()->getTableAlias()))
-                     ->from($this->getOptions()->getTableName(), $this->getOptions()->getTableAlias());
+        $queryBuilder->select(sprintf('%s.*', $this->getOptions()->getTableName()))
+                     ->from($this->getOptions()->getTableName());
 
         return $queryBuilder;
     }

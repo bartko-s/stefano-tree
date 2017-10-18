@@ -44,9 +44,7 @@ class Zend2 extends AdapterAbstract implements AdapterInterface
      */
     public function getBlankDbSelect(): Db\Sql\Select
     {
-        return new Db\Sql\Select(
-            array($this->getOptions()->getTableAlias() => $this->getOptions()->getTableName())
-        );
+        return new Db\Sql\Select($this->getOptions()->getTableName());
     }
 
     /**

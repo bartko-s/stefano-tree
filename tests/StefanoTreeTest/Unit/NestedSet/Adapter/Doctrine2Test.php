@@ -20,7 +20,7 @@ class Doctrine2DBALAdapterTest extends UnitTestCase
     {
         $adapter = $this->getAdapter();
 
-        $this->assertEquals('SELECT tableName.* FROM tableName tableName',
+        $this->assertEquals('SELECT tableName.* FROM tableName',
             trim($adapter->getBlankDbSelect()->getSQL()));
     }
 

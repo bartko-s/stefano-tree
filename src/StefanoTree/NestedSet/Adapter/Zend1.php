@@ -46,10 +46,7 @@ class Zend1 extends AdapterAbstract implements AdapterInterface
     {
         return $this->getDbAdapter()
             ->select()
-            ->from(array(
-                $this->getOptions()->getTableAlias() => $this->getOptions()->getTableName(),
-                )
-            );
+            ->from($this->getOptions()->getTableName());
     }
 
     /**
