@@ -44,7 +44,7 @@ class Zend1Test extends UnitTestCase
         $this->assertNotSame($adapter->getDefaultDbSelect(), $adapter->getDefaultDbSelect());
     }
 
-    public function testSetDefaultDbSelect()
+    public function testSetDefaultDbSelectBuilder()
     {
         $options = new Options(array(
             'tableName' => 'tableName',
@@ -54,11 +54,13 @@ class Zend1Test extends UnitTestCase
         $dbAdapter = $this->getDbAdapterMock();
         $adapter = new Zend1($options, $dbAdapter);
 
-        $select = $dbAdapter->select()->from('tableName');
+        $builder = function () use ($dbAdapter) {
+            return $dbAdapter->select()->from('tableName');
+        };
 
-        $adapter->setDefaultDbSelect($select);
+        $adapter->setDbSelectBuilder($builder);
 
-        $this->assertEquals($select->__toString(), $adapter->getDefaultDbSelect()->__toString());
+        $this->assertEquals($builder()->__toString(), $adapter->getDefaultDbSelect()->__toString());
     }
 
     /**

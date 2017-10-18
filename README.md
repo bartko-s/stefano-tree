@@ -70,16 +70,21 @@ $tree = new NestedSet($nestedSetAdapter);
 ```
 use Zend\Db\Sql\Select;
 
-// @see https://docs.zendframework.com/zend-db/sql/#select
-$select = new Select('tree_traversal');
-$select->join(
-    array('metadata'),
-    'metadata.tree_traversal_id = tree_traversal.tree_traversal_id',
-    array('metadata' => 'name'),
-    $select::JOIN_LEFT
-    );
+$selectBuilder = function() {
+    // @see https://docs.zendframework.com/zend-db/sql/#select
+    $select = new Select('tree_traversal');
+    $select->join(
+        array('metadata'),
+        'metadata.tree_traversal_id = tree_traversal.tree_traversal_id',
+        array('metadata' => 'name'),
+        $select::JOIN_LEFT
+        );
+    
+    return $select;    
+}
 
-$tree->getAdapter()->setDefaultDbSelect($select);
+// as $selectBuilder you can use any "callable" like function or object
+$tree->getAdapter()->setDbSelectBuilder($selectBuilder);
 ```
 
 ## API

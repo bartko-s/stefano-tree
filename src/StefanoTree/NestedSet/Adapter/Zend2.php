@@ -13,8 +13,6 @@ class Zend2 extends AdapterAbstract implements AdapterInterface
 {
     private $dbAdapter;
 
-    private $defaultDbSelect = null;
-
     public function __construct(Options $options, DbAdapter $dbAdapter)
     {
         $this->setOptions($options);
@@ -48,27 +46,13 @@ class Zend2 extends AdapterAbstract implements AdapterInterface
     }
 
     /**
-     * @param Db\Sql\Select $dbSelect
-     */
-    public function setDefaultDbSelect(Db\Sql\Select $dbSelect): void
-    {
-        $this->defaultDbSelect = $dbSelect;
-    }
-
-    /**
      * Return default db select.
      *
      * @return Db\Sql\Select
      */
     public function getDefaultDbSelect()
     {
-        if (null === $this->defaultDbSelect) {
-            $this->defaultDbSelect = $this->getBlankDbSelect();
-        }
-
-        $dbSelect = clone $this->defaultDbSelect;
-
-        return $dbSelect;
+        return $this->getDbSelectBuilder()();
     }
 
     /**

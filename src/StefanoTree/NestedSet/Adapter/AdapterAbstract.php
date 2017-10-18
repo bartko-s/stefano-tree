@@ -11,6 +11,8 @@ abstract class AdapterAbstract implements AdapterInterface
 {
     private $options;
 
+    private $dbSelectBuilder;
+
     /**
      * @param Options $options
      */
@@ -75,5 +77,27 @@ abstract class AdapterAbstract implements AdapterInterface
         }
 
         return new NodeInfo($id, $parentId, $level, $left, $right, $scope);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDbSelectBuilder(callable $selectBuilder): void
+    {
+        $this->dbSelectBuilder = $selectBuilder;
+    }
+
+    /**
+     * @return callable
+     */
+    public function getDbSelectBuilder(): callable
+    {
+        if (null === $this->dbSelectBuilder) {
+            $this->dbSelectBuilder = function () {
+                return $this->getBlankDbSelect();
+            };
+        }
+
+        return $this->dbSelectBuilder;
     }
 }

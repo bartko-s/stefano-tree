@@ -13,8 +13,6 @@ class Doctrine2DBAL extends AdapterAbstract implements AdapterInterface
 {
     private $connection;
 
-    private $defaultDbSelect;
-
     /**
      * @param Options      $options
      * @param DbConnection $connection
@@ -58,27 +56,13 @@ class Doctrine2DBAL extends AdapterAbstract implements AdapterInterface
     }
 
     /**
-     * @param QueryBuilder $dbSelect
-     */
-    public function setDefaultDbSelect(QueryBuilder $dbSelect): void
-    {
-        $this->defaultDbSelect = $dbSelect;
-    }
-
-    /**
-     * Return clone of default db select.
+     * Return default db select. Always new instance.
      *
      * @return QueryBuilder
      */
     public function getDefaultDbSelect(): QueryBuilder
     {
-        if (null === $this->defaultDbSelect) {
-            $this->defaultDbSelect = $this->getBlankDbSelect();
-        }
-
-        $dbSelect = clone $this->defaultDbSelect;
-
-        return $dbSelect;
+        return $this->getDbSelectBuilder()();
     }
 
     /**

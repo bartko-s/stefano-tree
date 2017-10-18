@@ -28,12 +28,16 @@ class Doctrine2DBALJoinTableTest extends AdapterJoinTableTestAbstract
 
         $adapter = new NestedSetAdapter($options, TestUtil::getDoctrine2Connection());
 
-        $select = TestUtil::getDoctrine2Connection()->createQueryBuilder();
-        $select->select('tree_traversal_with_scope.*', 'ttm.name AS metadata')
-               ->from('tree_traversal_with_scope')
-               ->leftJoin('tree_traversal_with_scope', 'tree_traversal_metadata', 'ttm', 'ttm.tree_traversal_id = tree_traversal_with_scope.tree_traversal_id');
+        $selectBuilder = function () {
+            $select = TestUtil::getDoctrine2Connection()->createQueryBuilder();
+            $select->select('tree_traversal_with_scope.*', 'ttm.name AS metadata')
+                ->from('tree_traversal_with_scope')
+                ->leftJoin('tree_traversal_with_scope', 'tree_traversal_metadata', 'ttm', 'ttm.tree_traversal_id = tree_traversal_with_scope.tree_traversal_id');
 
-        $adapter->setDefaultDbSelect($select);
+            return $select;
+        };
+
+        $adapter->setDbSelectBuilder($selectBuilder);
 
         return $adapter;
     }

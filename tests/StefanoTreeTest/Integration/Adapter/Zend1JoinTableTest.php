@@ -28,15 +28,19 @@ class Zend1JoinTableTest extends AdapterJoinTableTestAbstract
 
         $adapter = new NestedSetAdapter($options, TestUtil::getZend1DbAdapter());
 
-        $select = TestUtil::getZend1DbAdapter()->select();
-        $select->from(array('tree_traversal_with_scope'))
-               ->joinLeft(
-                   array('ttm' => 'tree_traversal_metadata'),
-                   'ttm.tree_traversal_id = tree_traversal_with_scope.tree_traversal_id',
-                   array('metadata' => 'name')
-               );
+        $selectBuilder = function () {
+            $select = TestUtil::getZend1DbAdapter()->select();
+            $select->from(array('tree_traversal_with_scope'))
+                ->joinLeft(
+                    array('ttm' => 'tree_traversal_metadata'),
+                    'ttm.tree_traversal_id = tree_traversal_with_scope.tree_traversal_id',
+                    array('metadata' => 'name')
+                );
 
-        $adapter->setDefaultDbSelect($select);
+            return $select;
+        };
+
+        $adapter->setDbSelectBuilder($selectBuilder);
 
         return $adapter;
     }

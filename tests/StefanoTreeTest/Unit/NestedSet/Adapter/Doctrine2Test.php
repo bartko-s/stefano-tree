@@ -30,18 +30,20 @@ class Doctrine2DBALAdapterTest extends UnitTestCase
         $this->assertNotSame($adapter->getDefaultDbSelect(), $adapter->getDefaultDbSelect());
     }
 
-    public function testSetDefaultDbSelect()
+    public function testSetDefaultDbSelectBuilder()
     {
         $adapter = $this->getAdapter();
 
-        $select = $this->getConnection()
-            ->createQueryBuilder()
-            ->select('*')
-            ->from('someTable', null);
+        $selectBuilder = function () {
+            return $this->getConnection()
+                ->createQueryBuilder()
+                ->select('*')
+                ->from('someTable', null);
+        };
 
-        $adapter->setDefaultDbSelect($select);
+        $adapter->setDbSelectBuilder($selectBuilder);
 
-        $this->assertEquals($select->getSQL(), $adapter->getDefaultDbSelect()->getSQL());
+        $this->assertEquals($selectBuilder()->getSQL(), $adapter->getDefaultDbSelect()->getSQL());
     }
 
     /**

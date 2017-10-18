@@ -32,17 +32,49 @@ $treeAdapter = \StefanoTree\NestedSet::factory(
 );
 
 /***************************************
- * Join example
+ * Join example 1
  ***************************************/
 /*
-$select = $dbAdapter->createQueryBuilder();
-$select->from('categories')
-       ->select('categories.*', '...')
-       ->leftJoin('categories', 'metadata', 'm', 'm.id = categories.id');
+$selectBuilder = function() use ($dbAdapter) {
+    $select = $dbAdapter->createQueryBuilder();
+    $select->from('categories')
+        ->select('categories.*', '...')
+        ->leftJoin('categories', 'metadata', 'm', 'm.id = categories.id');
+    return $select;
+};
 
 $adapter = $treeAdapter
     ->getAdapter()
-    ->setDefaultDbSelect($select);
+    ->setDbSelectBuilder($selectBuilder);
+*/
+
+/***************************************
+ * Join example 2
+ ***************************************/
+/*
+class SelectBuilder
+{
+    private $connection;
+
+    public function __construct(\Doctrine\DBAL\Connection $connection)
+    {
+        $this->connection = $connection;
+    }
+
+    public function build() {
+        $select = $this->connection->createQueryBuilder();
+        $select->from('categories')
+            ->select('categories.*', '...')
+            ->leftJoin('categories', 'metadata', 'm', 'm.id = categories.id');
+        return $select;
+    }
+}
+
+$selectBuilder = new SelectBuilder($dbAdapter);
+
+$adapter = $treeAdapter
+    ->getAdapter()
+    ->setDbSelectBuilder(array($selectBuilder, 'build'));
 */
 
 class Service

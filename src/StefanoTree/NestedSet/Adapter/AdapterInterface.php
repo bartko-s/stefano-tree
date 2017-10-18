@@ -9,6 +9,11 @@ use StefanoTree\NestedSet\NodeInfo;
 interface AdapterInterface
 {
     /**
+     * @param callable $selectBuilder
+     */
+    public function setDbSelectBuilder(callable $selectBuilder): void;
+
+    /**
      * Lock tree for update. This prevent race condition issue.
      */
     public function lockTree(): void;
