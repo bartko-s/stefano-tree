@@ -28,7 +28,7 @@ class Zend2Test extends UnitTestCase
         $dbAdapter = $this->getDbAdapterMock();
         $adapter = new NestedSetAdapter($options, $dbAdapter);
 
-        $this->assertEquals('SELECT "t".* FROM "tableName" AS "t"',
+        $this->assertEquals('SELECT "tableName".* FROM "tableName" AS "tableName"',
             $adapter->getBlankDbSelect()->getSqlString());
     }
 

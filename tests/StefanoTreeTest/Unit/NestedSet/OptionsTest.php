@@ -180,7 +180,7 @@ class NestedSetTest extends UnitTestCase
     public function testGetDefaultTableAlias()
     {
         $optionsStub = $this->getOptionsWithDefaultSettings();
-        $this->assertEquals('t', $optionsStub->getTableAlias());
+        $this->assertEquals('table', $optionsStub->getTableAlias());
     }
 
     public function testSetTableAlias()

@@ -94,14 +94,14 @@ class Options
     }
 
     /**
-     * If alias was not set then first lower cased character from table name is returned.
+     * If alias was not set then table name is returned.
      *
      * @return string
      */
     public function getTableAlias(): string
     {
         if (null === $this->tableAlias) {
-            $this->tableAlias = strtolower(substr($this->tableName, 0, 1));
+            $this->tableAlias = $this->getTableName();
         }
 
         return $this->tableAlias;

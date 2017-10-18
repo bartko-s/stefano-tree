@@ -31,7 +31,7 @@ composer require stefano/stefano-tree
 |        key         |  type  | required | default value | note                                                  |
 | :----------------- | :----: | :------: | :------------ | :---------------------------------------------------- |
 | tableName          | string | yes      |               |                                                       |
-| tableAlias         | string | no       | see note      | Default value is first char from lowercased tableName |
+| tableAlias         | string | no       | see note      | Default value is tableName                            |
 | idColumnName       | string | yes      |               |                                                       |
 | leftColumnName     | string | no       | lft           |                                                       |
 | rightColumnName    | string | no       | rgt           |                                                       |
@@ -72,10 +72,10 @@ $tree = new NestedSet($nestedSetAdapter);
 use Zend\Db\Sql\Select;
 
 // @see https://docs.zendframework.com/zend-db/sql/#select
-$select = new Select(array('t' => 'tree_traversal'));
+$select = new Select('tree_traversal');
 $select->join(
-    array('m' => 'metadata'),
-    'm.tree_traversal_id = t.tree_traversal_id',
+    array('metadata'),
+    'metadata.tree_traversal_id = tree_traversal.tree_traversal_id',
     array('metadata' => 'name'),
     $select::JOIN_LEFT
     );

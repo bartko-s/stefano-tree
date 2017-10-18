@@ -36,9 +36,9 @@ $treeAdapter = \StefanoTree\NestedSet::factory(
  ***************************************/
 /*
 $select = $dbAdapter->createQueryBuilder();
-$select->from('categories' ,'c')
-       ->select('c.*', '...')
-       ->leftJoin('c', 'metadata', 'm', 'm.id = c.id');
+$select->from('categories')
+       ->select('categories.*', '...')
+       ->leftJoin('categories', 'metadata', 'm', 'm.id = categories.id');
 
 $adapter = $treeAdapter
     ->getAdapter()
