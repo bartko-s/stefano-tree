@@ -1,8 +1,15 @@
 # Tree
 
-| Test Status | Code Coverage | Quality | Dependencies |
-| :---: | :---: | :---: | :---: |
-| [![Test Status](https://secure.travis-ci.org/bartko-s/stefano-tree.png?branch=master)](https://travis-ci.org/bartko-s/stefano-tree) | [![Code Coverage](https://coveralls.io/repos/bartko-s/stefano-tree/badge.png?branch=master)](https://coveralls.io/r/bartko-s/stefano-tree?branch=master) | [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bartko-s/stefano-tree/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/bartko-s/stefano-tree/?branch=master) | [![Dependency Status](https://www.versioneye.com/user/projects/53d26035851c5679c9000267/badge.svg?style=flat)](https://www.versioneye.com/user/projects/53d26035851c5679c9000267) |
+
+[![Latest Stable Version](https://poser.pugx.org/stefano/stefano-tree/version)](https://packagist.org/packages/stefano/stefano-tree)
+[![Test Status](https://secure.travis-ci.org/bartko-s/stefano-tree.png?branch=master)](https://travis-ci.org/bartko-s/stefano-tree) 
+[![Coverage Status](https://coveralls.io/repos/github/bartko-s/stefano-tree/badge.svg?branch=master)](https://coveralls.io/github/bartko-s/stefano-tree?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bartko-s/stefano-tree/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/bartko-s/stefano-tree/?branch=master) 
+[![Dependency Status](https://www.versioneye.com/user/projects/53d26035851c5679c9000267/badge.svg?style=flat)](https://www.versioneye.com/user/projects/53d26035851c5679c9000267)
+[![License](https://poser.pugx.org/stefano/stefano-tree/license)](https://packagist.org/packages/stefano/stefano-tree)
+[![Monthly Downloads](https://poser.pugx.org/stefano/stefano-tree/d/monthly)](https://packagist.org/packages/stefano/stefano-tree)
+
+[![Donate on PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://paypal.me/stevo4)
 
 [Nested Set](https://en.wikipedia.org/wiki/Nested_set_model) implementation for PHP.
 
