@@ -47,6 +47,7 @@ composer require stefano/stefano-tree
 | scopeColumnName    | string | see note |               | If empty scope support is disabled                    |
 
 - Use static factory method
+
 ```
 use \StefanoTree\NestedSet;
 
@@ -62,6 +63,7 @@ $tree = NestedSet::factory($options, $dbAdapter);
 ```
 
 - or create tree adapter directly
+
 ```
 use \StefanoTree\NestedSet;
 use \StefanoTree\NestedSet\Options;
@@ -74,6 +76,7 @@ $tree = new NestedSet($nestedSetAdapter);
 ```
 
 - You can join table. Example is for Zend Framework 2 but it works similar for other supported frameworks.
+
 ```
 use Zend\Db\Sql\Select;
 
