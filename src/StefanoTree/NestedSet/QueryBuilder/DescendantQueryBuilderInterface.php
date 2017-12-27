@@ -22,7 +22,7 @@ interface DescendantQueryBuilderInterface
      *
      * @return DescendantQueryBuilderInterface
      */
-    public function excludeFirstNLevel(int $count): DescendantQueryBuilderInterface;
+    public function excludeFirstNLevel(int $count): self;
 
     /**
      * Limit number of levels.
@@ -31,7 +31,7 @@ interface DescendantQueryBuilderInterface
      *
      * @return DescendantQueryBuilderInterface
      */
-    public function levelLimit(int $count): DescendantQueryBuilderInterface;
+    public function levelLimit(int $count): self;
 
     /**
      * Exclude specified branch from result.
@@ -40,5 +40,5 @@ interface DescendantQueryBuilderInterface
      *
      * @return DescendantQueryBuilderInterface
      */
-    public function excludeBranch($nodeId): DescendantQueryBuilderInterface;
+    public function excludeBranch($nodeId): self;
 }
