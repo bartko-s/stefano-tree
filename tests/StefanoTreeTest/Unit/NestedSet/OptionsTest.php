@@ -1,15 +1,18 @@
 <?php
+
+declare(strict_types=1);
+
 namespace StefanoTreeTest\Unit\NestedSet;
 
 use StefanoTree\NestedSet\Options;
+use StefanoTreeTest\UnitTestCase;
 
-class NestedSetTest
-    extends \PHPUnit_Framework_TestCase
+class NestedSetTest extends UnitTestCase
 {
     public function testThrowExceptionIfAllRequiredSettingsAreNotProvided()
     {
-        $this->setExpectedException('\StefanoTree\Exception\InvalidArgumentException',
-            'tableName, idColumnName must be set');
+        $this->expectException(\StefanoTree\Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage('tableName, idColumnName must be set');
 
         new Options(array());
     }
@@ -22,7 +25,6 @@ class NestedSetTest
         return new Options(array(
             'tableName' => 'table',
             'idColumnName' => 'id',
-            'dbAdapter' => \Mockery::mock('\StefanoDb\Adapter\Adapter'),
         ));
     }
 
@@ -30,8 +32,8 @@ class NestedSetTest
     {
         $optionsStub = $this->getOptionsWithDefaultSettings();
 
-        $this->setExpectedException('\StefanoTree\Exception\InvalidArgumentException',
-            'tableName cannot be empty');
+        $this->expectException(\StefanoTree\Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage('tableName cannot be empty');
 
         $optionsStub->setTableName(' ');
     }
@@ -40,8 +42,8 @@ class NestedSetTest
     {
         $optionsStub = $this->getOptionsWithDefaultSettings();
 
-        $this->setExpectedException('\StefanoTree\Exception\InvalidArgumentException',
-            'idColumnName cannot be empty');
+        $this->expectException(\StefanoTree\Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage('idColumnName cannot be empty');
 
         $optionsStub->setIdColumnName(' ');
     }
@@ -50,8 +52,8 @@ class NestedSetTest
     {
         $optionsStub = $this->getOptionsWithDefaultSettings();
 
-        $this->setExpectedException('\StefanoTree\Exception\InvalidArgumentException',
-            'leftColumnName cannot be empty');
+        $this->expectException(\StefanoTree\Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage('leftColumnName cannot be empty');
 
         $optionsStub->setLeftColumnName(' ');
     }
@@ -60,8 +62,8 @@ class NestedSetTest
     {
         $optionsStub = $this->getOptionsWithDefaultSettings();
 
-        $this->setExpectedException('\StefanoTree\Exception\InvalidArgumentException',
-            'rightColumnName cannot be empty');
+        $this->expectException(\StefanoTree\Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage('rightColumnName cannot be empty');
 
         $optionsStub->setRightColumnName(' ');
     }
@@ -70,8 +72,8 @@ class NestedSetTest
     {
         $optionsStub = $this->getOptionsWithDefaultSettings();
 
-        $this->setExpectedException('\StefanoTree\Exception\InvalidArgumentException',
-            'levelColumnName cannot be empty');
+        $this->expectException(\StefanoTree\Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage('levelColumnName cannot be empty');
 
         $optionsStub->setLevelColumnName(' ');
     }
@@ -80,8 +82,8 @@ class NestedSetTest
     {
         $optionsStub = $this->getOptionsWithDefaultSettings();
 
-        $this->setExpectedException('\StefanoTree\Exception\InvalidArgumentException',
-            'parentIdColumnName cannot be empty');
+        $this->expectException(\StefanoTree\Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage('parentIdColumnName cannot be empty');
 
         $optionsStub->setParentIdColumnName(' ');
     }

@@ -1,11 +1,13 @@
 <?php
+
+declare(strict_types=1);
+
 namespace StefanoTree;
 
 use Doctrine\DBAL\Connection as DoctrineConnection;
 use Exception;
-use StefanoDb\Adapter\ExtendedAdapterInterface as StefanoExtendedDbAdapterInterface;
 use StefanoTree\Exception\InvalidArgumentException;
-use StefanoTree\Exception\RootNodeAlreadyExistException;
+use StefanoTree\Exception\ValidationException;
 use StefanoTree\NestedSet\Adapter;
 use StefanoTree\NestedSet\Adapter\AdapterInterface;
 use StefanoTree\NestedSet\AddStrategy;
@@ -14,36 +16,47 @@ use StefanoTree\NestedSet\MoveStrategy;
 use StefanoTree\NestedSet\MoveStrategy\MoveStrategyInterface;
 use StefanoTree\NestedSet\NodeInfo;
 use StefanoTree\NestedSet\Options;
+use StefanoTree\NestedSet\QueryBuilder\AncestorQueryBuilder;
+use StefanoTree\NestedSet\QueryBuilder\AncestorQueryBuilderInterface;
+use StefanoTree\NestedSet\QueryBuilder\DescendantQueryBuilder;
+use StefanoTree\NestedSet\QueryBuilder\DescendantQueryBuilderInterface;
 use StefanoTree\NestedSet\Validator\Validator;
 use StefanoTree\NestedSet\Validator\ValidatorInterface;
 use Zend\Db\Adapter\Adapter as Zend2DbAdapter;
 
-class NestedSet
-    implements TreeInterface
+class NestedSet implements TreeInterface
 {
     private $adapter;
 
     private $validator;
 
     /**
-     * @param Options $options
-     * @param object $dbAdapter
+     * @param Options|array $options
+     * @param object        $dbAdapter
+     *
      * @return TreeInterface
+     *
      * @throws InvalidArgumentException
      */
-    public static function factory(Options $options, $dbAdapter)
+    public static function factory($options, $dbAdapter): TreeInterface
     {
-        if ($dbAdapter instanceof StefanoExtendedDbAdapterInterface) {
-            $adapter = new Adapter\StefanoDb($options, $dbAdapter);
-        } elseif ($dbAdapter instanceof Zend2DbAdapter) {
+        if (is_array($options)) {
+            $options = new Options($options);
+        } elseif (!$options instanceof Options) {
+            throw new InvalidArgumentException(
+                sprintf('Options must be an array or instance of %s', Options::class)
+            );
+        }
+
+        if ($dbAdapter instanceof Zend2DbAdapter) {
             $adapter = new Adapter\Zend2($options, $dbAdapter);
         } elseif ($dbAdapter instanceof DoctrineConnection) {
             $adapter = new Adapter\Doctrine2DBAL($options, $dbAdapter);
         } elseif ($dbAdapter instanceof \Zend_Db_Adapter_Abstract) {
             $adapter = new Adapter\Zend1($options, $dbAdapter);
         } else {
-            throw new InvalidArgumentException('Db adapter "' . get_class($dbAdapter)
-                . '" is not supported');
+            throw new InvalidArgumentException('Db adapter "'.get_class($dbAdapter)
+                .'" is not supported');
         }
 
         return new self($adapter);
@@ -60,7 +73,7 @@ class NestedSet
     /**
      * @return AdapterInterface
      */
-    public function getAdapter()
+    public function getAdapter(): AdapterInterface
     {
         return $this->adapter;
     }
@@ -68,7 +81,7 @@ class NestedSet
     /**
      * @return ValidatorInterface
      */
-    private function _getValidator()
+    private function getValidator(): ValidatorInterface
     {
         if (null == $this->validator) {
             $this->validator = new Validator($this->getAdapter());
@@ -77,16 +90,19 @@ class NestedSet
         return $this->validator;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function createRootNode($data = array(), $scope = null)
     {
         if ($this->getRootNode($scope)) {
             if ($scope) {
-                $errorMessage = sprintf('Root node for scope "%s" already exist', $scope);
+                $errorMessage = 'Root node for given scope already exist';
             } else {
                 $errorMessage = 'Root node already exist';
             }
 
-            throw new RootNodeAlreadyExistException($errorMessage);
+            throw new ValidationException($errorMessage);
         }
 
         $nodeInfo = new NodeInfo(null, null, 0, 1, 2, $scope);
@@ -95,244 +111,84 @@ class NestedSet
     }
 
     /**
-     * @param int $nodeId
-     * @param array $data
+     * {@inheritdoc}
      */
-    public function updateNode($nodeId, $data)
+    public function updateNode($nodeId, array $data): void
     {
         $this->getAdapter()
              ->update($nodeId, $data);
     }
 
     /**
-     * @param int $targetNodeId
-     * @param string $placement
-     * @param array $data
-     * @return int|false Id of new created node. False if node has not been created
-     * @throws Exception
+     * {@inheritdoc}
      */
-    protected function addNode($targetNodeId, $placement, $data = array())
+    public function addNode($targetNodeId, array $data = array(), string $placement = self::PLACEMENT_CHILD_TOP)
     {
-        $adapter = $this->getAdapter();
-
-        $adapter->beginTransaction();
-        try {
-            $adapter->lockTree();
-
-            $targetNode = $adapter->getNodeInfo($targetNodeId);
-
-            if (null == $targetNode) {
-                $adapter->commitTransaction();
-
-                return false;
-            }
-
-            $addStrategy = $this->getAddStrategy($targetNode, $placement);
-
-            if (false == $addStrategy->canAddNewNode()) {
-                $adapter->commitTransaction();
-
-                return false;
-            }
-
-            //make hole
-            $moveFromIndex = $addStrategy->moveIndexesFromIndex();
-            $adapter->moveLeftIndexes($moveFromIndex, 2, $targetNode->getScope());
-            $adapter->moveRightIndexes($moveFromIndex, 2, $targetNode->getScope());
-
-            //insert new node
-            $newNodeInfo = new NodeInfo(
-                null,
-                $addStrategy->newParentId(),
-                $addStrategy->newLevel(),
-                $addStrategy->newLeftIndex(),
-                $addStrategy->newRightIndex(),
-                $targetNode->getScope()
-            );
-            $lastGeneratedValue = $adapter->insert($newNodeInfo, $data);
-
-            $adapter->commitTransaction();
-        } catch (Exception $e) {
-            $adapter->rollbackTransaction();
-
-            throw $e;
-        }
-
-        return $lastGeneratedValue;
+        return $this->getAddStrategy($placement)->add($targetNodeId, $data);
     }
 
     /**
-     * @param NodeInfo $targetNode
      * @param string $placement
+     *
      * @return AddStrategyInterface
+     *
      * @throws InvalidArgumentException
      */
-    private function getAddStrategy(NodeInfo $targetNode, $placement)
-    {
-        switch ($placement) {
-            case self::PLACEMENT_BOTTOM:
-                return new AddStrategy\Bottom($targetNode);
-            case self::PLACEMENT_TOP:
-                return new AddStrategy\Top($targetNode);
-            case self::PLACEMENT_CHILD_BOTTOM:
-                return new AddStrategy\ChildBottom($targetNode);
-            case self::PLACEMENT_CHILD_TOP:
-                return new AddStrategy\ChildTop($targetNode);
-            default:
-                throw new InvalidArgumentException('Unknown placement "' . $placement . '"');
-        }
-    }
-
-    public function addNodePlacementBottom($targetNodeId, $data = array())
-    {
-        return $this->addNode($targetNodeId, self::PLACEMENT_BOTTOM, $data);
-    }
-
-    public function addNodePlacementTop($targetNodeId, $data = array())
-    {
-        return $this->addNode($targetNodeId, self::PLACEMENT_TOP, $data);
-    }
-
-    public function addNodePlacementChildBottom($targetNodeId, $data = array())
-    {
-        return $this->addNode($targetNodeId, self::PLACEMENT_CHILD_BOTTOM, $data);
-    }
-
-    public function addNodePlacementChildTop($targetNodeId, $data = array())
-    {
-        return $this->addNode($targetNodeId, self::PLACEMENT_CHILD_TOP, $data);
-    }
-
-    /**
-     * @param int $sourceNodeId
-     * @param int $targetNodeId
-     * @param string $placement
-     * @return boolean
-     * @throws Exception
-     * @throws InvalidArgumentException
-     */
-    protected function moveNode($sourceNodeId, $targetNodeId, $placement)
+    protected function getAddStrategy(string $placement): AddStrategyInterface
     {
         $adapter = $this->getAdapter();
 
-        //source node and target node are equal
-        if ($sourceNodeId == $targetNodeId) {
-            return false;
+        switch ($placement) {
+            case self::PLACEMENT_BOTTOM:
+                return new AddStrategy\Bottom($adapter);
+            case self::PLACEMENT_TOP:
+                return new AddStrategy\Top($adapter);
+            case self::PLACEMENT_CHILD_BOTTOM:
+                return new AddStrategy\ChildBottom($adapter);
+            case self::PLACEMENT_CHILD_TOP:
+                return new AddStrategy\ChildTop($adapter);
+            default:
+                throw new InvalidArgumentException('Unknown placement "'.$placement.'"');
         }
-
-        $adapter->beginTransaction();
-        try {
-            $adapter->lockTree();
-
-            $sourceNodeInfo = $adapter->getNodeInfo($sourceNodeId);
-            $targetNodeInfo = $adapter->getNodeInfo($targetNodeId);
-
-            //source node or target node does not exist
-            if (!$sourceNodeInfo || !$targetNodeInfo) {
-                $adapter->commitTransaction();
-
-                return false;
-            }
-
-            // scope are different
-            if ($sourceNodeInfo->getScope() != $targetNodeInfo->getScope()) {
-                throw new InvalidArgumentException('Cannot move node between scopes');
-            }
-
-            $moveStrategy = $this->getMoveStrategy($sourceNodeInfo, $targetNodeInfo, $placement);
-
-            if (!$moveStrategy->canMoveBranch()) {
-                $adapter->commitTransaction();
-
-                return false;
-            }
-
-            if ($moveStrategy->isSourceNodeAtRequiredPosition()) {
-                $adapter->commitTransaction();
-
-                return true;
-            }
-
-            //update parent id
-            $newParentId = $moveStrategy->getNewParentId();
-            if ($sourceNodeInfo->getParentId() != $newParentId) {
-                $adapter->updateParentId($sourceNodeId, $newParentId);
-            }
-
-            //update levels
-            $adapter->updateLevels($sourceNodeInfo->getLeft(), $sourceNodeInfo->getRight(),
-                    $moveStrategy->getLevelShift(), $sourceNodeInfo->getScope());
-
-            //make hole
-            $adapter->moveLeftIndexes($moveStrategy->makeHoleFromIndex(),
-                        $moveStrategy->getIndexShift(), $sourceNodeInfo->getScope());
-            $adapter->moveRightIndexes($moveStrategy->makeHoleFromIndex(),
-                        $moveStrategy->getIndexShift(), $sourceNodeInfo->getScope());
-
-            //move branch to the hole
-            $adapter->moveBranch($moveStrategy->getHoleLeftIndex(), $moveStrategy->getHoleRightIndex(),
-                $moveStrategy->getSourceNodeIndexShift(), $sourceNodeInfo->getScope());
-
-            //patch hole
-            $adapter->moveLeftIndexes($moveStrategy->fixHoleFromIndex(),
-                        ($moveStrategy->getIndexShift() * -1), $sourceNodeInfo->getScope());
-            $adapter->moveRightIndexes($moveStrategy->fixHoleFromIndex(),
-                        ($moveStrategy->getIndexShift() * -1), $sourceNodeInfo->getScope());
-
-            $adapter->commitTransaction();
-        } catch (Exception $e) {
-            $adapter->rollbackTransaction();
-
-            throw $e;
-        }
-
-        return true;
-    }
-
-    public function moveNodePlacementBottom($sourceNodeId, $targetNodeId)
-    {
-        return $this->moveNode($sourceNodeId, $targetNodeId, self::PLACEMENT_BOTTOM);
-    }
-
-    public function moveNodePlacementTop($sourceNodeId, $targetNodeId)
-    {
-        return $this->moveNode($sourceNodeId, $targetNodeId, self::PLACEMENT_TOP);
-    }
-
-    public function moveNodePlacementChildBottom($sourceNodeId, $targetNodeId)
-    {
-        return $this->moveNode($sourceNodeId, $targetNodeId, self::PLACEMENT_CHILD_BOTTOM);
-    }
-
-    public function moveNodePlacementChildTop($sourceNodeId, $targetNodeId)
-    {
-        return $this->moveNode($sourceNodeId, $targetNodeId, self::PLACEMENT_CHILD_TOP);
     }
 
     /**
-     * @param NodeInfo $sourceNode
-     * @param NodeInfo $targetNode
+     * {@inheritdoc}
+     */
+    public function moveNode($sourceNodeId, $targetNodeId, string $placement = self::PLACEMENT_CHILD_TOP): void
+    {
+        $this->getMoveStrategy($placement)->move($sourceNodeId, $targetNodeId);
+    }
+
+    /**
      * @param string $placement
+     *
      * @return MoveStrategyInterface
+     *
      * @throws InvalidArgumentException
      */
-    private function getMoveStrategy(NodeInfo $sourceNode, NodeInfo $targetNode, $placement)
+    protected function getMoveStrategy(string $placement): MoveStrategyInterface
     {
+        $adapter = $this->getAdapter();
+
         switch ($placement) {
             case self::PLACEMENT_BOTTOM:
-                return new MoveStrategy\Bottom($sourceNode, $targetNode);
+                return new MoveStrategy\Bottom($adapter);
             case self::PLACEMENT_TOP:
-                return new MoveStrategy\Top($sourceNode, $targetNode);
+                return new MoveStrategy\Top($adapter);
             case self::PLACEMENT_CHILD_BOTTOM:
-                return new MoveStrategy\ChildBottom($sourceNode, $targetNode);
+                return new MoveStrategy\ChildBottom($adapter);
             case self::PLACEMENT_CHILD_TOP:
-                return new MoveStrategy\ChildTop($sourceNode, $targetNode);
+                return new MoveStrategy\ChildTop($adapter);
             default:
-                throw new InvalidArgumentException('Unknown placement "' . $placement . '"');
+                throw new InvalidArgumentException('Unknown placement "'.$placement.'"');
         }
     }
 
-    public function deleteBranch($nodeId)
+    /**
+     * {@inheritdoc}
+     */
+    public function deleteBranch($nodeId): void
     {
         $adapter = $this->getAdapter();
 
@@ -346,10 +202,9 @@ class NestedSet
             if (!$nodeInfo) {
                 $adapter->commitTransaction();
 
-                return false;
+                return;
             }
 
-            // delete branch
             $adapter->delete($nodeInfo->getId());
 
             //patch hole
@@ -364,54 +219,66 @@ class NestedSet
 
             throw $e;
         }
-
-        return true;
     }
 
-    public function getPath($nodeId, $startLevel = 0, $excludeLastNode = false)
-    {
-        return $this->getAdapter()
-                    ->getPath($nodeId, $startLevel, $excludeLastNode);
-    }
-
-    public function getNode($nodeId)
+    /**
+     * {@inheritdoc}
+     */
+    public function getNode($nodeId): ?array
     {
         return $this->getAdapter()
                     ->getNode($nodeId);
     }
 
-    public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranch = null)
+    /**
+     * {@inheritdoc}
+     */
+    public function getAncestorsQueryBuilder(): AncestorQueryBuilderInterface
     {
-        return $this->getAdapter()
-                    ->getDescendants($nodeId, $startLevel, $levels, $excludeBranch);
+        return new AncestorQueryBuilder($this->getAdapter());
     }
 
-    public function getChildren($nodeId)
+    /**
+     * {@inheritdoc}
+     */
+    public function getDescendantsQueryBuilder(): DescendantQueryBuilderInterface
     {
-        return $this->getDescendants($nodeId, 1, 1);
+        return new DescendantQueryBuilder($this->getAdapter());
     }
 
-    public function getRootNode($scope = null)
+    /**
+     * {@inheritdoc}
+     */
+    public function getRootNode($scope = null): array
     {
         return $this->getAdapter()
                     ->getRoot($scope);
     }
 
-    public function getRoots()
+    /**
+     * {@inheritdoc}
+     */
+    public function getRoots(): array
     {
         return $this->getAdapter()
                     ->getRoots();
     }
 
-    public function isValid($rootNodeId)
+    /**
+     * {@inheritdoc}
+     */
+    public function isValid($rootNodeId): bool
     {
-        return $this->_getValidator()
+        return $this->getValidator()
                     ->isValid($rootNodeId);
     }
 
-    public function rebuild($rootNodeId)
+    /**
+     * {@inheritdoc}
+     */
+    public function rebuild($rootNodeId): void
     {
-        $this->_getValidator()
+        $this->getValidator()
              ->rebuild($rootNodeId);
     }
 }

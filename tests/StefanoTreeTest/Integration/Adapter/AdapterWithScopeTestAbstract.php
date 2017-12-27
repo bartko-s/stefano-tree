@@ -1,12 +1,14 @@
 <?php
+
+declare(strict_types=1);
+
 namespace StefanoTreeTest\Integration\Adapter;
 
 use StefanoTree\NestedSet\Adapter\AdapterInterface as TreeAdapterInterface;
 use StefanoTree\NestedSet\NodeInfo;
 use StefanoTreeTest\IntegrationTestCase;
 
-abstract class AdapterWithScopeTestAbstract
-    extends IntegrationTestCase
+abstract class AdapterWithScopeTestAbstract extends IntegrationTestCase
 {
     /**
      * @var TreeAdapterInterface
@@ -33,7 +35,7 @@ abstract class AdapterWithScopeTestAbstract
 
     protected function getDataSet()
     {
-        return $this->createMySQLXMLDataSet(__DIR__ . '/_files/adapter/with_scope/initDataSet.xml');
+        return $this->createMySQLXMLDataSet(__DIR__.'/_files/adapter/with_scope/initDataSet.xml');
     }
 
     public function testUpdateDataDoesNotChangeMetadata()
@@ -44,14 +46,13 @@ abstract class AdapterWithScopeTestAbstract
             'rgt' => 'b',
             'parent_id' => 'c',
             'level' => 'd',
-            'scope' => 'e'
+            'scope' => 'e',
         );
 
         $this->adapter
             ->update(2, $data);
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal_with_scope'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/adapter/with_scope/testUpdateData.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+
+        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testUpdateData.xml');
     }
 
     public function testInsertDataDoesNotChangeMetadata()
@@ -69,54 +70,48 @@ abstract class AdapterWithScopeTestAbstract
 
         $this->adapter
             ->insert($nodeInfo, $data);
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal_with_scope'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/adapter/with_scope/testInsertData.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+
+        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testInsertData.xml');
     }
 
     public function testDeleteBranch()
     {
         $this->adapter
             ->delete(2);
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal_with_scope'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/adapter/with_scope/testDeleteBranch.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+
+        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testDeleteBranch.xml');
     }
 
     public function testMoveLeftIndexes()
     {
         $this->adapter
             ->moveLeftIndexes(3, 500, 2);
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal_with_scope'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/adapter/with_scope/testMoveLeftIndexes.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+
+        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testMoveLeftIndexes.xml');
     }
 
     public function testMoveRightIndexes()
     {
         $this->adapter
             ->moveRightIndexes(4, 500, 2);
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal_with_scope'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/adapter/with_scope/testMoveRightIndexes.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+
+        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testMoveRightIndexes.xml');
     }
 
     public function testUpdateLevels()
     {
         $this->adapter
             ->updateLevels(2, 9, 500, 2);
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal_with_scope'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/adapter/with_scope/testUpdateLevels.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+
+        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testUpdateLevels.xml');
     }
 
     public function testMoveBranch()
     {
         $this->adapter
             ->moveBranch(2, 9, 500, 2);
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal_with_scope'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/adapter/with_scope/testMoveBranch.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+
+        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testMoveBranch.xml');
     }
 
     public function testGetRoots()
@@ -124,7 +119,7 @@ abstract class AdapterWithScopeTestAbstract
         $roots = $this->adapter
             ->getRoots();
 
-        $expected = include __DIR__ . '/_files/adapter/with_scope/testGetRoots.php';
+        $expected = include __DIR__.'/_files/adapter/with_scope/testGetRoots.php';
         $this->assertEquals($expected, $roots);
     }
 
@@ -133,7 +128,7 @@ abstract class AdapterWithScopeTestAbstract
         $roots = $this->adapter
             ->getRoot(2);
 
-        $expected = include __DIR__ . '/_files/adapter/with_scope/testGetRoot.php';
+        $expected = include __DIR__.'/_files/adapter/with_scope/testGetRoot.php';
         $this->assertEquals($expected, $roots);
     }
 
@@ -179,30 +174,28 @@ abstract class AdapterWithScopeTestAbstract
         $this->adapter
             ->updateNodeMetadata($nodeInfo);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal_with_scope'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/adapter/with_scope/testUpdateNodeMetadata.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testUpdateNodeMetadata.xml');
     }
 
     public function testGetPath()
     {
         $path = $this->adapter
-            ->getPath(5);
+            ->getAncestors(5);
 
         $this->assertCount(3, $path);
 
-        $expected = include __DIR__ . '/_files/adapter/with_scope/testGetPath.php';
+        $expected = include __DIR__.'/_files/adapter/with_scope/testGetPath.php';
         $this->assertEquals($expected, $path);
     }
 
     public function testGetDescendants()
     {
         $nodes = $this->adapter
-            ->getDescendants();
+            ->getDescendants(1);
 
         $this->assertCount(5, $nodes);
 
-        $expected = include __DIR__ . '/_files/adapter/with_scope/testGetDescendants.php';
+        $expected = include __DIR__.'/_files/adapter/with_scope/testGetDescendants.php';
         $this->assertEquals($expected, $nodes);
     }
 }

@@ -1,7 +1,12 @@
 <?php
+
+declare(strict_types=1);
+
 namespace StefanoTree;
 
-use StefanoTree\Exception\RootNodeAlreadyExistException;
+use StefanoTree\Exception\ValidationException;
+use StefanoTree\NestedSet\QueryBuilder\AncestorQueryBuilderInterface;
+use StefanoTree\NestedSet\QueryBuilder\DescendantQueryBuilderInterface;
 
 interface TreeInterface
 {
@@ -11,135 +16,105 @@ interface TreeInterface
     const PLACEMENT_CHILD_BOTTOM = 'childBottom';
 
     /**
-     * @throws RootNodeAlreadyExistException if root already exist
-     * @param array $data
+     * Create root node.
+     *
+     * @param array           $data
      * @param null|string|int $scope Required if scope is used
-     * @return int Id of new created root
+     *
+     * @throws ValidationException if root already exist
+     *
+     * @return int|string Id of new created root
      */
     public function createRootNode($data = array(), $scope = null);
 
     /**
+     * Get root note.
+     *
      * @param null|string|int $scope Required if scope is used
+     *
      * @return array
      */
-    public function getRootNode($scope = null);
+    public function getRootNode($scope = null): array;
 
     /**
+     * Get root nodes.
+     *
      * @return array
      */
-    public function getRoots();
+    public function getRoots(): array;
 
     /**
-     * @param int $nodeId
-     * @param array $data
+     * Update node.
+     *
+     * @param int|string $nodeId
+     * @param array      $data
      */
-    public function updateNode($nodeId, $data);
+    public function updateNode($nodeId, array $data): void;
 
     /**
-     * @param int $targetNodeId
-     * @param array $data
-     * @return int|false Id of new created node. False if node has not been created
+     * @param int|string $targetNodeId
+     * @param array      $data
+     * @param string     $placement
+     *
+     * @throws ValidationException if node was not created
+     *
+     * @return int|string id of new created node
      */
-    public function addNodePlacementBottom($targetNodeId, $data = array());
+    public function addNode($targetNodeId, array $data = array(), string $placement = self::PLACEMENT_CHILD_TOP);
 
     /**
-     * @param int $targetNodeId
-     * @param array $data
-     * @return int|false Id of new created node. False if node has not been created
+     * @param int    $sourceNodeId
+     * @param int    $targetNodeId
+     * @param string $placement
+     *
+     * @throws ValidationException if node was not moved
      */
-    public function addNodePlacementTop($targetNodeId, $data = array());
+    public function moveNode($sourceNodeId, $targetNodeId, string $placement = self::PLACEMENT_CHILD_TOP): void;
 
     /**
-     * @param int $targetNodeId
-     * @param array $data
-     * @return int|false Id of new created node. False if node has not been created
+     * Delete node with nodeId and all its descendants.
+     *
+     * @param int|string $nodeId
      */
-    public function addNodePlacementChildBottom($targetNodeId, $data = array());
+    public function deleteBranch($nodeId): void;
 
     /**
-     * @param int $targetNodeId
-     * @param array $data
-     * @return int|false Id of new created node. False if node has not been created
-     */
-    public function addNodePlacementChildTop($targetNodeId, $data = array());
-
-    /**
-     * @param int $sourceNodeId
-     * @param int $targetNodeId
-     * @return boolean
-     */
-    public function moveNodePlacementBottom($sourceNodeId, $targetNodeId);
-
-    /**
-     * @param int $sourceNodeId
-     * @param int $targetNodeId
-     * @return boolean
-     */
-    public function moveNodePlacementTop($sourceNodeId, $targetNodeId);
-
-    /**
-     * @param int $sourceNodeId
-     * @param int $targetNodeId
-     * @return boolean
-     */
-    public function moveNodePlacementChildBottom($sourceNodeId, $targetNodeId);
-
-    /**
-     * @param int $sourceNodeId
-     * @param int $targetNodeId
-     * @return boolean
-     */
-    public function moveNodePlacementChildTop($sourceNodeId, $targetNodeId);
-
-    /**
-     * @param int $nodeId
-     * @return boolean
-     */
-    public function deleteBranch($nodeId);
-
-    /**
-     * @param int $nodeId
-     * @param int $startLevel 0 = including root node
-     * @param boolean $excludeLastNode
-     * @return array
-     */
-    public function getPath($nodeId, $startLevel = 0, $excludeLastNode = false);
-
-    /**
-     * @param int $nodeId
+     * Return node.
+     *
+     * @param int|string $nodeId
+     *
      * @return null|array
      */
-    public function getNode($nodeId);
+    public function getNode($nodeId): ?array;
 
     /**
-     * @param int $nodeId
-     * @param int $startLevel Relative level from $nodeId. 1 = exclude $nodeId from result.
-     *                        2 = exclude 2 levels from result
-     * @param null|int $levels Number of levels in the results relative to $startLevel
-     * @param null|int $excludeBranch Exclude defined branch(node id) from result
-     * @return array
+     * @return AncestorQueryBuilderInterface
      */
-    public function getDescendants($nodeId = 1, $startLevel = 0, $levels = null, $excludeBranch = null);
+    public function getAncestorsQueryBuilder(): AncestorQueryBuilderInterface;
 
     /**
-     * @param int $nodeId
-     * @return array
+     * @return DescendantQueryBuilderInterface
      */
-    public function getChildren($nodeId);
+    public function getDescendantsQueryBuilder(): DescendantQueryBuilderInterface;
 
     /**
-     * Check if left index, right index, level is in consistent state
+     * Check if left index, right index, level is in consistent state.
      *
-     * @param $rootNodeId int
+     * @param int|string $rootNodeId
+     *
+     * @throws ValidationException if cannot validate tree
+     *
      * @return bool
      */
-    public function isValid($rootNodeId);
+    public function isValid($rootNodeId): bool;
 
     /**
-     * Repair broken tree. Works only if [id, parent_id] pair is not broken
+     * Repair broken tree.
+     * Works only if [id, parent_id] pair is not broken.
      *
-     * @param $rootNodeId int
-     * @return void
+     * @param int|string $rootNodeId
+     *
+     * @throws ValidationException if cannot rebuilt tree
      */
-    public function rebuild($rootNodeId);
+    public function rebuild($rootNodeId): void;
 }

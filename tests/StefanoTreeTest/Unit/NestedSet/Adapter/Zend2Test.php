@@ -1,15 +1,17 @@
 <?php
+
+declare(strict_types=1);
+
 namespace StefanoTreeTest\Unit\NestedSet\Adapter;
 
 use Mockery;
 use StefanoTree\NestedSet\Adapter\Zend2 as NestedSetAdapter;
 use StefanoTree\NestedSet\Options;
+use StefanoTreeTest\UnitTestCase;
 use Zend\Db\Adapter\Adapter as DbAdapter;
 use Zend\Db\Sql\Select as SqlSelect;
 
-
-class Zend2Test
-    extends \PHPUnit_Framework_TestCase
+class Zend2Test extends UnitTestCase
 {
     protected function tearDown()
     {
@@ -19,7 +21,7 @@ class Zend2Test
     public function testGetBlankDbSelect()
     {
         $options = new Options(array(
-            'tableName'    => 'tableName',
+            'tableName' => 'tableName',
             'idColumnName' => 'id',
         ));
 
@@ -33,7 +35,7 @@ class Zend2Test
     public function testGetDefaultDbSelectMustAlwaysReturnNewInstance()
     {
         $options = new Options(array(
-            'tableName'    => 'tableName',
+            'tableName' => 'tableName',
             'idColumnName' => 'id',
         ));
 
@@ -46,18 +48,20 @@ class Zend2Test
     public function testSetDefaultDbSelect()
     {
         $options = new Options(array(
-            'tableName'    => 'tableName',
+            'tableName' => 'tableName',
             'idColumnName' => 'id',
         ));
 
         $dbAdapter = $this->getDbAdapterMock();
         $adapter = new NestedSetAdapter($options, $dbAdapter);
 
-        $select = new SqlSelect('table');
+        $selectBuilder = function () {
+            return new SqlSelect('table');
+        };
 
-        $adapter->setDefaultDbSelect($select);
+        $adapter->setDbSelectBuilder($selectBuilder);
 
-        $this->assertEquals($select->getSqlString(), $adapter->getDefaultDbSelect()->getSqlString());
+        $this->assertEquals($selectBuilder()->getSqlString(), $adapter->getDefaultDbSelect()->getSqlString());
     }
 
     /**

@@ -3,3 +3,4 @@
 /composer.lock
 /tests/testConfig.local.php
 /build/
+/.php_cs.cache

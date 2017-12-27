@@ -1,14 +1,16 @@
 <?php
+
+declare(strict_types=1);
+
 namespace StefanoTree\NestedSet\Validator;
 
 use Exception;
-use StefanoTree\Exception\InvalidArgumentException;
 use StefanoTree\Exception\TreeIsBrokenException;
+use StefanoTree\Exception\ValidationException;
 use StefanoTree\NestedSet\Adapter\AdapterInterface;
 use StefanoTree\NestedSet\NodeInfo;
 
-class Validator
-    implements ValidatorInterface
+class Validator implements ValidatorInterface
 {
     private $adapter = null;
 
@@ -23,46 +25,60 @@ class Validator
     /**
      * @return AdapterInterface
      */
-    private function _getAdapter()
+    private function getAdapter(): AdapterInterface
     {
         return $this->adapter;
     }
 
-    public function isValid($rootNodeId)
+    /**
+     * {@inheritdoc}
+     */
+    public function isValid($rootNodeId): bool
     {
-        $adapter = $this->_getAdapter();
+        $adapter = $this->getAdapter();
 
         $adapter->beginTransaction();
         try {
             $adapter->lockTree();
 
-            $rootNodeInfo = $this->_getAdapter()->getNodeInfo($rootNodeId);
+            $rootNodeInfo = $this->getAdapter()->getNodeInfo($rootNodeId);
+
+            if (!$rootNodeInfo instanceof NodeInfo) {
+                throw new ValidationException('Node does not exists.');
+            }
 
             $this->_checkIfNodeIsRootNode($rootNodeInfo);
-            $this->_rebuild($rootNodeInfo, True);
+            $this->_rebuild($rootNodeInfo, true);
 
             $adapter->commitTransaction();
         } catch (TreeIsBrokenException $e) {
             $adapter->rollbackTransaction();
-            return False;
+
+            return false;
         } catch (Exception $e) {
             $adapter->rollbackTransaction();
             throw $e;
         }
 
-        return True;
+        return true;
     }
 
-
-    public function rebuild($rootNodeId)
+    /**
+     * {@inheritdoc}
+     */
+    public function rebuild($rootNodeId): void
     {
-        $adapter = $this->_getAdapter();
+        $adapter = $this->getAdapter();
 
         $adapter->beginTransaction();
         try {
             $adapter->lockTree();
 
-            $rootNodeInfo = $this->_getAdapter()->getNodeInfo($rootNodeId);
+            $rootNodeInfo = $this->getAdapter()->getNodeInfo($rootNodeId);
+
+            if (!$rootNodeInfo instanceof NodeInfo) {
+                throw new ValidationException('Node does not exists.');
+            }
 
             $this->_checkIfNodeIsRootNode($rootNodeInfo);
             $this->_rebuild($rootNodeInfo);
@@ -76,15 +92,17 @@ class Validator
 
     /**
      * @param NodeInfo $parentNodeInfo
-     * @param bool $onlyValidate
-     * @param int $left
-     * @param int $level
-     * @return int|mixed
+     * @param bool     $onlyValidate
+     * @param int      $left
+     * @param int      $level
+     *
+     * @return int
+     *
      * @throws TreeIsBrokenException if tree is broken and $onlyValidate is true
      */
-    private function _rebuild(NodeInfo $parentNodeInfo, $onlyValidate = false, $left = 1, $level = 0)
+    private function _rebuild(NodeInfo $parentNodeInfo, bool $onlyValidate = false, int $left = 1, int $level = 0): int
     {
-        $adapter = $this->_getAdapter();
+        $adapter = $this->getAdapter();
 
         $right = $left + 1;
 
@@ -113,14 +131,13 @@ class Validator
 
     /**
      * @param NodeInfo $node
-     * @throws InvalidArgumentException
+     *
+     * @throws ValidationException
      */
-    private function _checkIfNodeIsRootNode(NodeInfo $node)
+    private function _checkIfNodeIsRootNode(NodeInfo $node): void
     {
         if (null != $node->getParentId()) {
-            throw new InvalidArgumentException(
-                sprintf('Given node id "%s" is not root id', $node->getId())
-            );
+            throw new ValidationException('Given node is not root node.');
         }
     }
 }

@@ -1,5 +1,6 @@
 # Tree
 
+
 [![Latest Stable Version](https://poser.pugx.org/stefano/stefano-tree/version)](https://packagist.org/packages/stefano/stefano-tree)
 [![Test Status](https://secure.travis-ci.org/bartko-s/stefano-tree.png?branch=master)](https://travis-ci.org/bartko-s/stefano-tree) 
 [![Coverage Status](https://coveralls.io/repos/github/bartko-s/stefano-tree/badge.svg?branch=master)](https://coveralls.io/github/bartko-s/stefano-tree?branch=master)
@@ -8,65 +9,89 @@
 [![License](https://poser.pugx.org/stefano/stefano-tree/license)](https://packagist.org/packages/stefano/stefano-tree)
 [![Monthly Downloads](https://poser.pugx.org/stefano/stefano-tree/d/monthly)](https://packagist.org/packages/stefano/stefano-tree)
 
+[![Donate on PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://paypal.me/stevo4)
+
 [Nested Set](https://en.wikipedia.org/wiki/Nested_set_model) implementation for PHP.
 
-ONLINE DEMO (soon)
+[![Live demo](./doc/live-demo.jpg)](https://www.tree.stefanbartko.sk)
 
 ## Features
 
- - NestedSet(MPTT - Modified Preorder Tree Traversal)
+ - NestedSet(MPTT - Modified Pre-order Tree Traversal)
  - Support scopes (multiple independent tree in one db table)
  - Rebuild broken tree
- - Tested with MySQL and PostgreSQL but should work with any database vendor which support transaction
- - Support Frameworks [Zend Framework 1](https://framework.zend.com/manual/1.12/en/zend.db.html), [Zend Framework 2](https://framework.zend.com/manual/2.4/en/index.html#zend-db), [Doctrine 2 DBAL](http://docs.doctrine-project.org/projects/doctrine-dbal/en/latest/), [Stefano Db](https://github.com/bartko-s/stefano-db)
- - It is easy to implement support for any framework
+ - Tested with MySQL/MariaDB and PostgreSQL but should work with any database vendor which support transaction
+ - Supported Frameworks [Zend Framework 1](https://framework.zend.com/manual/1.12/en/zend.db.html), [Zend Framework 2](https://framework.zend.com/manual/2.4/en/index.html#zend-db), [Doctrine 2 DBAL](http://docs.doctrine-project.org/projects/doctrine-dbal/en/latest/). It is easy to implement support for any framework
 
 ## Dependencies
-- Stefano Tree has no external dependencies only Php and your framework is required
+- This library has no external dependencies only PHP and your favorite framework is required
 
 ## Installation
 
-1. Add following line to your composer.json file "stefano/stefano-tree": "~2.0.0"
-2. Create db scheme [example db scheme](https://github.com/bartko-s/stefano-tree/tree/master/sql). Name of table, columns are fully customizable.
-3. Create tree adapter
+Run following command in terminal
+```
+composer require stefano/stefano-tree
+```
+
+## Create Tree Adapter
+
+|        key         |  type  | required | default value | note                                                  |
+| :----------------- | :----: | :------: | :------------ | :---------------------------------------------------- |
+| tableName          | string | yes      |               |                                                       |
+| idColumnName       | string | yes      |               |                                                       |
+| leftColumnName     | string | no       | lft           |                                                       |
+| rightColumnName    | string | no       | rgt           |                                                       |
+| levelColumnName    | string | no       | level         |                                                       |
+| parentIdColumnName | string | no       | parent_id     |                                                       |
+| sequenceName       | string | see note |               | Required for PostgreSQL                               |
+| scopeColumnName    | string | see note |               | If empty scope support is disabled                    |
 
 - Use static factory method
 ```
-$options = new \StefanoTree\NestedSet\Options(array(
-    'tableName'    => 'tree_traversal', //required
-    'idColumnName' => 'tree_traversal_id', //required
-    'leftColumnName' => 'lft', //optional (default lft)
-    'rightColumnName' => 'rgt', //optional (default rgt)
-    'levelColumnName' => 'level', //optional (default level)
-    'parentIdColumnName' => 'parent_id', //optional (default parent_id)
-    'sequenceName' => 'sequence_name_seq', //required for PostgreSQL
-    'scopeColumnName' => 'scope', //optional
-));
+use \StefanoTree\NestedSet;
 
-$dbAdapter = ... supported db adapter ...
+$options = array(
+    'tableName'    => 'tree_traversal',
+    'idColumnName' => 'tree_traversal_id',
+    // other options
+);
 
-$tree = \StefanoTree\NestedSet::factory($options, $dbAdapter);
+$dbAdapter = Zend2 Db Adapter or Zend1 Db Adapter or Doctrine DBAL Connection
+
+$tree = NestedSet::factory($options, $dbAdapter);
 ```
 
 - or create tree adapter directly
 ```
-$options = new \StefanoTree\NestedSet\Options(array(...);
+use \StefanoTree\NestedSet;
+use \StefanoTree\NestedSet\Options;
+use \StefanoTree\NestedSet\Adapter\Zend2 as Zend2TreeDbAdapter;
 
+$options = new Options(array(...);
 $dbAdapter = ... supported db adapter ...
-
-$nestedSetAdapter = new \StefanoTree\NestedSet\Adapter\Zend2($options, $dbAdapter);
-
-$tree = new \StefanoTree\NestedSet($nestedSetAdapter);
+$nestedSetAdapter = new Zend2TreeDbAdapter($options, $dbAdapter);
+$tree = new NestedSet($nestedSetAdapter);
 ```
 
 - You can join table. Example is for Zend Framework 2 but it works similar for other supported frameworks.
 ```
-$defaultDbSelect = $nestedSetAdapter->getDefaultDbSelect();
+use Zend\Db\Sql\Select;
 
-//zend framework select object
-//http://framework.zend.com/manual/2.2/en/modules/zend.db.sql.html#join
-$defaultDbSelect->join($name, $on, $columns, $type);
-$nestedSetAdapter->setDefaultDbSelect($defaultDbSelect);
+$selectBuilder = function() {
+    // @see https://docs.zendframework.com/zend-db/sql/#select
+    $select = new Select('tree_traversal');
+    $select->join(
+        array('metadata'),
+        'metadata.tree_traversal_id = tree_traversal.tree_traversal_id',
+        array('metadata' => 'name'),
+        $select::JOIN_LEFT
+        );
+    
+    return $select;    
+}
+
+// as $selectBuilder you can use any "callable" like function or object
+$tree->getAdapter()->setDbSelectBuilder($selectBuilder);
 ```
 
 ## API
@@ -76,111 +101,156 @@ $nestedSetAdapter->setDefaultDbSelect($defaultDbSelect);
 - Create root node
 
 ```
-// create root node. Scope support is disabled
-$tree->createRootNode(array());
+use StefanoTree\Exception\ValidationException;
 
-// create root node. Scope support is enabled
-$tree->createRootNode(array(), $scope);
+try {
+    $data = array(
+        // values
+    );
+    
+    // create root node.
+    $rootNodeId = $tree->createRootNode($data);
+    
+    // create root node. Second param "$scope" is required only if scope support is enabled.
+    $rootNodeId = $tree->createRootNode($data, $scope);    
+} catch (ValidationException $e) {
+    $errorMessage = $e->getMessage();
+}    
 ```
 
-- Create new node
+- Create new node. You can create new node at 4 different locations.
+
+![placements](./doc/placements.png)
 
 ```
-$targetNodeId = 10;
+use StefanoTree\Exception\ValidationException;
 
-$data = array(
-    //data
-);
+try {
+    $targetNodeId = 10;
+    
+    $data = array(
+        // values
+    );
 
-$tree->addNodePlacementBottom($targetNodeId, $data);
-$tree->addNodePlacementTop($targetNodeId, $data);
-$tree->addNodePlacementChildBottom($targetNodeId, $data);
-$tree->addNodePlacementTop($targetNodeId, $data);
+    $nodeId = $tree->addNodePlacementTop($targetNodeId, $data, $tree::PLACEMENT_CHILD_TOP);
+    $nodeId = $tree->addNodePlacementChildBottom($targetNodeId, $data, $tree::PLACEMENT_CHILD_BOTTOM);
+    $nodeId = $tree->addNodePlacementTop($targetNodeId, $data, $tree::PLACEMENT_TOP);
+    $nodeId = $tree->addNodePlacementBottom($targetNodeId, $data, $tree::PLACEMENT_BOTTOM);
+} catch (ValidationException $e) {
+    $errorMessage = $e->getMessage();
+}    
 ```
 
 ### Update Node
 
 ```
-$targetNodeId = 10;
+use StefanoTree\Exception\ValidationException;
 
-$data = array(
-    //data
-);
-
-$tree->updateNode($targetNodeId, $data);
+try {
+    $targetNodeId = 10;
+    
+    $data = array(
+        // values
+    );
+    
+    $tree->updateNode($targetNodeId, $data);
+} catch (ValidationException $e) {
+    $errorMessage = $e->getMessage();
+}    
 ```
 
 ### Move node
 
-```
-$sourceNodeId = 15;
-$targetNodeId = 10;
+- You can move node at 4 different locations.
 
-$tree->moveNodePlacementBottom($sourceNodeId, $targetNodeId);
-$tree->moveNodePlacementTop($sourceNodeId, $targetNodeId);
-$tree->moveNodePlacementChildBottom($sourceNodeId, $targetNodeId);
-$tree->moveNodePlacementChildTop($sourceNodeId, $targetNodeId);
+![placements](./doc/placements.png)
+
+```
+use StefanoTree\Exception\ValidationException;
+
+try {
+    $sourceNodeId = 15;
+    $targetNodeId = 10;
+    
+    $tree->moveNode($sourceNodeId, $targetNodeId, $tree::PLACEMENT_CHILD_TOP);
+    $tree->moveNode($sourceNodeId, $targetNodeId, $tree::PLACEMENT_CHILD_BOTTOM);
+    $tree->moveNode($sourceNodeId, $targetNodeId, $tree::PLACEMENT_TOP);
+    $tree->moveNode($sourceNodeId, $targetNodeId, $tree::PLACEMENT_BOTTOM);
+} catch (ValidationException $e) {
+    $errorMessage = $e->getMessage();
+}        
 ```
 
 ### Delete node or branch
 
 ```
-$nodeId = 15;
+use StefanoTree\Exception\ValidationException;
 
-$tree->deleteBranch($nodeId);
+try {
+    $nodeId = 15;
+    
+    $tree->deleteBranch($nodeId);
+} catch (ValidationException $e) {
+    $errorMessage = $e->getMessage();
+}    
 ```
 
 ### Getting nodes
 
-- Get all children
-
-```
-$nodeId = 15;
-$tree->getChildren($nodeId);
-```
-
-- Get all descendants
+- Get descendants
 
 ```
 $nodeId = 15;
 
-//all descedants
-$tree->getDescendants($nodeId);
+// all descendants
+$tree->getDescendantsQueryBuilder()
+     ->get($nodeId);
+     
+// only children     
+$tree->getDescendantsQueryBuilder()
+     ->excludeFirstNLevel(1)
+     ->levelLimit(1)
+     ->get($nodeId);
 
-//exclude node $nodeId from result
-$tree->getDescendants($nodeId, 1);
+// exclude first level($nodeId) from result
+$tree->getDescendants()
+     ->excludeFirstNLevel(1)
+     ->get($nodeId);
 
-//exclude first two levels from result
-$tree->getDescendants($nodeId, 2);
+// exclude first two levels from result
+$tree->getDescendantsQueryBuilder()
+     ->excludeFirstNLevel(2)
+     ->get($nodeId);
 
-//get four levels
-$tree->getDescendants($nodeId, 0, 4);
+// return first 4 level
+$tree->getDescendantsQueryBuilder()
+     ->levelLimit(4)
+     ->get($nodeId);
+
+// exclude branch from  result
+$tree->getDescendantsQueryBuilder()
+     ->excludeBranch(22)
+     ->get($nodeId);
 ```
 
-- Exclude branche from  result
+- Get Ancestors
 
 ```
 $nodeId = 15;
-$excludeBranche = 22;
-$tree->getDescendants($nodeId, 0, null, $excludeBranche);
-```
 
-- Get Path
+// get all
+$tree->getAncestorsQueryBuilder()
+     ->get($nodeId);
 
-```
-$nodeId = 15;
+// exclude last node($nodeId) from result
+$tree->getAncestorsQueryBuilder()
+     ->excludeLastNLevel(1)
+     ->get($nodeId);
 
-//full path
-$tree->getPath($nodeId);
-
-//exclude node $nodeId from result
-$tree->getPath($nodeId, 1);
-
-//exclude first two levels from result
-$tree->getPath($nodeId, 2);
-
-//exclude last node
-$tree->getPath($nodeId, 0, true);
+// exclude first two levels from result
+$tree->getAncestorsQueryBuilder()
+     ->excludeFirstNLevel(2)
+     ->get($nodeId);
 ```
 
 ### Validation and Rebuild broken tree
@@ -188,16 +258,28 @@ $tree->getPath($nodeId, 0, true);
 - Check if tree is valid
 
 ```
-$tree->isValid($rootNodeId);
+use StefanoTree\Exception\ValidationException;
+
+try {
+    $satus = $tree->isValid($rootNodeId);
+} catch (ValidationException $e) {
+    $errorMessage = $e->getMessage();
+}
 ```
 
 - Rebuild broken tree
 
 ```
-$tree->rebuild($rootNodeId);
+use StefanoTree\Exception\ValidationException;
+
+try {
+    $tree->rebuild($rootNodeId);
+} catch (ValidationException $e) {
+    $errorMessage = $e->getMessage();
+}
 ```
-## Helping project
 
-If this project helps you reduce time to develop and/or you want to help the maintainer of this project, you can make a donation. Thank you.
+## Contributing
 
-[![Donation](https://pledgie.com/campaigns/33410.png?skin_name=chrome)](https://pledgie.com/campaigns/33410)
+Any contributions are welcome. If you find any issue don't hesitate to open a new issue or send a pull request.
+ 

@@ -1,12 +1,15 @@
 <?php
+
+declare(strict_types=1);
+
 namespace StefanoTreeTest\Unit\NestedSet\Adapter;
 
 use Doctrine\DBAL;
 use StefanoTree\NestedSet\Adapter\Doctrine2DBAL;
 use StefanoTree\NestedSet\Options;
+use StefanoTreeTest\UnitTestCase;
 
-class Doctrine2DBALAdapterTest
-    extends \PHPUnit_Framework_TestCase
+class Doctrine2DBALAdapterTest extends UnitTestCase
 {
     protected function tearDown()
     {
@@ -17,7 +20,7 @@ class Doctrine2DBALAdapterTest
     {
         $adapter = $this->getAdapter();
 
-        $this->assertEquals('SELECT * FROM tableName',
+        $this->assertEquals('SELECT tableName.* FROM tableName',
             trim($adapter->getBlankDbSelect()->getSQL()));
     }
 
@@ -27,18 +30,20 @@ class Doctrine2DBALAdapterTest
         $this->assertNotSame($adapter->getDefaultDbSelect(), $adapter->getDefaultDbSelect());
     }
 
-    public function testSetDefaultDbSelect()
+    public function testSetDefaultDbSelectBuilder()
     {
         $adapter = $this->getAdapter();
 
-        $select = $this->getConnection()
-            ->createQueryBuilder()
-            ->select('*')
-            ->from('someTable', null);
+        $selectBuilder = function () {
+            return $this->getConnection()
+                ->createQueryBuilder()
+                ->select('*')
+                ->from('someTable', null);
+        };
 
-        $adapter->setDefaultDbSelect($select);
+        $adapter->setDbSelectBuilder($selectBuilder);
 
-        $this->assertEquals($select->getSQL(), $adapter->getDefaultDbSelect()->getSQL());
+        $this->assertEquals($selectBuilder()->getSQL(), $adapter->getDefaultDbSelect()->getSQL());
     }
 
     /**
@@ -47,7 +52,7 @@ class Doctrine2DBALAdapterTest
     private function getAdapter()
     {
         $options = new Options(array(
-            'tableName'    => 'tableName',
+            'tableName' => 'tableName',
             'idColumnName' => 'id',
         ));
 

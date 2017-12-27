@@ -1,11 +1,13 @@
 <?php
+
+declare(strict_types=1);
+
 namespace StefanoTreeTest\Integration;
 
 use StefanoTree\NestedSet as TreeAdapter;
 use StefanoTreeTest\IntegrationTestCase;
 
-abstract class AbstractScopeTest
-    extends IntegrationTestCase
+abstract class AbstractScopeTest extends IntegrationTestCase
 {
     /**
      * @var TreeAdapter
@@ -34,12 +36,12 @@ abstract class AbstractScopeTest
     {
         switch ($this->getName()) {
             case 'testValidateTreeRaiseExceptionIfIdParentIdIsBroken':
-                return $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/with_scope/initDataSetBrokenParents.xml');
+                return $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/with_scope/initDataSetBrokenParents.xml');
             case 'testInvalidTree':
             case 'testRebuildTree':
-                return $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/with_scope/initDataSetBrokenTreeIndexes.xml');
+                return $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/with_scope/initDataSetBrokenTreeIndexes.xml');
             default:
-                return $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/with_scope/initDataSet.xml');
+                return $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/with_scope/initDataSet.xml');
         }
     }
 
@@ -48,15 +50,13 @@ abstract class AbstractScopeTest
         $this->treeAdapter
              ->createRootNode(array(), 10);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal_with_scope'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/with_scope/testCreateRoot.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/NestedSet/with_scope/testCreateRoot.xml');
     }
 
     public function testCreateRootRootWithSomeScopeAlreadyExist()
     {
-        $this->expectException('\StefanoTree\Exception\RootNodeAlreadyExistException');
-        $this->expectExceptionMessage('Root node for scope "123" already exist');
+        $this->expectException(\StefanoTree\Exception\ValidationException::class);
+        $this->expectExceptionMessage('Root node for given scope already exist');
 
         $this->treeAdapter
             ->createRootNode(array(), 123);
@@ -93,34 +93,30 @@ abstract class AbstractScopeTest
         $this->assertEquals($expected, $roots);
     }
 
-    public function testAddNodePlacementChildTop()
+    public function testAddNodePlacementChildTopDefaultPlacement()
     {
         $lastGeneratedValue = $this->treeAdapter
-            ->addNodePlacementChildTop(1);
+            ->addNode(1);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal_with_scope'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/with_scope/testAddNodePlacementChildTop.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/NestedSet/with_scope/testAddNodePlacementChildTop.xml');
         $this->assertEquals(9, $lastGeneratedValue);
     }
 
     public function testMoveNodePlacementBottom()
     {
         $this->treeAdapter
-             ->moveNodePlacementBottom(3, 5);
+             ->moveNode(3, 5, TreeAdapter::PLACEMENT_BOTTOM);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal_with_scope'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/with_scope/testMoveNodePlacementBottom.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/NestedSet/with_scope/testMoveNodePlacementBottom.xml');
     }
 
     public function testCannotMoveNodeBetweenScopes()
     {
-        $this->expectException('\StefanoTree\Exception\InvalidArgumentException');
-        $this->expectExceptionMessage('Cannot move node between scopes');
+        $this->expectException(\StefanoTree\Exception\ValidationException::class);
+        $this->expectExceptionMessage('Cannot move node between scopes.');
 
         $this->treeAdapter
-             ->moveNodePlacementChildBottom(4, 8);
+             ->moveNode(4, 8, TreeAdapter::PLACEMENT_CHILD_BOTTOM);
     }
 
     public function testDeleteBranch()
@@ -128,9 +124,7 @@ abstract class AbstractScopeTest
         $this->treeAdapter
             ->deleteBranch(2);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal_with_scope'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/with_scope/testDeleteBranch.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/NestedSet/with_scope/testDeleteBranch.xml');
     }
 
     public function testGetDescendants()
@@ -175,11 +169,13 @@ abstract class AbstractScopeTest
         );
 
         $nodeData = $this->treeAdapter
-                       ->getDescendants(2);
+                       ->getDescendantsQueryBuilder()
+                       ->get(2);
+
         $this->assertEquals($expectedNodeData, $nodeData);
     }
 
-    public function testGetPath()
+    public function testGetAncestors()
     {
         $expectedNodeData = array(
             array(
@@ -187,7 +183,7 @@ abstract class AbstractScopeTest
                 'name' => null,
                 'lft' => '1',
                 'rgt' => '10',
-                'parent_id' => NULL,
+                'parent_id' => null,
                 'level' => '0',
                 'scope' => '2',
             ),
@@ -212,7 +208,8 @@ abstract class AbstractScopeTest
         );
 
         $nodeData = $this->treeAdapter
-            ->getPath(5);
+            ->getAncestorsQueryBuilder()
+            ->get(5);
         $this->assertEquals($expectedNodeData, $nodeData);
     }
 
@@ -255,8 +252,8 @@ abstract class AbstractScopeTest
 
     public function testValidateTreeGivenNodeIdIsNotRoot()
     {
-        $this->expectException('\StefanoTree\Exception\InvalidArgumentException');
-        $this->expectExceptionMessage('Given node id "2" is not root id');
+        $this->expectException(\StefanoTree\Exception\ValidationException::class);
+        $this->expectExceptionMessage('Given node is not root node.');
 
         $this->treeAdapter->isValid(2);
     }
@@ -266,16 +263,38 @@ abstract class AbstractScopeTest
         $this->treeAdapter
              ->rebuild(1);
 
-        $dataSet = $this->getConnection()->createDataSet(array('tree_traversal_with_scope'));
-        $expectedDataSet = $this->createMySQLXMLDataSet(__DIR__ . '/_files/NestedSet/with_scope/testRebuildTree.xml');
-        $this->assertDataSetsEqual($expectedDataSet, $dataSet);
+        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/NestedSet/with_scope/testRebuildTree.xml');
     }
 
     public function testRebuildTreeGivenNodeIdIsNotRoot()
     {
-        $this->expectException('\StefanoTree\Exception\InvalidArgumentException');
-        $this->expectExceptionMessage('Given node id "5" is not root id');
+        $this->expectException(\StefanoTree\Exception\ValidationException::class);
+        $this->expectExceptionMessage('Given node is not root node.');
 
-        $this->treeAdapter->isValid(5);
+        $this->treeAdapter->rebuild(5);
+    }
+
+    public function testIsValidTreeGivenNodeIdIsNotRoot()
+    {
+        $this->expectException(\StefanoTree\Exception\ValidationException::class);
+        $this->expectExceptionMessage('Given node is not root node.');
+
+        $this->treeAdapter->isValid(4);
+    }
+
+    public function testRebuildTreeGivenNodeIdDoesNotExists()
+    {
+        $this->expectException(\StefanoTree\Exception\ValidationException::class);
+        $this->expectExceptionMessage('Node does not exists.');
+
+        $this->treeAdapter->rebuild(999);
+    }
+
+    public function testIsValidTreeGivenNodeIdDoesNotExists()
+    {
+        $this->expectException(\StefanoTree\Exception\ValidationException::class);
+        $this->expectExceptionMessage('Node does not exists.');
+
+        $this->treeAdapter->isValid(555);
     }
 }

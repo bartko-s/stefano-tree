@@ -1,23 +1,28 @@
 <?php
+
+declare(strict_types=1);
+
 namespace StefanoTree\NestedSet;
 
 use StefanoTree\Exception\InvalidArgumentException;
 
 class Options
 {
-    private $tableName = null;
+    private $tableName = '';
 
-    private $sequenceName = '';
+    private $sequenceName = null;
 
-    private $idColumnName = null;
+    private $idColumnName = '';
+
     private $leftColumnName = 'lft';
     private $rightColumnName = 'rgt';
     private $levelColumnName = 'level';
     private $parentIdColumnName = 'parent_id';
-    private $scopeColumnName = '';
+    private $scopeColumnName = null;
 
     /**
      * @param array $options
+     *
      * @throws InvalidArgumentException
      */
     public function __construct(array $options)
@@ -30,7 +35,7 @@ class Options
 
         if (count($missingKeys)) {
             throw new InvalidArgumentException(implode(', ', array_flip($missingKeys))
-                . ' must be set');
+                .' must be set');
         }
 
         $this->setOptions($options);
@@ -38,12 +43,11 @@ class Options
 
     /**
      * @param array $options
-     * @return void
      */
-    protected function setOptions($options)
+    protected function setOptions(array $options): void
     {
         foreach ($options as $name => $value) {
-            $methodName = 'set' . ucfirst($name);
+            $methodName = 'set'.ucfirst($name);
             if (method_exists($this, $methodName)) {
                 $this->$methodName($value);
             }
@@ -52,12 +56,12 @@ class Options
 
     /**
      * @param string $tableName
-     * @return void
+     *
      * @throws InvalidArgumentException
      */
-    public function setTableName($tableName)
+    public function setTableName(string $tableName): void
     {
-        $tableName = (string) trim($tableName);
+        $tableName = trim($tableName);
 
         if (empty($tableName)) {
             throw new InvalidArgumentException('tableName cannot be empty');
@@ -69,36 +73,35 @@ class Options
     /**
      * @return string
      */
-    public function getTableName()
+    public function getTableName(): string
     {
         return $this->tableName;
     }
 
     /**
      * @param string $sequenceName
-     * @return void
      */
-    public function setSequenceName($sequenceName)
+    public function setSequenceName(string $sequenceName): void
     {
-        $this->sequenceName = (string) trim($sequenceName);
+        $this->sequenceName = trim($sequenceName);
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getSequenceName()
+    public function getSequenceName(): ?string
     {
         return $this->sequenceName;
     }
 
     /**
      * @param string $idColumnName
-     * @return void
+     *
      * @throws InvalidArgumentException
      */
-    public function setIdColumnName($idColumnName)
+    public function setIdColumnName(string $idColumnName): void
     {
-        $idColumnName = (string) trim($idColumnName);
+        $idColumnName = trim($idColumnName);
 
         if (empty($idColumnName)) {
             throw new InvalidArgumentException('idColumnName cannot be empty');
@@ -108,21 +111,23 @@ class Options
     }
 
     /**
+     * @param bool $withTableName
+     *
      * @return string
      */
-    public function getIdColumnName()
+    public function getIdColumnName(bool $withTableName = false): string
     {
-        return $this->idColumnName;
+        return ($withTableName) ? $this->addTableName($this->idColumnName) : $this->idColumnName;
     }
 
     /**
      * @param string $leftColumnName
-     * @return void
+     *
      * @throws InvalidArgumentException
      */
-    public function setLeftColumnName($leftColumnName)
+    public function setLeftColumnName(string $leftColumnName): void
     {
-        $leftColumnName = (string) trim($leftColumnName);
+        $leftColumnName = trim($leftColumnName);
 
         if (empty($leftColumnName)) {
             throw new InvalidArgumentException('leftColumnName cannot be empty');
@@ -132,21 +137,23 @@ class Options
     }
 
     /**
+     * @param bool $withTableName
+     *
      * @return string
      */
-    public function getLeftColumnName()
+    public function getLeftColumnName(bool $withTableName = false): string
     {
-        return $this->leftColumnName;
+        return ($withTableName) ? $this->addTableName($this->leftColumnName) : $this->leftColumnName;
     }
 
     /**
      * @param string $rightColumnName
-     * @return void
+     *
      * @throws InvalidArgumentException
      */
-    public function setRightColumnName($rightColumnName)
+    public function setRightColumnName(string $rightColumnName): void
     {
-        $rightColumnName = (string) trim($rightColumnName);
+        $rightColumnName = trim($rightColumnName);
 
         if (empty($rightColumnName)) {
             throw new InvalidArgumentException('rightColumnName cannot be empty');
@@ -156,21 +163,23 @@ class Options
     }
 
     /**
+     * @param bool $withTableName
+     *
      * @return string
      */
-    public function getRightColumnName()
+    public function getRightColumnName(bool $withTableName = false): string
     {
-        return $this->rightColumnName;
+        return ($withTableName) ? $this->addTableName($this->rightColumnName) : $this->rightColumnName;
     }
 
     /**
      * @param string $levelColumnName
-     * @return void
+     *
      * @throws InvalidArgumentException
      */
-    public function setLevelColumnName($levelColumnName)
+    public function setLevelColumnName(string $levelColumnName): void
     {
-        $levelColumnName = (string) trim($levelColumnName);
+        $levelColumnName = trim($levelColumnName);
 
         if (empty($levelColumnName)) {
             throw new InvalidArgumentException('levelColumnName cannot be empty');
@@ -180,21 +189,23 @@ class Options
     }
 
     /**
+     * @param bool $withTableName
+     *
      * @return string
      */
-    public function getLevelColumnName()
+    public function getLevelColumnName(bool $withTableName = false): string
     {
-        return $this->levelColumnName;
+        return ($withTableName) ? $this->addTableName($this->levelColumnName) : $this->levelColumnName;
     }
 
     /**
      * @param string $parentIdColumnName
-     * @return void
+     *
      * @throws InvalidArgumentException
      */
-    public function setParentIdColumnName($parentIdColumnName)
+    public function setParentIdColumnName(string $parentIdColumnName): void
     {
-        $parentIdColumnName = (string) trim($parentIdColumnName);
+        $parentIdColumnName = trim($parentIdColumnName);
 
         if (empty($parentIdColumnName)) {
             throw new InvalidArgumentException('parentIdColumnName cannot be empty');
@@ -204,26 +215,39 @@ class Options
     }
 
     /**
+     * @param bool $withTableName
+     *
      * @return string
      */
-    public function getParentIdColumnName()
+    public function getParentIdColumnName(bool $withTableName = false): string
     {
-        return $this->parentIdColumnName;
+        return ($withTableName) ? $this->addTableName($this->parentIdColumnName) : $this->parentIdColumnName;
     }
 
     /**
      * @param $scopeColumnName
      */
-    public function setScopeColumnName($scopeColumnName)
+    public function setScopeColumnName(string $scopeColumnName): void
     {
         $this->scopeColumnName = trim($scopeColumnName);
     }
 
     /**
-     * @return string
+     * @param bool $withTableName
+     *
+     * @return string|null
      */
-    public function getScopeColumnName()
+    public function getScopeColumnName(bool $withTableName = false): ?string
     {
-        return $this->scopeColumnName;
+        return ($withTableName) ? $this->addTableName($this->scopeColumnName) : $this->scopeColumnName;
+    }
+
+    private function addTableName(?string $value): ?string
+    {
+        if (null === $value) {
+            return null;
+        }
+
+        return sprintf('%s.%s', $this->getTableName(), $value);
     }
 }

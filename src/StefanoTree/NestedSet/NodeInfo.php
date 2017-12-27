@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace StefanoTree\NestedSet;
 
 class NodeInfo
@@ -11,26 +14,25 @@ class NodeInfo
     private $scope;
 
     /**
-     * NodeInfo constructor.
-     * @param $id int
-     * @param $parentId int
+     * @param $id string|int|null
+     * @param $parentId string|null
      * @param $level int
      * @param $left int
      * @param $right int
-     * @param $scope null|int if scope is not used
+     * @param $scope string|int|null if scope is not used
      */
-    public function __construct($id, $parentId, $level, $left, $right, $scope)
+    public function __construct($id, $parentId, int $level, int $left, int $right, $scope)
     {
-        $this->id       = $id;
+        $this->id = $id;
         $this->parentId = $parentId;
-        $this->level    = $level;
-        $this->left     = $left;
-        $this->right    = $right;
-        $this->scope    = $scope;
+        $this->level = $level;
+        $this->left = $left;
+        $this->right = $right;
+        $this->scope = $scope;
     }
 
     /**
-     * @return int
+     * @return string|int|null
      */
     public function getId()
     {
@@ -38,7 +40,7 @@ class NodeInfo
     }
 
     /**
-     * @return int
+     * @return string|int|null
      */
     public function getParentId()
     {
@@ -48,7 +50,7 @@ class NodeInfo
     /**
      * @param $level int
      */
-    public function setLevel($level)
+    public function setLevel($level): void
     {
         $this->level = $level;
     }
@@ -56,7 +58,7 @@ class NodeInfo
     /**
      * @return int
      */
-    public function getLevel()
+    public function getLevel(): int
     {
         return $this->level;
     }
@@ -64,7 +66,7 @@ class NodeInfo
     /**
      * @param $left int
      */
-    public function setLeft($left)
+    public function setLeft($left): void
     {
         $this->left = $left;
     }
@@ -72,7 +74,7 @@ class NodeInfo
     /**
      * @return int
      */
-    public function getLeft()
+    public function getLeft(): int
     {
         return $this->left;
     }
@@ -80,7 +82,7 @@ class NodeInfo
     /**
      * @param $right int
      */
-    public function setRight($right)
+    public function setRight($right): void
     {
         $this->right = $right;
     }
@@ -88,13 +90,13 @@ class NodeInfo
     /**
      * @return int
      */
-    public function getRight()
+    public function getRight(): int
     {
         return $this->right;
     }
 
     /**
-     * @return int|null
+     * @return string|int|null
      */
     public function getScope()
     {
@@ -104,7 +106,7 @@ class NodeInfo
     /**
      * @return bool
      */
-    public function isRoot()
+    public function isRoot(): bool
     {
         if (0 == $this->getParentId()) {
             return true;

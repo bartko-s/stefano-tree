@@ -1,10 +1,14 @@
 <?php
+
+declare(strict_types=1);
+
 namespace StefanoTreeTest\Unit\NestedSet\Adapter;
 
 use StefanoTree\NestedSet\Adapter\Zend1;
 use StefanoTree\NestedSet\Options;
+use StefanoTreeTest\UnitTestCase;
 
-class Zend1Test extends \PHPUnit_Framework_TestCase
+class Zend1Test extends UnitTestCase
 {
     protected function tearDown()
     {
@@ -40,7 +44,7 @@ class Zend1Test extends \PHPUnit_Framework_TestCase
         $this->assertNotSame($adapter->getDefaultDbSelect(), $adapter->getDefaultDbSelect());
     }
 
-    public function testSetDefaultDbSelect()
+    public function testSetDefaultDbSelectBuilder()
     {
         $options = new Options(array(
             'tableName' => 'tableName',
@@ -50,11 +54,13 @@ class Zend1Test extends \PHPUnit_Framework_TestCase
         $dbAdapter = $this->getDbAdapterMock();
         $adapter = new Zend1($options, $dbAdapter);
 
-        $select = $dbAdapter->select()->from('tableName');
+        $builder = function () use ($dbAdapter) {
+            return $dbAdapter->select()->from('tableName');
+        };
 
-        $adapter->setDefaultDbSelect($select);
+        $adapter->setDbSelectBuilder($builder);
 
-        $this->assertEquals($select->__toString(), $adapter->getDefaultDbSelect()->__toString());
+        $this->assertEquals($builder()->__toString(), $adapter->getDefaultDbSelect()->__toString());
     }
 
     /**
@@ -66,7 +72,6 @@ class Zend1Test extends \PHPUnit_Framework_TestCase
             'database' => ':memory:',
             'dbname' => TEST_STEFANO_DB_DB_NAME,
         ));
-
 
         $dbAdapterMock = \Mockery::mock($dbA);
         $dbAdapterMock->makePartial();

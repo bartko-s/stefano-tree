@@ -1,0 +1,10 @@
+<?php
+return array(
+    'dbConnection' => array(
+        'dbname' => '',
+        'user' => '',
+        'password' => '',
+        'host' => '',
+        'driver' => 'pdo_pgsql',
+    )
+);

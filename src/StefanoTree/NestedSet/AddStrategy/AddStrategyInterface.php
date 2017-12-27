@@ -1,34 +1,20 @@
 <?php
+
+declare(strict_types=1);
+
 namespace StefanoTree\NestedSet\AddStrategy;
+
+use StefanoTree\Exception\ValidationException;
 
 interface AddStrategyInterface
 {
     /**
-     * @return boolean
+     * @param int|string $targetNodeId
+     * @param array      $data
+     *
+     * @throws ValidationException
+     *
+     * @return int|string Id of new created node
      */
-    public function canAddNewNode();
-    /**
-     * @return int
-     */
-    public function moveIndexesFromIndex();
-
-    /**
-     * @return int
-     */
-    public function newParentId();
-
-    /**
-     * @return int
-     */
-    public function newLevel();
-
-    /**
-     * @return int
-     */
-    public function newLeftIndex();
-
-    /**
-     * @return int
-     */
-    public function newRightIndex();
+    public function add($targetNodeId, array $data = array());
 }

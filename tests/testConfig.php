@@ -1,9 +1,12 @@
 <?php
-if (file_exists(__DIR__ . '/testConfig.local.php')) {
-    include_once __DIR__ . '/testConfig.local.php';
+
+declare(strict_types=1);
+
+if (file_exists(__DIR__.'/testConfig.local.php')) {
+    include_once __DIR__.'/testConfig.local.php';
 }
 
-/**
+/*
  * DB connection settings
  */
 if ('mysql' == TEST_STEFANO_DB_ADAPTER) {

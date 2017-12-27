@@ -1,31 +1,42 @@
 <?php
+
+declare(strict_types=1);
+
 namespace StefanoTree\NestedSet\AddStrategy;
 
-class ChildBottom
-    extends AddStrategyAbstract
+use StefanoTree\NestedSet\NodeInfo;
+
+class ChildBottom extends AddStrategyAbstract
 {
-    public function moveIndexesFromIndex()
+    /**
+     * {@inheritdoc}
+     */
+    protected function canCreateNewNode(NodeInfo $targetNode): void
     {
-        return $this->getTargetNode()->getRight() - 1;
     }
 
-    public function newParentId()
+    /**
+     * {@inheritdoc}
+     */
+    protected function makeHole(NodeInfo $targetNode): void
     {
-        return $this->getTargetNode()->getId();
+        $moveFromIndex = $targetNode->getRight() - 1;
+        $this->getAdapter()->moveLeftIndexes($moveFromIndex, 2, $targetNode->getScope());
+        $this->getAdapter()->moveRightIndexes($moveFromIndex, 2, $targetNode->getScope());
     }
 
-    public function newLevel()
+    /**
+     * {@inheritdoc}
+     */
+    protected function createNewNodeNodeInfo(NodeInfo $targetNode): NodeInfo
     {
-        return $this->getTargetNode()->getLevel() + 1;
-    }
-
-    public function newLeftIndex()
-    {
-        return $this->getTargetNode()->getRight();
-    }
-
-    public function newRightIndex()
-    {
-        return $this->getTargetNode()->getRight() + 1;
+        return new NodeInfo(
+            null,
+            $targetNode->getId(),
+            $targetNode->getLevel() + 1,
+            $targetNode->getRight(),
+            $targetNode->getRight() + 1,
+            $targetNode->getScope()
+        );
     }
 }
