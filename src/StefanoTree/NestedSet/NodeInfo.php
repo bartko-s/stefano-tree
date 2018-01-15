@@ -14,12 +14,12 @@ class NodeInfo
     private $scope;
 
     /**
-     * @param $id string|int|null
-     * @param $parentId string|null
-     * @param $level int
-     * @param $left int
-     * @param $right int
-     * @param $scope string|int|null if scope is not used
+     * @param string|int|null $id
+     * @param string|int|null $parentId
+     * @param int             $level
+     * @param int             $left
+     * @param int             $right
+     * @param string|int|null $scope    If scope is not used
      */
     public function __construct($id, $parentId, int $level, int $left, int $right, $scope)
     {
@@ -48,7 +48,7 @@ class NodeInfo
     }
 
     /**
-     * @param $level int
+     * @param int $level
      */
     public function setLevel($level): void
     {
@@ -64,7 +64,7 @@ class NodeInfo
     }
 
     /**
-     * @param $left int
+     * @param int $left
      */
     public function setLeft($left): void
     {
@@ -80,7 +80,7 @@ class NodeInfo
     }
 
     /**
-     * @param $right int
+     * @param int $right
      */
     public function setRight($right): void
     {

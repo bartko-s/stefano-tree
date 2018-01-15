@@ -91,8 +91,8 @@ abstract class MoveStrategyAbstract implements MoveStrategyInterface
     abstract protected function isSourceNodeAtRequiredPosition(): bool;
 
     /**
-     * @param NodeInfo $sourceNodeInfo
-     * @param $newParentId
+     * @param NodeInfo        $sourceNodeInfo
+     * @param string|int|null $newParentId
      */
     protected function _updateParentId(NodeInfo $sourceNodeInfo, $newParentId): void
     {
@@ -129,9 +129,9 @@ abstract class MoveStrategyAbstract implements MoveStrategyInterface
     abstract protected function updateLevels(): void;
 
     /**
-     * @param int $holeFromIndex
-     * @param int $indexShift
-     * @param $scope
+     * @param int             $holeFromIndex
+     * @param int             $indexShift
+     * @param string|int|null $scope
      */
     protected function _makeHole(int $holeFromIndex, int $indexShift, $scope): void
     {
@@ -145,10 +145,10 @@ abstract class MoveStrategyAbstract implements MoveStrategyInterface
     abstract protected function makeHole(): void;
 
     /**
-     * @param int $leftIndex
-     * @param int $rightIndex
-     * @param int $indexShift
-     * @param $scope
+     * @param int             $leftIndex
+     * @param int             $rightIndex
+     * @param int             $indexShift
+     * @param string|int|null $scope
      */
     protected function _moveBranchToTheHole(int $leftIndex, int $rightIndex, int $indexShift, $scope): void
     {
@@ -162,9 +162,9 @@ abstract class MoveStrategyAbstract implements MoveStrategyInterface
     abstract protected function moveBranchToTheHole(): void;
 
     /**
-     * @param int $holeFromIndex
-     * @param int $indexShift
-     * @param $scope
+     * @param int             $holeFromIndex
+     * @param int             $indexShift
+     * @param string|int|null $scope
      */
     protected function _patchHole(int $holeFromIndex, int $indexShift, $scope): void
     {

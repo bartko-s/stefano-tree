@@ -36,7 +36,7 @@ class Zend2 extends AdapterAbstract implements AdapterInterface
     }
 
     /**
-     * Return base db select without any join, etc.
+     * {@inheritdoc}
      *
      * @return Db\Sql\Select
      */
@@ -488,8 +488,6 @@ class Zend2 extends AdapterAbstract implements AdapterInterface
     {
         $options = $this->getOptions();
 
-        $startLevel = (int) $startLevel;
-
         // node does not exist
         $nodeInfo = $this->getNodeInfo($nodeId);
         if (!$nodeInfo) {
@@ -549,13 +547,13 @@ class Zend2 extends AdapterAbstract implements AdapterInterface
         }
 
         if (0 != $startLevel) {
-            $level = $nodeInfo->getLevel() + (int) $startLevel;
+            $level = $nodeInfo->getLevel() + $startLevel;
             $select->where
                    ->greaterThanOrEqualTo($options->getLevelColumnName(true), $level);
         }
 
         if (null != $levels) {
-            $endLevel = $nodeInfo->getLevel() + (int) $startLevel + abs($levels);
+            $endLevel = $nodeInfo->getLevel() + $startLevel + abs($levels);
             $select->where
                    ->lessThan($options->getLevelColumnName(true), $endLevel);
         }

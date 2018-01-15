@@ -225,7 +225,7 @@ class Options
     }
 
     /**
-     * @param $scopeColumnName
+     * @param string $scopeColumnName
      */
     public function setScopeColumnName(string $scopeColumnName): void
     {

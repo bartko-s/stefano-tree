@@ -36,7 +36,7 @@ interface DescendantQueryBuilderInterface
     /**
      * Exclude specified branch from result.
      *
-     * @param $nodeId
+     * @param int|string $nodeId
      *
      * @return DescendantQueryBuilderInterface
      */

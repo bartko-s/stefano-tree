@@ -100,4 +100,11 @@ abstract class AdapterAbstract implements AdapterInterface
 
         return $this->dbSelectBuilder;
     }
+
+    /**
+     * Return base db select without any join, etc.
+     *
+     * @return mixed
+     */
+    abstract public function getBlankDbSelect();
 }

@@ -40,7 +40,7 @@ class Doctrine2DBAL extends AdapterAbstract implements AdapterInterface
     }
 
     /**
-     * Return base db select without any join, etc.
+     * {@inheritdoc}
      *
      * @return QueryBuilder
      */
@@ -460,9 +460,9 @@ class Doctrine2DBAL extends AdapterAbstract implements AdapterInterface
 
         $sql = $connection->createQueryBuilder();
         $sql->update($options->getTableName())
-            ->set($options->getRightColumnName(), $nodeInfo->getRight())
-            ->set($options->getLeftColumnName(), $nodeInfo->getLeft())
-            ->set($options->getLevelColumnName(), $nodeInfo->getLevel())
+            ->set($options->getRightColumnName(), (string) $nodeInfo->getRight())
+            ->set($options->getLeftColumnName(), (string) $nodeInfo->getLeft())
+            ->set($options->getLevelColumnName(), (string) $nodeInfo->getLevel())
             ->where($options->getIdColumnName().' = :nodeId');
 
         $params = array(
@@ -478,8 +478,6 @@ class Doctrine2DBAL extends AdapterAbstract implements AdapterInterface
     public function getAncestors($nodeId, int $startLevel = 0, int $excludeLastNLevels = 0): array
     {
         $options = $this->getOptions();
-
-        $startLevel = (int) $startLevel;
 
         // node does not exist
         $nodeInfo = $this->getNodeInfo($nodeId);
@@ -548,12 +546,12 @@ class Doctrine2DBAL extends AdapterAbstract implements AdapterInterface
         if (0 != $startLevel) {
             $sql->andWhere($options->getLevelColumnName(true).' >= :startLevel');
 
-            $params['startLevel'] = $nodeInfo->getLevel() + (int) $startLevel;
+            $params['startLevel'] = $nodeInfo->getLevel() + $startLevel;
         }
 
         if (null != $levels) {
             $sql->andWhere($options->getLevelColumnName(true).'< :endLevel');
-            $params['endLevel'] = $nodeInfo->getLevel() + (int) $startLevel + abs($levels);
+            $params['endLevel'] = $nodeInfo->getLevel() + $startLevel + abs($levels);
         }
 
         if (null != $excludeBranch && null != ($excludeNodeInfo = $this->getNodeInfo($excludeBranch))) {
