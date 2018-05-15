@@ -133,13 +133,18 @@ class Zend1 extends AdapterAbstract implements AdapterInterface
         }
 
         $dbAdapter->insert($options->getTableName(), $data);
-        if ('' != $options->getSequenceName()) {
-            $lastGeneratedValue = $dbAdapter->lastSequenceId($options->getSequenceName());
-        } else {
-            $lastGeneratedValue = $dbAdapter->lastInsertId();
-        }
 
-        return $lastGeneratedValue;
+        if (array_key_exists($options->getIdColumnName(), $data)) {
+            return $data[$options->getIdColumnName()];
+        } else {
+            if ('' != $options->getSequenceName()) {
+                $lastGeneratedValue = $dbAdapter->lastSequenceId($options->getSequenceName());
+            } else {
+                $lastGeneratedValue = $dbAdapter->lastInsertId();
+            }
+
+            return $lastGeneratedValue;
+        }
     }
 
     /**

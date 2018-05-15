@@ -154,7 +154,11 @@ class Doctrine2DBAL extends AdapterAbstract implements AdapterInterface
 
         $connection->insert($options->getTableName(), $data);
 
-        return $connection->lastInsertId($options->getSequenceName());
+        if (array_key_exists($options->getIdColumnName(), $data)) {
+            return $data[$options->getIdColumnName()];
+        } else {
+            return $connection->lastInsertId($options->getSequenceName());
+        }
     }
 
     /**

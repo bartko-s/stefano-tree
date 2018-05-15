@@ -72,6 +72,7 @@ abstract class AdapterTestAbstract extends IntegrationTestCase
             'lft' => 'a',
             'rgt' => 'b',
             'parent_id' => 'c',
+            'tree_traversal_id' => 1596,
             'level' => 'd',
         );
 
@@ -85,10 +86,23 @@ abstract class AdapterTestAbstract extends IntegrationTestCase
     {
         $nodeInfo = new NodeInfo(null, 6, 100, 1000, 1001, null);
 
-        $this->adapter
+        $generatedId = $this->adapter
             ->insert($nodeInfo, array('name' => 'some-name'));
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testInsertData.xml');
+        $this->assertEquals(26, $generatedId);
+    }
+
+    public function testInsertDataUserDefinedId()
+    {
+        $uuid = 753;
+        $nodeInfo = new NodeInfo(null, 6, 100, 1000, 1001, null);
+
+        $generatedId = $this->adapter
+            ->insert($nodeInfo, array('name' => 'some-name', 'tree_traversal_id' => $uuid));
+
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testInsertDataUserDefinedId.xml');
+        $this->assertEquals($uuid, $generatedId);
     }
 
     public function testInsertDataDoesNotChangeMetadata()
@@ -103,10 +117,11 @@ abstract class AdapterTestAbstract extends IntegrationTestCase
             'level' => 'd',
         );
 
-        $this->adapter
+        $generatedId = $this->adapter
             ->insert($nodeInfo, $data);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testInsertData.xml');
+        $this->assertEquals(26, $generatedId);
     }
 
     public function testDeleteBranch()

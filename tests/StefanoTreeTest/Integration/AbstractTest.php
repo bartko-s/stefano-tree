@@ -167,6 +167,23 @@ abstract class AbstractTest extends IntegrationTestCase
         $this->assertEquals(27, $lastGeneratedValue);
     }
 
+    public function testAddNodeUserDefinedId()
+    {
+        $uuid = 652;
+
+        $lastGeneratedValue = $this->treeAdapter
+            ->addNode(
+                12,
+                array(
+                    'tree_traversal_id' => $uuid,
+                ),
+                TreeAdapter::PLACEMENT_BOTTOM
+            );
+
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testAddNodeUserDefinedId.xml');
+        $this->assertEquals($uuid, $lastGeneratedValue);
+    }
+
     public function testAddNodePlacementTop()
     {
         //test 1

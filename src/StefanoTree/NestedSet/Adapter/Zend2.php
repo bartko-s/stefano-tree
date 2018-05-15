@@ -151,10 +151,14 @@ class Zend2 extends AdapterAbstract implements AdapterInterface
         $dbAdapter->query($insert->getSqlString($dbAdapter->getPlatform()),
             DbAdapter::QUERY_MODE_EXECUTE);
 
-        $lastGeneratedValue = $dbAdapter->getDriver()
-                                        ->getLastGeneratedValue($options->getSequenceName());
+        if (array_key_exists($options->getIdColumnName(), $data)) {
+            return $data[$options->getIdColumnName()];
+        } else {
+            $lastGeneratedValue = $dbAdapter->getDriver()
+                                            ->getLastGeneratedValue($options->getSequenceName());
 
-        return $lastGeneratedValue;
+            return $lastGeneratedValue;
+        }
     }
 
     /**
