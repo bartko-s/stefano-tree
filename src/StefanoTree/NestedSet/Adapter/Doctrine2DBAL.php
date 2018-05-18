@@ -401,8 +401,6 @@ class Doctrine2DBAL extends AdapterAbstract implements AdapterInterface
     {
         $options = $this->getOptions();
 
-        $nodeId = (int) $nodeId;
-
         $connection = $this->getConnection();
 
         $sql = $this->getBlankDbSelect();

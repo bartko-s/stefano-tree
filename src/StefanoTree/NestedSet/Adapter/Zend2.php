@@ -405,8 +405,6 @@ class Zend2 extends AdapterAbstract implements AdapterInterface
     {
         $options = $this->getOptions();
 
-        $nodeId = (int) $nodeId;
-
         $dbAdapter = $this->getDbAdapter();
 
         $select = $this->getBlankDbSelect()
