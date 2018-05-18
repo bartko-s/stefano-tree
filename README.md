@@ -109,6 +109,7 @@ use StefanoTree\Exception\ValidationException;
 try {
     $data = array(
         // values
+        // id_column_name => uuid 
     );
     
     // create root node.
@@ -133,6 +134,7 @@ try {
     
     $data = array(
         // values
+        // id_column_name => uuid 
     );
 
     $nodeId = $tree->addNodePlacementTop($targetNodeId, $data, $tree::PLACEMENT_CHILD_TOP);
