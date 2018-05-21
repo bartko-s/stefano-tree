@@ -569,6 +569,46 @@ abstract class AbstractTest extends IntegrationTestCase
         $this->assertEquals($expected, $return);
     }
 
+    public function testGetAncestorAsNestedArray()
+    {
+        $return = $this->treeAdapter
+            ->getAncestorsQueryBuilder()
+            ->get(6, true);
+
+        $expected = array(
+            array(
+                'tree_traversal_id' => '1',
+                'name' => null,
+                'lft' => '1',
+                'rgt' => '50',
+                'parent_id' => null,
+                'level' => '0',
+                '_children' => array(
+                    array(
+                        'tree_traversal_id' => '3',
+                        'name' => null,
+                        'lft' => '16',
+                        'rgt' => '35',
+                        'parent_id' => '1',
+                        'level' => '1',
+                        '_children' => array(
+                            array(
+                                'tree_traversal_id' => '6',
+                                'name' => null,
+                                'lft' => '17',
+                                'rgt' => '32',
+                                'parent_id' => '3',
+                                'level' => '2',
+                                '_children' => array(),
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+        );
+        $this->assertEquals($expected, $return);
+    }
+
     public function testGetDescendantsReturnEmptyArrayIfNodeDoesNotExist()
     {
         $return = $this->treeAdapter
@@ -728,6 +768,45 @@ abstract class AbstractTest extends IntegrationTestCase
                 'rgt' => '27',
                 'parent_id' => '18',
                 'level' => '5',
+            ),
+        );
+        $this->assertEquals($expected, $return);
+    }
+
+    public function testGetDescendantsAsNestedArray()
+    {
+        $return = $this->treeAdapter
+            ->getDescendantsQueryBuilder()
+            ->get(21, true);
+
+        $expected = array(
+            array(
+                'tree_traversal_id' => '21',
+                'name' => null,
+                'lft' => '20',
+                'rgt' => '25',
+                'parent_id' => '18',
+                'level' => '5',
+                '_children' => array(
+                    array(
+                        'tree_traversal_id' => '24',
+                        'name' => null,
+                        'lft' => '21',
+                        'rgt' => '22',
+                        'parent_id' => '21',
+                        'level' => '6',
+                        '_children' => array(),
+                    ),
+                    array(
+                        'tree_traversal_id' => '25',
+                        'name' => null,
+                        'lft' => '23',
+                        'rgt' => '24',
+                        'parent_id' => '21',
+                        'level' => '6',
+                        '_children' => array(),
+                    ),
+                ),
             ),
         );
         $this->assertEquals($expected, $return);

@@ -22,9 +22,9 @@ abstract class AdapterAbstract implements AdapterInterface
     }
 
     /**
-     * @return Options
+     * {@inheritdoc}
      */
-    protected function getOptions(): Options
+    public function getOptions(): Options
     {
         return $this->options;
     }

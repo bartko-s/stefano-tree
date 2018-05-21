@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace StefanoTree\NestedSet\QueryBuilder;
 
 use StefanoTree\NestedSet\Adapter\AdapterInterface;
+use StefanoTree\NestedSet\Utilities;
 
 class AncestorQueryBuilder implements AncestorQueryBuilderInterface
 {
@@ -21,10 +22,13 @@ class AncestorQueryBuilder implements AncestorQueryBuilderInterface
         $this->adapter = $adapter;
     }
 
-    public function get($nodeId): array
+    public function get($nodeId, bool $nested = false): array
     {
-        return $this->getAdapter()
+        $result = $this->getAdapter()
             ->getAncestors($nodeId, $this->excludeFirstNLevel, $this->excludeLastNLevel);
+
+        return $nested ?
+            Utilities::flatToNested($result, $this->getAdapter()->getOptions()->getLevelColumnName()) : $result;
     }
 
     public function excludeFirstNLevel(int $count): AncestorQueryBuilderInterface

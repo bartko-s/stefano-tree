@@ -211,6 +211,10 @@ $nodeId = 15;
 $tree->getDescendantsQueryBuilder()
      ->get($nodeId);
      
+// all descendants result as nested array
+$tree->getDescendantsQueryBuilder()
+     ->get($nodeId, true);
+     
 // only children     
 $tree->getDescendantsQueryBuilder()
      ->excludeFirstNLevel(1)
@@ -246,6 +250,10 @@ $nodeId = 15;
 // get all
 $tree->getAncestorsQueryBuilder()
      ->get($nodeId);
+     
+// get all as nested array
+$tree->getAncestorsQueryBuilder()
+     ->get($nodeId, true);
 
 // exclude last node($nodeId) from result
 $tree->getAncestorsQueryBuilder()

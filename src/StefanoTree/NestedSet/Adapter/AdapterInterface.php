@@ -5,9 +5,15 @@ declare(strict_types=1);
 namespace StefanoTree\NestedSet\Adapter;
 
 use StefanoTree\NestedSet\NodeInfo;
+use StefanoTree\NestedSet\Options;
 
 interface AdapterInterface
 {
+    /**
+     * @return Options
+     */
+    public function getOptions(): Options;
+
     /**
      * @param callable $selectBuilder
      */
