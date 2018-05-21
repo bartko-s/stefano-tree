@@ -56,7 +56,7 @@ class Utilities
                 $first = true;
             } elseif (($level + 1) == $item[$levelName] && true == $first) {
                 $children = array($item);
-                self::_flatToNested($flatTree, $levelName, $item[$levelName], $pos + 1, $children);
+                self::_flatToNested($flatTree, $levelName, (int) $item[$levelName], $pos + 1, $children);
                 $result[count($result) - 1]['_children'] = $children;
                 $first = false;
             } elseif ($level > $item[$levelName]) {
