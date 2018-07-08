@@ -27,7 +27,7 @@ script: vendor/bin/phpunit --configuration tests/phpunit.$DB.xml --coverage-php 
 
 after_success:
   - php vendor/bin/phpcov merge --clover build/logs/clover.xml build/logs
-  - travis_retry php vendor/bin/coveralls
+  - travis_retry php vendor/bin/php-coveralls
   - wget https://scrutinizer-ci.com/ocular.phar
   - php ocular.phar code-coverage:upload --format=php-clover build/logs/clover.xml
 
