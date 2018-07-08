@@ -1,6 +1,6 @@
 {
     "name": "stefano/stefano-tree",
-    "description": "Framework agnostic library for managing tree structures",
+    "description": "Nested Set(MPTT) implementation for PHP",
     "license": "BSD-3-Clause",
     "keywords": [
         "tree",
