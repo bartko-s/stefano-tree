@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace StefanoTreeTest\Integration\Adapter;
 
 use StefanoTree\NestedSet\Adapter\AdapterInterface;
-use StefanoTree\NestedSet\Adapter\Zend1;
+use StefanoTree\NestedSet\Adapter\Pdo;
 use StefanoTree\NestedSet\Options;
 use StefanoTreeTest\TestUtil;
 
-class Zend1Test extends AdapterAbstract
+class PdoTest extends AdapterAbstract
 {
+    protected $adapterCanQuoteIdentifier = false;
+
     /**
      * @return AdapterInterface
      */
@@ -26,7 +28,7 @@ class Zend1Test extends AdapterAbstract
                 $options->setSequenceName('tree_traversal_tree_traversal_id_seq');
             }
 
-            $this->adapter = new Zend1($options, TestUtil::getZend1DbAdapter());
+            $this->adapter = new Pdo($options, TestUtil::getPDOConnection());
         }
 
         return $this->adapter;

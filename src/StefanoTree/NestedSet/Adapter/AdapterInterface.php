@@ -4,26 +4,8 @@ declare(strict_types=1);
 
 namespace StefanoTree\NestedSet\Adapter;
 
-use StefanoTree\NestedSet\NodeInfo;
-use StefanoTree\NestedSet\Options;
-
 interface AdapterInterface
 {
-    /**
-     * @return Options
-     */
-    public function getOptions(): Options;
-
-    /**
-     * @param callable $selectBuilder
-     */
-    public function setDbSelectBuilder(callable $selectBuilder): void;
-
-    /**
-     * Lock tree for update. This prevent race condition issue.
-     */
-    public function lockTree(): void;
-
     /**
      * Begin db transaction.
      */
@@ -40,125 +22,47 @@ interface AdapterInterface
     public function rollbackTransaction(): void;
 
     /**
-     * Update node data. Function must sanitize data from keys like level, leftIndex, ...
+     * Check if Db transaction is active.
      *
-     * @param int|string $nodeId
-     * @param array      $data
+     * @return bool
      */
-    public function update($nodeId, array $data): void;
+    public function isInTransaction(): bool;
 
     /**
-     * @param NodeInfo $nodeInfo
-     * @param array    $data
+     * Return true if adapter can handle nested transaction.
+     *
+     * @return bool
+     */
+    public function canHandleNestedTransaction(): bool;
+
+    /**
+     * Quote column identifier so it is safe to use, even it is a reserved world.
+     *
+     * @param string $columnName
+     *
+     * @return string
+     */
+    public function quoteIdentifier(string $columnName): string;
+
+    /**
+     * @param string $sql
+     * @param array  $params
      *
      * @return int|string Last ID
      */
-    public function insert(NodeInfo $nodeInfo, array $data);
+    public function executeInsertSQL(string $sql, array $params = array());
 
     /**
-     * Delete branch.
-     *
-     * @param int|string $nodeId
+     * @param string $sql
+     * @param array  $params
      */
-    public function delete($nodeId): void;
+    public function executeSQL(string $sql, array $params = array()): void;
 
     /**
-     * @param int             $fromIndex Left index is greater than
-     * @param int             $shift
-     * @param null|string|int $scope     null if scope is not used
-     */
-    public function moveLeftIndexes($fromIndex, $shift, $scope = null): void;
-
-    /**
-     * @param int             $fromIndex Right index is greater than
-     * @param int             $shift
-     * @param null|string|int $scope     null if scope is not used
-     */
-    public function moveRightIndexes($fromIndex, $shift, $scope = null): void;
-
-    /**
-     * @param int|string $nodeId
-     * @param int|string $newParentId
-     */
-    public function updateParentId($nodeId, $newParentId): void;
-
-    /**
-     * @param int             $leftIndexFrom from left index or equal
-     * @param int             $rightIndexTo  to right index or equal
-     * @param int             $shift         shift
-     * @param null|string|int $scope         null if scope is not used
-     */
-    public function updateLevels(int $leftIndexFrom, int $rightIndexTo, int $shift, $scope = null): void;
-
-    /**
-     * @param int             $leftIndexFrom from left index
-     * @param int             $rightIndexTo  to right index
-     * @param int             $shift
-     * @param null|string|int $scope         null if scope is not used
-     */
-    public function moveBranch(int $leftIndexFrom, int $rightIndexTo, int $shift, $scope = null): void;
-
-    /**
-     * @param int|string $nodeId
-     *
-     * @return null|array
-     */
-    public function getNode($nodeId): ?array;
-
-    /**
-     * @param int|string $nodeId
-     *
-     * @return NodeInfo|null
-     */
-    public function getNodeInfo($nodeId): ?NodeInfo;
-
-    /**
-     * Children must be find by parent ID column and order by left index !!!
-     *
-     * @param int|string $parentNodeId
-     *
-     * @return NodeInfo[]
-     */
-    public function getChildrenNodeInfo($parentNodeId): array;
-
-    /**
-     * Update left index, right index, level. Other columns must be ignored.
-     *
-     * @param NodeInfo $nodeInfo
-     */
-    public function updateNodeMetadata(NodeInfo $nodeInfo): void;
-
-    /**
-     * @param int|string $nodeId
-     * @param int        $startLevel         0 = include root
-     * @param int        $excludeLastNLevels
+     * @param string $sql
+     * @param array  $params
      *
      * @return array
      */
-    public function getAncestors($nodeId, int $startLevel = 0, int $excludeLastNLevels = 0): array;
-
-    /**
-     * @param int|string      $nodeId
-     * @param int             $startLevel    Relative level from $nodeId. 1 = exclude $nodeId from result.
-     *                                       2 = exclude 2 levels from result
-     * @param null|int        $levels        Number of levels in the results relative to $startLevel
-     * @param null|int|string $excludeBranch Exclude defined branch(node id) from result
-     *
-     * @return array
-     */
-    public function getDescendants($nodeId, int $startLevel = 0, ?int $levels = null, $excludeBranch = null): array;
-
-    /**
-     * @param null|string|int $scope null if scope is not used
-     *
-     * @return array
-     */
-    public function getRoot($scope = null): array;
-
-    /**
-     * @param null|string|int $scope if defined return root only for defined scope
-     *
-     * @return array
-     */
-    public function getRoots($scope = null): array;
+    public function executeSelectSQL(string $sql, array $params = array()): array;
 }

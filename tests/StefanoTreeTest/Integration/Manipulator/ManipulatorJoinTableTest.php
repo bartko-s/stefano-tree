@@ -2,35 +2,60 @@
 
 declare(strict_types=1);
 
-namespace StefanoTreeTest\Integration\Adapter;
+namespace StefanoTreeTest\Integration\Manipulator;
 
-use StefanoTree\NestedSet\Adapter\AdapterInterface as TreeAdapterInterface;
+use StefanoTree\NestedSet\Manipulator\Manipulator;
+use StefanoTree\NestedSet\Manipulator\ManipulatorInterface;
+use StefanoTree\NestedSet\Options;
 use StefanoTreeTest\IntegrationTestCase;
+use StefanoTreeTest\TestUtil;
 
-abstract class AdapterJoinTableTestAbstract extends IntegrationTestCase
+class ManipulatorJoinTableTest extends IntegrationTestCase
 {
     /**
-     * @var TreeAdapterInterface
+     * @var ManipulatorInterface
      */
-    protected $adapter;
+    protected $manipulator;
 
     protected function setUp()
     {
-        $this->adapter = $this->getAdapter();
+        $this->manipulator = $this->getManipulator();
 
         parent::setUp();
     }
 
     protected function tearDown()
     {
-        $this->adapter = null;
+        $this->manipulator = null;
         parent::tearDown();
     }
 
     /**
-     * @return TreeAdapterInterface
+     * @return ManipulatorInterface
      */
-    abstract protected function getAdapter();
+    protected function getManipulator(): ManipulatorInterface
+    {
+        $options = new Options(array(
+                                   'tableName' => 'tree_traversal_with_scope',
+                                   'idColumnName' => 'tree_traversal_id',
+                                   'scopeColumnName' => 'scope',
+                                   'dbSelectBuilder' => function () {
+                                       $sql = 'SELECT tree_traversal_with_scope.*, ttm.name AS metadata FROM tree_traversal_with_scope'
+                                           .' LEFT JOIN tree_traversal_metadata AS ttm'
+                                           .' ON ttm.tree_traversal_id = tree_traversal_with_scope.tree_traversal_id';
+
+                                       return $sql;
+                                   }
+                               ));
+
+        if ('pgsql' == TEST_STEFANO_DB_VENDOR) {
+            $options->setSequenceName('tree_traversal_with_scope_tree_traversal_id_seq');
+        }
+
+        $manipulator = new Manipulator($options, TestUtil::buildAdapter($options));
+
+        return $manipulator;
+    }
 
     protected function getDataSet()
     {
@@ -39,7 +64,7 @@ abstract class AdapterJoinTableTestAbstract extends IntegrationTestCase
 
     public function testGetNode()
     {
-        $nodes = $this->adapter
+        $nodes = $this->manipulator
             ->getDescendants(10);
 
         $expected = array(
@@ -59,7 +84,7 @@ abstract class AdapterJoinTableTestAbstract extends IntegrationTestCase
 
     public function testGetAncestors()
     {
-        $nodes = $this->adapter
+        $nodes = $this->manipulator
             ->getAncestors(10, 2, 1);
 
         $expected = array(
@@ -89,7 +114,7 @@ abstract class AdapterJoinTableTestAbstract extends IntegrationTestCase
 
     public function testGetDescendants()
     {
-        $nodes = $this->adapter
+        $nodes = $this->manipulator
             ->getDescendants(2, 1, 1, 4);
 
         $expected = array(
@@ -119,7 +144,7 @@ abstract class AdapterJoinTableTestAbstract extends IntegrationTestCase
 
     public function testGetChildrenNodeInfo()
     {
-        $nodes = $this->adapter
+        $nodes = $this->manipulator
             ->getChildrenNodeInfo(2);
 
         $this->assertEquals(3, count($nodes));
@@ -127,7 +152,7 @@ abstract class AdapterJoinTableTestAbstract extends IntegrationTestCase
 
     public function testGetNodeInfo()
     {
-        $nodeInfo = $this->adapter
+        $nodeInfo = $this->manipulator
             ->getNodeInfo(2);
 
         $this->assertEquals($nodeInfo->getId(), 2);

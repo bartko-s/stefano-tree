@@ -19,33 +19,32 @@ $dbAdapter = \Doctrine\DBAL\DriverManager::getConnection(
 );
 
 /**************************************
+ *    Config
+ ***************************************/
+$options = array(
+    'tableName' => 'categories',
+    'idColumnName' => 'id',
+    'sequenceName' => 'categories_id_seq',
+
+    'scopeColumnName' => 'group_id',
+);
+
+/**************************************
  *    Tree Adapter
  **************************************/
-$treeAdapter = \StefanoTree\NestedSet::factory(
-    array(
-        'tableName' => 'categories',
-        'idColumnName' => 'id',
-        'sequenceName' => 'categories_id_seq',
-        'scopeColumnName' => 'group_id',
-    ),
-    $dbAdapter
-);
+$treeAdapter = new \StefanoTree\NestedSet($options, $dbAdapter);
 
 /***************************************
  * Join example 1
  ***************************************/
 /*
-$selectBuilder = function() use ($dbAdapter) {
-    $select = $dbAdapter->createQueryBuilder();
-    $select->from('categories')
-        ->select('categories.*', '...')
-        ->leftJoin('categories', 'metadata', 'm', 'm.id = categories.id');
-    return $select;
+$options['dbSelectBuilder'] = function () {
+    return 'SELECT categories.*, m.name AS metaName '
+        .' FROM categories'
+        .' LEFT JOIN metadata AS m ON m.id=categories.id';
 };
 
-$adapter = $treeAdapter
-    ->getAdapter()
-    ->setDbSelectBuilder($selectBuilder);
+$treeAdapter = new \StefanoTree\NestedSet($options, $dbAdapter);
 */
 
 /***************************************
@@ -54,27 +53,15 @@ $adapter = $treeAdapter
 /*
 class SelectBuilder
 {
-    private $connection;
-
-    public function __construct(\Doctrine\DBAL\Connection $connection)
-    {
-        $this->connection = $connection;
-    }
-
     public function build() {
-        $select = $this->connection->createQueryBuilder();
-        $select->from('categories')
-            ->select('categories.*', '...')
-            ->leftJoin('categories', 'metadata', 'm', 'm.id = categories.id');
-        return $select;
+        return 'SELECT categories.*, m.name AS metaName '
+            . ' FROM categories'
+            . ' LEFT JOIN metadata AS m ON m.id=categories.id';
     }
 }
 
-$selectBuilder = new SelectBuilder($dbAdapter);
-
-$adapter = $treeAdapter
-    ->getAdapter()
-    ->setDbSelectBuilder(array($selectBuilder, 'build'));
+$options['dbSelectBuilder'] = array(new SelectBuilder(), 'build');
+$treeAdapter = new \StefanoTree\NestedSet($options, $dbAdapter);
 */
 
 class Service

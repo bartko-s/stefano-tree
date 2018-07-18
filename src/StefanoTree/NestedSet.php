@@ -8,12 +8,18 @@ use Doctrine\DBAL\Connection as DoctrineConnection;
 use Exception;
 use StefanoTree\Exception\InvalidArgumentException;
 use StefanoTree\Exception\ValidationException;
-use StefanoTree\NestedSet\Adapter;
 use StefanoTree\NestedSet\Adapter\AdapterInterface;
+use StefanoTree\NestedSet\Adapter\NestedTransactionDecorator;
+use StefanoTree\NestedSet\Adapter\Pdo;
+use StefanoTree\NestedSet\Manipulator\Manipulator;
+use StefanoTree\NestedSet\Manipulator\ManipulatorInterface;
 use StefanoTree\NestedSet\AddStrategy;
 use StefanoTree\NestedSet\AddStrategy\AddStrategyInterface;
 use StefanoTree\NestedSet\MoveStrategy;
 use StefanoTree\NestedSet\MoveStrategy\MoveStrategyInterface;
+use StefanoTree\NestedSet\Adapter\Doctrine2DBAL;
+use StefanoTree\NestedSet\Adapter\Zend1;
+use StefanoTree\NestedSet\Adapter\Zend2;
 use StefanoTree\NestedSet\NodeInfo;
 use StefanoTree\NestedSet\Options;
 use StefanoTree\NestedSet\QueryBuilder\AncestorQueryBuilder;
@@ -26,7 +32,7 @@ use Zend\Db\Adapter\Adapter as Zend2DbAdapter;
 
 class NestedSet implements TreeInterface
 {
-    private $adapter;
+    private $manipulator;
 
     private $validator;
 
@@ -34,11 +40,9 @@ class NestedSet implements TreeInterface
      * @param Options|array $options
      * @param object        $dbAdapter
      *
-     * @return TreeInterface
-     *
      * @throws InvalidArgumentException
      */
-    public static function factory($options, $dbAdapter): TreeInterface
+    public function __construct($options, $dbAdapter)
     {
         if (is_array($options)) {
             $options = new Options($options);
@@ -48,34 +52,32 @@ class NestedSet implements TreeInterface
             );
         }
 
-        if ($dbAdapter instanceof Zend2DbAdapter) {
-            $adapter = new Adapter\Zend2($options, $dbAdapter);
+        if ($dbAdapter instanceof  AdapterInterface) {
+            $adapter = $dbAdapter;
+        } elseif ($dbAdapter instanceof Zend2DbAdapter) {
+            $adapter = new Zend2($options, $dbAdapter);
         } elseif ($dbAdapter instanceof DoctrineConnection) {
-            $adapter = new Adapter\Doctrine2DBAL($options, $dbAdapter);
+            $adapter = new Doctrine2DBAL($options, $dbAdapter);
         } elseif ($dbAdapter instanceof \Zend_Db_Adapter_Abstract) {
-            $adapter = new Adapter\Zend1($options, $dbAdapter);
+            $adapter = new Zend1($options, $dbAdapter);
+        } elseif ($dbAdapter instanceof \PDO) {
+            $adapter = new Pdo($options, $dbAdapter);
         } else {
             throw new InvalidArgumentException('Db adapter "'.get_class($dbAdapter)
                 .'" is not supported');
         }
 
-        return new self($adapter);
+        $adapter = new NestedTransactionDecorator($adapter);
+
+        $this->manipulator = new Manipulator($options, $adapter);
     }
 
     /**
-     * @param AdapterInterface $adapter
+     * @return ManipulatorInterface
      */
-    public function __construct(AdapterInterface $adapter)
+    public function getManipulator(): ManipulatorInterface
     {
-        $this->adapter = $adapter;
-    }
-
-    /**
-     * @return AdapterInterface
-     */
-    public function getAdapter(): AdapterInterface
-    {
-        return $this->adapter;
+        return $this->manipulator;
     }
 
     /**
@@ -84,7 +86,7 @@ class NestedSet implements TreeInterface
     private function getValidator(): ValidatorInterface
     {
         if (null == $this->validator) {
-            $this->validator = new Validator($this->getAdapter());
+            $this->validator = new Validator($this->getManipulator());
         }
 
         return $this->validator;
@@ -107,7 +109,7 @@ class NestedSet implements TreeInterface
 
         $nodeInfo = new NodeInfo(null, null, 0, 1, 2, $scope);
 
-        return $this->getAdapter()->insert($nodeInfo, $data);
+        return $this->getManipulator()->insert($nodeInfo, $data);
     }
 
     /**
@@ -115,7 +117,7 @@ class NestedSet implements TreeInterface
      */
     public function updateNode($nodeId, array $data): void
     {
-        $this->getAdapter()
+        $this->getManipulator()
              ->update($nodeId, $data);
     }
 
@@ -136,7 +138,7 @@ class NestedSet implements TreeInterface
      */
     protected function getAddStrategy(string $placement): AddStrategyInterface
     {
-        $adapter = $this->getAdapter();
+        $adapter = $this->getManipulator();
 
         switch ($placement) {
             case self::PLACEMENT_BOTTOM:
@@ -169,7 +171,7 @@ class NestedSet implements TreeInterface
      */
     protected function getMoveStrategy(string $placement): MoveStrategyInterface
     {
-        $adapter = $this->getAdapter();
+        $adapter = $this->getManipulator();
 
         switch ($placement) {
             case self::PLACEMENT_BOTTOM:
@@ -190,7 +192,7 @@ class NestedSet implements TreeInterface
      */
     public function deleteBranch($nodeId): void
     {
-        $adapter = $this->getAdapter();
+        $adapter = $this->getManipulator();
 
         $adapter->beginTransaction();
         try {
@@ -226,7 +228,7 @@ class NestedSet implements TreeInterface
      */
     public function getNode($nodeId): ?array
     {
-        return $this->getAdapter()
+        return $this->getManipulator()
                     ->getNode($nodeId);
     }
 
@@ -235,7 +237,7 @@ class NestedSet implements TreeInterface
      */
     public function getAncestorsQueryBuilder(): AncestorQueryBuilderInterface
     {
-        return new AncestorQueryBuilder($this->getAdapter());
+        return new AncestorQueryBuilder($this->getManipulator());
     }
 
     /**
@@ -243,7 +245,7 @@ class NestedSet implements TreeInterface
      */
     public function getDescendantsQueryBuilder(): DescendantQueryBuilderInterface
     {
-        return new DescendantQueryBuilder($this->getAdapter());
+        return new DescendantQueryBuilder($this->getManipulator());
     }
 
     /**
@@ -251,7 +253,7 @@ class NestedSet implements TreeInterface
      */
     public function getRootNode($scope = null): array
     {
-        return $this->getAdapter()
+        return $this->getManipulator()
                     ->getRoot($scope);
     }
 
@@ -260,7 +262,7 @@ class NestedSet implements TreeInterface
      */
     public function getRoots(): array
     {
-        return $this->getAdapter()
+        return $this->getManipulator()
                     ->getRoots();
     }
 

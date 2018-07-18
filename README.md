@@ -20,10 +20,11 @@
  - Support scopes (multiple independent tree in one db table)
  - Rebuild broken tree
  - Tested with MySQL/MariaDB and PostgreSQL but should work with any database vendor which support transaction
- - Supported Frameworks [Zend Framework 1](https://framework.zend.com/manual/1.12/en/zend.db.html), [Zend Framework 2](https://framework.zend.com/manual/2.4/en/index.html#zend-db), [Doctrine 2 DBAL](http://docs.doctrine-project.org/projects/doctrine-dbal/en/latest/). It is easy to implement support for any framework
+ - Supported [PDO](http://php.net/manual/en/intro.pdo.php), [Zend Framework 1](https://framework.zend.com/manual/1.12/en/zend.db.html), [Zend Framework 2](https://framework.zend.com/manual/2.4/en/index.html#zend-db), [Doctrine 2 DBAL](http://docs.doctrine-project.org/projects/doctrine-dbal/en/latest/). It is easy to implement support for any framework
+ - Support nested transaction
 
 ## Dependencies
-- This library has no external dependencies only PHP and your favorite framework is required
+- This library has no external dependencies. Can work with pure PHP.
 
 ## Installation
 
@@ -44,8 +45,8 @@ composer require stefano/stefano-tree
 | parentIdColumnName | string | no       | parent_id     |                                                       |
 | sequenceName       | string | see note |               | Required for PostgreSQL                               |
 | scopeColumnName    | string | see note |               | If empty scope support is disabled                    |
+| dbSelectBuilder    | callable | no     |               | see Join table example below                          |
 
-- Use static factory method
 
 ```
 use \StefanoTree\NestedSet;
@@ -56,44 +57,28 @@ $options = array(
     // other options
 );
 
-$dbAdapter = Zend2 Db Adapter or Zend1 Db Adapter or Doctrine DBAL Connection
+$dbAdapter = pure \PDO, Zend1 Db Adapter, Zend2 Db Adapter, Doctrine DBAL Connection or any class which implements StefanoTree\NestedSet\Adapter\AdapterInterface interface 
 
-$tree = NestedSet::factory($options, $dbAdapter);
+$tree = new NestedSet($options, $dbAdapter);
 ```
 
-- or create tree adapter directly
+- You can join table.
 
 ```
-use \StefanoTree\NestedSet;
-use \StefanoTree\NestedSet\Options;
-use \StefanoTree\NestedSet\Adapter\Zend2 as Zend2TreeDbAdapter;
+$options = array(
+    'tableName'       => 'tree_traversal',
+    'idColumnName'    => 'tree_traversal_id',
+    'dbSelectBuilder' => function() {
+         // You can use any "callable" like function or object
+         // Select must be without where or order part
+         return 'SELECT tree_traversal.*, m.something, ...'
+           .' FROM tree_traversal'
+           .' LEFT JOIN metadata AS m ON tree_traversal.id=m.tree_id';
+     }, 
+    // other options
+);
 
-$options = new Options(array(...);
-$dbAdapter = ... supported db adapter ...
-$nestedSetAdapter = new Zend2TreeDbAdapter($options, $dbAdapter);
-$tree = new NestedSet($nestedSetAdapter);
-```
-
-- You can join table. Example is for Zend Framework 2 but it works similar for other supported frameworks.
-
-```
-use Zend\Db\Sql\Select;
-
-$selectBuilder = function() {
-    // @see https://docs.zendframework.com/zend-db/sql/#select
-    $select = new Select('tree_traversal');
-    $select->join(
-        array('metadata'),
-        'metadata.tree_traversal_id = tree_traversal.tree_traversal_id',
-        array('metadata' => 'name'),
-        $select::JOIN_LEFT
-        );
-    
-    return $select;    
-}
-
-// as $selectBuilder you can use any "callable" like function or object
-$tree->getAdapter()->setDbSelectBuilder($selectBuilder);
+$tree = new NestedSet($options, $dbAdapter);
 ```
 
 ## API

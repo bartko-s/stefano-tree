@@ -5,27 +5,26 @@ declare(strict_types=1);
 namespace StefanoTree\NestedSet\Adapter;
 
 use StefanoTree\NestedSet\Options;
-use Zend\Db\Adapter\Adapter as DbAdapter;
 
-class Zend2 implements AdapterInterface
+class Pdo implements AdapterInterface
 {
     private $connection;
     private $options;
 
     /**
-     * @param Options   $options
-     * @param DbAdapter $connection
+     * @param Options $options
+     * @param \PDO    $connection
      */
-    public function __construct(Options $options, DbAdapter $connection)
+    public function __construct(Options $options, \PDO $connection)
     {
         $this->connection = $connection;
         $this->options = $options;
     }
 
     /**
-     * @return DbAdapter
+     * @return \PDO
      */
-    private function getConnection(): DbAdapter
+    private function getConnection(): \PDO
     {
         return $this->connection;
     }
@@ -41,45 +40,35 @@ class Zend2 implements AdapterInterface
     public function beginTransaction(): void
     {
         $this->getConnection()
-             ->getDriver()
-             ->getConnection()
              ->beginTransaction();
     }
 
     public function commitTransaction(): void
     {
         $this->getConnection()
-             ->getDriver()
-             ->getConnection()
              ->commit();
     }
 
     public function rollbackTransaction(): void
     {
         $this->getConnection()
-             ->getDriver()
-             ->getConnection()
-             ->rollback();
+             ->rollBack();
     }
 
     public function isInTransaction(): bool
     {
         return $this->getConnection()
-             ->getDriver()
-             ->getConnection()
-             ->inTransaction();
+                    ->inTransaction();
     }
 
     public function canHandleNestedTransaction(): bool
     {
-        return true;
+        return false;
     }
 
     public function quoteIdentifier(string $columnName): string
     {
-        return $this->getConnection()
-                    ->getPlatform()
-                    ->quoteIdentifierChain(explode('.', $columnName));
+        return $columnName;
     }
 
     public function executeInsertSQL(string $sql, array $params = array())
@@ -90,9 +79,13 @@ class Zend2 implements AdapterInterface
         if (array_key_exists($options->getIdColumnName(), $params)) {
             return $params[$options->getIdColumnName()];
         } else {
-            $lastGeneratedValue = $this->getConnection()
-                                       ->getDriver()
-                                       ->getLastGeneratedValue($options->getSequenceName());
+            if ('' != $options->getSequenceName()) {
+                $lastGeneratedValue = $this->getConnection()
+                                           ->lastInsertId($options->getSequenceName());
+            } else {
+                $lastGeneratedValue = $this->getConnection()
+                                           ->lastInsertId();
+            }
 
             return $lastGeneratedValue;
         }
@@ -100,14 +93,17 @@ class Zend2 implements AdapterInterface
 
     public function executeSQL(string $sql, array $params = array()): void
     {
-        $this->getConnection()
-             ->query($sql, $params);
+        $stm = $this->getConnection()
+                    ->prepare($sql);
+        $stm->execute($params);
     }
 
     public function executeSelectSQL(string $sql, array $params = array()): array
     {
-        return $this->getConnection()
-                    ->query($sql, $params)
-                    ->toArray();
+        $stm = $this->getConnection()
+                    ->prepare($sql);
+        $stm->execute($params);
+
+        return $stm->fetchAll(\PDO::FETCH_ASSOC);
     }
 }

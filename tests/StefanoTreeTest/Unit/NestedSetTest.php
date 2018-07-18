@@ -14,48 +14,52 @@ class NestedSetTest extends UnitTestCase
         'tableName' => 'table',
     );
 
-    public function factoryDataProvider()
+    public function dataProvider()
     {
         return array(
             array(
+                \PDO::class,
+                NestedSet\Adapter\Pdo::class,
+            ),
+            array(
                 \Zend\Db\Adapter\Adapter::class,
-                \StefanoTree\NestedSet\Adapter\Zend2::class,
+                NestedSet\Adapter\Zend2::class,
             ),
             array(
                 \Doctrine\DBAL\Connection::class,
-                \StefanoTree\NestedSet\Adapter\Doctrine2DBAL::class,
+                NestedSet\Adapter\Doctrine2DBAL::class,
             ),
             array(
                 \Zend_Db_Adapter_Abstract::class,
-                \StefanoTree\NestedSet\Adapter\Zend1::class,
+                NestedSet\Adapter\Zend1::class,
             ),
         );
     }
 
     /**
-     * @dataProvider factoryDataProvider
+     * @dataProvider dataProvider
      */
-    public function testFactoryMethodWithOptionAsObject($dbAdapterClass, $expectedAdapterClass)
+    public function testConstructorMethodWithOptionAsObject($dbAdapterClass, $expectedAdapterClass)
     {
         $dbAdapterStub = \Mockery::mock($dbAdapterClass);
         $options = new \StefanoTree\NestedSet\Options($this->options);
 
-        $tree = NestedSet::factory($options, $dbAdapterStub);
-        $adapter = $tree->getAdapter();
+        $tree = new NestedSet($options, $dbAdapterStub);
+        $adapter = $tree->getManipulator()->getAdapter()->getAdapter();
 
         $this->assertInstanceOf($expectedAdapterClass, $adapter);
     }
 
     /**
-     * @dataProvider factoryDataProvider
+     * @dataProvider dataProvider
      */
-    public function testFactoryMethodWithOptionAsArray($dbAdapterClass, $expectedAdapterClass)
+    public function testConstructorMethodWithOptionAsArray($dbAdapterClass, $expectedAdapterClass)
     {
         $dbAdapterStub = \Mockery::mock($dbAdapterClass);
         $options = $this->options;
 
-        $tree = NestedSet::factory($options, $dbAdapterStub);
-        $adapter = $tree->getAdapter();
+        $tree = new NestedSet($options, $dbAdapterStub);
+        $adapter = $tree->getManipulator()->getAdapter()->getAdapter();
 
         $this->assertInstanceOf($expectedAdapterClass, $adapter);
     }
@@ -68,6 +72,6 @@ class NestedSetTest extends UnitTestCase
         $this->expectException(\StefanoTree\Exception\InvalidArgumentException::class);
         $this->expectExceptionMessage('Db adapter "DateTime" is not supported');
 
-        NestedSet::factory($options, $dbAdapter);
+        new NestedSet($options, $dbAdapter);
     }
 }

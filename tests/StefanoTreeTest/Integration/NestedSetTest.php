@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace StefanoTreeTest\Integration;
 
 use StefanoTree\NestedSet as TreeAdapter;
+use StefanoTree\NestedSet\Options;
 use StefanoTreeTest\IntegrationTestCase;
+use StefanoTreeTest\TestUtil;
 
-abstract class AbstractTest extends IntegrationTestCase
+class NestedSetTest extends IntegrationTestCase
 {
     /**
      * @var TreeAdapter
@@ -30,7 +32,19 @@ abstract class AbstractTest extends IntegrationTestCase
     /**
      * @return TreeAdapter
      */
-    abstract protected function getTreeAdapter();
+    protected function getTreeAdapter()
+    {
+        $options = new Options(array(
+                                   'tableName' => 'tree_traversal',
+                                   'idColumnName' => 'tree_traversal_id',
+                               ));
+
+        if ('pgsql' == TEST_STEFANO_DB_VENDOR) {
+            $options->setSequenceName('tree_traversal_tree_traversal_id_seq');
+        }
+
+        return new TreeAdapter($options, TestUtil::buildAdapter($options));
+    }
 
     protected function getDataSet()
     {
@@ -68,7 +82,7 @@ abstract class AbstractTest extends IntegrationTestCase
         $this->expectExceptionMessage('Root node already exist');
 
         $this->treeAdapter
-             ->createRootNode();
+            ->createRootNode();
         $this->treeAdapter
             ->createRootNode();
     }
@@ -85,7 +99,7 @@ abstract class AbstractTest extends IntegrationTestCase
         );
 
         $nodeData = $this->treeAdapter
-                         ->getNode(12);
+            ->getNode(12);
 
         $this->assertEquals($expectedNodeData, $nodeData);
     }
@@ -150,7 +164,7 @@ abstract class AbstractTest extends IntegrationTestCase
     {
         //test 1
         $lastGeneratedValue = $this->treeAdapter
-                                   ->addNode(12, array(), TreeAdapter::PLACEMENT_BOTTOM);
+            ->addNode(12, array(), TreeAdapter::PLACEMENT_BOTTOM);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testAddNodePlacementBottom-1.xml');
         $this->assertEquals(26, $lastGeneratedValue);
@@ -161,7 +175,7 @@ abstract class AbstractTest extends IntegrationTestCase
         );
 
         $lastGeneratedValue = $this->treeAdapter
-                                   ->addNode(19, $data, TreeAdapter::PLACEMENT_BOTTOM);
+            ->addNode(19, $data, TreeAdapter::PLACEMENT_BOTTOM);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testAddNodePlacementBottom-2.xml');
         $this->assertEquals(27, $lastGeneratedValue);
@@ -188,7 +202,7 @@ abstract class AbstractTest extends IntegrationTestCase
     {
         //test 1
         $lastGeneratedValue = $this->treeAdapter
-                                   ->addNode(16, array(), TreeAdapter::PLACEMENT_TOP);
+            ->addNode(16, array(), TreeAdapter::PLACEMENT_TOP);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testAddNodePlacementTop-1.xml');
         $this->assertEquals(26, $lastGeneratedValue);
@@ -198,7 +212,7 @@ abstract class AbstractTest extends IntegrationTestCase
             'name' => 'ahoj',
         );
         $lastGeneratedValue = $this->treeAdapter
-                                   ->addNode(3, $data, TreeAdapter::PLACEMENT_TOP);
+            ->addNode(3, $data, TreeAdapter::PLACEMENT_TOP);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testAddNodePlacementTop-2.xml');
         $this->assertEquals(27, $lastGeneratedValue);
@@ -208,7 +222,7 @@ abstract class AbstractTest extends IntegrationTestCase
     {
         //test 1
         $lastGeneratedValue = $this->treeAdapter
-                                   ->addNode(21, array(), TreeAdapter::PLACEMENT_CHILD_BOTTOM);
+            ->addNode(21, array(), TreeAdapter::PLACEMENT_CHILD_BOTTOM);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testAddNodePlacementChildBottom-1.xml');
         $this->assertEquals(26, $lastGeneratedValue);
@@ -218,7 +232,7 @@ abstract class AbstractTest extends IntegrationTestCase
             'name' => 'ahoj',
         );
         $lastGeneratedValue = $this->treeAdapter
-                                   ->addNode(4, $data, TreeAdapter::PLACEMENT_CHILD_BOTTOM);
+            ->addNode(4, $data, TreeAdapter::PLACEMENT_CHILD_BOTTOM);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testAddNodePlacementChildBottom-2.xml');
         $this->assertEquals(27, $lastGeneratedValue);
@@ -228,7 +242,7 @@ abstract class AbstractTest extends IntegrationTestCase
     {
         //test 1
         $lastGeneratedValue = $this->treeAdapter
-                                   ->addNode(4);
+            ->addNode(4);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testAddNodePlacementChildTop-1.xml');
         $this->assertEquals(26, $lastGeneratedValue);
@@ -238,7 +252,7 @@ abstract class AbstractTest extends IntegrationTestCase
             'name' => 'ahoj',
         );
         $lastGeneratedValue = $this->treeAdapter
-                                   ->addNode(10, $data);
+            ->addNode(10, $data);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testAddNodePlacementChildTop-2.xml');
         $this->assertEquals(27, $lastGeneratedValue);
@@ -255,7 +269,7 @@ abstract class AbstractTest extends IntegrationTestCase
     public function testDeleteBranch()
     {
         $this->treeAdapter
-                       ->deleteBranch(6);
+            ->deleteBranch(6);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testDeleteBranch.xml');
     }
@@ -358,25 +372,25 @@ abstract class AbstractTest extends IntegrationTestCase
     {
         //test source node is already at required position
         $this->treeAdapter
-                       ->moveNode(3, 2, TreeAdapter::PLACEMENT_BOTTOM);
+            ->moveNode(3, 2, TreeAdapter::PLACEMENT_BOTTOM);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
 
         //test
         $this->treeAdapter
-                       ->moveNode(14, 18, TreeAdapter::PLACEMENT_BOTTOM);
+            ->moveNode(14, 18, TreeAdapter::PLACEMENT_BOTTOM);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementBottom-1.xml');
 
         //test
         $this->treeAdapter
-                       ->moveNode(16, 7, TreeAdapter::PLACEMENT_BOTTOM);
+            ->moveNode(16, 7, TreeAdapter::PLACEMENT_BOTTOM);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementBottom-2.xml');
 
         //test
         $this->treeAdapter
-                       ->moveNode(14, 3, TreeAdapter::PLACEMENT_BOTTOM);
+            ->moveNode(14, 3, TreeAdapter::PLACEMENT_BOTTOM);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementBottom-3.xml');
     }
@@ -385,25 +399,25 @@ abstract class AbstractTest extends IntegrationTestCase
     {
         //test source node is already at required position
         $this->treeAdapter
-                       ->moveNode(3, 4, TreeAdapter::PLACEMENT_TOP);
+            ->moveNode(3, 4, TreeAdapter::PLACEMENT_TOP);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
 
         //test
         $this->treeAdapter
-                       ->moveNode(19, 12, TreeAdapter::PLACEMENT_TOP);
+            ->moveNode(19, 12, TreeAdapter::PLACEMENT_TOP);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementTop-1.xml');
 
         //test
         $this->treeAdapter
-                       ->moveNode(10, 18, TreeAdapter::PLACEMENT_TOP);
+            ->moveNode(10, 18, TreeAdapter::PLACEMENT_TOP);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementTop-2.xml');
 
         //test
         $this->treeAdapter
-                       ->moveNode(21, 6, TreeAdapter::PLACEMENT_TOP);
+            ->moveNode(21, 6, TreeAdapter::PLACEMENT_TOP);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementTop-3.xml');
     }
@@ -412,25 +426,25 @@ abstract class AbstractTest extends IntegrationTestCase
     {
         //test source node is already at required position
         $this->treeAdapter
-                       ->moveNode(22, 18, TreeAdapter::PLACEMENT_CHILD_BOTTOM);
+            ->moveNode(22, 18, TreeAdapter::PLACEMENT_CHILD_BOTTOM);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
 
         //test
         $this->treeAdapter
-                       ->moveNode(9, 12, TreeAdapter::PLACEMENT_CHILD_BOTTOM);
+            ->moveNode(9, 12, TreeAdapter::PLACEMENT_CHILD_BOTTOM);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementChildBottom-1.xml');
 
         //test
         $this->treeAdapter
-                       ->moveNode(10, 3, TreeAdapter::PLACEMENT_CHILD_BOTTOM);
+            ->moveNode(10, 3, TreeAdapter::PLACEMENT_CHILD_BOTTOM);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementChildBottom-2.xml');
 
         //test
         $this->treeAdapter
-                       ->moveNode(21, 12, TreeAdapter::PLACEMENT_CHILD_BOTTOM);
+            ->moveNode(21, 12, TreeAdapter::PLACEMENT_CHILD_BOTTOM);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementChildBottom-3.xml');
     }
@@ -439,25 +453,25 @@ abstract class AbstractTest extends IntegrationTestCase
     {
         //test source node is already at required position
         $this->treeAdapter
-                       ->moveNode(21, 18);
+            ->moveNode(21, 18);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
 
         //test
         $this->treeAdapter
-                       ->moveNode(9, 21);
+            ->moveNode(9, 21);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementChildTop-1.xml');
 
         //test
         $this->treeAdapter
-                       ->moveNode(16, 3);
+            ->moveNode(16, 3);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementChildTop-2.xml');
 
         //test
         $this->treeAdapter
-               ->moveNode(18, 3);
+            ->moveNode(18, 3);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementChildTop-3.xml');
     }
@@ -485,8 +499,8 @@ abstract class AbstractTest extends IntegrationTestCase
     {
         //test
         $return = $this->treeAdapter
-                       ->getAncestorsQueryBuilder()
-                       ->get(6);
+            ->getAncestorsQueryBuilder()
+            ->get(6);
 
         $expected = array(
             array(
@@ -518,9 +532,9 @@ abstract class AbstractTest extends IntegrationTestCase
 
         //test
         $return = $this->treeAdapter
-                       ->getAncestorsQueryBuilder()
-                       ->excludeFirstNLevel(1)
-                       ->get(6);
+            ->getAncestorsQueryBuilder()
+            ->excludeFirstNLevel(1)
+            ->get(6);
 
         $expected = array(
             array(
@@ -544,9 +558,9 @@ abstract class AbstractTest extends IntegrationTestCase
 
         //test
         $return = $this->treeAdapter
-                       ->getAncestorsQueryBuilder()
-                       ->excludeLastNLevel(1)
-                       ->get(6);
+            ->getAncestorsQueryBuilder()
+            ->excludeLastNLevel(1)
+            ->get(6);
 
         $expected = array(
             array(
@@ -631,8 +645,8 @@ abstract class AbstractTest extends IntegrationTestCase
     {
         //test whole branch
         $return = $this->treeAdapter
-                       ->getDescendantsQueryBuilder()
-                       ->get(21);
+            ->getDescendantsQueryBuilder()
+            ->get(21);
 
         $expected = array(
             array(
@@ -664,9 +678,9 @@ abstract class AbstractTest extends IntegrationTestCase
 
         //test exclude fist 3 levels
         $return = $this->treeAdapter
-                       ->getDescendantsQueryBuilder()
-                       ->excludeFirstNLevel(3)
-                       ->get(6);
+            ->getDescendantsQueryBuilder()
+            ->excludeFirstNLevel(3)
+            ->get(6);
 
         $expected = array(
             array(
@@ -706,9 +720,9 @@ abstract class AbstractTest extends IntegrationTestCase
 
         //test limit depth
         $return = $this->treeAdapter
-                       ->getDescendantsQueryBuilder()
-                       ->levelLimit(2)
-                       ->get(18);
+            ->getDescendantsQueryBuilder()
+            ->levelLimit(2)
+            ->get(18);
 
         $expected = array(
             array(
@@ -740,9 +754,9 @@ abstract class AbstractTest extends IntegrationTestCase
 
         //test exclude node
         $return = $this->treeAdapter
-                       ->getDescendantsQueryBuilder()
-                       ->excludeBranch(21)
-                       ->get(12);
+            ->getDescendantsQueryBuilder()
+            ->excludeBranch(21)
+            ->get(12);
 
         $expected = array(
             array(
@@ -838,10 +852,10 @@ abstract class AbstractTest extends IntegrationTestCase
     {
         //test exclude node
         $return = $this->treeAdapter
-                       ->getDescendantsQueryBuilder()
-                       ->levelLimit(1)
-                       ->excludeFirstNLevel(1)
-                       ->get(18);
+            ->getDescendantsQueryBuilder()
+            ->levelLimit(1)
+            ->excludeFirstNLevel(1)
+            ->get(18);
 
         $expected = array(
             array(
@@ -871,7 +885,7 @@ abstract class AbstractTest extends IntegrationTestCase
             'name' => 'ahoj',
         );
         $this->treeAdapter
-             ->updateNode(3, $data);
+            ->updateNode(3, $data);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testUpdateNode-1.xml');
 
@@ -885,7 +899,7 @@ abstract class AbstractTest extends IntegrationTestCase
             'parent_id' => '123456',
         );
         $this->treeAdapter
-             ->updateNode(3, $data);
+            ->updateNode(3, $data);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testUpdateNode-1.xml');
     }

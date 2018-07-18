@@ -7,8 +7,14 @@ php:
   - hhvm
 
 env:
-  - DB=mysql
-  - DB=pgsql
+  - DB=pgsql ADAPTER=pdo
+  - DB=pgsql ADAPTER=zend1
+  - DB=pgsql ADAPTER=zend2
+  - DB=pgsql ADAPTER=doctrine2-dbal
+  - DB=mysql ADAPTER=pdo
+  - DB=mysql ADAPTER=zend1
+  - DB=mysql ADAPTER=zend2
+  - DB=mysql ADAPTER=doctrine2-dbal
 
 sudo: false
 
@@ -23,7 +29,7 @@ before_script:
   - sh -c "if [ '$DB' = 'mysql' ]; then mysql -e 'create database stefano_tests;'; fi"
   - sh -c "if [ '$DB' = 'pgsql' ]; then psql -c 'create database stefano_tests;' -U postgres; fi"
 
-script: vendor/bin/phpunit --configuration tests/phpunit.$DB.xml --coverage-php build/logs/clover-$DB.cov
+script: vendor/bin/phpunit --configuration tests/phpunit.xml --coverage-php build/logs/clover-$DB-$ADAPTER.cov
 
 after_success:
   - php vendor/bin/phpcov merge --clover build/logs/clover.xml build/logs

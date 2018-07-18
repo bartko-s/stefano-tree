@@ -5,22 +5,22 @@ declare(strict_types=1);
 namespace StefanoTree\NestedSet\MoveStrategy;
 
 use StefanoTree\Exception\ValidationException;
-use StefanoTree\NestedSet\Adapter\AdapterInterface;
+use StefanoTree\NestedSet\Manipulator\ManipulatorInterface;
 use StefanoTree\NestedSet\NodeInfo;
 
 abstract class MoveStrategyAbstract implements MoveStrategyInterface
 {
-    private $adapter;
+    private $manipulator;
 
     private $sourceNodeInfo;
     private $targetNodeInfo;
 
     /**
-     * @param AdapterInterface $adapter
+     * @param ManipulatorInterface $manipulator
      */
-    public function __construct(AdapterInterface $adapter)
+    public function __construct(ManipulatorInterface $manipulator)
     {
-        $this->adapter = $adapter;
+        $this->manipulator = $manipulator;
     }
 
     /**
@@ -28,7 +28,7 @@ abstract class MoveStrategyAbstract implements MoveStrategyInterface
      */
     public function move($sourceNodeId, $targetNodeId): void
     {
-        $adapter = $this->getAdapter();
+        $adapter = $this->getManipulator();
 
         if ($sourceNodeId == $targetNodeId) {
             throw new ValidationException('Cannot move. Source node and Target node are equal.');
@@ -97,7 +97,7 @@ abstract class MoveStrategyAbstract implements MoveStrategyInterface
     protected function _updateParentId(NodeInfo $sourceNodeInfo, $newParentId): void
     {
         if ($sourceNodeInfo->getParentId() != $newParentId) {
-            $this->getAdapter()->updateParentId($sourceNodeInfo->getId(), $newParentId);
+            $this->getManipulator()->updateParentId($sourceNodeInfo->getId(), $newParentId);
         }
     }
 
@@ -113,7 +113,7 @@ abstract class MoveStrategyAbstract implements MoveStrategyInterface
     protected function _updateLevels(NodeInfo $sourceNodeInfo, int $levelShift): void
     {
         if (0 !== $levelShift) {
-            $this->getAdapter()
+            $this->getManipulator()
                  ->updateLevels(
                     $sourceNodeInfo->getLeft(),
                     $sourceNodeInfo->getRight(),
@@ -135,8 +135,8 @@ abstract class MoveStrategyAbstract implements MoveStrategyInterface
      */
     protected function _makeHole(int $holeFromIndex, int $indexShift, $scope): void
     {
-        $this->getAdapter()->moveLeftIndexes($holeFromIndex, $indexShift, $scope);
-        $this->getAdapter()->moveRightIndexes($holeFromIndex, $indexShift, $scope);
+        $this->getManipulator()->moveLeftIndexes($holeFromIndex, $indexShift, $scope);
+        $this->getManipulator()->moveRightIndexes($holeFromIndex, $indexShift, $scope);
     }
 
     /**
@@ -152,7 +152,7 @@ abstract class MoveStrategyAbstract implements MoveStrategyInterface
      */
     protected function _moveBranchToTheHole(int $leftIndex, int $rightIndex, int $indexShift, $scope): void
     {
-        $this->getAdapter()
+        $this->getManipulator()
              ->moveBranch($leftIndex, $rightIndex, $indexShift, $scope);
     }
 
@@ -168,10 +168,10 @@ abstract class MoveStrategyAbstract implements MoveStrategyInterface
      */
     protected function _patchHole(int $holeFromIndex, int $indexShift, $scope): void
     {
-        $this->getAdapter()
+        $this->getManipulator()
              ->moveLeftIndexes($holeFromIndex, $indexShift, $scope);
 
-        $this->getAdapter()
+        $this->getManipulator()
              ->moveRightIndexes($holeFromIndex, $indexShift, $scope);
     }
 
@@ -229,11 +229,11 @@ abstract class MoveStrategyAbstract implements MoveStrategyInterface
     }
 
     /**
-     * @return AdapterInterface
+     * @return ManipulatorInterface
      */
-    protected function getAdapter(): AdapterInterface
+    protected function getManipulator(): ManipulatorInterface
     {
-        return $this->adapter;
+        return $this->manipulator;
     }
 
     /**

@@ -2,36 +2,52 @@
 
 declare(strict_types=1);
 
-namespace StefanoTreeTest\Integration\Adapter;
+namespace StefanoTreeTest\Integration\Manipulator;
 
-use StefanoTree\NestedSet\Adapter\AdapterInterface as TreeAdapterInterface;
+use StefanoTree\NestedSet\Manipulator\Manipulator;
+use StefanoTree\NestedSet\Manipulator\ManipulatorInterface as ManipulatorInterface;
 use StefanoTree\NestedSet\NodeInfo;
+use StefanoTree\NestedSet\Options;
 use StefanoTreeTest\IntegrationTestCase;
+use StefanoTreeTest\TestUtil;
 
-abstract class AdapterWithScopeTestAbstract extends IntegrationTestCase
+class ManipulatorWithScopeTest extends IntegrationTestCase
 {
     /**
-     * @var TreeAdapterInterface
+     * @var ManipulatorInterface
      */
-    protected $adapter;
+    protected $manipulator;
 
     protected function setUp()
     {
-        $this->adapter = $this->getAdapter();
+        $this->manipulator = $this->getManipulator();
 
         parent::setUp();
     }
 
     protected function tearDown()
     {
-        $this->adapter = null;
+        $this->manipulator = null;
         parent::tearDown();
     }
 
     /**
-     * @return TreeAdapterInterface
+     * @return ManipulatorInterface
      */
-    abstract protected function getAdapter();
+    protected function getManipulator(): ManipulatorInterface
+    {
+        $options = new Options(array(
+                                   'tableName' => 'tree_traversal_with_scope',
+                                   'idColumnName' => 'tree_traversal_id',
+                                   'scopeColumnName' => 'scope',
+                               ));
+
+        if ('pgsql' == TEST_STEFANO_DB_VENDOR) {
+            $options->setSequenceName('tree_traversal_with_scope_tree_traversal_id_seq');
+        }
+
+        return new Manipulator($options, TestUtil::buildAdapter($options));
+    }
 
     protected function getDataSet()
     {
@@ -49,7 +65,7 @@ abstract class AdapterWithScopeTestAbstract extends IntegrationTestCase
             'scope' => 'e',
         );
 
-        $this->adapter
+        $this->manipulator
             ->update(2, $data);
 
         $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testUpdateData.xml');
@@ -68,7 +84,7 @@ abstract class AdapterWithScopeTestAbstract extends IntegrationTestCase
             'scope' => 'e',
         );
 
-        $this->adapter
+        $this->manipulator
             ->insert($nodeInfo, $data);
 
         $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testInsertData.xml');
@@ -76,7 +92,7 @@ abstract class AdapterWithScopeTestAbstract extends IntegrationTestCase
 
     public function testDeleteBranch()
     {
-        $this->adapter
+        $this->manipulator
             ->delete(2);
 
         $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testDeleteBranch.xml');
@@ -84,7 +100,7 @@ abstract class AdapterWithScopeTestAbstract extends IntegrationTestCase
 
     public function testMoveLeftIndexes()
     {
-        $this->adapter
+        $this->manipulator
             ->moveLeftIndexes(3, 500, 2);
 
         $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testMoveLeftIndexes.xml');
@@ -92,7 +108,7 @@ abstract class AdapterWithScopeTestAbstract extends IntegrationTestCase
 
     public function testMoveRightIndexes()
     {
-        $this->adapter
+        $this->manipulator
             ->moveRightIndexes(4, 500, 2);
 
         $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testMoveRightIndexes.xml');
@@ -100,7 +116,7 @@ abstract class AdapterWithScopeTestAbstract extends IntegrationTestCase
 
     public function testUpdateLevels()
     {
-        $this->adapter
+        $this->manipulator
             ->updateLevels(2, 9, 500, 2);
 
         $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testUpdateLevels.xml');
@@ -108,7 +124,7 @@ abstract class AdapterWithScopeTestAbstract extends IntegrationTestCase
 
     public function testMoveBranch()
     {
-        $this->adapter
+        $this->manipulator
             ->moveBranch(2, 9, 500, 2);
 
         $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testMoveBranch.xml');
@@ -116,7 +132,7 @@ abstract class AdapterWithScopeTestAbstract extends IntegrationTestCase
 
     public function testGetRoots()
     {
-        $roots = $this->adapter
+        $roots = $this->manipulator
             ->getRoots();
 
         $expected = include __DIR__.'/_files/adapter/with_scope/testGetRoots.php';
@@ -125,7 +141,7 @@ abstract class AdapterWithScopeTestAbstract extends IntegrationTestCase
 
     public function testGetRoot()
     {
-        $roots = $this->adapter
+        $roots = $this->manipulator
             ->getRoot(2);
 
         $expected = include __DIR__.'/_files/adapter/with_scope/testGetRoot.php';
@@ -134,7 +150,7 @@ abstract class AdapterWithScopeTestAbstract extends IntegrationTestCase
 
     public function testGetNodeInfo()
     {
-        $nodeInfo = $this->adapter
+        $nodeInfo = $this->manipulator
             ->getNodeInfo(8);
 
         $this->assertEquals($nodeInfo->getId(), 8);
@@ -147,7 +163,7 @@ abstract class AdapterWithScopeTestAbstract extends IntegrationTestCase
 
     public function testGetChildrenNodeInfo()
     {
-        $nodeInfo = $this->adapter
+        $nodeInfo = $this->manipulator
             ->getChildrenNodeInfo(2);
 
         $this->assertCount(3, $nodeInfo);
@@ -171,7 +187,7 @@ abstract class AdapterWithScopeTestAbstract extends IntegrationTestCase
     {
         $nodeInfo = new NodeInfo(3, 1000, 1001, 1002, 1003, 2);
 
-        $this->adapter
+        $this->manipulator
             ->updateNodeMetadata($nodeInfo);
 
         $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testUpdateNodeMetadata.xml');
@@ -179,7 +195,7 @@ abstract class AdapterWithScopeTestAbstract extends IntegrationTestCase
 
     public function testGetPath()
     {
-        $path = $this->adapter
+        $path = $this->manipulator
             ->getAncestors(5);
 
         $this->assertCount(3, $path);
@@ -190,7 +206,7 @@ abstract class AdapterWithScopeTestAbstract extends IntegrationTestCase
 
     public function testGetDescendants()
     {
-        $nodes = $this->adapter
+        $nodes = $this->manipulator
             ->getDescendants(1);
 
         $this->assertCount(5, $nodes);

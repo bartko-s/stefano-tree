@@ -20,6 +20,8 @@ class Options
     private $parentIdColumnName = 'parent_id';
     private $scopeColumnName = null;
 
+    private $dbSelectBuilder = null;
+
     /**
      * @param array $options
      *
@@ -249,5 +251,21 @@ class Options
         }
 
         return sprintf('%s.%s', $this->getTableName(), $value);
+    }
+
+    /**
+     * Modify base DB select. Must be without where, order parts.
+     *
+     * @param callable|null $builder
+     */
+    public function setDbSelectBuilder(?callable $builder): void {
+        $this->dbSelectBuilder = $builder;
+    }
+
+    /**
+     * @return callable|null
+     */
+    public function getDbSelectBuilder(): ?callable {
+        return $this->dbSelectBuilder;
     }
 }

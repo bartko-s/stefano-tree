@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace StefanoTreeTest\Integration;
 
 use StefanoTree\NestedSet as TreeAdapter;
+use StefanoTree\NestedSet\Options;
 use StefanoTreeTest\IntegrationTestCase;
+use StefanoTreeTest\TestUtil;
 
-abstract class AbstractScopeTest extends IntegrationTestCase
+class NestedSetWithScopeTest extends IntegrationTestCase
 {
     /**
      * @var TreeAdapter
@@ -30,7 +32,20 @@ abstract class AbstractScopeTest extends IntegrationTestCase
     /**
      * @return TreeAdapter
      */
-    abstract protected function getTreeAdapter();
+    protected function getTreeAdapter()
+    {
+        $options = new Options(array(
+                                   'tableName' => 'tree_traversal_with_scope',
+                                   'idColumnName' => 'tree_traversal_id',
+                                   'scopeColumnName' => 'scope',
+                               ));
+
+        if ('pgsql' == TEST_STEFANO_DB_VENDOR) {
+            $options->setSequenceName('tree_traversal_with_scope_tree_traversal_id_seq');
+        }
+
+        return new TreeAdapter($options, TestUtil::buildAdapter($options));
+    }
 
     protected function getDataSet()
     {
@@ -48,7 +63,7 @@ abstract class AbstractScopeTest extends IntegrationTestCase
     public function testCreateRoot()
     {
         $this->treeAdapter
-             ->createRootNode(array(), 10);
+            ->createRootNode(array(), 10);
 
         $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/NestedSet/with_scope/testCreateRoot.xml');
     }
@@ -88,7 +103,7 @@ abstract class AbstractScopeTest extends IntegrationTestCase
         );
 
         $roots = $this->treeAdapter
-                      ->getRoots();
+            ->getRoots();
 
         $this->assertEquals($expected, $roots);
     }
@@ -105,7 +120,7 @@ abstract class AbstractScopeTest extends IntegrationTestCase
     public function testMoveNodePlacementBottom()
     {
         $this->treeAdapter
-             ->moveNode(3, 5, TreeAdapter::PLACEMENT_BOTTOM);
+            ->moveNode(3, 5, TreeAdapter::PLACEMENT_BOTTOM);
 
         $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/NestedSet/with_scope/testMoveNodePlacementBottom.xml');
     }
@@ -116,7 +131,7 @@ abstract class AbstractScopeTest extends IntegrationTestCase
         $this->expectExceptionMessage('Cannot move node between scopes.');
 
         $this->treeAdapter
-             ->moveNode(4, 8, TreeAdapter::PLACEMENT_CHILD_BOTTOM);
+            ->moveNode(4, 8, TreeAdapter::PLACEMENT_CHILD_BOTTOM);
     }
 
     public function testDeleteBranch()
@@ -169,8 +184,8 @@ abstract class AbstractScopeTest extends IntegrationTestCase
         );
 
         $nodeData = $this->treeAdapter
-                       ->getDescendantsQueryBuilder()
-                       ->get(2);
+            ->getDescendantsQueryBuilder()
+            ->get(2);
 
         $this->assertEquals($expectedNodeData, $nodeData);
     }
@@ -235,7 +250,7 @@ abstract class AbstractScopeTest extends IntegrationTestCase
             'scope' => 'corrupt data',
         );
         $this->treeAdapter
-             ->updateNode(4, $data);
+            ->updateNode(4, $data);
 
         $this->assertEquals($excepted, $this->treeAdapter->getNode(4));
     }
@@ -261,7 +276,7 @@ abstract class AbstractScopeTest extends IntegrationTestCase
     public function testRebuildTree()
     {
         $this->treeAdapter
-             ->rebuild(1);
+            ->rebuild(1);
 
         $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/NestedSet/with_scope/testRebuildTree.xml');
     }

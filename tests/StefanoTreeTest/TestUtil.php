@@ -6,6 +6,10 @@ namespace StefanoTreeTest;
 
 use Doctrine\DBAL;
 use PDO;
+use StefanoTree\NestedSet;
+use StefanoTree\NestedSet\Options;
+use StefanoTree\NestedSet\Adapter;
+use StefanoTree\NestedSet\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Adapter as Zend2DbAdapter;
 
 class TestUtil
@@ -23,7 +27,7 @@ class TestUtil
 
         $queries = array();
 
-        if ('mysql' == TEST_STEFANO_DB_ADAPTER) {
+        if ('mysql' == TEST_STEFANO_DB_VENDOR) {
             if (self::$mysqlDbSchemeCreated) {
                 return;
             } else {
@@ -77,7 +81,7 @@ class TestUtil
                 ADD FOREIGN KEY (`parent_id`) 
                 REFERENCES `tree_traversal_with_scope` (`tree_traversal_id`) 
                 ON DELETE CASCADE ON UPDATE CASCADE';
-        } elseif ('pgsql' == TEST_STEFANO_DB_ADAPTER) {
+        } elseif ('pgsql' == TEST_STEFANO_DB_VENDOR) {
             // Run this workaround before each test. DbUnit has issue with postgres https://github.com/sebastianbergmann/dbunit/issues/58
             $queries[] = 'DROP TABLE IF EXISTS tree_traversal';
             $queries[] = 'DROP TABLE IF EXISTS tree_traversal_with_scope';
@@ -158,7 +162,7 @@ class TestUtil
                   ON public.tree_traversal_metadata
                   USING btree (tree_traversal_id)';
         } else {
-            throw new \Exception(sprintf('Unsupported vendor %s', TEST_STEFANO_DB_ADAPTER));
+            throw new \Exception(sprintf('Unsupported vendor %s', TEST_STEFANO_DB_VENDOR));
         }
 
         foreach ($queries as $query) {
@@ -174,7 +178,7 @@ class TestUtil
     public static function getPDOConnection()
     {
         if (null == self::$dbConnection) {
-            $adapter = strtolower(TEST_STEFANO_DB_ADAPTER);
+            $adapter = strtolower(TEST_STEFANO_DB_VENDOR);
             $hostname = TEST_STEFANO_DB_HOSTNAME;
             $dbName = TEST_STEFANO_DB_DB_NAME;
             $user = TEST_STEFANO_DB_USER;
@@ -198,7 +202,7 @@ class TestUtil
     {
         if (null == self::$zend2DbAdapter) {
             self::$zend2DbAdapter = new Zend2DbAdapter(array(
-                'driver' => 'Pdo_'.ucfirst(TEST_STEFANO_DB_ADAPTER),
+                'driver' => 'Pdo_'.ucfirst(TEST_STEFANO_DB_VENDOR),
                 'hostname' => TEST_STEFANO_DB_HOSTNAME,
                 'database' => TEST_STEFANO_DB_DB_NAME,
                 'username' => TEST_STEFANO_DB_USER,
@@ -217,7 +221,7 @@ class TestUtil
     public static function getZend1DbAdapter()
     {
         if (null == self::$zend1DbAdapter) {
-            self::$zend1DbAdapter = \Zend_Db::factory('Pdo_'.ucfirst(TEST_STEFANO_DB_ADAPTER), array(
+            self::$zend1DbAdapter = \Zend_Db::factory('Pdo_'.ucfirst(TEST_STEFANO_DB_VENDOR), array(
                 'host' => TEST_STEFANO_DB_HOSTNAME,
                 'dbname' => TEST_STEFANO_DB_DB_NAME,
                 'username' => TEST_STEFANO_DB_USER,
@@ -242,12 +246,41 @@ class TestUtil
                 'user' => TEST_STEFANO_DB_USER,
                 'password' => TEST_STEFANO_DB_PASSWORD,
                 'host' => TEST_STEFANO_DB_HOSTNAME,
-                'driver' => 'pdo_'.strtolower(TEST_STEFANO_DB_ADAPTER),
+                'driver' => 'pdo_'.strtolower(TEST_STEFANO_DB_VENDOR),
             );
 
             self::$doctrine2Connection = DBAL\DriverManager::getConnection($connectionParams, $config);
         }
 
         return self::$doctrine2Connection;
+    }
+
+    /**
+     * Build Adapter based on ENV variable TEST_STEFANO_ADAPTER.
+     *
+     * @param Options $options
+     *
+     * @return AdapterInterface
+     */
+    public static function buildAdapter(Options $options): NestedSet\Adapter\AdapterInterface
+    {
+        switch (TEST_STEFANO_ADAPTER) {
+            case 'pdo':
+                $adapter = new Adapter\Pdo($options, self::getPDOConnection());
+                break;
+            case 'zend1':
+                $adapter = new Adapter\Zend1($options, self::getZend1DbAdapter());
+                break;
+            case 'zend2':
+                $adapter = new Adapter\Zend2($options, self::getZend2DbAdapter());
+                break;
+            case 'doctrine2-dbal':
+                $adapter = new Adapter\Doctrine2DBAL($options, self::getDoctrine2Connection());
+                break;
+            default:
+                throw new \Exception(sprintf('Unknown adapter "%s"', TEST_STEFANO_ADAPTER));
+        }
+
+        return $adapter;
     }
 }

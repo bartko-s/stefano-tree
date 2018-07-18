@@ -4,23 +4,23 @@ declare(strict_types=1);
 
 namespace StefanoTree\NestedSet\QueryBuilder;
 
-use StefanoTree\NestedSet\Adapter\AdapterInterface;
+use StefanoTree\NestedSet\Manipulator\ManipulatorInterface;
 use StefanoTree\NestedSet\Utilities;
 
 class DescendantQueryBuilder implements DescendantQueryBuilderInterface
 {
-    private $adapter;
+    private $manipulator;
 
     private $excludeFirstNLevel = 0;
     private $limitDepth = null;
     private $excludeBranch = null;
 
     /**
-     * @param AdapterInterface $adapter
+     * @param ManipulatorInterface $manipulator
      */
-    public function __construct(AdapterInterface $adapter)
+    public function __construct(ManipulatorInterface $manipulator)
     {
-        $this->adapter = $adapter;
+        $this->manipulator = $manipulator;
     }
 
     /**
@@ -28,11 +28,11 @@ class DescendantQueryBuilder implements DescendantQueryBuilderInterface
      */
     public function get($nodeId, bool $nested = false): array
     {
-        $result = $this->getAdapter()
+        $result = $this->getManipulator()
             ->getDescendants($nodeId, $this->excludeFirstNLevel, $this->limitDepth, $this->excludeBranch);
 
         return $nested ?
-            Utilities::flatToNested($result, $this->getAdapter()->getOptions()->getLevelColumnName()) : $result;
+            Utilities::flatToNested($result, $this->getManipulator()->getOptions()->getLevelColumnName()) : $result;
     }
 
     /**
@@ -65,8 +65,8 @@ class DescendantQueryBuilder implements DescendantQueryBuilderInterface
         return $this;
     }
 
-    private function getAdapter(): AdapterInterface
+    private function getManipulator(): ManipulatorInterface
     {
-        return $this->adapter;
+        return $this->manipulator;
     }
 }

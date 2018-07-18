@@ -8,7 +8,10 @@
         "nested set",
         "zend",
         "zend framework",
-        "doctrine"
+        "doctrine",
+        "doctrine dbal",
+        "symfony",
+        "pdo"
     ],
     "support": {
         "source": "https://github.com/bartko-s/stefano-tree",
@@ -55,11 +58,23 @@
     "scripts": {
         "cs-check": "php-cs-fixer --version && php-cs-fixer fix -v --diff --dry-run --allow-risky yes",
         "cs-fix": "php-cs-fixer fix -v --allow-risky yes",
-        "test-pgsql": "phpunit -c ./tests/phpunit.pgsql.xml",
-        "test-mysql": "phpunit -c ./tests/phpunit.mysql.xml",
+        "test-pgsql-pdo": "export DB=pgsql ADAPTER=pdo; phpunit -c ./tests/phpunit.xml",
+        "test-pgsql-zend1": "export DB=pgsql ADAPTER=zend1; phpunit -c ./tests/phpunit.xml",
+        "test-pgsql-zend2": "export DB=pgsql ADAPTER=zend2; phpunit -c ./tests/phpunit.xml",
+        "test-pgsql-doctrine2": "export DB=pgsql ADAPTER=doctrine2-dbal; phpunit -c ./tests/phpunit.xml",
+        "test-mysql-pdo": "export DB=mysql ADAPTER=pdo; phpunit -c ./tests/phpunit.xml",
+        "test-mysql-zend1": "export DB=mysql ADAPTER=zend1; phpunit -c ./tests/phpunit.xml",
+        "test-mysql-zend2": "export DB=mysql ADAPTER=zend2; phpunit -c ./tests/phpunit.xml",
+        "test-mysql-doctrine2": "export DB=mysql ADAPTER=doctrine2-dbal; phpunit -c ./tests/phpunit.xml",
         "test": [
-            "@test-pgsql",
-            "@test-mysql"
+            "@test-pgsql-pdo",
+            "@test-pgsql-zend1",
+            "@test-pgsql-zend2",
+            "@test-pgsql-doctrine2",
+            "@test-mysql-pdo",
+            "@test-mysql-zend1",
+            "@test-mysql-zend2",
+            "@test-mysql-doctrine2"
         ]
     }
 }

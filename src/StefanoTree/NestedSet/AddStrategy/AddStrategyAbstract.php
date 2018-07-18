@@ -5,19 +5,19 @@ declare(strict_types=1);
 namespace StefanoTree\NestedSet\AddStrategy;
 
 use StefanoTree\Exception\ValidationException;
-use StefanoTree\NestedSet\Adapter\AdapterInterface;
+use StefanoTree\NestedSet\Manipulator\ManipulatorInterface;
 use StefanoTree\NestedSet\NodeInfo;
 
 abstract class AddStrategyAbstract implements AddStrategyInterface
 {
-    private $adapter;
+    private $manipulator;
 
     /**
-     * @param AdapterInterface $adapter
+     * @param ManipulatorInterface $manipulator
      */
-    public function __construct(AdapterInterface $adapter)
+    public function __construct(ManipulatorInterface $manipulator)
     {
-        $this->adapter = $adapter;
+        $this->manipulator = $manipulator;
     }
 
     /**
@@ -25,7 +25,7 @@ abstract class AddStrategyAbstract implements AddStrategyInterface
      */
     public function add($targetNodeId, array $data = array())
     {
-        $adapter = $this->getAdapter();
+        $adapter = $this->getManipulator();
 
         $adapter->beginTransaction();
         try {
@@ -71,10 +71,10 @@ abstract class AddStrategyAbstract implements AddStrategyInterface
     abstract protected function createNewNodeNodeInfo(NodeInfo $targetNode): NodeInfo;
 
     /**
-     * @return AdapterInterface
+     * @return ManipulatorInterface
      */
-    protected function getAdapter(): AdapterInterface
+    protected function getManipulator(): ManipulatorInterface
     {
-        return $this->adapter;
+        return $this->manipulator;
     }
 }

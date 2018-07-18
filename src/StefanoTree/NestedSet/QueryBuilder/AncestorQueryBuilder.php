@@ -4,31 +4,31 @@ declare(strict_types=1);
 
 namespace StefanoTree\NestedSet\QueryBuilder;
 
-use StefanoTree\NestedSet\Adapter\AdapterInterface;
+use StefanoTree\NestedSet\Manipulator\ManipulatorInterface;
 use StefanoTree\NestedSet\Utilities;
 
 class AncestorQueryBuilder implements AncestorQueryBuilderInterface
 {
-    private $adapter;
+    private $manipulator;
 
     private $excludeFirstNLevel = 0;
     private $excludeLastNLevel = 0;
 
     /**
-     * @param AdapterInterface $adapter
+     * @param ManipulatorInterface $manipulator
      */
-    public function __construct(AdapterInterface $adapter)
+    public function __construct(ManipulatorInterface $manipulator)
     {
-        $this->adapter = $adapter;
+        $this->manipulator = $manipulator;
     }
 
     public function get($nodeId, bool $nested = false): array
     {
-        $result = $this->getAdapter()
+        $result = $this->getManipulator()
             ->getAncestors($nodeId, $this->excludeFirstNLevel, $this->excludeLastNLevel);
 
         return $nested ?
-            Utilities::flatToNested($result, $this->getAdapter()->getOptions()->getLevelColumnName()) : $result;
+            Utilities::flatToNested($result, $this->getManipulator()->getOptions()->getLevelColumnName()) : $result;
     }
 
     public function excludeFirstNLevel(int $count): AncestorQueryBuilderInterface
@@ -45,8 +45,8 @@ class AncestorQueryBuilder implements AncestorQueryBuilderInterface
         return $this;
     }
 
-    private function getAdapter(): AdapterInterface
+    private function getManipulator(): ManipulatorInterface
     {
-        return $this->adapter;
+        return $this->manipulator;
     }
 }

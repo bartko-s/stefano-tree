@@ -2,36 +2,51 @@
 
 declare(strict_types=1);
 
-namespace StefanoTreeTest\Integration\Adapter;
+namespace StefanoTreeTest\Integration\Manipulator;
 
-use StefanoTree\NestedSet\Adapter\AdapterInterface as TreeAdapterInterface;
+use StefanoTree\NestedSet\Manipulator\Manipulator;
+use StefanoTree\NestedSet\Manipulator\ManipulatorInterface as ManipulatorInterface;
 use StefanoTree\NestedSet\NodeInfo;
+use StefanoTree\NestedSet\Options;
 use StefanoTreeTest\IntegrationTestCase;
+use StefanoTreeTest\TestUtil;
 
-abstract class AdapterTestAbstract extends IntegrationTestCase
+class ManipulatorTest extends IntegrationTestCase
 {
     /**
-     * @var TreeAdapterInterface
+     * @var ManipulatorInterface
      */
-    protected $adapter;
+    protected $manipulator;
 
     protected function setUp()
     {
-        $this->adapter = $this->getAdapter();
+        $this->manipulator = $this->getManipulator();
 
         parent::setUp();
     }
 
     protected function tearDown()
     {
-        $this->adapter = null;
+        $this->manipulator = null;
         parent::tearDown();
     }
 
     /**
-     * @return TreeAdapterInterface
+     * @return ManipulatorInterface
      */
-    abstract protected function getAdapter();
+    protected function getManipulator(): ManipulatorInterface
+    {
+        $options = new Options(array(
+                                   'tableName' => 'tree_traversal',
+                                   'idColumnName' => 'tree_traversal_id',
+                               ));
+
+        if ('pgsql' == TEST_STEFANO_DB_VENDOR) {
+            $options->setSequenceName('tree_traversal_tree_traversal_id_seq');
+        }
+
+        return new Manipulator($options, TestUtil::buildAdapter($options));
+    }
 
     protected function getDataSet()
     {
@@ -40,26 +55,26 @@ abstract class AdapterTestAbstract extends IntegrationTestCase
 
     public function testLockTreeDoesNotFail()
     {
-        $this->adapter
+        $this->manipulator
             ->lockTree();
     }
 
     public function testDbTransactionDoesNotFail()
     {
-        $this->adapter
+        $this->manipulator
             ->beginTransaction();
-        $this->adapter
+        $this->manipulator
             ->commitTransaction();
 
-        $this->adapter
+        $this->manipulator
             ->beginTransaction();
-        $this->adapter
+        $this->manipulator
             ->rollbackTransaction();
     }
 
     public function testUpdateData()
     {
-        $this->adapter
+        $this->manipulator
             ->update(2, array('name' => 'changed'));
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testUpdateData.xml');
@@ -76,7 +91,7 @@ abstract class AdapterTestAbstract extends IntegrationTestCase
             'level' => 'd',
         );
 
-        $this->adapter
+        $this->manipulator
             ->update(2, $data);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testUpdateData.xml');
@@ -86,7 +101,7 @@ abstract class AdapterTestAbstract extends IntegrationTestCase
     {
         $nodeInfo = new NodeInfo(null, 6, 100, 1000, 1001, null);
 
-        $generatedId = $this->adapter
+        $generatedId = $this->manipulator
             ->insert($nodeInfo, array('name' => 'some-name'));
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testInsertData.xml');
@@ -98,7 +113,7 @@ abstract class AdapterTestAbstract extends IntegrationTestCase
         $uuid = 753;
         $nodeInfo = new NodeInfo(null, 6, 100, 1000, 1001, null);
 
-        $generatedId = $this->adapter
+        $generatedId = $this->manipulator
             ->insert($nodeInfo, array('name' => 'some-name', 'tree_traversal_id' => $uuid));
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testInsertDataUserDefinedId.xml');
@@ -117,7 +132,7 @@ abstract class AdapterTestAbstract extends IntegrationTestCase
             'level' => 'd',
         );
 
-        $generatedId = $this->adapter
+        $generatedId = $this->manipulator
             ->insert($nodeInfo, $data);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testInsertData.xml');
@@ -126,7 +141,7 @@ abstract class AdapterTestAbstract extends IntegrationTestCase
 
     public function testDeleteBranch()
     {
-        $this->adapter
+        $this->manipulator
             ->delete(3);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testDeleteBranch.xml');
@@ -134,7 +149,7 @@ abstract class AdapterTestAbstract extends IntegrationTestCase
 
     public function testMoveLeftIndexes()
     {
-        $this->adapter
+        $this->manipulator
             ->moveLeftIndexes(12, 500);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testMoveLeftIndexes.xml');
@@ -142,7 +157,7 @@ abstract class AdapterTestAbstract extends IntegrationTestCase
 
     public function testMoveRightIndexes()
     {
-        $this->adapter
+        $this->manipulator
             ->moveRightIndexes(15, 500);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testMoveRightIndexes.xml');
@@ -150,7 +165,7 @@ abstract class AdapterTestAbstract extends IntegrationTestCase
 
     public function testUpdateParentId()
     {
-        $this->adapter
+        $this->manipulator
             ->updateParentId(3, 22);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testUpdateParentId.xml');
@@ -158,7 +173,7 @@ abstract class AdapterTestAbstract extends IntegrationTestCase
 
     public function testUpdateLevels()
     {
-        $this->adapter
+        $this->manipulator
             ->updateLevels(16, 35, 500);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testUpdateLevels.xml');
@@ -166,7 +181,7 @@ abstract class AdapterTestAbstract extends IntegrationTestCase
 
     public function testMoveBranch()
     {
-        $this->adapter
+        $this->manipulator
             ->moveBranch(17, 32, 500);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testMoveBranch.xml');
@@ -174,7 +189,7 @@ abstract class AdapterTestAbstract extends IntegrationTestCase
 
     public function testGetRoots()
     {
-        $roots = $this->adapter
+        $roots = $this->manipulator
             ->getRoots();
 
         $expected = include __DIR__.'/_files/adapter/testGetRoots.php';
@@ -183,7 +198,7 @@ abstract class AdapterTestAbstract extends IntegrationTestCase
 
     public function testGetRoot()
     {
-        $roots = $this->adapter
+        $roots = $this->manipulator
             ->getRoot();
 
         $expected = include __DIR__.'/_files/adapter/testGetRoot.php';
@@ -192,14 +207,14 @@ abstract class AdapterTestAbstract extends IntegrationTestCase
 
     public function testGetNodeReturnNullIfNodeDoesNotExist()
     {
-        $node = $this->adapter
+        $node = $this->manipulator
             ->getNode(1000000);
         $this->assertNull($node);
     }
 
     public function testGetNode()
     {
-        $node = $this->adapter
+        $node = $this->manipulator
             ->getNode(11);
 
         $expected = include __DIR__.'/_files/adapter/testGetNode.php';
@@ -208,14 +223,14 @@ abstract class AdapterTestAbstract extends IntegrationTestCase
 
     public function testGetNodeInfoReturnNullIfNodeInfoDoesNotExist()
     {
-        $nodeInfo = $this->adapter
+        $nodeInfo = $this->manipulator
             ->getNodeInfo(10000000);
         $this->assertNull($nodeInfo);
     }
 
     public function testGetNodeInfo()
     {
-        $nodeInfo = $this->adapter
+        $nodeInfo = $this->manipulator
             ->getNodeInfo(10);
 
         $this->assertEquals($nodeInfo->getId(), 10);
@@ -227,7 +242,7 @@ abstract class AdapterTestAbstract extends IntegrationTestCase
 
     public function testGetChildrenNodeInfoReturnEmptyArrayIfNodeDoesNotHaveChildrenNodes()
     {
-        $nodeInfo = $this->adapter
+        $nodeInfo = $this->manipulator
             ->getChildrenNodeInfo(7);
 
         $this->assertEquals(array(), $nodeInfo);
@@ -235,7 +250,7 @@ abstract class AdapterTestAbstract extends IntegrationTestCase
 
     public function testGetChildrenNodeInfo()
     {
-        $nodeInfo = $this->adapter
+        $nodeInfo = $this->manipulator
             ->getChildrenNodeInfo(4);
 
         $this->assertCount(2, $nodeInfo);
@@ -259,7 +274,7 @@ abstract class AdapterTestAbstract extends IntegrationTestCase
     {
         $nodeInfo = new NodeInfo(2, 100, 101, 102, 103, null);
 
-        $this->adapter
+        $this->manipulator
             ->updateNodeMetadata($nodeInfo);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testUpdateNodeMetadata.xml');
@@ -267,7 +282,7 @@ abstract class AdapterTestAbstract extends IntegrationTestCase
 
     public function testGetAncestorsReturnEmptyArrayIfNodeDoestNotExist()
     {
-        $path = $this->adapter
+        $path = $this->manipulator
             ->getAncestors(1000);
 
         $this->assertEquals(array(), $path);
@@ -275,7 +290,7 @@ abstract class AdapterTestAbstract extends IntegrationTestCase
 
     public function testGetAncestors()
     {
-        $path = $this->adapter
+        $path = $this->manipulator
             ->getAncestors(10);
 
         $this->assertCount(4, $path);
@@ -286,7 +301,7 @@ abstract class AdapterTestAbstract extends IntegrationTestCase
 
     public function testGetAncestorsFromLevel()
     {
-        $path = $this->adapter
+        $path = $this->manipulator
             ->getAncestors(10, 2);
 
         $this->assertCount(2, $path);
@@ -298,7 +313,7 @@ abstract class AdapterTestAbstract extends IntegrationTestCase
     public function testGetAncestorsExcludeLastNode()
     {
         // test exclude last node
-        $path = $this->adapter
+        $path = $this->manipulator
             ->getAncestors(10, 0, 1);
 
         $this->assertCount(3, $path);
@@ -306,7 +321,7 @@ abstract class AdapterTestAbstract extends IntegrationTestCase
         $this->assertEquals($expected, $path);
 
         // test exclude last two node
-        $path = $this->adapter
+        $path = $this->manipulator
             ->getAncestors(10, 0, 2);
 
         $this->assertCount(2, $path);
@@ -316,7 +331,7 @@ abstract class AdapterTestAbstract extends IntegrationTestCase
 
     public function testGetDescendantsReturnEmptyArrayIfNodeDoesNotExist()
     {
-        $nodes = $this->adapter
+        $nodes = $this->manipulator
             ->getDescendants(1000);
 
         $this->assertEquals(array(), $nodes);
@@ -324,7 +339,7 @@ abstract class AdapterTestAbstract extends IntegrationTestCase
 
     public function testGetDescendants()
     {
-        $nodes = $this->adapter
+        $nodes = $this->manipulator
             ->getDescendants(1);
 
         $this->assertCount(25, $nodes);
@@ -335,7 +350,7 @@ abstract class AdapterTestAbstract extends IntegrationTestCase
 
     public function testGetDescendantsDefinedNodeId()
     {
-        $nodes = $this->adapter
+        $nodes = $this->manipulator
             ->getDescendants(6);
 
         $this->assertCount(8, $nodes);
@@ -346,7 +361,7 @@ abstract class AdapterTestAbstract extends IntegrationTestCase
 
     public function testGetDescendantsFromLevel()
     {
-        $nodes = $this->adapter
+        $nodes = $this->manipulator
             ->getDescendants(6, 2);
 
         $this->assertCount(5, $nodes);
@@ -357,7 +372,7 @@ abstract class AdapterTestAbstract extends IntegrationTestCase
 
     public function testGetDescendantsFixLevels()
     {
-        $nodes = $this->adapter
+        $nodes = $this->manipulator
             ->getDescendants(6, 2, 2);
 
         $this->assertCount(3, $nodes);
@@ -368,7 +383,7 @@ abstract class AdapterTestAbstract extends IntegrationTestCase
 
     public function testGetDescendantsExcludeBranch()
     {
-        $nodes = $this->adapter
+        $nodes = $this->manipulator
             ->getDescendants(1, 0, null, 9);
 
         $this->assertCount(20, $nodes);

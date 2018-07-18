@@ -7,27 +7,27 @@ namespace StefanoTree\NestedSet\Validator;
 use Exception;
 use StefanoTree\Exception\TreeIsBrokenException;
 use StefanoTree\Exception\ValidationException;
-use StefanoTree\NestedSet\Adapter\AdapterInterface;
+use StefanoTree\NestedSet\Manipulator\ManipulatorInterface;
 use StefanoTree\NestedSet\NodeInfo;
 
 class Validator implements ValidatorInterface
 {
-    private $adapter = null;
+    private $manipulator = null;
 
     /**
-     * @param AdapterInterface $adapter
+     * @param ManipulatorInterface $manipulator
      */
-    public function __construct(AdapterInterface $adapter)
+    public function __construct(ManipulatorInterface $manipulator)
     {
-        $this->adapter = $adapter;
+        $this->manipulator = $manipulator;
     }
 
     /**
-     * @return AdapterInterface
+     * @return ManipulatorInterface
      */
-    private function getAdapter(): AdapterInterface
+    private function getManipulator(): ManipulatorInterface
     {
-        return $this->adapter;
+        return $this->manipulator;
     }
 
     /**
@@ -35,13 +35,13 @@ class Validator implements ValidatorInterface
      */
     public function isValid($rootNodeId): bool
     {
-        $adapter = $this->getAdapter();
+        $adapter = $this->getManipulator();
 
         $adapter->beginTransaction();
         try {
             $adapter->lockTree();
 
-            $rootNodeInfo = $this->getAdapter()->getNodeInfo($rootNodeId);
+            $rootNodeInfo = $this->getManipulator()->getNodeInfo($rootNodeId);
 
             if (!$rootNodeInfo instanceof NodeInfo) {
                 throw new ValidationException('Node does not exists.');
@@ -68,13 +68,13 @@ class Validator implements ValidatorInterface
      */
     public function rebuild($rootNodeId): void
     {
-        $adapter = $this->getAdapter();
+        $adapter = $this->getManipulator();
 
         $adapter->beginTransaction();
         try {
             $adapter->lockTree();
 
-            $rootNodeInfo = $this->getAdapter()->getNodeInfo($rootNodeId);
+            $rootNodeInfo = $this->getManipulator()->getNodeInfo($rootNodeId);
 
             if (!$rootNodeInfo instanceof NodeInfo) {
                 throw new ValidationException('Node does not exists.');
@@ -102,7 +102,7 @@ class Validator implements ValidatorInterface
      */
     private function _rebuild(NodeInfo $parentNodeInfo, bool $onlyValidate = false, int $left = 1, int $level = 0): int
     {
-        $adapter = $this->getAdapter();
+        $adapter = $this->getManipulator();
 
         $right = $left + 1;
 

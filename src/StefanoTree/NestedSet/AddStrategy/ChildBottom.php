@@ -21,8 +21,8 @@ class ChildBottom extends AddStrategyAbstract
     protected function makeHole(NodeInfo $targetNode): void
     {
         $moveFromIndex = $targetNode->getRight() - 1;
-        $this->getAdapter()->moveLeftIndexes($moveFromIndex, 2, $targetNode->getScope());
-        $this->getAdapter()->moveRightIndexes($moveFromIndex, 2, $targetNode->getScope());
+        $this->getManipulator()->moveLeftIndexes($moveFromIndex, 2, $targetNode->getScope());
+        $this->getManipulator()->moveRightIndexes($moveFromIndex, 2, $targetNode->getScope());
     }
 
     /**
