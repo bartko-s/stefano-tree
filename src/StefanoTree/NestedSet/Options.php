@@ -258,14 +258,16 @@ class Options
      *
      * @param callable|null $builder
      */
-    public function setDbSelectBuilder(?callable $builder): void {
+    public function setDbSelectBuilder(?callable $builder): void
+    {
         $this->dbSelectBuilder = $builder;
     }
 
     /**
      * @return callable|null
      */
-    public function getDbSelectBuilder(): ?callable {
+    public function getDbSelectBuilder(): ?callable
+    {
         return $this->dbSelectBuilder;
     }
 }

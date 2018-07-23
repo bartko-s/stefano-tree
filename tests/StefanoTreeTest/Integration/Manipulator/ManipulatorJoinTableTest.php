@@ -45,7 +45,7 @@ class ManipulatorJoinTableTest extends IntegrationTestCase
                                            .' ON ttm.tree_traversal_id = tree_traversal_with_scope.tree_traversal_id';
 
                                        return $sql;
-                                   }
+                                   },
                                ));
 
         if ('pgsql' == TEST_STEFANO_DB_VENDOR) {

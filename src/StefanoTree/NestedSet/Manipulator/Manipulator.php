@@ -107,7 +107,7 @@ class Manipulator implements ManipulatorInterface
      */
     public function getDbSelectBuilder(): callable
     {
-        return $this->getOptions()->getDbSelectBuilder() ?? function() {
+        return $this->getOptions()->getDbSelectBuilder() ?? function () {
             return $this->getBlankDbSelect();
         };
     }
