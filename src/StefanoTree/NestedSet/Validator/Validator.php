@@ -136,7 +136,7 @@ class Validator implements ValidatorInterface
      */
     private function _checkIfNodeIsRootNode(NodeInfo $node): void
     {
-        if (null != $node->getParentId()) {
+        if (!$node->isRoot()) {
             throw new ValidationException('Given node is not root node.');
         }
     }
