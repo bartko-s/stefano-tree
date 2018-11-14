@@ -108,7 +108,7 @@ class NodeInfo
      */
     public function isRoot(): bool
     {
-        if (0 == $this->getParentId()) {
+        if (null === $this->getParentId()) {
             return true;
         } else {
             return false;

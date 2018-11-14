@@ -48,14 +48,18 @@ class NodeInfoTest extends UnitTestCase
     public function testIsNotRoot()
     {
         $nodeInfo = new NodeInfo(11, 29, 33, 44, 62, null);
+        $this->assertFalse($nodeInfo->isRoot());
 
+        $nodeInfo = new NodeInfo('acs', 'cst', 33, 44, 62, null);
         $this->assertFalse($nodeInfo->isRoot());
     }
 
     public function testIsRoot()
     {
-        $nodeInfo = new NodeInfo(125, 0, 0, 1, 156, null);
+        $nodeInfo = new NodeInfo(25, null, 0, 1, 186, null);
+        $this->assertTrue($nodeInfo->isRoot());
 
+        $nodeInfo = new NodeInfo('ac', null, 0, 1, 16, 'b');
         $this->assertTrue($nodeInfo->isRoot());
     }
 }
