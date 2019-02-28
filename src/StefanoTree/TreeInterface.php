@@ -19,7 +19,7 @@ interface TreeInterface
      * Create root node.
      *
      * @param array           $data
-     * @param null|string|int $scope Required if scope is used
+     * @param string|int|null $scope Required if scope is used
      *
      * @throws ValidationException if root already exist
      *
@@ -30,7 +30,7 @@ interface TreeInterface
     /**
      * Get root note.
      *
-     * @param null|string|int $scope Required if scope is used
+     * @param string|int|null $scope Required if scope is used
      *
      * @return array
      */
@@ -83,7 +83,7 @@ interface TreeInterface
      *
      * @param int|string $nodeId
      *
-     * @return null|array
+     * @return array|null
      */
     public function getNode($nodeId): ?array;
 
