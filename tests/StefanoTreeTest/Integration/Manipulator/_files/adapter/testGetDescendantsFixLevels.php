@@ -2,7 +2,7 @@
   0 => 
   array (
     'tree_traversal_id' => '18',
-    'name' => NULL,
+    'name' => null,
     'lft' => '19',
     'rgt' => '28',
     'parent_id' => '12',
@@ -11,7 +11,7 @@
   1 => 
   array (
     'tree_traversal_id' => '21',
-    'name' => NULL,
+    'name' => null,
     'lft' => '20',
     'rgt' => '25',
     'parent_id' => '18',
@@ -20,7 +20,7 @@
   2 => 
   array (
     'tree_traversal_id' => '22',
-    'name' => NULL,
+    'name' => null,
     'lft' => '26',
     'rgt' => '27',
     'parent_id' => '18',
