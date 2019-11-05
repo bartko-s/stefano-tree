@@ -33,7 +33,7 @@
     },
     "require-dev": {
         "doctrine/dbal": "2.*",
-        "phpunit/PHPUnit": "^7.0.0",
+        "phpunit/phpunit": "^7.0.0",
         "phpunit/dbunit": "^4.0.0",
         "mockery/mockery": "^1.0.0",
         "php-coveralls/php-coveralls": "^2.0",
@@ -44,7 +44,7 @@
     },
     "autoload": {
         "psr-4": {
-            "": "src/"
+            "StefanoTree\\": "src/StefanoTree/"
         },
         "classmap": [
             "./src/"
@@ -52,7 +52,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "": "tests/"
+            "StefanoTreeTest\\": "tests/StefanoTreeTest/"
         }
     },
     "scripts": {
