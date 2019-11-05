@@ -7,6 +7,10 @@ php:
   - nightly
   - hhvm
 
+services:
+  - postgresql
+  - mysql
+
 env:
   - DB=pgsql ADAPTER=pdo
   - DB=pgsql ADAPTER=zend1
@@ -32,13 +36,13 @@ before_script:
 
 script:
   - vendor/bin/phpunit --configuration tests/phpunit.xml --coverage-php build/logs/clover-$DB-$ADAPTER.cov
-  - vendor/bin/php-cs-fixer fix -v --diff --dry-run --allow-risky yes
 
 after_success:
   - php vendor/bin/phpcov merge --clover build/logs/clover.xml build/logs
   - travis_retry php vendor/bin/php-coveralls
   - wget https://scrutinizer-ci.com/ocular.phar
   - php ocular.phar code-coverage:upload --format=php-clover build/logs/clover.xml
+  - composer cs-check
 
 matrix:
   fast_finish: true
