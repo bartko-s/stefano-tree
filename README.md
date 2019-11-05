@@ -7,6 +7,7 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bartko-s/stefano-tree/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/bartko-s/stefano-tree/?branch=master) 
 [![License](https://poser.pugx.org/stefano/stefano-tree/license)](https://packagist.org/packages/stefano/stefano-tree)
 [![Total Downloads](https://poser.pugx.org/stefano/stefano-tree/downloads)](https://packagist.org/packages/stefano/stefano-tree)
+[![Monthly Downloads](https://poser.pugx.org/stefano/stefano-tree/d/monthly)](https://packagist.org/packages/stefano/stefano-tree)
 
 [![Donate on PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://paypal.me/stevo4)
 
