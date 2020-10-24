@@ -2,6 +2,16 @@
 
 declare(strict_types=1);
 
+$dbUser = getenv('TEST_STEFANO_DB_USER');
+if ($dbUser) {
+    define('TEST_STEFANO_DB_USER', $dbUser);
+}
+
+$dbHost = getenv('TEST_STEFANO_DB_HOSTNAME');
+if ($dbHost) {
+    define('TEST_STEFANO_DB_HOSTNAME', $dbHost);
+}
+
 $dbVendor = getenv('DB');
 switch ($dbVendor) {
     case 'pgsql':
@@ -44,7 +54,7 @@ echo sprintf('Database vendor: "%s"', $dbVendor).PHP_EOL;
 echo sprintf('Adapter        : "%s"', $treeAdapter).PHP_EOL;
 echo PHP_EOL;
 
-unset($dbVendor, $treeAdapter);
+unset($dbUser, $dbHost, $dbVendor, $treeAdapter);
 
 include_once __DIR__.'/../vendor/autoload.php';
 include_once __DIR__.'/testConfig.php';
