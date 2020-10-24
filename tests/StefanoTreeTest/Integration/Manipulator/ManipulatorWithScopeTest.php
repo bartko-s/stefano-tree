@@ -11,6 +11,10 @@ use StefanoTree\NestedSet\Options;
 use StefanoTreeTest\IntegrationTestCase;
 use StefanoTreeTest\TestUtil;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class ManipulatorWithScopeTest extends IntegrationTestCase
 {
     /**
@@ -37,10 +41,10 @@ class ManipulatorWithScopeTest extends IntegrationTestCase
     protected function getManipulator(): ManipulatorInterface
     {
         $options = new Options(array(
-                                   'tableName' => 'tree_traversal_with_scope',
-                                   'idColumnName' => 'tree_traversal_id',
-                                   'scopeColumnName' => 'scope',
-                               ));
+            'tableName' => 'tree_traversal_with_scope',
+            'idColumnName' => 'tree_traversal_id',
+            'scopeColumnName' => 'scope',
+        ));
 
         if ('pgsql' == TEST_STEFANO_DB_VENDOR) {
             $options->setSequenceName('tree_traversal_with_scope_tree_traversal_id_seq');

@@ -116,7 +116,8 @@ abstract class AdapterAbstract extends IntegrationTestCase
         } else {
             $this->assertEquals(
                 'more.complex',
-                $a->quoteIdentifier('more.complex'));
+                $a->quoteIdentifier('more.complex')
+            );
         }
     }
 
@@ -142,7 +143,9 @@ abstract class AdapterAbstract extends IntegrationTestCase
         $this->assertEquals(
             array(
                 0 => array_merge($data, array('tree_traversal_id' => 26)),
-            ), $result);
+            ),
+            $result
+        );
     }
 
     public function testExecuteSQL()
@@ -166,6 +169,8 @@ abstract class AdapterAbstract extends IntegrationTestCase
         $this->assertEquals(
             array(
                 0 => $data,
-            ), $result);
+            ),
+            $result
+        );
     }
 }

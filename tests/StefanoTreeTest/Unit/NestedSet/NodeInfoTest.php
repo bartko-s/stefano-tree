@@ -7,6 +7,10 @@ namespace StefanoTreeTest\Unit\NestedSet;
 use StefanoTree\NestedSet\NodeInfo;
 use StefanoTreeTest\UnitTestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class NodeInfoTest extends UnitTestCase
 {
     public function testNodeInfoWithScope()

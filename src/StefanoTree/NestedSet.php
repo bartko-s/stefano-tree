@@ -9,17 +9,17 @@ use Exception;
 use StefanoTree\Exception\InvalidArgumentException;
 use StefanoTree\Exception\ValidationException;
 use StefanoTree\NestedSet\Adapter\AdapterInterface;
+use StefanoTree\NestedSet\Adapter\Doctrine2DBAL;
 use StefanoTree\NestedSet\Adapter\NestedTransactionDecorator;
 use StefanoTree\NestedSet\Adapter\Pdo;
-use StefanoTree\NestedSet\Manipulator\Manipulator;
-use StefanoTree\NestedSet\Manipulator\ManipulatorInterface;
-use StefanoTree\NestedSet\AddStrategy;
-use StefanoTree\NestedSet\AddStrategy\AddStrategyInterface;
-use StefanoTree\NestedSet\MoveStrategy;
-use StefanoTree\NestedSet\MoveStrategy\MoveStrategyInterface;
-use StefanoTree\NestedSet\Adapter\Doctrine2DBAL;
 use StefanoTree\NestedSet\Adapter\Zend1;
 use StefanoTree\NestedSet\Adapter\Zend2;
+use StefanoTree\NestedSet\AddStrategy;
+use StefanoTree\NestedSet\AddStrategy\AddStrategyInterface;
+use StefanoTree\NestedSet\Manipulator\Manipulator;
+use StefanoTree\NestedSet\Manipulator\ManipulatorInterface;
+use StefanoTree\NestedSet\MoveStrategy;
+use StefanoTree\NestedSet\MoveStrategy\MoveStrategyInterface;
 use StefanoTree\NestedSet\NodeInfo;
 use StefanoTree\NestedSet\Options;
 use StefanoTree\NestedSet\QueryBuilder\AncestorQueryBuilder;
@@ -37,7 +37,7 @@ class NestedSet implements TreeInterface
     private $validator;
 
     /**
-     * @param Options|array $options
+     * @param array|Options $options
      * @param object        $dbAdapter
      *
      * @throws InvalidArgumentException
@@ -118,7 +118,7 @@ class NestedSet implements TreeInterface
     public function updateNode($nodeId, array $data): void
     {
         $this->getManipulator()
-             ->update($nodeId, $data);
+            ->update($nodeId, $data);
     }
 
     /**
@@ -132,9 +132,9 @@ class NestedSet implements TreeInterface
     /**
      * @param string $placement
      *
-     * @return AddStrategyInterface
-     *
      * @throws InvalidArgumentException
+     *
+     * @return AddStrategyInterface
      */
     protected function getAddStrategy(string $placement): AddStrategyInterface
     {
@@ -165,9 +165,9 @@ class NestedSet implements TreeInterface
     /**
      * @param string $placement
      *
-     * @return MoveStrategyInterface
-     *
      * @throws InvalidArgumentException
+     *
+     * @return MoveStrategyInterface
      */
     protected function getMoveStrategy(string $placement): MoveStrategyInterface
     {
@@ -195,6 +195,7 @@ class NestedSet implements TreeInterface
         $adapter = $this->getManipulator();
 
         $adapter->beginTransaction();
+
         try {
             $adapter->lockTree();
 
@@ -229,7 +230,7 @@ class NestedSet implements TreeInterface
     public function getNode($nodeId): ?array
     {
         return $this->getManipulator()
-                    ->getNode($nodeId);
+            ->getNode($nodeId);
     }
 
     /**
@@ -254,7 +255,7 @@ class NestedSet implements TreeInterface
     public function getRootNode($scope = null): array
     {
         return $this->getManipulator()
-                    ->getRoot($scope);
+            ->getRoot($scope);
     }
 
     /**
@@ -263,7 +264,7 @@ class NestedSet implements TreeInterface
     public function getRoots(): array
     {
         return $this->getManipulator()
-                    ->getRoots();
+            ->getRoots();
     }
 
     /**
@@ -272,7 +273,7 @@ class NestedSet implements TreeInterface
     public function isValid($rootNodeId): bool
     {
         return $this->getValidator()
-                    ->isValid($rootNodeId);
+            ->isValid($rootNodeId);
     }
 
     /**
@@ -281,6 +282,6 @@ class NestedSet implements TreeInterface
     public function rebuild($rootNodeId): void
     {
         $this->getValidator()
-             ->rebuild($rootNodeId);
+            ->rebuild($rootNodeId);
     }
 }

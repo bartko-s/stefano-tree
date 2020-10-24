@@ -41,33 +41,33 @@ class Zend2 implements AdapterInterface
     public function beginTransaction(): void
     {
         $this->getConnection()
-             ->getDriver()
-             ->getConnection()
-             ->beginTransaction();
+            ->getDriver()
+            ->getConnection()
+            ->beginTransaction();
     }
 
     public function commitTransaction(): void
     {
         $this->getConnection()
-             ->getDriver()
-             ->getConnection()
-             ->commit();
+            ->getDriver()
+            ->getConnection()
+            ->commit();
     }
 
     public function rollbackTransaction(): void
     {
         $this->getConnection()
-             ->getDriver()
-             ->getConnection()
-             ->rollback();
+            ->getDriver()
+            ->getConnection()
+            ->rollback();
     }
 
     public function isInTransaction(): bool
     {
         return $this->getConnection()
-             ->getDriver()
-             ->getConnection()
-             ->inTransaction();
+            ->getDriver()
+            ->getConnection()
+            ->inTransaction();
     }
 
     public function canHandleNestedTransaction(): bool
@@ -78,8 +78,8 @@ class Zend2 implements AdapterInterface
     public function quoteIdentifier(string $columnName): string
     {
         return $this->getConnection()
-                    ->getPlatform()
-                    ->quoteIdentifierChain(explode('.', $columnName));
+            ->getPlatform()
+            ->quoteIdentifierChain(explode('.', $columnName));
     }
 
     public function executeInsertSQL(string $sql, array $params = array())
@@ -91,8 +91,8 @@ class Zend2 implements AdapterInterface
             return $params[$options->getIdColumnName()];
         } else {
             $lastGeneratedValue = $this->getConnection()
-                                       ->getDriver()
-                                       ->getLastGeneratedValue($options->getSequenceName());
+                ->getDriver()
+                ->getLastGeneratedValue($options->getSequenceName());
 
             return $lastGeneratedValue;
         }
@@ -101,13 +101,13 @@ class Zend2 implements AdapterInterface
     public function executeSQL(string $sql, array $params = array()): void
     {
         $this->getConnection()
-             ->query($sql, $params);
+            ->query($sql, $params);
     }
 
     public function executeSelectSQL(string $sql, array $params = array()): array
     {
         return $this->getConnection()
-                    ->query($sql, $params)
-                    ->toArray();
+            ->query($sql, $params)
+            ->toArray();
     }
 }

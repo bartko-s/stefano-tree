@@ -60,14 +60,14 @@ interface ManipulatorInterface
     /**
      * @param int             $fromIndex Left index is greater than
      * @param int             $shift
-     * @param string|int|null $scope     null if scope is not used
+     * @param null|int|string $scope     null if scope is not used
      */
     public function moveLeftIndexes($fromIndex, $shift, $scope = null): void;
 
     /**
      * @param int             $fromIndex Right index is greater than
      * @param int             $shift
-     * @param string|int|null $scope     null if scope is not used
+     * @param null|int|string $scope     null if scope is not used
      */
     public function moveRightIndexes($fromIndex, $shift, $scope = null): void;
 
@@ -81,7 +81,7 @@ interface ManipulatorInterface
      * @param int             $leftIndexFrom from left index or equal
      * @param int             $rightIndexTo  to right index or equal
      * @param int             $shift         shift
-     * @param string|int|null $scope         null if scope is not used
+     * @param null|int|string $scope         null if scope is not used
      */
     public function updateLevels(int $leftIndexFrom, int $rightIndexTo, int $shift, $scope = null): void;
 
@@ -89,21 +89,21 @@ interface ManipulatorInterface
      * @param int             $leftIndexFrom from left index
      * @param int             $rightIndexTo  to right index
      * @param int             $shift
-     * @param string|int|null $scope         null if scope is not used
+     * @param null|int|string $scope         null if scope is not used
      */
     public function moveBranch(int $leftIndexFrom, int $rightIndexTo, int $shift, $scope = null): void;
 
     /**
      * @param int|string $nodeId
      *
-     * @return array|null
+     * @return null|array
      */
     public function getNode($nodeId): ?array;
 
     /**
      * @param int|string $nodeId
      *
-     * @return NodeInfo|null
+     * @return null|NodeInfo
      */
     public function getNodeInfo($nodeId): ?NodeInfo;
 
@@ -136,22 +136,22 @@ interface ManipulatorInterface
      * @param int|string      $nodeId
      * @param int             $startLevel    Relative level from $nodeId. 1 = exclude $nodeId from result.
      *                                       2 = exclude 2 levels from result
-     * @param int|null        $levels        Number of levels in the results relative to $startLevel
-     * @param int|string|null $excludeBranch Exclude defined branch(node id) from result
+     * @param null|int        $levels        Number of levels in the results relative to $startLevel
+     * @param null|int|string $excludeBranch Exclude defined branch(node id) from result
      *
      * @return array
      */
     public function getDescendants($nodeId, int $startLevel = 0, ?int $levels = null, $excludeBranch = null): array;
 
     /**
-     * @param string|int|null $scope null if scope is not used
+     * @param null|int|string $scope null if scope is not used
      *
      * @return array
      */
     public function getRoot($scope = null): array;
 
     /**
-     * @param string|int|null $scope if defined return root only for defined scope
+     * @param null|int|string $scope if defined return root only for defined scope
      *
      * @return array
      */

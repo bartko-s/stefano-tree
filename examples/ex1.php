@@ -110,7 +110,7 @@ class Service
             $this->getTreeAdapter()
                 ->createRootNode($data, $scope);
         } catch (ValidationException $e) {
-            throw new ValidationError([$e->getMessage()]);
+            throw new ValidationError(array($e->getMessage()));
         }
     }
 
@@ -147,7 +147,7 @@ class Service
             $this->getTreeAdapter()
                 ->addNode($targetId, $data, $placement);
         } catch (ValidationException $e) {
-            throw new ValidationError([$e->getMessage()]);
+            throw new ValidationError(array($e->getMessage()));
         }
     }
 
@@ -197,7 +197,7 @@ class Service
             $this->getTreeAdapter()
                 ->updateNode($nodeId, $data);
         } catch (ValidationException $e) {
-            throw new ValidationError([$e->getMessage()]);
+            throw new ValidationError(array($e->getMessage()));
         }
     }
 
@@ -228,14 +228,14 @@ class Service
             $this->getTreeAdapter()
                 ->moveNode($sourceId, $targetId, $placement);
         } catch (ValidationException $e) {
-            throw new ValidationError([$e->getMessage()]);
+            throw new ValidationError(array($e->getMessage()));
         }
     }
 
     public function getRoots(): array
     {
         return $this->getTreeAdapter()
-                    ->getRoots();
+            ->getRoots();
     }
 
     public function getDescendants($nodeId): array
@@ -468,7 +468,7 @@ class ValidationError extends \Exception
 function setFlashMessageAndRedirect(string $message, string $url)
 {
     $_SESSION['flashMessage'] = $message;
-    $redirectUrl = (isset($_SERVER['HTTPS']) ? 'https' : 'http')."://$_SERVER[HTTP_HOST]$url";
+    $redirectUrl = (isset($_SERVER['HTTPS']) ? 'https' : 'http')."://{$_SERVER['HTTP_HOST']}{$url}";
     header(sprintf('Location: %s', $redirectUrl));
     die();
 }
@@ -483,30 +483,37 @@ try {
         case 'create-scope':
             $service->createRoot($_POST);
             setFlashMessageAndRedirect('New root node and scope was successfully created.', '/');
+
             break;
         case 'create-node':
             $service->createNode($_POST);
             setFlashMessageAndRedirect('New node was successfully created.', '/');
+
             break;
         case 'move-node':
             $service->moveNode($_POST);
             setFlashMessageAndRedirect('Branch/Node was successfully moved.', '/');
+
             break;
         case 'update-node':
             $service->updateNode($_POST);
             setFlashMessageAndRedirect('Node was successfully updated.', '/');
+
             break;
         case 'delete':
             $service->deleteNode($_GET);
             setFlashMessageAndRedirect('Branch/Node was successfully deleted.', '/');
+
             break;
         case 'descendant-test':
             $descendants = $service->findDescendants($_GET);
             $showDescendantTestBlock = true;
+
             break;
         case 'ancestor-test':
             $ancestors = $service->findAncestors($_GET);
             $showAncestorTestBlock = true;
+
             break;
     }
 } catch (ValidationError $e) {
@@ -680,7 +687,7 @@ $wh = new ViewHelper();
                             <h3>Descendants Test Result</h3>
                             <?php
                             if (0 == count($descendants)) {
-                                echo $wh->renderErrorMessages(['No descendants was found']);
+                                echo $wh->renderErrorMessages(array('No descendants was found'));
                             } else {
                                 echo $wh->renderTree($descendants);
                             } ?>
@@ -693,7 +700,7 @@ $wh = new ViewHelper();
                             <h3>Ancestors Test Result</h3>
                             <?php
                             if (0 == count($ancestors)) {
-                                echo $wh->renderErrorMessages(['No ancestors was found']);
+                                echo $wh->renderErrorMessages(array('No ancestors was found'));
                             } else {
                                 echo $wh->renderBreadcrumbs($ancestors);
                                 echo $wh->renderTree($ancestors);

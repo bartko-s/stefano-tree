@@ -93,7 +93,7 @@ class NestedTransactionDecorator implements AdapterInterface
     public function isInTransaction(): bool
     {
         return $this->getAdapter()
-                    ->isInTransaction();
+            ->isInTransaction();
     }
 
     public function canHandleNestedTransaction(): bool
@@ -104,24 +104,24 @@ class NestedTransactionDecorator implements AdapterInterface
     public function quoteIdentifier(string $columnName): string
     {
         return $this->getAdapter()
-                    ->quoteIdentifier($columnName);
+            ->quoteIdentifier($columnName);
     }
 
     public function executeInsertSQL(string $sql, array $params = array())
     {
         return $this->getAdapter()
-                    ->executeInsertSQL($sql, $params);
+            ->executeInsertSQL($sql, $params);
     }
 
     public function executeSQL(string $sql, array $params = array()): void
     {
         $this->getAdapter()
-             ->executeSQL($sql, $params);
+            ->executeSQL($sql, $params);
     }
 
     public function executeSelectSQL(string $sql, array $params = array()): array
     {
         return $this->getAdapter()
-                    ->executeSelectSQL($sql, $params);
+            ->executeSelectSQL($sql, $params);
     }
 }

@@ -9,6 +9,10 @@ use StefanoTree\NestedSet\Adapter\Pdo;
 use StefanoTree\NestedSet\Options;
 use StefanoTreeTest\TestUtil;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class PdoTest extends AdapterAbstract
 {
     protected $adapterCanQuoteIdentifier = false;
@@ -20,9 +24,9 @@ class PdoTest extends AdapterAbstract
     {
         if (null === $this->adapter) {
             $options = new Options(array(
-                                       'tableName' => 'tree_traversal',
-                                       'idColumnName' => 'tree_traversal_id',
-                                   ));
+                'tableName' => 'tree_traversal',
+                'idColumnName' => 'tree_traversal_id',
+            ));
 
             if ('pgsql' == TEST_STEFANO_DB_VENDOR) {
                 $options->setSequenceName('tree_traversal_tree_traversal_id_seq');

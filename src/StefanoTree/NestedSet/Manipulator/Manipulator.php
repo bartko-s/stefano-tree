@@ -151,7 +151,7 @@ class Manipulator implements ManipulatorInterface
     public function beginTransaction(): void
     {
         $this->getAdapter()
-             ->beginTransaction();
+            ->beginTransaction();
     }
 
     /**
@@ -160,7 +160,7 @@ class Manipulator implements ManipulatorInterface
     public function commitTransaction(): void
     {
         $this->getAdapter()
-             ->commitTransaction();
+            ->commitTransaction();
     }
 
     /**
@@ -169,7 +169,7 @@ class Manipulator implements ManipulatorInterface
     public function rollbackTransaction(): void
     {
         $this->getAdapter()
-             ->rollbackTransaction();
+            ->rollbackTransaction();
     }
 
     /**

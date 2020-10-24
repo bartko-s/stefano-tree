@@ -7,9 +7,9 @@ namespace StefanoTreeTest;
 use Doctrine\DBAL;
 use PDO;
 use StefanoTree\NestedSet;
-use StefanoTree\NestedSet\Options;
 use StefanoTree\NestedSet\Adapter;
 use StefanoTree\NestedSet\Adapter\AdapterInterface;
+use StefanoTree\NestedSet\Options;
 use Zend\Db\Adapter\Adapter as Zend2DbAdapter;
 
 class TestUtil
@@ -186,7 +186,9 @@ class TestUtil
 
             self::$dbConnection = new PDO(
                 $adapter.':host='.$hostname.';dbname='
-                .$dbName, $user, $password
+                .$dbName,
+                $user,
+                $password
             );
         }
 
@@ -267,15 +269,19 @@ class TestUtil
         switch (TEST_STEFANO_ADAPTER) {
             case 'pdo':
                 $adapter = new Adapter\Pdo($options, self::getPDOConnection());
+
                 break;
             case 'zend1':
                 $adapter = new Adapter\Zend1($options, self::getZend1DbAdapter());
+
                 break;
             case 'zend2':
                 $adapter = new Adapter\Zend2($options, self::getZend2DbAdapter());
+
                 break;
             case 'doctrine2-dbal':
                 $adapter = new Adapter\Doctrine2DBAL($options, self::getDoctrine2Connection());
+
                 break;
             default:
                 throw new \Exception(sprintf('Unknown adapter "%s"', TEST_STEFANO_ADAPTER));

@@ -7,6 +7,10 @@ namespace StefanoTreeTest\Unit;
 use StefanoTree\NestedSet;
 use StefanoTreeTest\UnitTestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class NestedSetTest extends UnitTestCase
 {
     private $options = array(
@@ -38,6 +42,9 @@ class NestedSetTest extends UnitTestCase
 
     /**
      * @dataProvider dataProvider
+     *
+     * @param mixed $dbAdapterClass
+     * @param mixed $expectedAdapterClass
      */
     public function testConstructorMethodWithOptionAsObject($dbAdapterClass, $expectedAdapterClass)
     {
@@ -52,6 +59,9 @@ class NestedSetTest extends UnitTestCase
 
     /**
      * @dataProvider dataProvider
+     *
+     * @param mixed $dbAdapterClass
+     * @param mixed $expectedAdapterClass
      */
     public function testConstructorMethodWithOptionAsArray($dbAdapterClass, $expectedAdapterClass)
     {

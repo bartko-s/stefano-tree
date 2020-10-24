@@ -81,20 +81,20 @@ class Doctrine2DBAL implements AdapterInterface
             return $params[$options->getIdColumnName()];
         } else {
             return $this->getConnection()
-                        ->lastInsertId($options->getSequenceName());
+                ->lastInsertId($options->getSequenceName());
         }
     }
 
     public function executeSQL(string $sql, array $params = array()): void
     {
         $this->getConnection()
-             ->executeQuery($sql, $params);
+            ->executeQuery($sql, $params);
     }
 
     public function executeSelectSQL(string $sql, array $params = array()): array
     {
         return $this->getConnection()
-             ->executeQuery($sql, $params)
+            ->executeQuery($sql, $params)
             ->fetchAll();
     }
 }

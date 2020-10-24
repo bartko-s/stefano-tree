@@ -14,12 +14,12 @@ class NodeInfo
     private $scope;
 
     /**
-     * @param string|int|null $id
-     * @param string|int|null $parentId
+     * @param null|int|string $id
+     * @param null|int|string $parentId
      * @param int             $level
      * @param int             $left
      * @param int             $right
-     * @param string|int|null $scope    If scope is not used
+     * @param null|int|string $scope    If scope is not used
      */
     public function __construct($id, $parentId, int $level, int $left, int $right, $scope)
     {
@@ -32,7 +32,7 @@ class NodeInfo
     }
 
     /**
-     * @return string|int|null
+     * @return null|int|string
      */
     public function getId()
     {
@@ -40,7 +40,7 @@ class NodeInfo
     }
 
     /**
-     * @return string|int|null
+     * @return null|int|string
      */
     public function getParentId()
     {
@@ -96,7 +96,7 @@ class NodeInfo
     }
 
     /**
-     * @return string|int|null
+     * @return null|int|string
      */
     public function getScope()
     {

@@ -38,6 +38,7 @@ class Validator implements ValidatorInterface
         $adapter = $this->getManipulator();
 
         $adapter->beginTransaction();
+
         try {
             $adapter->lockTree();
 
@@ -57,6 +58,7 @@ class Validator implements ValidatorInterface
             return false;
         } catch (Exception $e) {
             $adapter->rollbackTransaction();
+
             throw $e;
         }
 
@@ -71,6 +73,7 @@ class Validator implements ValidatorInterface
         $adapter = $this->getManipulator();
 
         $adapter->beginTransaction();
+
         try {
             $adapter->lockTree();
 
@@ -86,6 +89,7 @@ class Validator implements ValidatorInterface
             $adapter->commitTransaction();
         } catch (Exception $e) {
             $adapter->rollbackTransaction();
+
             throw $e;
         }
     }
@@ -96,9 +100,9 @@ class Validator implements ValidatorInterface
      * @param int      $left
      * @param int      $level
      *
-     * @return int
-     *
      * @throws TreeIsBrokenException if tree is broken and $onlyValidate is true
+     *
+     * @return int
      */
     private function _rebuild(NodeInfo $parentNodeInfo, bool $onlyValidate = false, int $left = 1, int $level = 0): int
     {

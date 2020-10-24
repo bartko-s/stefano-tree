@@ -7,6 +7,10 @@ namespace StefanoTreeTest\Unit\NestedSet;
 use StefanoTree\NestedSet\Options;
 use StefanoTreeTest\UnitTestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class NestedSetTest extends UnitTestCase
 {
     public function testThrowExceptionIfAllRequiredSettingsAreNotProvided()

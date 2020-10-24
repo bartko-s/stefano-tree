@@ -40,25 +40,25 @@ class Pdo implements AdapterInterface
     public function beginTransaction(): void
     {
         $this->getConnection()
-             ->beginTransaction();
+            ->beginTransaction();
     }
 
     public function commitTransaction(): void
     {
         $this->getConnection()
-             ->commit();
+            ->commit();
     }
 
     public function rollbackTransaction(): void
     {
         $this->getConnection()
-             ->rollBack();
+            ->rollBack();
     }
 
     public function isInTransaction(): bool
     {
         return $this->getConnection()
-                    ->inTransaction();
+            ->inTransaction();
     }
 
     public function canHandleNestedTransaction(): bool
@@ -81,10 +81,10 @@ class Pdo implements AdapterInterface
         } else {
             if ('' != $options->getSequenceName()) {
                 $lastGeneratedValue = $this->getConnection()
-                                           ->lastInsertId($options->getSequenceName());
+                    ->lastInsertId($options->getSequenceName());
             } else {
                 $lastGeneratedValue = $this->getConnection()
-                                           ->lastInsertId();
+                    ->lastInsertId();
             }
 
             return $lastGeneratedValue;
@@ -94,14 +94,14 @@ class Pdo implements AdapterInterface
     public function executeSQL(string $sql, array $params = array()): void
     {
         $stm = $this->getConnection()
-                    ->prepare($sql);
+            ->prepare($sql);
         $stm->execute($params);
     }
 
     public function executeSelectSQL(string $sql, array $params = array()): array
     {
         $stm = $this->getConnection()
-                    ->prepare($sql);
+            ->prepare($sql);
         $stm->execute($params);
 
         return $stm->fetchAll(\PDO::FETCH_ASSOC);

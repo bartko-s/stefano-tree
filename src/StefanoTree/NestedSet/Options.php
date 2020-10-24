@@ -51,7 +51,7 @@ class Options
         foreach ($options as $name => $value) {
             $methodName = 'set'.ucfirst($name);
             if (method_exists($this, $methodName)) {
-                $this->$methodName($value);
+                $this->{$methodName}($value);
             }
         }
     }
@@ -89,7 +89,7 @@ class Options
     }
 
     /**
-     * @return string|null
+     * @return null|string
      */
     public function getSequenceName(): ?string
     {
@@ -237,7 +237,7 @@ class Options
     /**
      * @param bool $withTableName
      *
-     * @return string|null
+     * @return null|string
      */
     public function getScopeColumnName(bool $withTableName = false): ?string
     {
@@ -256,7 +256,7 @@ class Options
     /**
      * Modify base DB select. Must be without where, order parts.
      *
-     * @param callable|null $builder
+     * @param null|callable $builder
      */
     public function setDbSelectBuilder(?callable $builder): void
     {
@@ -264,7 +264,7 @@ class Options
     }
 
     /**
-     * @return callable|null
+     * @return null|callable
      */
     public function getDbSelectBuilder(): ?callable
     {

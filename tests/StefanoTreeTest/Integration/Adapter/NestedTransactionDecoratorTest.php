@@ -12,6 +12,10 @@ use StefanoTreeTest\TestUtil;
 use StefanoTreeTest\UnitTestCase;
 use Zend_Db_Adapter_Abstract as ZendDbAdapter;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class NestedTransactionDecoratorTest extends UnitTestCase
 {
     /**
@@ -29,9 +33,9 @@ class NestedTransactionDecoratorTest extends UnitTestCase
         $this->dbAdapter = TestUtil::getPDOConnection();
 
         $options = new Options(array(
-                                   'tableName' => 'tree_traversal',
-                                   'idColumnName' => 'tree_traversal_id',
-                               ));
+            'tableName' => 'tree_traversal',
+            'idColumnName' => 'tree_traversal_id',
+        ));
 
         $this->adapterNestedDoNotSupport = new Pdo($options, $this->dbAdapter);
 
@@ -56,19 +60,19 @@ class NestedTransactionDecoratorTest extends UnitTestCase
     {
         $adapterMock = \Mockery::mock(AdapterInterface::class);
         $adapterMock->shouldReceive('canHandleNestedTransaction')
-                    ->andReturnTrue();
+            ->andReturnTrue();
 
         $adapterMock->shouldReceive('beginTransaction')
-                    ->times(3);
+            ->times(3);
 
         $adapterMock->shouldReceive('commitTransaction')
-                    ->times(2);
+            ->times(2);
 
         $adapterMock->shouldReceive('rollbackTransaction')
-                    ->times(1);
+            ->times(1);
 
         $adapterMock->shouldReceive('isInTransaction')
-                    ->andReturnFalse();
+            ->andReturnFalse();
 
         $adapter = new NestedTransactionDecorator($adapterMock);
         $adapter->beginTransaction();
@@ -83,16 +87,16 @@ class NestedTransactionDecoratorTest extends UnitTestCase
     {
         $adapterMock = \Mockery::mock(AdapterInterface::class);
         $adapterMock->shouldReceive('canHandleNestedTransaction')
-                    ->andReturnFalse();
+            ->andReturnFalse();
 
         $adapterMock->shouldReceive('beginTransaction')
-                    ->times(1);
+            ->times(1);
 
         $adapterMock->shouldReceive('commitTransaction')
-                    ->times(1);
+            ->times(1);
 
         $adapterMock->shouldReceive('isInTransaction')
-                    ->andReturnFalse();
+            ->andReturnFalse();
 
         $adapter = new NestedTransactionDecorator($adapterMock);
         $adapter->beginTransaction();
@@ -103,16 +107,16 @@ class NestedTransactionDecoratorTest extends UnitTestCase
     {
         $adapterMock = \Mockery::mock(AdapterInterface::class);
         $adapterMock->shouldReceive('canHandleNestedTransaction')
-                    ->andReturnFalse();
+            ->andReturnFalse();
 
         $adapterMock->shouldReceive('beginTransaction')
-                    ->times(1);
+            ->times(1);
 
         $adapterMock->shouldReceive('rollbackTransaction')
-                    ->times(1);
+            ->times(1);
 
         $adapterMock->shouldReceive('isInTransaction')
-                    ->andReturnFalse();
+            ->andReturnFalse();
 
         $adapter = new NestedTransactionDecorator($adapterMock);
         $adapter->beginTransaction();
@@ -123,19 +127,19 @@ class NestedTransactionDecoratorTest extends UnitTestCase
     {
         $adapterMock = \Mockery::mock(AdapterInterface::class);
         $adapterMock->shouldReceive('canHandleNestedTransaction')
-                    ->andReturnFalse();
+            ->andReturnFalse();
 
         $adapterMock->shouldReceive('beginTransaction')
-                    ->times(3);
+            ->times(3);
 
         $adapterMock->shouldReceive('commitTransaction')
-                    ->times(2);
+            ->times(2);
 
         $adapterMock->shouldReceive('rollbackTransaction')
-                    ->times(1);
+            ->times(1);
 
         $adapterMock->shouldReceive('isInTransaction')
-                    ->andReturnFalse();
+            ->andReturnFalse();
 
         $adapter = new NestedTransactionDecorator($adapterMock);
         $adapter->beginTransaction();
@@ -156,16 +160,16 @@ class NestedTransactionDecoratorTest extends UnitTestCase
     {
         $adapterMock = \Mockery::mock(AdapterInterface::class);
         $adapterMock->shouldReceive('canHandleNestedTransaction')
-                    ->andReturnFalse();
+            ->andReturnFalse();
 
         $adapterMock->shouldReceive('beginTransaction')
-                    ->times(1);
+            ->times(1);
 
         $adapterMock->shouldReceive('commitTransaction')
-                    ->times(1);
+            ->times(1);
 
         $adapterMock->shouldReceive('isInTransaction')
-                    ->andReturnFalse();
+            ->andReturnFalse();
 
         $adapter = new NestedTransactionDecorator($adapterMock);
         $adapter->beginTransaction();
@@ -178,16 +182,16 @@ class NestedTransactionDecoratorTest extends UnitTestCase
     {
         $adapterMock = \Mockery::mock(AdapterInterface::class);
         $adapterMock->shouldReceive('canHandleNestedTransaction')
-                    ->andReturnFalse();
+            ->andReturnFalse();
 
         $adapterMock->shouldReceive('beginTransaction')
-                    ->times(1);
+            ->times(1);
 
         $adapterMock->shouldReceive('rollbackTransaction')
-                    ->times(1);
+            ->times(1);
 
         $adapterMock->shouldReceive('isInTransaction')
-                    ->andReturnFalse();
+            ->andReturnFalse();
 
         $adapter = new NestedTransactionDecorator($adapterMock);
         $adapter->beginTransaction();
@@ -203,18 +207,18 @@ class NestedTransactionDecoratorTest extends UnitTestCase
 
         $adapterMock = \Mockery::mock(AdapterInterface::class);
         $adapterMock->shouldReceive('canHandleNestedTransaction')
-                    ->andReturnFalse();
+            ->andReturnFalse();
 
         $adapterMock->shouldReceive('beginTransaction')
-                    ->times(1);
+            ->times(1);
 
         $adapterMock->shouldReceive('commitTransaction')
-                    ->times(0);
+            ->times(0);
 
         $adapterMock->shouldReceive('rollbackTransaction');
 
         $adapterMock->shouldReceive('isInTransaction')
-                    ->andReturnFalse();
+            ->andReturnFalse();
 
         $adapter = new NestedTransactionDecorator($adapterMock);
         $adapter->beginTransaction();
@@ -230,16 +234,16 @@ class NestedTransactionDecoratorTest extends UnitTestCase
 
         $adapterMock = \Mockery::mock($this->adapterNestedDoNotSupport);
         $adapterMock->shouldReceive('canHandleNestedTransaction')
-                    ->andReturnFalse();
+            ->andReturnFalse();
 
         $adapterMock->shouldReceive('beginTransaction')
-                    ->times(2);
+            ->times(2);
 
         $adapterMock->shouldReceive('commitTransaction')
-                    ->times(1);
+            ->times(1);
 
         $adapterMock->shouldReceive('rollbackTransaction')
-                    ->times(1);
+            ->times(1);
 
         $adapter = new NestedTransactionDecorator($adapterMock);
 

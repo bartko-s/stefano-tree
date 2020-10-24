@@ -28,6 +28,7 @@ abstract class AddStrategyAbstract implements AddStrategyInterface
         $adapter = $this->getManipulator();
 
         $adapter->beginTransaction();
+
         try {
             $adapter->lockTree();
 

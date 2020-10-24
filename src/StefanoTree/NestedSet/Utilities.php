@@ -24,7 +24,7 @@ class Utilities
     /**
      * @param array    $flatTree
      * @param string   $levelName
-     * @param int|null $level
+     * @param null|int $level
      * @param int      $startPos
      * @param array    $result
      *

@@ -9,6 +9,10 @@ use StefanoTree\NestedSet\Options;
 use StefanoTreeTest\IntegrationTestCase;
 use StefanoTreeTest\TestUtil;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class NestedSetTest extends IntegrationTestCase
 {
     /**
@@ -35,9 +39,9 @@ class NestedSetTest extends IntegrationTestCase
     protected function getTreeAdapter()
     {
         $options = new Options(array(
-                                   'tableName' => 'tree_traversal',
-                                   'idColumnName' => 'tree_traversal_id',
-                               ));
+            'tableName' => 'tree_traversal',
+            'idColumnName' => 'tree_traversal_id',
+        ));
 
         if ('pgsql' == TEST_STEFANO_DB_VENDOR) {
             $options->setSequenceName('tree_traversal_tree_traversal_id_seq');
@@ -119,6 +123,7 @@ class NestedSetTest extends IntegrationTestCase
                 ->addNode(123456789, array(), TreeAdapter::PLACEMENT_BOTTOM);
         } catch (\Exception $e) {
             $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
+
             throw $e;
         }
     }
@@ -142,6 +147,7 @@ class NestedSetTest extends IntegrationTestCase
                 ->addNode(1, array(), TreeAdapter::PLACEMENT_BOTTOM);
         } catch (\Exception $e) {
             $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
+
             throw $e;
         }
     }
@@ -156,6 +162,7 @@ class NestedSetTest extends IntegrationTestCase
                 ->addNode(1, array(), TreeAdapter::PLACEMENT_TOP);
         } catch (\Exception $e) {
             $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
+
             throw $e;
         }
     }
@@ -284,6 +291,7 @@ class NestedSetTest extends IntegrationTestCase
                 ->moveNode(1, 12);
         } catch (\Exception $e) {
             $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
+
             throw $e;
         }
     }
@@ -298,6 +306,7 @@ class NestedSetTest extends IntegrationTestCase
                 ->moveNode(10, 10);
         } catch (\Exception $e) {
             $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
+
             throw $e;
         }
     }
@@ -312,6 +321,7 @@ class NestedSetTest extends IntegrationTestCase
                 ->moveNode(5, 123456);
         } catch (\Exception $e) {
             $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
+
             throw $e;
         }
     }
@@ -326,6 +336,7 @@ class NestedSetTest extends IntegrationTestCase
                 ->moveNode(123456, 6);
         } catch (\Exception $e) {
             $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
+
             throw $e;
         }
     }
@@ -341,10 +352,10 @@ class NestedSetTest extends IntegrationTestCase
 
     public function placementDataProvider()
     {
-        return [
-            [\StefanoTree\TreeInterface::PLACEMENT_TOP],
-            [\StefanoTree\TreeInterface::PLACEMENT_BOTTOM],
-        ];
+        return array(
+            array(\StefanoTree\TreeInterface::PLACEMENT_TOP),
+            array(\StefanoTree\TreeInterface::PLACEMENT_BOTTOM),
+        );
     }
 
     /**
@@ -364,6 +375,7 @@ class NestedSetTest extends IntegrationTestCase
                 ->moveNode(11, 1, $placement);
         } catch (\Exception $e) {
             $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.xml');
+
             throw $e;
         }
     }

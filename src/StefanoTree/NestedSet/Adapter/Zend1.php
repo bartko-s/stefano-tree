@@ -41,26 +41,26 @@ class Zend1 implements AdapterInterface
     public function beginTransaction(): void
     {
         $this->getConnection()
-             ->beginTransaction();
+            ->beginTransaction();
     }
 
     public function commitTransaction(): void
     {
         $this->getConnection()
-             ->commit();
+            ->commit();
     }
 
     public function rollbackTransaction(): void
     {
         $this->getConnection()
-             ->rollBack();
+            ->rollBack();
     }
 
     public function isInTransaction(): bool
     {
         return $this->getConnection()
-                    ->getConnection()
-                    ->inTransaction();
+            ->getConnection()
+            ->inTransaction();
     }
 
     public function canHandleNestedTransaction(): bool
@@ -71,7 +71,7 @@ class Zend1 implements AdapterInterface
     public function quoteIdentifier(string $columnName): string
     {
         return $this->getConnection()
-                    ->quoteIdentifier($columnName);
+            ->quoteIdentifier($columnName);
     }
 
     public function executeInsertSQL(string $sql, array $params = array())
@@ -84,10 +84,10 @@ class Zend1 implements AdapterInterface
         } else {
             if ('' != $options->getSequenceName()) {
                 $lastGeneratedValue = $this->getConnection()
-                                           ->lastSequenceId($options->getSequenceName());
+                    ->lastSequenceId($options->getSequenceName());
             } else {
                 $lastGeneratedValue = $this->getConnection()
-                                           ->lastInsertId();
+                    ->lastInsertId();
             }
 
             return $lastGeneratedValue;
@@ -97,13 +97,13 @@ class Zend1 implements AdapterInterface
     public function executeSQL(string $sql, array $params = array()): void
     {
         $this->getConnection()
-             ->query($sql, $params);
+            ->query($sql, $params);
     }
 
     public function executeSelectSQL(string $sql, array $params = array()): array
     {
         return $this->getConnection()
-                    ->query($sql, $params)
-                    ->fetchAll();
+            ->query($sql, $params)
+            ->fetchAll();
     }
 }

@@ -10,6 +10,10 @@ use StefanoTree\NestedSet\Options;
 use StefanoTreeTest\IntegrationTestCase;
 use StefanoTreeTest\TestUtil;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class ManipulatorJoinTableTest extends IntegrationTestCase
 {
     /**
@@ -36,17 +40,17 @@ class ManipulatorJoinTableTest extends IntegrationTestCase
     protected function getManipulator(): ManipulatorInterface
     {
         $options = new Options(array(
-                                   'tableName' => 'tree_traversal_with_scope',
-                                   'idColumnName' => 'tree_traversal_id',
-                                   'scopeColumnName' => 'scope',
-                                   'dbSelectBuilder' => function () {
-                                       $sql = 'SELECT tree_traversal_with_scope.*, ttm.name AS metadata FROM tree_traversal_with_scope'
-                                           .' LEFT JOIN tree_traversal_metadata AS ttm'
-                                           .' ON ttm.tree_traversal_id = tree_traversal_with_scope.tree_traversal_id';
+            'tableName' => 'tree_traversal_with_scope',
+            'idColumnName' => 'tree_traversal_id',
+            'scopeColumnName' => 'scope',
+            'dbSelectBuilder' => function () {
+                $sql = 'SELECT tree_traversal_with_scope.*, ttm.name AS metadata FROM tree_traversal_with_scope'
+                    .' LEFT JOIN tree_traversal_metadata AS ttm'
+                    .' ON ttm.tree_traversal_id = tree_traversal_with_scope.tree_traversal_id';
 
-                                       return $sql;
-                                   },
-                               ));
+                return $sql;
+            },
+        ));
 
         if ('pgsql' == TEST_STEFANO_DB_VENDOR) {
             $options->setSequenceName('tree_traversal_with_scope_tree_traversal_id_seq');
