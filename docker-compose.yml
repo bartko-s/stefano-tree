@@ -1,0 +1,41 @@
+version: '3.7'
+services:
+  php:
+    build: docker/php
+    volumes:
+      - .:/var/src/
+    expose:
+      - 9100
+    depends_on:
+      - postgres
+      - mariadb
+
+  postgres:
+    image: postgres:12
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_DB=stefano_tests
+    volumes:
+      - type: volume
+        source: postgres-12-data
+        target: /var/lib/postgresql/data
+
+  mariadb:
+    image: mariadb:10
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_USER=root
+      - MYSQL_ALLOW_EMPTY_PASSWORD=true
+      - MYSQL_DATABASE=stefano_tests
+    volumes:
+      - type: volume
+        source: mariadb-10-data
+        target: /var/lib/mysql
+
+volumes:
+  postgres-12-data:
+  mariadb-10-data:

@@ -12,14 +12,18 @@ services:
   - mysql
 
 env:
-  - DB=pgsql ADAPTER=pdo
-  - DB=pgsql ADAPTER=zend1
-  - DB=pgsql ADAPTER=zend2
-  - DB=pgsql ADAPTER=doctrine2-dbal
-  - DB=mysql ADAPTER=pdo
-  - DB=mysql ADAPTER=zend1
-  - DB=mysql ADAPTER=zend2
-  - DB=mysql ADAPTER=doctrine2-dbal
+  global:
+    - TEST_STEFANO_DB_USER=travis
+    - TEST_STEFANO_DB_HOSTNAME=127.0.0.1
+  jobs:
+    - DB=pgsql ADAPTER=pdo
+    - DB=pgsql ADAPTER=zend1
+    - DB=pgsql ADAPTER=zend2
+    - DB=pgsql ADAPTER=doctrine2-dbal
+    - DB=mysql ADAPTER=pdo
+    - DB=mysql ADAPTER=zend1
+    - DB=mysql ADAPTER=zend2
+    - DB=mysql ADAPTER=doctrine2-dbal
 
 sudo: false
 
