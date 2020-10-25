@@ -4,3 +4,4 @@
 /tests/testConfig.local.php
 /build/
 /.php_cs.cache
+/tests/.phpunit.result.cache

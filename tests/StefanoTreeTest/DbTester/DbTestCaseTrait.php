@@ -16,7 +16,7 @@ trait DbTestCaseTrait
     /**
      * Performs operation returned by getSetUpOperation().
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->recreateDbScheme();
         $this->getConnection()
@@ -27,7 +27,7 @@ trait DbTestCaseTrait
     /**
      * Performs operation returned by getTearDownOperation().
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         $this->connection = null;

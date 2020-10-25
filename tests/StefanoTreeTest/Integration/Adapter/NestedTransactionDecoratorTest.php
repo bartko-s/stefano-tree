@@ -28,7 +28,7 @@ class NestedTransactionDecoratorTest extends UnitTestCase
      */
     protected $dbAdapter;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->dbAdapter = TestUtil::getPDOConnection();
 
@@ -42,7 +42,7 @@ class NestedTransactionDecoratorTest extends UnitTestCase
         parent::setUp();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->adapterNestedDoNotSupport = null;
         parent::tearDown();

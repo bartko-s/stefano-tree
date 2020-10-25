@@ -16,13 +16,13 @@ abstract class AdapterAbstract extends IntegrationTestCase
 
     protected $adapterCanQuoteIdentifier = true;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->adapter = null;
         parent::setUp();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->adapter = null;
         parent::tearDown();

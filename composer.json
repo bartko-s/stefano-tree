@@ -34,12 +34,12 @@
     "require-dev": {
         "ext-pdo": "*",
         "doctrine/dbal": "2.*",
-        "phpunit/phpunit": "^7.0.0",
+        "phpunit/phpunit": "^9.0",
         "mockery/mockery": "^1.0.0",
         "php-coveralls/php-coveralls": "^2.0",
         "zf1/zend-db": "^1.12",
         "friendsofphp/php-cs-fixer": "^2.6.0",
-        "phpunit/phpcov": "^5.0.0",
+        "phpunit/phpcov": "^8.0.0",
         "zendframework/zend-db": "2.*"
     },
     "autoload": {

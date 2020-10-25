@@ -22,14 +22,14 @@ class ManipulatorTest extends IntegrationTestCase
      */
     protected $manipulator;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->manipulator = $this->getManipulator();
 
         parent::setUp();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->manipulator = null;
         parent::tearDown();

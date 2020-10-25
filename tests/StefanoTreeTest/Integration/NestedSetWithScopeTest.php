@@ -20,14 +20,14 @@ class NestedSetWithScopeTest extends IntegrationTestCase
      */
     protected $treeAdapter;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->treeAdapter = $this->getTreeAdapter();
 
         parent::setUp();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->treeAdapter = null;
         parent::tearDown();
