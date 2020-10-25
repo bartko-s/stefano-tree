@@ -19,8 +19,6 @@ class TestUtil
     private static $zend1DbAdapter;
     private static $doctrine2Connection;
 
-    private static $mysqlDbSchemeCreated = false;
-
     public static function createDbScheme()
     {
         $connection = self::getPDOConnection();
@@ -28,11 +26,10 @@ class TestUtil
         $queries = array();
 
         if ('mysql' == TEST_STEFANO_DB_VENDOR) {
-            if (self::$mysqlDbSchemeCreated) {
-                return;
-            } else {
-                self::$mysqlDbSchemeCreated = true;
-            }
+            $queries[] = 'DROP TABLE IF EXISTS tree_traversal';
+            $queries[] = 'DROP TABLE IF EXISTS tree_traversal_with_scope';
+            $queries[] = 'DROP TABLE IF EXISTS tree_traversal_metadata';
+
             $queries[] = 'CREATE TABLE `tree_traversal` (
                 `tree_traversal_id` int(11) NOT NULL AUTO_INCREMENT,
                 `name` varchar(255) COLLATE utf8_bin DEFAULT NULL,
@@ -82,7 +79,6 @@ class TestUtil
                 REFERENCES `tree_traversal_with_scope` (`tree_traversal_id`) 
                 ON DELETE CASCADE ON UPDATE CASCADE';
         } elseif ('pgsql' == TEST_STEFANO_DB_VENDOR) {
-            // Run this workaround before each test. DbUnit has issue with postgres https://github.com/sebastianbergmann/dbunit/issues/58
             $queries[] = 'DROP TABLE IF EXISTS tree_traversal';
             $queries[] = 'DROP TABLE IF EXISTS tree_traversal_with_scope';
             $queries[] = 'DROP TABLE IF EXISTS tree_traversal_metadata';

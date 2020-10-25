@@ -54,13 +54,11 @@ class NestedSetWithScopeTest extends IntegrationTestCase
     protected function getDataSet()
     {
         switch ($this->getName()) {
-            case 'testValidateTreeRaiseExceptionIfIdParentIdIsBroken':
-                return $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/with_scope/initDataSetBrokenParents.xml');
             case 'testInvalidTree':
             case 'testRebuildTree':
-                return $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/with_scope/initDataSetBrokenTreeIndexes.xml');
+                return $this->createArrayDataSet(include __DIR__.'/_files/NestedSet/with_scope/initDataSetBrokenTreeIndexes.php');
             default:
-                return $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/with_scope/initDataSet.xml');
+                return $this->createArrayDataSet(include __DIR__.'/_files/NestedSet/with_scope/initDataSet.php');
         }
     }
 
@@ -69,7 +67,7 @@ class NestedSetWithScopeTest extends IntegrationTestCase
         $this->treeAdapter
             ->createRootNode(array(), 10);
 
-        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/NestedSet/with_scope/testCreateRoot.xml');
+        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/NestedSet/with_scope/testCreateRoot.php');
     }
 
     public function testCreateRootRootWithSomeScopeAlreadyExist()
@@ -117,7 +115,7 @@ class NestedSetWithScopeTest extends IntegrationTestCase
         $lastGeneratedValue = $this->treeAdapter
             ->addNode(1);
 
-        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/NestedSet/with_scope/testAddNodePlacementChildTop.xml');
+        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/NestedSet/with_scope/testAddNodePlacementChildTop.php');
         $this->assertEquals(9, $lastGeneratedValue);
     }
 
@@ -126,7 +124,7 @@ class NestedSetWithScopeTest extends IntegrationTestCase
         $this->treeAdapter
             ->moveNode(3, 5, TreeAdapter::PLACEMENT_BOTTOM);
 
-        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/NestedSet/with_scope/testMoveNodePlacementBottom.xml');
+        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/NestedSet/with_scope/testMoveNodePlacementBottom.php');
     }
 
     public function testCannotMoveNodeBetweenScopes()
@@ -143,7 +141,7 @@ class NestedSetWithScopeTest extends IntegrationTestCase
         $this->treeAdapter
             ->deleteBranch(2);
 
-        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/NestedSet/with_scope/testDeleteBranch.xml');
+        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/NestedSet/with_scope/testDeleteBranch.php');
     }
 
     public function testGetDescendants()
@@ -282,7 +280,7 @@ class NestedSetWithScopeTest extends IntegrationTestCase
         $this->treeAdapter
             ->rebuild(1);
 
-        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/NestedSet/with_scope/testRebuildTree.xml');
+        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/NestedSet/with_scope/testRebuildTree.php');
     }
 
     public function testRebuildTreeGivenNodeIdIsNotRoot()

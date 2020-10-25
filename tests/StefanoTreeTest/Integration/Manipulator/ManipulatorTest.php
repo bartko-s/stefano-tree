@@ -54,7 +54,7 @@ class ManipulatorTest extends IntegrationTestCase
 
     protected function getDataSet()
     {
-        return $this->createMySQLXMLDataSet(__DIR__.'/_files/adapter/initDataSet.xml');
+        return $this->createArrayDataSet(include __DIR__.'/_files/adapter/initDataSet.php');
     }
 
     public function testLockTreeDoesNotFail()
@@ -81,7 +81,7 @@ class ManipulatorTest extends IntegrationTestCase
         $this->manipulator
             ->update(2, array('name' => 'changed'));
 
-        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testUpdateData.xml');
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testUpdateData.php');
     }
 
     public function testUpdateDataDoesNotChangeMetadata()
@@ -98,7 +98,7 @@ class ManipulatorTest extends IntegrationTestCase
         $this->manipulator
             ->update(2, $data);
 
-        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testUpdateData.xml');
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testUpdateData.php');
     }
 
     public function testInsertData()
@@ -108,7 +108,7 @@ class ManipulatorTest extends IntegrationTestCase
         $generatedId = $this->manipulator
             ->insert($nodeInfo, array('name' => 'some-name'));
 
-        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testInsertData.xml');
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testInsertData.php');
         $this->assertEquals(26, $generatedId);
     }
 
@@ -120,7 +120,7 @@ class ManipulatorTest extends IntegrationTestCase
         $generatedId = $this->manipulator
             ->insert($nodeInfo, array('name' => 'some-name', 'tree_traversal_id' => $uuid));
 
-        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testInsertDataUserDefinedId.xml');
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testInsertDataUserDefinedId.php');
         $this->assertEquals($uuid, $generatedId);
     }
 
@@ -139,7 +139,7 @@ class ManipulatorTest extends IntegrationTestCase
         $generatedId = $this->manipulator
             ->insert($nodeInfo, $data);
 
-        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testInsertData.xml');
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testInsertData.php');
         $this->assertEquals(26, $generatedId);
     }
 
@@ -148,7 +148,7 @@ class ManipulatorTest extends IntegrationTestCase
         $this->manipulator
             ->delete(3);
 
-        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testDeleteBranch.xml');
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testDeleteBranch.php');
     }
 
     public function testMoveLeftIndexes()
@@ -156,7 +156,7 @@ class ManipulatorTest extends IntegrationTestCase
         $this->manipulator
             ->moveLeftIndexes(12, 500);
 
-        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testMoveLeftIndexes.xml');
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testMoveLeftIndexes.php');
     }
 
     public function testMoveRightIndexes()
@@ -164,7 +164,7 @@ class ManipulatorTest extends IntegrationTestCase
         $this->manipulator
             ->moveRightIndexes(15, 500);
 
-        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testMoveRightIndexes.xml');
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testMoveRightIndexes.php');
     }
 
     public function testUpdateParentId()
@@ -172,7 +172,7 @@ class ManipulatorTest extends IntegrationTestCase
         $this->manipulator
             ->updateParentId(3, 22);
 
-        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testUpdateParentId.xml');
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testUpdateParentId.php');
     }
 
     public function testUpdateLevels()
@@ -180,7 +180,7 @@ class ManipulatorTest extends IntegrationTestCase
         $this->manipulator
             ->updateLevels(16, 35, 500);
 
-        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testUpdateLevels.xml');
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testUpdateLevels.php');
     }
 
     public function testMoveBranch()
@@ -188,7 +188,7 @@ class ManipulatorTest extends IntegrationTestCase
         $this->manipulator
             ->moveBranch(17, 32, 500);
 
-        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testMoveBranch.xml');
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testMoveBranch.php');
     }
 
     public function testGetRoots()
@@ -281,7 +281,7 @@ class ManipulatorTest extends IntegrationTestCase
         $this->manipulator
             ->updateNodeMetadata($nodeInfo);
 
-        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testUpdateNodeMetadata.xml');
+        $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testUpdateNodeMetadata.php');
     }
 
     public function testGetAncestorsReturnEmptyArrayIfNodeDoestNotExist()

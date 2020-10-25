@@ -35,7 +35,7 @@ abstract class AdapterAbstract extends IntegrationTestCase
 
     protected function getDataSet()
     {
-        return $this->createMySQLXMLDataSet(__DIR__.'/../_files/NestedSet/initDataSet.xml');
+        return $this->createArrayDataSet(include __DIR__.'/../_files/NestedSet/initDataSet.php');
     }
 
     public function testIsInTransaction()
@@ -142,7 +142,7 @@ abstract class AdapterAbstract extends IntegrationTestCase
         $result = $a->executeSelectSQL('SELECT * FROM tree_traversal WHERE tree_traversal_id = 26');
         $this->assertEquals(
             array(
-                0 => array_merge($data, array('tree_traversal_id' => 26)),
+                array_merge($data, array('tree_traversal_id' => 26)),
             ),
             $result
         );
@@ -168,7 +168,7 @@ abstract class AdapterAbstract extends IntegrationTestCase
 
         $this->assertEquals(
             array(
-                0 => $data,
+                $data,
             ),
             $result
         );

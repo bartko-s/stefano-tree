@@ -63,7 +63,7 @@ class ManipulatorJoinTableTest extends IntegrationTestCase
 
     protected function getDataSet()
     {
-        return $this->createMySQLXMLDataSet(__DIR__.'/_files/adapter/join_table/initDataSet.xml');
+        return $this->createArrayDataSet(include __DIR__.'/_files/adapter/join_table/initDataSet.php');
     }
 
     public function testGetNode()

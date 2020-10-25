@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<mysqldump>
-    <database name="stefano_tests">
-        <table_data name="tree_traversal">
-        </table_data>
-    </database>
-</mysqldump>

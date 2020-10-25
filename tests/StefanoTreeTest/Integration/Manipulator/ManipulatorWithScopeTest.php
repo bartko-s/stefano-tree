@@ -55,7 +55,7 @@ class ManipulatorWithScopeTest extends IntegrationTestCase
 
     protected function getDataSet()
     {
-        return $this->createMySQLXMLDataSet(__DIR__.'/_files/adapter/with_scope/initDataSet.xml');
+        return $this->createArrayDataSet(include __DIR__.'/_files/adapter/with_scope/initDataSet.php');
     }
 
     public function testUpdateDataDoesNotChangeMetadata()
@@ -72,7 +72,7 @@ class ManipulatorWithScopeTest extends IntegrationTestCase
         $this->manipulator
             ->update(2, $data);
 
-        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testUpdateData.xml');
+        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testUpdateData.php');
     }
 
     public function testInsertDataDoesNotChangeMetadata()
@@ -91,7 +91,7 @@ class ManipulatorWithScopeTest extends IntegrationTestCase
         $this->manipulator
             ->insert($nodeInfo, $data);
 
-        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testInsertData.xml');
+        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testInsertData.php');
     }
 
     public function testDeleteBranch()
@@ -99,7 +99,7 @@ class ManipulatorWithScopeTest extends IntegrationTestCase
         $this->manipulator
             ->delete(2);
 
-        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testDeleteBranch.xml');
+        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testDeleteBranch.php');
     }
 
     public function testMoveLeftIndexes()
@@ -107,7 +107,7 @@ class ManipulatorWithScopeTest extends IntegrationTestCase
         $this->manipulator
             ->moveLeftIndexes(3, 500, 2);
 
-        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testMoveLeftIndexes.xml');
+        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testMoveLeftIndexes.php');
     }
 
     public function testMoveRightIndexes()
@@ -115,7 +115,7 @@ class ManipulatorWithScopeTest extends IntegrationTestCase
         $this->manipulator
             ->moveRightIndexes(4, 500, 2);
 
-        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testMoveRightIndexes.xml');
+        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testMoveRightIndexes.php');
     }
 
     public function testUpdateLevels()
@@ -123,7 +123,7 @@ class ManipulatorWithScopeTest extends IntegrationTestCase
         $this->manipulator
             ->updateLevels(2, 9, 500, 2);
 
-        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testUpdateLevels.xml');
+        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testUpdateLevels.php');
     }
 
     public function testMoveBranch()
@@ -131,7 +131,7 @@ class ManipulatorWithScopeTest extends IntegrationTestCase
         $this->manipulator
             ->moveBranch(2, 9, 500, 2);
 
-        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testMoveBranch.xml');
+        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testMoveBranch.php');
     }
 
     public function testGetRoots()
@@ -194,7 +194,7 @@ class ManipulatorWithScopeTest extends IntegrationTestCase
         $this->manipulator
             ->updateNodeMetadata($nodeInfo);
 
-        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testUpdateNodeMetadata.xml');
+        $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testUpdateNodeMetadata.php');
     }
 
     public function testGetPath()

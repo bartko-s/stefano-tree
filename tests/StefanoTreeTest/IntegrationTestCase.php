@@ -34,10 +34,10 @@ abstract class IntegrationTestCase extends TestCase
         parent::tearDown();
     }
 
-    protected function assertCompareDataSet(array $tables, $expectedDataSetXmlFile)
+    protected function assertCompareDataSet(array $tables, $expectedDataSetArrayFile)
     {
         $dataSet = $this->getConnection()->createDataSet($tables);
-        $expectedDataSet = $this->createMySQLXMLDataSet($expectedDataSetXmlFile);
+        $expectedDataSet = $this->createArrayDataSet(include $expectedDataSetArrayFile);
         $this->assertDataSetsEqual($expectedDataSet, $dataSet);
     }
 }

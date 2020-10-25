@@ -40,7 +40,7 @@ class JoinTableTest extends IntegrationTestCase
 
     protected function getDataSet()
     {
-        return $this->createMySQLXMLDataSet(__DIR__.'/_files/NestedSet/with_scope/initDataSet.xml');
+        return $this->createArrayDataSet(include __DIR__.'/_files/NestedSet/with_scope/initDataSet.php');
     }
 
     public function testJoinTable()
