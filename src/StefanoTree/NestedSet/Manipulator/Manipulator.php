@@ -258,17 +258,14 @@ class Manipulator implements ManipulatorInterface
 
         $adapter = $this->getAdapter();
 
-        $params = array(
-            ':shift' => $shift,
-            ':fromIndex' => $fromIndex,
-        );
+        $params = array();
 
         $sql = 'UPDATE '.$adapter->quoteIdentifier($options->getTableName())
             .' SET '
             .$adapter->quoteIdentifier($options->getLeftColumnName()).' = '
-            .$adapter->quoteIdentifier($options->getLeftColumnName()).' + :shift'
+            .$adapter->quoteIdentifier($options->getLeftColumnName()).' + '.(int) $shift
             .' WHERE '
-            .$adapter->quoteIdentifier($options->getLeftColumnName()).' > :fromIndex';
+            .$adapter->quoteIdentifier($options->getLeftColumnName()).' > '.(int) $fromIndex;
 
         if ($options->getScopeColumnName()) {
             $sql .= ' AND '.$adapter->quoteIdentifier($options->getScopeColumnName()).' = :__scope';
@@ -291,17 +288,14 @@ class Manipulator implements ManipulatorInterface
 
         $adapter = $this->getAdapter();
 
-        $params = array(
-            ':shift' => $shift,
-            ':fromIndex' => $fromIndex,
-        );
+        $params = array();
 
         $sql = 'UPDATE '.$adapter->quoteIdentifier($options->getTableName())
             .' SET '
             .$adapter->quoteIdentifier($options->getRightColumnName()).' = '
-            .$adapter->quoteIdentifier($options->getRightColumnName()).' + :shift'
+            .$adapter->quoteIdentifier($options->getRightColumnName()).' + '.(int) $shift
             .' WHERE '
-            .$adapter->quoteIdentifier($options->getRightColumnName()).' > :fromIndex';
+            .$adapter->quoteIdentifier($options->getRightColumnName()).' >'.(int) $fromIndex;
 
         if ($options->getScopeColumnName()) {
             $sql .= ' AND '.$adapter->quoteIdentifier($options->getScopeColumnName()).' = :__scope';
@@ -345,19 +339,15 @@ class Manipulator implements ManipulatorInterface
 
         $adapter = $this->getAdapter();
 
-        $binds = array(
-            ':shift' => $shift,
-            ':leftFrom' => $leftIndexFrom,
-            ':rightTo' => $rightIndexTo,
-        );
+        $binds = array();
 
         $sql = 'UPDATE '.$adapter->quoteIdentifier($options->getTableName())
             .' SET '
             .$adapter->quoteIdentifier($options->getLevelColumnName()).' = '
-            .$adapter->quoteIdentifier($options->getLevelColumnName()).' + :shift'
+            .$adapter->quoteIdentifier($options->getLevelColumnName()).' + '.(int) $shift
             .' WHERE '
-            .$adapter->quoteIdentifier($options->getLeftColumnName()).' >= :leftFrom'
-            .' AND '.$adapter->quoteIdentifier($options->getRightColumnName()).' <= :rightTo';
+            .$adapter->quoteIdentifier($options->getLeftColumnName()).' >= '.(int) $leftIndexFrom
+            .' AND '.$adapter->quoteIdentifier($options->getRightColumnName()).' <= '.(int) $rightIndexTo;
 
         if ($options->getScopeColumnName()) {
             $sql .= ' AND '.$adapter->quoteIdentifier($options->getScopeColumnName()).' = :__scope';
@@ -380,21 +370,17 @@ class Manipulator implements ManipulatorInterface
 
         $adapter = $this->getAdapter();
 
-        $binds = array(
-            ':shift' => $shift,
-            ':leftFrom' => $leftIndexFrom,
-            ':rightTo' => $rightIndexTo,
-        );
+        $binds = array();
 
         $sql = 'UPDATE '.$adapter->quoteIdentifier($options->getTableName())
             .' SET '
             .$adapter->quoteIdentifier($options->getLeftColumnName()).' = '
-            .$adapter->quoteIdentifier($options->getLeftColumnName()).' + :shift, '
+            .$adapter->quoteIdentifier($options->getLeftColumnName()).' + '.(int) $shift.', '
             .$adapter->quoteIdentifier($options->getRightColumnName()).' = '
-            .$adapter->quoteIdentifier($options->getRightColumnName()).' + :shift'
+            .$adapter->quoteIdentifier($options->getRightColumnName()).' + '.(int) $shift
             .' WHERE '
-            .$adapter->quoteIdentifier($options->getLeftColumnName()).' >= :leftFrom'
-            .' AND '.$adapter->quoteIdentifier($options->getRightColumnName()).' <= :rightTo';
+            .$adapter->quoteIdentifier($options->getLeftColumnName()).' >= '.(int) $leftIndexFrom
+            .' AND '.$adapter->quoteIdentifier($options->getRightColumnName()).' <= '.(int) $rightIndexTo;
 
         if ($options->getScopeColumnName()) {
             $sql .= ' AND '.$adapter->quoteIdentifier($options->getScopeColumnName()).' = :__scope';
