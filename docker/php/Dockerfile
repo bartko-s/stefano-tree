@@ -18,6 +18,8 @@ RUN cd ~ \
     && curl -sS https://getcomposer.org/installer -o composer-setup.php \
     && php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 
+COPY php.ini /usr/local/etc/php/
+
 RUN mkdir /var/src
 
 WORKDIR /var/src/

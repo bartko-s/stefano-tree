@@ -1,19 +1,20 @@
 <?xml version="1.0"?>
-<phpunit bootstrap="./bootstrap.php" colors="true" beStrictAboutTestsThatDoNotTestAnything="false">
-    <testsuites>
-        <testsuite name="unit">
-            <directory>./StefanoTreeTest/Unit</directory>
-        </testsuite>
-        <testsuite name="integration">
-            <directory>./StefanoTreeTest/Integration</directory>
-        </testsuite>
-    </testsuites>
-    <filter>
-        <whitelist>
-            <directory suffix=".php">../src/</directory>    
-        </whitelist>
-    </filter>
-    <logging>
-        <log type="coverage-html" target="./temp/codeCoverage" lowUpperBound="50" highLowerBound="90"/>
-    </logging>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="./bootstrap.php" colors="true" beStrictAboutTestsThatDoNotTestAnything="false" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+  <coverage>
+    <include>
+      <directory suffix=".php">../src/</directory>
+    </include>
+    <report>
+      <html outputDirectory="./temp/codeCoverage" lowUpperBound="50" highLowerBound="90"/>
+    </report>
+  </coverage>
+  <testsuites>
+    <testsuite name="unit">
+      <directory>./StefanoTreeTest/Unit</directory>
+    </testsuite>
+    <testsuite name="integration">
+      <directory>./StefanoTreeTest/Integration</directory>
+    </testsuite>
+  </testsuites>
+  <logging/>
 </phpunit>
