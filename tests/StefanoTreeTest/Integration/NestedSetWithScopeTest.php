@@ -57,6 +57,7 @@ class NestedSetWithScopeTest extends IntegrationTestCase
             case 'testInvalidTree':
             case 'testRebuildTree':
                 return $this->createArrayDataSet(include __DIR__.'/_files/NestedSet/with_scope/initDataSetBrokenTreeIndexes.php');
+
             default:
                 return $this->createArrayDataSet(include __DIR__.'/_files/NestedSet/with_scope/initDataSet.php');
         }

@@ -52,7 +52,7 @@ class NestedSet implements TreeInterface
             );
         }
 
-        if ($dbAdapter instanceof  AdapterInterface) {
+        if ($dbAdapter instanceof AdapterInterface) {
             $adapter = $dbAdapter;
         } elseif ($dbAdapter instanceof Zend2DbAdapter) {
             $adapter = new Zend2($options, $dbAdapter);
@@ -143,12 +143,16 @@ class NestedSet implements TreeInterface
         switch ($placement) {
             case self::PLACEMENT_BOTTOM:
                 return new AddStrategy\Bottom($adapter);
+
             case self::PLACEMENT_TOP:
                 return new AddStrategy\Top($adapter);
+
             case self::PLACEMENT_CHILD_BOTTOM:
                 return new AddStrategy\ChildBottom($adapter);
+
             case self::PLACEMENT_CHILD_TOP:
                 return new AddStrategy\ChildTop($adapter);
+
             default:
                 throw new InvalidArgumentException('Unknown placement "'.$placement.'"');
         }
@@ -176,12 +180,16 @@ class NestedSet implements TreeInterface
         switch ($placement) {
             case self::PLACEMENT_BOTTOM:
                 return new MoveStrategy\Bottom($adapter);
+
             case self::PLACEMENT_TOP:
                 return new MoveStrategy\Top($adapter);
+
             case self::PLACEMENT_CHILD_BOTTOM:
                 return new MoveStrategy\ChildBottom($adapter);
+
             case self::PLACEMENT_CHILD_TOP:
                 return new MoveStrategy\ChildTop($adapter);
+
             default:
                 throw new InvalidArgumentException('Unknown placement "'.$placement.'"');
         }

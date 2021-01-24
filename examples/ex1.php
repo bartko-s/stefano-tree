@@ -470,7 +470,8 @@ function setFlashMessageAndRedirect(string $message, string $url)
     $_SESSION['flashMessage'] = $message;
     $redirectUrl = (isset($_SERVER['HTTPS']) ? 'https' : 'http')."://{$_SERVER['HTTP_HOST']}{$url}";
     header(sprintf('Location: %s', $redirectUrl));
-    die();
+
+    exit();
 }
 
 /************************************
@@ -485,31 +486,37 @@ try {
             setFlashMessageAndRedirect('New root node and scope was successfully created.', '/');
 
             break;
+
         case 'create-node':
             $service->createNode($_POST);
             setFlashMessageAndRedirect('New node was successfully created.', '/');
 
             break;
+
         case 'move-node':
             $service->moveNode($_POST);
             setFlashMessageAndRedirect('Branch/Node was successfully moved.', '/');
 
             break;
+
         case 'update-node':
             $service->updateNode($_POST);
             setFlashMessageAndRedirect('Node was successfully updated.', '/');
 
             break;
+
         case 'delete':
             $service->deleteNode($_GET);
             setFlashMessageAndRedirect('Branch/Node was successfully deleted.', '/');
 
             break;
+
         case 'descendant-test':
             $descendants = $service->findDescendants($_GET);
             $showDescendantTestBlock = true;
 
             break;
+
         case 'ancestor-test':
             $ancestors = $service->findAncestors($_GET);
             $showAncestorTestBlock = true;

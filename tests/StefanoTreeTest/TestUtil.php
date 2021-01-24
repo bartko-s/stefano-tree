@@ -267,18 +267,22 @@ class TestUtil
                 $adapter = new Adapter\Pdo($options, self::getPDOConnection());
 
                 break;
+
             case 'zend1':
                 $adapter = new Adapter\Zend1($options, self::getZend1DbAdapter());
 
                 break;
+
             case 'zend2':
                 $adapter = new Adapter\Zend2($options, self::getZend2DbAdapter());
 
                 break;
+
             case 'doctrine2-dbal':
                 $adapter = new Adapter\Doctrine2DBAL($options, self::getDoctrine2Connection());
 
                 break;
+
             default:
                 throw new \Exception(sprintf('Unknown adapter "%s"', TEST_STEFANO_ADAPTER));
         }

@@ -57,6 +57,7 @@ class NestedSetTest extends IntegrationTestCase
             case 'testCreateRootNodeWithCustomData':
             case 'testGetRootNodeRootDoesNotExist':
                 return $this->createArrayDataSet(include __DIR__.'/_files/NestedSet/initEmptyDataSet.php');
+
             default:
                 return $this->createArrayDataSet(include __DIR__.'/_files/NestedSet/initDataSet.php');
         }
