@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## 4.2.0 (2021-January-24) - no BC breaks
+ - php 8.0 support
+ - doctrine/dbal v.3 support
+
 ## 4.1.0 (2019-December-15) - no BC breaks
 
 ### Added
