@@ -123,10 +123,10 @@ try {
         // id_column_name => uuid 
     );
 
-    $nodeId = $tree->addNodePlacementTop($targetNodeId, $data, $tree::PLACEMENT_CHILD_TOP);
-    $nodeId = $tree->addNodePlacementChildBottom($targetNodeId, $data, $tree::PLACEMENT_CHILD_BOTTOM);
-    $nodeId = $tree->addNodePlacementTop($targetNodeId, $data, $tree::PLACEMENT_TOP);
-    $nodeId = $tree->addNodePlacementBottom($targetNodeId, $data, $tree::PLACEMENT_BOTTOM);
+    $nodeId = $tree->addNode($targetNodeId, $data, $tree::PLACEMENT_CHILD_TOP);
+    $nodeId = $tree->addNode($targetNodeId, $data, $tree::PLACEMENT_CHILD_BOTTOM);
+    $nodeId = $tree->addNode($targetNodeId, $data, $tree::PLACEMENT_TOP);
+    $nodeId = $tree->addNode($targetNodeId, $data, $tree::PLACEMENT_BOTTOM);
 } catch (ValidationException $e) {
     $errorMessage = $e->getMessage();
 }    
