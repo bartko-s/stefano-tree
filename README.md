@@ -2,7 +2,7 @@
 
 
 [![Latest Stable Version](https://poser.pugx.org/stefano/stefano-tree/version)](https://packagist.org/packages/stefano/stefano-tree)
-[![Test Status](https://secure.travis-ci.org/bartko-s/stefano-tree.png?branch=master)](https://travis-ci.org/bartko-s/stefano-tree) 
+[![Build Status](https://app.travis-ci.com/bartko-s/stefano-tree.svg?branch=master)](https://app.travis-ci.com/bartko-s/stefano-tree) 
 [![Coverage Status](https://coveralls.io/repos/github/bartko-s/stefano-tree/badge.svg?branch=master)](https://coveralls.io/github/bartko-s/stefano-tree?branch=master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bartko-s/stefano-tree/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/bartko-s/stefano-tree/?branch=master) 
 [![License](https://poser.pugx.org/stefano/stefano-tree/license)](https://packagist.org/packages/stefano/stefano-tree)
