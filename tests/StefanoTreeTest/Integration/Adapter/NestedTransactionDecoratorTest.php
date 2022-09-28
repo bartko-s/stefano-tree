@@ -14,7 +14,6 @@ use Zend_Db_Adapter_Abstract as ZendDbAdapter;
 
 /**
  * @internal
- * @coversNothing
  */
 class NestedTransactionDecoratorTest extends UnitTestCase
 {

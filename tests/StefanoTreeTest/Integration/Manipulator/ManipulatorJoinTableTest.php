@@ -12,7 +12,6 @@ use StefanoTreeTest\TestUtil;
 
 /**
  * @internal
- * @coversNothing
  */
 class ManipulatorJoinTableTest extends IntegrationTestCase
 {

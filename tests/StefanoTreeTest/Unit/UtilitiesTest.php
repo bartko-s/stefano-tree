@@ -9,7 +9,6 @@ use StefanoTreeTest\UnitTestCase;
 
 /**
  * @internal
- * @coversNothing
  */
 class UtilitiesTest extends UnitTestCase
 {

@@ -1,11 +1,20 @@
-<?xml version="1.0"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="./bootstrap.php" colors="true" beStrictAboutTestsThatDoNotTestAnything="false" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
-  <coverage>
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd"
+         bootstrap="./bootstrap.php"
+         cacheResultFile="./temp/cache/.phpunit.result.cache"
+         executionOrder="depends,defects"
+         colors="true"
+         beStrictAboutTestsThatDoNotTestAnything="false"
+         verbose="true">
+  <coverage cacheDirectory="./temp/cache/code-coverage"
+            pathCoverage="true"
+            processUncoveredFiles="true">
     <include>
       <directory suffix=".php">../src/</directory>
     </include>
     <report>
-      <html outputDirectory="./temp/codeCoverage" lowUpperBound="50" highLowerBound="90"/>
+      <html outputDirectory="./temp/codeCoverage"/>
     </report>
   </coverage>
   <testsuites>

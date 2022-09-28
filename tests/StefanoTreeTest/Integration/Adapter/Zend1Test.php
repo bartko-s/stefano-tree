@@ -11,7 +11,6 @@ use StefanoTreeTest\TestUtil;
 
 /**
  * @internal
- * @coversNothing
  */
 class Zend1Test extends AdapterAbstract
 {

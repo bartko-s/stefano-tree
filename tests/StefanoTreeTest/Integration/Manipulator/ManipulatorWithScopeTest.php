@@ -13,7 +13,6 @@ use StefanoTreeTest\TestUtil;
 
 /**
  * @internal
- * @coversNothing
  */
 class ManipulatorWithScopeTest extends IntegrationTestCase
 {

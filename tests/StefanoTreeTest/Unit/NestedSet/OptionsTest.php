@@ -9,9 +9,8 @@ use StefanoTreeTest\UnitTestCase;
 
 /**
  * @internal
- * @coversNothing
  */
-class NestedSetTest extends UnitTestCase
+class OptionsTest extends UnitTestCase
 {
     public function testThrowExceptionIfAllRequiredSettingsAreNotProvided()
     {
