@@ -38,7 +38,7 @@
         "mockery/mockery": "^1.0.0",
         "php-coveralls/php-coveralls": "^2.0",
         "zf1/zend-db": "^1.12",
-        "friendsofphp/php-cs-fixer": "^2.6.0",
+        "friendsofphp/php-cs-fixer": "^3.0.0",
         "phpunit/phpcov": ">=5 <9",
         "zendframework/zend-db": "2.*"
     },
