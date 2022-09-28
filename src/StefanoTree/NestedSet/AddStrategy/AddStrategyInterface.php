@@ -12,9 +12,9 @@ interface AddStrategyInterface
      * @param int|string $targetNodeId
      * @param array      $data
      *
-     * @throws ValidationException
-     *
      * @return int|string Id of new created node
+     *
+     * @throws ValidationException
      */
     public function add($targetNodeId, array $data = array());
 }

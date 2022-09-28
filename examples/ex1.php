@@ -471,7 +471,7 @@ function setFlashMessageAndRedirect(string $message, string $url)
     $redirectUrl = (isset($_SERVER['HTTPS']) ? 'https' : 'http')."://{$_SERVER['HTTP_HOST']}{$url}";
     header(sprintf('Location: %s', $redirectUrl));
 
-    exit();
+    exit;
 }
 
 /************************************
@@ -554,7 +554,7 @@ $wh = new ViewHelper();
             }
 
             echo $wh->renderFlashMessage();
-            ?>
+?>
 
             <div class="row">
                 <div class="col-sm-4">
@@ -572,8 +572,8 @@ $wh = new ViewHelper();
                 </div>
             </div>
             <?php
-            foreach ($service->getRoots() as $root) {
-                $nodes = $service->getDescendants($root['id']); ?>
+foreach ($service->getRoots() as $root) {
+    $nodes = $service->getDescendants($root['id']); ?>
                 <hr />
                 <h2>Scope - <?php echo $wh->escape($root['group_id']); ?></h2>
 
@@ -689,35 +689,35 @@ $wh = new ViewHelper();
                     </div>
                     <div class="col-sm-6">
                         <?php
-                        if (($showDescendantTestBlock ?? false) && $root['group_id'] == $_GET['scope']) {
-                            ?>
+            if (($showDescendantTestBlock ?? false) && $root['group_id'] == $_GET['scope']) {
+                ?>
                             <h3>Descendants Test Result</h3>
                             <?php
-                            if (0 == count($descendants)) {
-                                echo $wh->renderErrorMessages(array('No descendants was found'));
-                            } else {
-                                echo $wh->renderTree($descendants);
-                            } ?>
+                if (0 == count($descendants)) {
+                    echo $wh->renderErrorMessages(array('No descendants was found'));
+                } else {
+                    echo $wh->renderTree($descendants);
+                } ?>
                         <?php
-                        } ?>
+            } ?>
 
                         <?php
-                        if (($showAncestorTestBlock ?? false) && $root['group_id'] == $_GET['scope']) {
-                            ?>
+            if (($showAncestorTestBlock ?? false) && $root['group_id'] == $_GET['scope']) {
+                ?>
                             <h3>Ancestors Test Result</h3>
                             <?php
-                            if (0 == count($ancestors)) {
-                                echo $wh->renderErrorMessages(array('No ancestors was found'));
-                            } else {
-                                echo $wh->renderBreadcrumbs($ancestors);
-                                echo $wh->renderTree($ancestors);
-                            } ?>
+                if (0 == count($ancestors)) {
+                    echo $wh->renderErrorMessages(array('No ancestors was found'));
+                } else {
+                    echo $wh->renderBreadcrumbs($ancestors);
+                    echo $wh->renderTree($ancestors);
+                } ?>
                             <?php
-                        } ?>
+            } ?>
                     </div>
                 </div>
             <?php
-            }?>
+}?>
         </div>
     </body>
 </html>

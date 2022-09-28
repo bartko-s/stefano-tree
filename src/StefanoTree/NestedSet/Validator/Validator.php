@@ -100,9 +100,9 @@ class Validator implements ValidatorInterface
      * @param int      $left
      * @param int      $level
      *
-     * @throws TreeIsBrokenException if tree is broken and $onlyValidate is true
-     *
      * @return int
+     *
+     * @throws TreeIsBrokenException if tree is broken and $onlyValidate is true
      */
     private function _rebuild(NodeInfo $parentNodeInfo, bool $onlyValidate = false, int $left = 1, int $level = 0): int
     {

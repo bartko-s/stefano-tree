@@ -132,9 +132,9 @@ class NestedSet implements TreeInterface
     /**
      * @param string $placement
      *
-     * @throws InvalidArgumentException
-     *
      * @return AddStrategyInterface
+     *
+     * @throws InvalidArgumentException
      */
     protected function getAddStrategy(string $placement): AddStrategyInterface
     {
@@ -169,9 +169,9 @@ class NestedSet implements TreeInterface
     /**
      * @param string $placement
      *
-     * @throws InvalidArgumentException
-     *
      * @return MoveStrategyInterface
+     *
+     * @throws InvalidArgumentException
      */
     protected function getMoveStrategy(string $placement): MoveStrategyInterface
     {
@@ -218,7 +218,7 @@ class NestedSet implements TreeInterface
 
             $adapter->delete($nodeInfo->getId());
 
-            //patch hole
+            // patch hole
             $moveFromIndex = $nodeInfo->getLeft();
             $shift = $nodeInfo->getLeft() - $nodeInfo->getRight() - 1;
             $adapter->moveLeftIndexes($moveFromIndex, $shift, $nodeInfo->getScope());

@@ -10,10 +10,10 @@ use StefanoTree\NestedSet\QueryBuilder\DescendantQueryBuilderInterface;
 
 interface TreeInterface
 {
-    const PLACEMENT_TOP = 'top';
-    const PLACEMENT_BOTTOM = 'bottom';
-    const PLACEMENT_CHILD_TOP = 'childTop';
-    const PLACEMENT_CHILD_BOTTOM = 'childBottom';
+    public const PLACEMENT_TOP = 'top';
+    public const PLACEMENT_BOTTOM = 'bottom';
+    public const PLACEMENT_CHILD_TOP = 'childTop';
+    public const PLACEMENT_CHILD_BOTTOM = 'childBottom';
 
     /**
      * Create root node.
@@ -21,9 +21,9 @@ interface TreeInterface
      * @param array           $data
      * @param null|int|string $scope Required if scope is used
      *
-     * @throws ValidationException if root already exist
-     *
      * @return int|string Id of new created root
+     *
+     * @throws ValidationException if root already exist
      */
     public function createRootNode($data = array(), $scope = null);
 
@@ -56,9 +56,9 @@ interface TreeInterface
      * @param array      $data
      * @param string     $placement
      *
-     * @throws ValidationException if node was not created
-     *
      * @return int|string id of new created node
+     *
+     * @throws ValidationException if node was not created
      */
     public function addNode($targetNodeId, array $data = array(), string $placement = self::PLACEMENT_CHILD_TOP);
 
@@ -102,9 +102,9 @@ interface TreeInterface
      *
      * @param int|string $rootNodeId
      *
-     * @throws ValidationException if cannot validate tree
-     *
      * @return bool
+     *
+     * @throws ValidationException if cannot validate tree
      */
     public function isValid($rootNodeId): bool;
 

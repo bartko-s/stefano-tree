@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace StefanoTreeTest\Integration\Manipulator;
 
 use StefanoTree\NestedSet\Manipulator\Manipulator;
-use StefanoTree\NestedSet\Manipulator\ManipulatorInterface as ManipulatorInterface;
+use StefanoTree\NestedSet\Manipulator\ManipulatorInterface;
 use StefanoTree\NestedSet\NodeInfo;
 use StefanoTree\NestedSet\Options;
 use StefanoTreeTest\IntegrationTestCase;

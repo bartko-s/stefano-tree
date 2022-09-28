@@ -13,9 +13,9 @@ interface ValidatorInterface
      *
      * @param int|string $rootNodeId
      *
-     * @throws ValidationException if cannot validate tree
-     *
      * @return bool
+     *
+     * @throws ValidationException if cannot validate tree
      */
     public function isValid($rootNodeId): bool;
 
