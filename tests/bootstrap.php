@@ -42,8 +42,8 @@ switch ($treeAdapter) {
 
         break;
 
-    case 'zend2':
-        define('TEST_STEFANO_ADAPTER', 'zend2');
+    case 'laminas-db':
+        define('TEST_STEFANO_ADAPTER', 'laminas-db');
 
         break;
 

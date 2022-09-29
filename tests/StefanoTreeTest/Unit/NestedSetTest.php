@@ -26,7 +26,7 @@ class NestedSetTest extends UnitTestCase
             ),
             array(
                 \Zend\Db\Adapter\Adapter::class,
-                NestedSet\Adapter\Zend2::class,
+                NestedSet\Adapter\LaminasDb::class,
             ),
             array(
                 \Doctrine\DBAL\Connection::class,

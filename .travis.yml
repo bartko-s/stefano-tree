@@ -21,11 +21,11 @@ env:
   jobs:
     - DB=pgsql ADAPTER=pdo
     - DB=pgsql ADAPTER=zend1
-    - DB=pgsql ADAPTER=zend2
+    - DB=pgsql ADAPTER=laminas-db
     - DB=pgsql ADAPTER=doctrine2-dbal
     - DB=mysql ADAPTER=pdo
     - DB=mysql ADAPTER=zend1
-    - DB=mysql ADAPTER=zend2
+    - DB=mysql ADAPTER=laminas-db
     - DB=mysql ADAPTER=doctrine2-dbal
 
 sudo: false

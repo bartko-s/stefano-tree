@@ -6,14 +6,15 @@ namespace StefanoTree;
 
 use Doctrine\DBAL\Connection as DoctrineConnection;
 use Exception;
+use Laminas\Db\Adapter\Adapter as LaminasDbAdapter;
 use StefanoTree\Exception\InvalidArgumentException;
 use StefanoTree\Exception\ValidationException;
 use StefanoTree\NestedSet\Adapter\AdapterInterface;
 use StefanoTree\NestedSet\Adapter\Doctrine2DBAL;
+use StefanoTree\NestedSet\Adapter\LaminasDb;
 use StefanoTree\NestedSet\Adapter\NestedTransactionDecorator;
 use StefanoTree\NestedSet\Adapter\Pdo;
 use StefanoTree\NestedSet\Adapter\Zend1;
-use StefanoTree\NestedSet\Adapter\Zend2;
 use StefanoTree\NestedSet\AddStrategy;
 use StefanoTree\NestedSet\AddStrategy\AddStrategyInterface;
 use StefanoTree\NestedSet\Manipulator\Manipulator;
@@ -28,7 +29,6 @@ use StefanoTree\NestedSet\QueryBuilder\DescendantQueryBuilder;
 use StefanoTree\NestedSet\QueryBuilder\DescendantQueryBuilderInterface;
 use StefanoTree\NestedSet\Validator\Validator;
 use StefanoTree\NestedSet\Validator\ValidatorInterface;
-use Zend\Db\Adapter\Adapter as Zend2DbAdapter;
 
 class NestedSet implements TreeInterface
 {
@@ -54,8 +54,8 @@ class NestedSet implements TreeInterface
 
         if ($dbAdapter instanceof AdapterInterface) {
             $adapter = $dbAdapter;
-        } elseif ($dbAdapter instanceof Zend2DbAdapter) {
-            $adapter = new Zend2($options, $dbAdapter);
+        } elseif ($dbAdapter instanceof LaminasDbAdapter) {
+            $adapter = new LaminasDb($options, $dbAdapter);
         } elseif ($dbAdapter instanceof DoctrineConnection) {
             $adapter = new Doctrine2DBAL($options, $dbAdapter);
         } elseif ($dbAdapter instanceof \Zend_Db_Adapter_Abstract) {

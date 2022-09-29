@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace StefanoTreeTest;
 
 use Doctrine\DBAL;
+use Laminas\Db\Adapter\Adapter as LaminasDbAdapter;
 use PDO;
 use StefanoTree\NestedSet;
 use StefanoTree\NestedSet\Adapter;
 use StefanoTree\NestedSet\Adapter\AdapterInterface;
 use StefanoTree\NestedSet\Options;
-use Zend\Db\Adapter\Adapter as Zend2DbAdapter;
 
 class TestUtil
 {
     private static $dbConnection;
-    private static $zend2DbAdapter;
+    private static $laminasDbAdapter;
     private static $zend1DbAdapter;
     private static $doctrine2Connection;
 
@@ -194,12 +194,12 @@ class TestUtil
     /**
      * Singleton.
      *
-     * @return Zend2DbAdapter
+     * @return LaminasDbAdapter
      */
-    public static function getZend2DbAdapter()
+    public static function getLaminasDbAdapter()
     {
-        if (null == self::$zend2DbAdapter) {
-            self::$zend2DbAdapter = new Zend2DbAdapter(array(
+        if (null == self::$laminasDbAdapter) {
+            self::$laminasDbAdapter = new LaminasDbAdapter(array(
                 'driver' => 'Pdo_'.ucfirst(TEST_STEFANO_DB_VENDOR),
                 'hostname' => TEST_STEFANO_DB_HOSTNAME,
                 'database' => TEST_STEFANO_DB_DB_NAME,
@@ -208,7 +208,7 @@ class TestUtil
             ));
         }
 
-        return self::$zend2DbAdapter;
+        return self::$laminasDbAdapter;
     }
 
     /**
@@ -273,8 +273,8 @@ class TestUtil
 
                 break;
 
-            case 'zend2':
-                $adapter = new Adapter\Zend2($options, self::getZend2DbAdapter());
+            case 'laminas-db':
+                $adapter = new Adapter\LaminasDb($options, self::getLaminasDbAdapter());
 
                 break;
 

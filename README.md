@@ -21,7 +21,7 @@
  - Support scopes (multiple independent tree in one db table)
  - Rebuild broken tree
  - Tested with MySQL/MariaDB and PostgreSQL but should work with any database vendor which support transaction
- - Supported [PDO](http://php.net/manual/en/intro.pdo.php), [Zend Framework 1](https://framework.zend.com/manual/1.12/en/zend.db.html), [Zend Framework 2](https://framework.zend.com/manual/2.4/en/index.html#zend-db), [Doctrine 2 DBAL and Doctrine 3 DBAL](http://docs.doctrine-project.org/projects/doctrine-dbal/en/latest/). It is easy to implement support for any framework
+ - Supported [PDO](http://php.net/manual/en/intro.pdo.php), [Zend Framework 1](https://framework.zend.com/manual/1.12/en/zend.db.html), [Laminas Db](https://github.com/laminas/laminas-db), [Doctrine 2 DBAL and Doctrine 3 DBAL](http://docs.doctrine-project.org/projects/doctrine-dbal/en/latest/). It is easy to implement support for any framework
  - Support nested transaction
  - PHP 7 and PHP 8 support
 
@@ -59,7 +59,7 @@ $options = array(
     // other options
 );
 
-$dbAdapter = pure \PDO, Zend1 Db Adapter, Zend2 Db Adapter, Doctrine DBAL Connection or any class which implements StefanoTree\NestedSet\Adapter\AdapterInterface interface 
+$dbAdapter = pure \PDO, Zend1 Db Adapter, Laminas Db Adapter, Doctrine DBAL Connection or any class which implements StefanoTree\NestedSet\Adapter\AdapterInterface interface 
 
 $tree = new NestedSet($options, $dbAdapter);
 ```

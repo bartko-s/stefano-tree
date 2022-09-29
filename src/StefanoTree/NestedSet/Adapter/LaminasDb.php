@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace StefanoTree\NestedSet\Adapter;
 
+use Laminas\Db\Adapter\Adapter as DbAdapter;
 use StefanoTree\NestedSet\Options;
-use Zend\Db\Adapter\Adapter as DbAdapter;
 
-class Zend2 implements AdapterInterface
+class LaminasDb implements AdapterInterface
 {
     private $connection;
     private $options;

@@ -9,6 +9,8 @@
         "zend",
         "zend framework",
         "doctrine",
+        "laminas",
+        "laminas db",
         "doctrine dbal",
         "symfony",
         "pdo"
@@ -29,18 +31,18 @@
     "suggest": {
         "doctrine/dbal": "If you want to use Doctrine DBAL",
         "zf1/zend-db": "If you want to use Zend1 Db",
-        "zendframework/zend-db": "If you want to use Zend2 Db"
+        "laminas/laminas-db": "If you want to use Laminas Db"
     },
     "require-dev": {
         "ext-pdo": "*",
         "doctrine/dbal": ">=2.0 <4",
-        "phpunit/phpunit": ">=7 <10",
+        "friendsofphp/php-cs-fixer": "^3.0.0",
+        "laminas/laminas-db": "*",
         "mockery/mockery": "^1.0.0",
         "php-coveralls/php-coveralls": "^2.0",
-        "zf1/zend-db": "^1.12",
-        "friendsofphp/php-cs-fixer": "^3.0.0",
         "phpunit/phpcov": ">=5 <9",
-        "zendframework/zend-db": "2.*"
+        "phpunit/phpunit": ">=7 <10",
+        "zf1/zend-db": "^1.12"
     },
     "autoload": {
         "psr-4": {
@@ -55,25 +57,28 @@
             "StefanoTreeTest\\": "tests/StefanoTreeTest/"
         }
     },
+    "config": {
+        "sort-packages": true
+    },
     "scripts": {
         "cs-check": "php-cs-fixer --version && php-cs-fixer fix -v --diff --dry-run --allow-risky yes",
         "cs-fix": "php-cs-fixer fix -v --allow-risky yes",
         "test-pgsql-pdo": "export DB=pgsql ADAPTER=pdo; phpunit -c ./tests/phpunit.xml",
         "test-pgsql-zend1": "export DB=pgsql ADAPTER=zend1; phpunit -c ./tests/phpunit.xml",
-        "test-pgsql-zend2": "export DB=pgsql ADAPTER=zend2; phpunit -c ./tests/phpunit.xml",
+        "test-pgsql-laminas-db": "export DB=pgsql ADAPTER=laminas-db; phpunit -c ./tests/phpunit.xml",
         "test-pgsql-doctrine2": "export DB=pgsql ADAPTER=doctrine2-dbal; phpunit -c ./tests/phpunit.xml",
         "test-mysql-pdo": "export DB=mysql ADAPTER=pdo; phpunit -c ./tests/phpunit.xml",
         "test-mysql-zend1": "export DB=mysql ADAPTER=zend1; phpunit -c ./tests/phpunit.xml",
-        "test-mysql-zend2": "export DB=mysql ADAPTER=zend2; phpunit -c ./tests/phpunit.xml",
+        "test-mysql-laminas-db": "export DB=mysql ADAPTER=laminas-db; phpunit -c ./tests/phpunit.xml",
         "test-mysql-doctrine2": "export DB=mysql ADAPTER=doctrine2-dbal; phpunit -c ./tests/phpunit.xml",
         "test": [
             "@test-pgsql-pdo",
             "@test-pgsql-zend1",
-            "@test-pgsql-zend2",
+            "@test-pgsql-laminas-db",
             "@test-pgsql-doctrine2",
             "@test-mysql-pdo",
             "@test-mysql-zend1",
-            "@test-mysql-zend2",
+            "@test-mysql-laminas-db",
             "@test-mysql-doctrine2"
         ]
     }
