@@ -25,7 +25,7 @@ class NestedSetTest extends UnitTestCase
                 NestedSet\Adapter\Pdo::class,
             ),
             array(
-                \Zend\Db\Adapter\Adapter::class,
+                \Laminas\Db\Adapter\Adapter::class,
                 NestedSet\Adapter\LaminasDb::class,
             ),
             array(
