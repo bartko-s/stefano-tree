@@ -9,6 +9,8 @@
 [![Total Downloads](https://poser.pugx.org/stefano/stefano-tree/downloads)](https://packagist.org/packages/stefano/stefano-tree)
 [![Monthly Downloads](https://poser.pugx.org/stefano/stefano-tree/d/monthly)](https://packagist.org/packages/stefano/stefano-tree)
 
+[![Buy me a coffee](./doc/buy-me-a-coffe.png)](https://www.buymeacoffee.com/bartko)
+
 [![Donate on PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://paypal.me/stevo4)
 
 [Nested Set](https://en.wikipedia.org/wiki/Nested_set_model) implementation for PHP.
@@ -281,4 +283,5 @@ try {
 ## Contributing
 
 Any contributions are welcome. If you find any issue don't hesitate to open a new issue or send a pull request.
- 
+
+[![Buy me a coffee](./doc/buy-me-a-coffe.png)](https://www.buymeacoffee.com/bartko)
