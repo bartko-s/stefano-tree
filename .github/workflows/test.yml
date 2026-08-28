@@ -1,0 +1,26 @@
+name: Test application
+
+on: [push, pull_request]
+
+jobs:
+  test-application:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        container: [php8.2, php8.3, php8.4, php8.5]
+    name: Test application - ${{ matrix.container }}
+    steps:
+      - uses: actions/checkout@v3
+      - run: sudo apt-get update
+      - run: sudo apt-get install docker-compose -y
+      - name: "Build docker image and install dependencies"
+        run: |
+          docker compose build ${{ matrix.container }}
+          ./run.sh ${{ matrix.container }} composer install
+        env:
+          TERM: xterm-256color
+      - name: "Run tests (all adapters on mysql and pgsql)"
+        run: ./run.sh ${{ matrix.container }} composer test
+        env:
+          TERM: xterm-256color
