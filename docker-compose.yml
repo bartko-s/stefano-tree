@@ -1,6 +1,36 @@
 services:
-  php:
-    build: docker/php
+  php8.2:
+    build: docker/php8.2
+    volumes:
+      - .:/var/src/
+    expose:
+      - 9100
+    depends_on:
+      - postgres
+      - mariadb
+
+  php8.3:
+    build: docker/php8.3
+    volumes:
+      - .:/var/src/
+    expose:
+      - 9100
+    depends_on:
+      - postgres
+      - mariadb
+
+  php8.4:
+    build: docker/php8.4
+    volumes:
+      - .:/var/src/
+    expose:
+      - 9100
+    depends_on:
+      - postgres
+      - mariadb
+
+  php8.5:
+    build: docker/php8.5
     volumes:
       - .:/var/src/
     expose:
