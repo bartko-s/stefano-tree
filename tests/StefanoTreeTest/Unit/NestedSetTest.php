@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StefanoTreeTest\Unit;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use StefanoTree\NestedSet;
 use StefanoTreeTest\UnitTestCase;
 
@@ -17,7 +18,7 @@ class NestedSetTest extends UnitTestCase
         'tableName' => 'table',
     );
 
-    public function dataProvider()
+    public static function dataProvider()
     {
         return array(
             array(
@@ -40,11 +41,10 @@ class NestedSetTest extends UnitTestCase
     }
 
     /**
-     * @dataProvider dataProvider
-     *
      * @param mixed $dbAdapterClass
      * @param mixed $expectedAdapterClass
      */
+    #[DataProvider('dataProvider')]
     public function testConstructorMethodWithOptionAsObject($dbAdapterClass, $expectedAdapterClass)
     {
         $dbAdapterStub = \Mockery::mock($dbAdapterClass);
@@ -57,11 +57,10 @@ class NestedSetTest extends UnitTestCase
     }
 
     /**
-     * @dataProvider dataProvider
-     *
      * @param mixed $dbAdapterClass
      * @param mixed $expectedAdapterClass
      */
+    #[DataProvider('dataProvider')]
     public function testConstructorMethodWithOptionAsArray($dbAdapterClass, $expectedAdapterClass)
     {
         $dbAdapterStub = \Mockery::mock($dbAdapterClass);

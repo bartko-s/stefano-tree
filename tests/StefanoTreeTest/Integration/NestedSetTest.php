@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StefanoTreeTest\Integration;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use StefanoTree\NestedSet as TreeAdapter;
 use StefanoTree\NestedSet\Options;
 use StefanoTreeTest\IntegrationTestCase;
@@ -51,7 +52,7 @@ class NestedSetTest extends IntegrationTestCase
 
     protected function getDataSet()
     {
-        switch ($this->getName()) {
+        switch ($this->name()) {
             case 'testCreateRootNode':
             case 'testCreateRootNodeWithCustomData':
             case 'testGetRootNodeRootDoesNotExist':
@@ -350,7 +351,7 @@ class NestedSetTest extends IntegrationTestCase
             ->moveNode(11, 1, 'unknown-placement');
     }
 
-    public function placementDataProvider()
+    public static function placementDataProvider()
     {
         return array(
             array(\StefanoTree\TreeInterface::PLACEMENT_TOP),
@@ -359,12 +360,11 @@ class NestedSetTest extends IntegrationTestCase
     }
 
     /**
-     * @dataProvider placementDataProvider
-     *
      * @param string $placement
      *
      * @throws \Exception
      */
+    #[DataProvider('placementDataProvider')]
     public function testMoveNodeCannotCreateSiblingNodeAtRootNode(string $placement)
     {
         $this->expectException(\StefanoTree\Exception\ValidationException::class);

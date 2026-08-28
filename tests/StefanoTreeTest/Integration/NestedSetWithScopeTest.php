@@ -52,7 +52,7 @@ class NestedSetWithScopeTest extends IntegrationTestCase
 
     protected function getDataSet()
     {
-        switch ($this->getName()) {
+        switch ($this->name()) {
             case 'testInvalidTree':
             case 'testRebuildTree':
                 return $this->createArrayDataSet(include __DIR__.'/_files/NestedSet/with_scope/initDataSetBrokenTreeIndexes.php');

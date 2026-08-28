@@ -93,10 +93,9 @@ class Manipulator implements ManipulatorInterface
         $left = (int) $data[$options->getLeftColumnName()];
         $right = (int) $data[$options->getRightColumnName()];
 
-        if (isset($data[$options->getScopeColumnName()])) {
+        $scope = null;
+        if (null !== $options->getScopeColumnName() && isset($data[$options->getScopeColumnName()])) {
             $scope = $data[$options->getScopeColumnName()];
-        } else {
-            $scope = null;
         }
 
         return new NodeInfo($id, $parentId, $level, $left, $right, $scope);
