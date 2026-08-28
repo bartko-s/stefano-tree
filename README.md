@@ -20,11 +20,11 @@
 ## Features
 
  - NestedSet(MPTT - Modified Pre-order Tree Traversal)
- - Support scopes (multiple independent tree in one db table)
+ - Support scopes (multiple independent trees in one db table)
  - Rebuild broken tree
- - Tested with MySQL/MariaDB and PostgreSQL but should work with any database vendor which support transaction
+ - Tested with MySQL/MariaDB and PostgreSQL but should work with any database vendor which supports transactions
  - Supported [PDO](http://php.net/manual/en/intro.pdo.php), [Zend Framework 1](https://framework.zend.com/manual/1.12/en/zend.db.html), [Laminas Db](https://github.com/laminas/laminas-db), [Doctrine 2 DBAL and Doctrine 3 DBAL](http://docs.doctrine-project.org/projects/doctrine-dbal/en/latest/). It is easy to implement support for any framework
- - Support nested transaction
+ - Support nested transactions
  - PHP 7 and PHP 8 support
 
 ## Dependencies
@@ -209,7 +209,7 @@ $tree->getDescendantsQueryBuilder()
      ->levelLimit(1)
      ->get($nodeId);
 
-// exclude first level($nodeId) from result
+// exclude first level ($nodeId) from result
 $tree->getDescendants()
      ->excludeFirstNLevel(1)
      ->get($nodeId);
@@ -219,18 +219,18 @@ $tree->getDescendantsQueryBuilder()
      ->excludeFirstNLevel(2)
      ->get($nodeId);
 
-// return first 4 level
+// return first 4 levels
 $tree->getDescendantsQueryBuilder()
      ->levelLimit(4)
      ->get($nodeId);
 
-// exclude branch from  result
+// exclude branch from result
 $tree->getDescendantsQueryBuilder()
      ->excludeBranch(22)
      ->get($nodeId);
 ```
 
-- Get Ancestors
+- Get ancestors
 
 ```
 $nodeId = 15;
@@ -243,7 +243,7 @@ $tree->getAncestorsQueryBuilder()
 $tree->getAncestorsQueryBuilder()
      ->get($nodeId, true);
 
-// exclude last node($nodeId) from result
+// exclude last node ($nodeId) from result
 $tree->getAncestorsQueryBuilder()
      ->excludeLastNLevel(1)
      ->get($nodeId);
@@ -262,7 +262,7 @@ $tree->getAncestorsQueryBuilder()
 use StefanoTree\Exception\ValidationException;
 
 try {
-    $satus = $tree->isValid($rootNodeId);
+    $status = $tree->isValid($rootNodeId);
 } catch (ValidationException $e) {
     $errorMessage = $e->getMessage();
 }
