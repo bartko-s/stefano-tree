@@ -482,6 +482,9 @@ function setFlashMessageAndRedirect(string $message, string $url)
  ***********************************/
 $service = new Service($treeAdapter);
 
+$descendants = array();
+$ancestors = array();
+
 try {
     switch ($_GET['action'] ?? '') {
         case 'create-scope':

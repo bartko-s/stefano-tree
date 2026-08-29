@@ -36,6 +36,7 @@
         "friendsofphp/php-cs-fixer": "^3.0.0",
         "laminas/laminas-db": "*",
         "mockery/mockery": "^1.0.0",
+        "phpstan/phpstan": "^2.2",
         "phpunit/phpcov": "^10.0",
         "phpunit/phpunit": "^11.5"
     },
@@ -56,6 +57,7 @@
         "sort-packages": true
     },
     "scripts": {
+        "phpstan": "vendor/bin/phpstan analyse --no-progress",
         "cs-check": "php-cs-fixer --version && php-cs-fixer fix -v --diff --dry-run --allow-risky yes",
         "cs-fix": "php-cs-fixer fix -v --allow-risky yes",
         "test-pgsql-pdo": "export DB=pgsql ADAPTER=pdo; phpunit -c ./tests/phpunit.xml",
