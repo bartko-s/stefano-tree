@@ -2,9 +2,8 @@
 
 
 [![Latest Stable Version](https://poser.pugx.org/stefano/stefano-tree/version)](https://packagist.org/packages/stefano/stefano-tree)
-[![Build Status](https://app.travis-ci.com/bartko-s/stefano-tree.svg?branch=master)](https://app.travis-ci.com/bartko-s/stefano-tree) 
+[![Test application](https://github.com/bartko-s/stefano-tree/actions/workflows/test.yml/badge.svg)](https://github.com/bartko-s/stefano-tree/actions/workflows/test.yml)
 [![Coverage Status](https://coveralls.io/repos/github/bartko-s/stefano-tree/badge.svg?branch=master)](https://coveralls.io/github/bartko-s/stefano-tree?branch=master)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bartko-s/stefano-tree/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/bartko-s/stefano-tree/?branch=master) 
 [![License](https://poser.pugx.org/stefano/stefano-tree/license)](https://packagist.org/packages/stefano/stefano-tree)
 [![Total Downloads](https://poser.pugx.org/stefano/stefano-tree/downloads)](https://packagist.org/packages/stefano/stefano-tree)
 [![Monthly Downloads](https://poser.pugx.org/stefano/stefano-tree/d/monthly)](https://packagist.org/packages/stefano/stefano-tree)
@@ -25,7 +24,7 @@
  - Tested with MySQL/MariaDB and PostgreSQL but should work with any database vendor which supports transactions
  - Supported [PDO](http://php.net/manual/en/intro.pdo.php), [Zend Framework 1](https://framework.zend.com/manual/1.12/en/zend.db.html), [Laminas Db](https://github.com/laminas/laminas-db), [Doctrine 2 DBAL and Doctrine 3 DBAL](http://docs.doctrine-project.org/projects/doctrine-dbal/en/latest/). It is easy to implement support for any framework
  - Support nested transactions
- - PHP 7 and PHP 8 support
+ - PHP 8.2+ support (tested on PHP 8.2 – 8.5)
 
 ## Dependencies
 - This library has no external dependencies. Can work with pure PHP.

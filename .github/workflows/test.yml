@@ -24,3 +24,29 @@ jobs:
         run: ./run.sh ${{ matrix.container }} composer test
         env:
           TERM: xterm-256color
+
+  coverage:
+    name: Test coverage - sent to Coveralls
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v3
+      - run: sudo apt-get update
+      - run: sudo apt-get install docker-compose -y
+      - name: "Build docker image and install dependencies"
+        run: |
+          docker compose build php8.5
+          ./run.sh php8.5 composer install
+        env:
+          TERM: xterm-256color
+      - name: "Run tests with coverage (all adapters on mysql and pgsql)"
+        run: ./run.sh php8.5 composer test-coverage
+        env:
+          TERM: xterm-256color
+      - name: "Merge coverage reports"
+        run: ./run.sh php8.5 composer coverage-merge
+        env:
+          TERM: xterm-256color
+      - name: "Upload coverage to Coveralls"
+        uses: coverallsapp/github-action@v2
+        with:
+          file: build/logs/clover.xml

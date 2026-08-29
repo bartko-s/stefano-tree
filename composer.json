@@ -39,7 +39,6 @@
         "friendsofphp/php-cs-fixer": "^3.0.0",
         "laminas/laminas-db": "*",
         "mockery/mockery": "^1.0.0",
-        "php-coveralls/php-coveralls": "^2.0",
         "phpunit/phpcov": "^10.0",
         "phpunit/phpunit": "^11.5",
         "zf1/zend-db": "^1.12"
@@ -80,6 +79,26 @@
             "@test-mysql-zend1",
             "@test-mysql-laminas-db",
             "@test-mysql-doctrine2"
-        ]
+        ],
+        "test-coverage": [
+            "mkdir -p build/logs && rm -f build/logs/*.cov",
+            "@test-coverage-pgsql-pdo",
+            "@test-coverage-pgsql-zend1",
+            "@test-coverage-pgsql-laminas-db",
+            "@test-coverage-pgsql-doctrine2",
+            "@test-coverage-mysql-pdo",
+            "@test-coverage-mysql-zend1",
+            "@test-coverage-mysql-laminas-db",
+            "@test-coverage-mysql-doctrine2"
+        ],
+        "test-coverage-pgsql-pdo": "export XDEBUG_MODE=coverage DB=pgsql ADAPTER=pdo; phpunit -c ./tests/phpunit.xml --coverage-php build/logs/coverage-pgsql-pdo.cov",
+        "test-coverage-pgsql-zend1": "export XDEBUG_MODE=coverage DB=pgsql ADAPTER=zend1; phpunit -c ./tests/phpunit.xml --coverage-php build/logs/coverage-pgsql-zend1.cov",
+        "test-coverage-pgsql-laminas-db": "export XDEBUG_MODE=coverage DB=pgsql ADAPTER=laminas-db; phpunit -c ./tests/phpunit.xml --coverage-php build/logs/coverage-pgsql-laminas-db.cov",
+        "test-coverage-pgsql-doctrine2": "export XDEBUG_MODE=coverage DB=pgsql ADAPTER=doctrine2-dbal; phpunit -c ./tests/phpunit.xml --coverage-php build/logs/coverage-pgsql-doctrine2.cov",
+        "test-coverage-mysql-pdo": "export XDEBUG_MODE=coverage DB=mysql ADAPTER=pdo; phpunit -c ./tests/phpunit.xml --coverage-php build/logs/coverage-mysql-pdo.cov",
+        "test-coverage-mysql-zend1": "export XDEBUG_MODE=coverage DB=mysql ADAPTER=zend1; phpunit -c ./tests/phpunit.xml --coverage-php build/logs/coverage-mysql-zend1.cov",
+        "test-coverage-mysql-laminas-db": "export XDEBUG_MODE=coverage DB=mysql ADAPTER=laminas-db; phpunit -c ./tests/phpunit.xml --coverage-php build/logs/coverage-mysql-laminas-db.cov",
+        "test-coverage-mysql-doctrine2": "export XDEBUG_MODE=coverage DB=mysql ADAPTER=doctrine2-dbal; phpunit -c ./tests/phpunit.xml --coverage-php build/logs/coverage-mysql-doctrine2.cov",
+        "coverage-merge": "mkdir -p build/logs && phpcov merge --clover build/logs/clover.xml build/logs && sed -i 's|/var/src/||g' build/logs/clover.xml"
     }
 }
