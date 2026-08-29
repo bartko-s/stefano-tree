@@ -188,6 +188,21 @@ try {
 
 ### Getting nodes
 
+- Get a node
+
+```
+$nodeId = 15;
+
+// node data or null if the node does not exist
+$node = $tree->getNode($nodeId);
+
+// root node of the tree (pass $scope if scope support is enabled)
+$rootNode = $tree->getRootNode($scope);
+
+// all root nodes (useful when scope support is enabled)
+$roots = $tree->getRoots();
+```
+
 - Get descendants
 
 ```
@@ -207,8 +222,8 @@ $tree->getDescendantsQueryBuilder()
      ->levelLimit(1)
      ->get($nodeId);
 
-// exclude first level ($nodeId) from result
-$tree->getDescendants()
+// exclude the first level ($nodeId itself) from result
+$tree->getDescendantsQueryBuilder()
      ->excludeFirstNLevel(1)
      ->get($nodeId);
 
@@ -254,7 +269,7 @@ $tree->getAncestorsQueryBuilder()
 
 ### Validation and Rebuild broken tree
 
-- Check if tree is valid
+- Check if tree is valid. Returns false when the tree is broken;
 
 ```
 use StefanoTree\Exception\ValidationException;
@@ -263,6 +278,10 @@ try {
     $status = $tree->isValid($rootNodeId);
 } catch (ValidationException $e) {
     $errorMessage = $e->getMessage();
+}
+
+if (false === $status) {
+    // the tree is broken and can be repaired, see rebuild() below
 }
 ```
 
