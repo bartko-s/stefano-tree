@@ -22,7 +22,7 @@
  - Support scopes (multiple independent trees in one db table)
  - Rebuild broken tree
  - Tested with MySQL/MariaDB and PostgreSQL but should work with any database vendor which supports transactions
- - Supported [PDO](http://php.net/manual/en/intro.pdo.php), [Zend Framework 1](https://framework.zend.com/manual/1.12/en/zend.db.html), [Laminas Db](https://github.com/laminas/laminas-db), [Doctrine 2 DBAL and Doctrine 3 DBAL](http://docs.doctrine-project.org/projects/doctrine-dbal/en/latest/). It is easy to implement support for any framework
+ - Supported [PDO](http://php.net/manual/en/intro.pdo.php), [Zend Framework 1](https://framework.zend.com/manual/1.12/en/zend.db.html), [Laminas Db](https://github.com/laminas/laminas-db), [Doctrine DBAL 4](https://www.doctrine-project.org/projects/doctrine-dbal/en/current/index.html). It is easy to implement support for any framework
  - Support nested transactions
  - PHP 8.2+ support (tested on PHP 8.2 – 8.5)
 

@@ -17,7 +17,7 @@ class TestUtil
     private static $dbConnection;
     private static $laminasDbAdapter;
     private static $zend1DbAdapter;
-    private static $doctrine2Connection;
+    private static $doctrineConnection;
 
     public static function createDbScheme()
     {
@@ -235,9 +235,9 @@ class TestUtil
      *
      * @return DBAL\Connection
      */
-    public static function getDoctrine2Connection()
+    public static function getDoctrineDBALConnection()
     {
-        if (null == self::$doctrine2Connection) {
+        if (null == self::$doctrineConnection) {
             $config = new DBAL\Configuration();
             $connectionParams = array(
                 'dbname' => TEST_STEFANO_DB_DB_NAME,
@@ -247,10 +247,10 @@ class TestUtil
                 'driver' => 'pdo_'.strtolower(TEST_STEFANO_DB_VENDOR),
             );
 
-            self::$doctrine2Connection = DBAL\DriverManager::getConnection($connectionParams, $config);
+            self::$doctrineConnection = DBAL\DriverManager::getConnection($connectionParams, $config);
         }
 
-        return self::$doctrine2Connection;
+        return self::$doctrineConnection;
     }
 
     /**
@@ -279,7 +279,7 @@ class TestUtil
                 break;
 
             case 'doctrine2-dbal':
-                $adapter = new Adapter\Doctrine2DBAL($options, self::getDoctrine2Connection());
+                $adapter = new Adapter\DoctrineDBAL($options, self::getDoctrineDBALConnection());
 
                 break;
 

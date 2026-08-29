@@ -10,7 +10,7 @@ use Laminas\Db\Adapter\Adapter as LaminasDbAdapter;
 use StefanoTree\Exception\InvalidArgumentException;
 use StefanoTree\Exception\ValidationException;
 use StefanoTree\NestedSet\Adapter\AdapterInterface;
-use StefanoTree\NestedSet\Adapter\Doctrine2DBAL;
+use StefanoTree\NestedSet\Adapter\DoctrineDBAL;
 use StefanoTree\NestedSet\Adapter\LaminasDb;
 use StefanoTree\NestedSet\Adapter\NestedTransactionDecorator;
 use StefanoTree\NestedSet\Adapter\Pdo;
@@ -57,7 +57,7 @@ class NestedSet implements TreeInterface
         } elseif ($dbAdapter instanceof LaminasDbAdapter) {
             $adapter = new LaminasDb($options, $dbAdapter);
         } elseif ($dbAdapter instanceof DoctrineConnection) {
-            $adapter = new Doctrine2DBAL($options, $dbAdapter);
+            $adapter = new DoctrineDBAL($options, $dbAdapter);
         } elseif ($dbAdapter instanceof \Zend_Db_Adapter_Abstract) {
             $adapter = new Zend1($options, $dbAdapter);
         } elseif ($dbAdapter instanceof \PDO) {

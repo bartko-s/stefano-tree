@@ -35,7 +35,7 @@
     },
     "require-dev": {
         "ext-pdo": "*",
-        "doctrine/dbal": ">=2.0 <4",
+        "doctrine/dbal": "^4.0",
         "friendsofphp/php-cs-fixer": "^3.0.0",
         "laminas/laminas-db": "*",
         "mockery/mockery": "^1.0.0",

@@ -7,7 +7,7 @@ namespace StefanoTree\NestedSet\Adapter;
 use Doctrine\DBAL\Connection as DbConnection;
 use StefanoTree\NestedSet\Options;
 
-class Doctrine2DBAL implements AdapterInterface
+class DoctrineDBAL implements AdapterInterface
 {
     private $connection;
     private $options;
@@ -68,8 +68,15 @@ class Doctrine2DBAL implements AdapterInterface
 
     public function quoteIdentifier(string $columnName): string
     {
-        return $this->getConnection()
-            ->quoteIdentifier($columnName);
+        $quotedParts = array_map(
+            function (string $part) {
+                return $this->getConnection()
+                    ->quoteSingleIdentifier($part);
+            },
+            explode('.', $columnName)
+        );
+
+        return implode('.', $quotedParts);
     }
 
     public function executeInsertSQL(string $sql, array $params = array())
@@ -95,6 +102,6 @@ class Doctrine2DBAL implements AdapterInterface
     {
         return $this->getConnection()
             ->executeQuery($sql, $params)
-            ->fetchAll();
+            ->fetchAllAssociative();
     }
 }
