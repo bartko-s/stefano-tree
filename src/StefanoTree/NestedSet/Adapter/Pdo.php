@@ -8,30 +8,17 @@ use StefanoTree\NestedSet\Options;
 
 class Pdo implements AdapterInterface
 {
-    private $connection;
-    private $options;
-
-    /**
-     * @param Options $options
-     * @param \PDO    $connection
-     */
-    public function __construct(Options $options, \PDO $connection)
-    {
-        $this->connection = $connection;
-        $this->options = $options;
+    public function __construct(
+        private readonly Options $options,
+        private readonly \PDO $connection,
+    ) {
     }
 
-    /**
-     * @return \PDO
-     */
     private function getConnection(): \PDO
     {
         return $this->connection;
     }
 
-    /**
-     * @return Options
-     */
     public function getOptions(): Options
     {
         return $this->options;
@@ -71,7 +58,7 @@ class Pdo implements AdapterInterface
         return $columnName;
     }
 
-    public function executeInsertSQL(string $sql, array $params = array())
+    public function executeInsertSQL(string $sql, array $params = array()): int|string
     {
         $options = $this->getOptions();
 

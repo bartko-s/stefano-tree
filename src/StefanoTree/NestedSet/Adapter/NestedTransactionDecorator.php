@@ -6,15 +6,13 @@ namespace StefanoTree\NestedSet\Adapter;
 
 class NestedTransactionDecorator implements AdapterInterface
 {
-    private $counter = 0;
-    private $rollbackOnly = false;
-    private $transactionWasOpenOutside = false;
+    private int $counter = 0;
+    private bool $rollbackOnly = false;
+    private bool $transactionWasOpenOutside = false;
 
-    private $adapter;
-
-    public function __construct(AdapterInterface $adapter)
-    {
-        $this->adapter = $adapter;
+    public function __construct(
+        private readonly AdapterInterface $adapter,
+    ) {
     }
 
     public function getAdapter(): AdapterInterface
@@ -107,7 +105,7 @@ class NestedTransactionDecorator implements AdapterInterface
             ->quoteIdentifier($columnName);
     }
 
-    public function executeInsertSQL(string $sql, array $params = array())
+    public function executeInsertSQL(string $sql, array $params = array()): int|string
     {
         return $this->getAdapter()
             ->executeInsertSQL($sql, $params);

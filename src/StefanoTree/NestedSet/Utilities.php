@@ -9,10 +9,10 @@ class Utilities
     /**
      * Convert flat tree structure to nested.
      *
-     * @param array  $flatTree
-     * @param string $levelName
+     * @param list<array<string, mixed>> $flatTree
+     * @param string                     $levelName
      *
-     * @return array
+     * @return array<int, array<string, mixed>>
      */
     public static function flatToNested(
         array $flatTree,
@@ -22,13 +22,13 @@ class Utilities
     }
 
     /**
-     * @param array    $flatTree
-     * @param string   $levelName
-     * @param null|int $level
-     * @param int      $startPos
-     * @param array    $result
+     * @param list<array<string, mixed>>       $flatTree
+     * @param string                           $levelName
+     * @param null|int                         $level
+     * @param int                              $startPos
+     * @param array<int, array<string, mixed>> $result
      *
-     * @return array
+     * @return array<int, array<string, mixed>>
      */
     private static function _flatToNested(
         array $flatTree,

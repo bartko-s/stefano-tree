@@ -6,8 +6,6 @@ namespace StefanoTreeTest\DbTester;
 
 class ArrayDataSource
 {
-    private $dataSource;
-
     /**
      * array(
      *      tableName => (
@@ -19,13 +17,16 @@ class ArrayDataSource
      *      another table
      * ).
      *
-     * @param array $dataSource
+     * @param array<string, list<array<string, mixed>>> $dataSource
      */
-    public function __construct(array $dataSource)
-    {
-        $this->dataSource = $dataSource;
+    public function __construct(
+        private readonly array $dataSource,
+    ) {
     }
 
+    /**
+     * @return list<string>
+     */
     public function getTableNames(): array
     {
         $tables = array();
@@ -36,7 +37,10 @@ class ArrayDataSource
         return $tables;
     }
 
-    public function getTableData(string $tableName, bool $sort = false)
+    /**
+     * @return list<array<string, mixed>>
+     */
+    public function getTableData(string $tableName, bool $sort = false): array
     {
         if (array_key_exists($tableName, $this->dataSource)) {
             if ($sort) {
@@ -52,6 +56,11 @@ class ArrayDataSource
         }
     }
 
+    /**
+     * @param list<array<string, mixed>> $data
+     *
+     * @return list<array<string, mixed>>
+     */
     private function sortData(array $data): array
     {
         usort($data, function ($a, $b) {

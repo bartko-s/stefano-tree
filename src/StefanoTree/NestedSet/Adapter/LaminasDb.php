@@ -16,17 +16,11 @@ class LaminasDb implements AdapterInterface
     ) {
     }
 
-    /**
-     * @return DbAdapter
-     */
     private function getConnection(): DbAdapter
     {
         return $this->connection;
     }
 
-    /**
-     * @return Options
-     */
     public function getOptions(): Options
     {
         return $this->options;
@@ -79,7 +73,7 @@ class LaminasDb implements AdapterInterface
             ->quoteIdentifierChain(explode('.', $columnName));
     }
 
-    public function executeInsertSQL(string $sql, array $params = array())
+    public function executeInsertSQL(string $sql, array $params = array()): int|string
     {
         $options = $this->getOptions();
 

@@ -7,6 +7,7 @@ namespace StefanoTreeTest\Integration\Manipulator;
 use StefanoTree\NestedSet\Manipulator\Manipulator;
 use StefanoTree\NestedSet\Manipulator\ManipulatorInterface;
 use StefanoTree\NestedSet\Options;
+use StefanoTreeTest\DbTester\ArrayDataSource;
 use StefanoTreeTest\IntegrationTestCase;
 use StefanoTreeTest\TestUtil;
 
@@ -30,9 +31,6 @@ class ManipulatorJoinTableTest extends IntegrationTestCase
         parent::tearDown();
     }
 
-    /**
-     * @return ManipulatorInterface
-     */
     protected function getManipulator(): ManipulatorInterface
     {
         $options = new Options(array(
@@ -53,12 +51,12 @@ class ManipulatorJoinTableTest extends IntegrationTestCase
         return $manipulator;
     }
 
-    protected function getDataSet()
+    protected function getDataSet(): ArrayDataSource
     {
         return $this->createArrayDataSet(include __DIR__.'/_files/adapter/join_table/initDataSet.php');
     }
 
-    public function testGetNode()
+    public function testGetNode(): void
     {
         $nodes = $this->manipulator
             ->getDescendants(10);
@@ -78,7 +76,7 @@ class ManipulatorJoinTableTest extends IntegrationTestCase
         $this->assertEquals($expected, $nodes);
     }
 
-    public function testGetAncestors()
+    public function testGetAncestors(): void
     {
         $nodes = $this->manipulator
             ->getAncestors(10, 2, 1);
@@ -108,7 +106,7 @@ class ManipulatorJoinTableTest extends IntegrationTestCase
         $this->assertEquals($expected, $nodes);
     }
 
-    public function testGetDescendants()
+    public function testGetDescendants(): void
     {
         $nodes = $this->manipulator
             ->getDescendants(2, 1, 1, 4);
@@ -138,7 +136,7 @@ class ManipulatorJoinTableTest extends IntegrationTestCase
         $this->assertEquals($expected, $nodes);
     }
 
-    public function testGetChildrenNodeInfo()
+    public function testGetChildrenNodeInfo(): void
     {
         $nodes = $this->manipulator
             ->getChildrenNodeInfo(2);
@@ -146,7 +144,7 @@ class ManipulatorJoinTableTest extends IntegrationTestCase
         $this->assertEquals(3, count($nodes));
     }
 
-    public function testGetNodeInfo()
+    public function testGetNodeInfo(): void
     {
         $nodeInfo = $this->manipulator
             ->getNodeInfo(2);

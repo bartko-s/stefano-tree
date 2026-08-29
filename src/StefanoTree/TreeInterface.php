@@ -18,49 +18,49 @@ interface TreeInterface
     /**
      * Create root node.
      *
-     * @param array           $data
-     * @param null|int|string $scope Required if scope is used
+     * @param array<string, mixed> $data
+     * @param null|int|string      $scope Required if scope is used
      *
      * @return int|string Id of new created root
      *
      * @throws ValidationException if root already exist
      */
-    public function createRootNode($data = array(), $scope = null);
+    public function createRootNode(array $data = array(), int|string|null $scope = null): int|string;
 
     /**
      * Get root note.
      *
      * @param null|int|string $scope Required if scope is used
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function getRootNode($scope = null): array;
+    public function getRootNode(int|string|null $scope = null): array;
 
     /**
      * Get root nodes.
      *
-     * @return array
+     * @return array<int, array<string, mixed>>
      */
     public function getRoots(): array;
 
     /**
      * Update node.
      *
-     * @param int|string $nodeId
-     * @param array      $data
+     * @param int|string           $nodeId
+     * @param array<string, mixed> $data
      */
-    public function updateNode($nodeId, array $data): void;
+    public function updateNode(int|string $nodeId, array $data): void;
 
     /**
-     * @param int|string $targetNodeId
-     * @param array      $data
-     * @param string     $placement
+     * @param int|string           $targetNodeId
+     * @param array<string, mixed> $data
+     * @param string               $placement
      *
      * @return int|string id of new created node
      *
      * @throws ValidationException if node was not created
      */
-    public function addNode($targetNodeId, array $data = array(), string $placement = self::PLACEMENT_CHILD_TOP);
+    public function addNode(int|string $targetNodeId, array $data = array(), string $placement = self::PLACEMENT_CHILD_TOP): int|string;
 
     /**
      * @param int    $sourceNodeId
@@ -69,23 +69,23 @@ interface TreeInterface
      *
      * @throws ValidationException if node was not moved
      */
-    public function moveNode($sourceNodeId, $targetNodeId, string $placement = self::PLACEMENT_CHILD_TOP): void;
+    public function moveNode(int|string $sourceNodeId, int|string $targetNodeId, string $placement = self::PLACEMENT_CHILD_TOP): void;
 
     /**
      * Delete node with nodeId and all its descendants.
      *
      * @param int|string $nodeId
      */
-    public function deleteBranch($nodeId): void;
+    public function deleteBranch(int|string $nodeId): void;
 
     /**
      * Return node.
      *
      * @param int|string $nodeId
      *
-     * @return null|array
+     * @return null|array<string, mixed>
      */
-    public function getNode($nodeId): ?array;
+    public function getNode(int|string $nodeId): ?array;
 
     /**
      * @return AncestorQueryBuilderInterface
@@ -106,7 +106,7 @@ interface TreeInterface
      *
      * @throws ValidationException if cannot validate tree
      */
-    public function isValid($rootNodeId): bool;
+    public function isValid(int|string $rootNodeId): bool;
 
     /**
      * Repair broken tree.
@@ -116,5 +116,5 @@ interface TreeInterface
      *
      * @throws ValidationException if cannot rebuilt tree
      */
-    public function rebuild($rootNodeId): void;
+    public function rebuild(int|string $rootNodeId): void;
 }

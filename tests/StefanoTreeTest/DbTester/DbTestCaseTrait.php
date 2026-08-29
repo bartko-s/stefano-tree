@@ -31,9 +31,12 @@ trait DbTestCaseTrait
         $this->connection = null;
     }
 
-    abstract public function recreateDbScheme();
+    abstract public function recreateDbScheme(): void;
 
-    public function assertCompareDataSet(array $tables, $expectedDataSetArrayFile, $message = '')
+    /**
+     * @param array<int, string> $tables
+     */
+    public function assertCompareDataSet(array $tables, string $expectedDataSetArrayFile, string $message = ''): void
     {
         $currentDataSet = $this->getConnection()
             ->createDataSourceFromCurrentDatabaseState($tables);
@@ -54,7 +57,7 @@ trait DbTestCaseTrait
      *
      * @return \PDO
      */
-    abstract protected function getPdoConnection();
+    abstract protected function getPdoConnection(): \PDO;
 
     private function getConnection(): Connection
     {
@@ -67,17 +70,13 @@ trait DbTestCaseTrait
 
     /**
      * Returns the initial test dataset.
-     *
-     * @return ArrayDataSource
      */
-    abstract protected function getDataSet();
+    abstract protected function getDataSet(): ArrayDataSource;
 
     /**
-     * @param array $data
-     *
-     * @return ArrayDataSource
+     * @param array<string, list<array<string, mixed>>> $data
      */
-    protected function createArrayDataSet(array $data)
+    protected function createArrayDataSet(array $data): ArrayDataSource
     {
         return new ArrayDataSource($data);
     }

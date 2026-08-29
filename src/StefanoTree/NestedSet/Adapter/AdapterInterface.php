@@ -23,46 +23,38 @@ interface AdapterInterface
 
     /**
      * Check if Db transaction is active.
-     *
-     * @return bool
      */
     public function isInTransaction(): bool;
 
     /**
      * Return true if adapter can handle nested transaction.
-     *
-     * @return bool
      */
     public function canHandleNestedTransaction(): bool;
 
     /**
      * Quote column identifier so it is safe to use, even it is a reserved world.
-     *
-     * @param string $columnName
-     *
-     * @return string
      */
     public function quoteIdentifier(string $columnName): string;
 
     /**
-     * @param string $sql
-     * @param array  $params
+     * @param string               $sql
+     * @param array<string, mixed> $params
      *
      * @return int|string Last ID
      */
-    public function executeInsertSQL(string $sql, array $params = array());
+    public function executeInsertSQL(string $sql, array $params = array()): int|string;
 
     /**
-     * @param string $sql
-     * @param array  $params
+     * @param string               $sql
+     * @param array<string, mixed> $params
      */
     public function executeSQL(string $sql, array $params = array()): void;
 
     /**
-     * @param string $sql
-     * @param array  $params
+     * @param string               $sql
+     * @param array<string, mixed> $params
      *
-     * @return array
+     * @return array<int, array<string, mixed>>
      */
     public function executeSelectSQL(string $sql, array $params = array()): array;
 }

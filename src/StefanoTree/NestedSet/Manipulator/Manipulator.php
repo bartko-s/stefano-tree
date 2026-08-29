@@ -10,38 +10,15 @@ use StefanoTree\NestedSet\Options;
 
 class Manipulator implements ManipulatorInterface
 {
-    private $adapter;
-
-    private $options;
-
-    public function __construct(Options $options, AdapterInterface $adapter)
-    {
-        $this->setOptions($options);
-        $this->setAdapter($adapter);
+    public function __construct(
+        private readonly Options $options,
+        private readonly AdapterInterface $adapter,
+    ) {
     }
 
-    /**
-     * @param AdapterInterface $adapter
-     */
-    private function setAdapter(AdapterInterface $adapter): void
-    {
-        $this->adapter = $adapter;
-    }
-
-    /**
-     * @return AdapterInterface
-     */
     public function getAdapter(): AdapterInterface
     {
         return $this->adapter;
-    }
-
-    /**
-     * @param Options $options
-     */
-    protected function setOptions(Options $options): void
-    {
-        $this->options = $options;
     }
 
     /**
@@ -55,9 +32,9 @@ class Manipulator implements ManipulatorInterface
     /**
      * Data cannot contain keys like idColumnName, levelColumnName, ...
      *
-     * @param array $data
+     * @param array<string, mixed> $data
      *
-     * @return array
+     * @return array<string, mixed>
      */
     protected function cleanData(array $data): array
     {
@@ -79,11 +56,9 @@ class Manipulator implements ManipulatorInterface
     }
 
     /**
-     * @param array $data
-     *
-     * @return NodeInfo
+     * @param array<string, mixed> $data
      */
-    protected function _buildNodeInfoObject(array $data)
+    protected function _buildNodeInfoObject(array $data): NodeInfo
     {
         $options = $this->getOptions();
 
@@ -102,18 +77,15 @@ class Manipulator implements ManipulatorInterface
     }
 
     /**
-     * @return callable
+     * @return callable(): string
      */
     public function getDbSelectBuilder(): callable
     {
-        return $this->getOptions()->getDbSelectBuilder() ?? function () {
+        return $this->getOptions()->getDbSelectBuilder() ?? function (): string {
             return $this->getBlankDbSelect();
         };
     }
 
-    /**
-     * @return string
-     */
     public function getBlankDbSelect(): string
     {
         return 'SELECT * FROM '.$this->getAdapter()->quoteIdentifier($this->getOptions()->getTableName()).' ';
@@ -121,10 +93,8 @@ class Manipulator implements ManipulatorInterface
 
     /**
      * Return default db select.
-     *
-     * @return string
      */
-    public function getDefaultDbSelect()
+    public function getDefaultDbSelect(): string
     {
         return $this->getDbSelectBuilder()();
     }
@@ -174,7 +144,7 @@ class Manipulator implements ManipulatorInterface
     /**
      * {@inheritdoc}
      */
-    public function update($nodeId, array $data): void
+    public function update(int|string $nodeId, array $data): void
     {
         $options = $this->getOptions();
         $adapter = $this->getAdapter();
@@ -196,7 +166,7 @@ class Manipulator implements ManipulatorInterface
     /**
      * {@inheritdoc}
      */
-    public function insert(NodeInfo $nodeInfo, array $data)
+    public function insert(NodeInfo $nodeInfo, array $data): int|string
     {
         $options = $this->getOptions();
 
@@ -229,7 +199,7 @@ class Manipulator implements ManipulatorInterface
     /**
      * {@inheritdoc}
      */
-    public function delete($nodeId): void
+    public function delete(int|string $nodeId): void
     {
         $options = $this->getOptions();
         $adapter = $this->getAdapter();
@@ -247,7 +217,7 @@ class Manipulator implements ManipulatorInterface
     /**
      * {@inheritdoc}
      */
-    public function moveLeftIndexes($fromIndex, $shift, $scope = null): void
+    public function moveLeftIndexes(int $fromIndex, int $shift, int|string|null $scope = null): void
     {
         $options = $this->getOptions();
 
@@ -277,7 +247,7 @@ class Manipulator implements ManipulatorInterface
     /**
      * {@inheritdoc}
      */
-    public function moveRightIndexes($fromIndex, $shift, $scope = null): void
+    public function moveRightIndexes(int $fromIndex, int $shift, int|string|null $scope = null): void
     {
         $options = $this->getOptions();
 
@@ -307,7 +277,7 @@ class Manipulator implements ManipulatorInterface
     /**
      * {@inheritdoc}
      */
-    public function updateParentId($nodeId, $newParentId): void
+    public function updateParentId(int|string $nodeId, int|string $newParentId): void
     {
         $options = $this->getOptions();
 
@@ -328,7 +298,7 @@ class Manipulator implements ManipulatorInterface
     /**
      * {@inheritdoc}
      */
-    public function updateLevels(int $leftIndexFrom, int $rightIndexTo, int $shift, $scope = null): void
+    public function updateLevels(int $leftIndexFrom, int $rightIndexTo, int $shift, int|string|null $scope = null): void
     {
         $options = $this->getOptions();
 
@@ -359,7 +329,7 @@ class Manipulator implements ManipulatorInterface
     /**
      * {@inheritdoc}
      */
-    public function moveBranch(int $leftIndexFrom, int $rightIndexTo, int $shift, $scope = null): void
+    public function moveBranch(int $leftIndexFrom, int $rightIndexTo, int $shift, int|string|null $scope = null): void
     {
         if (0 == $shift) {
             return;
@@ -392,7 +362,7 @@ class Manipulator implements ManipulatorInterface
     /**
      * {@inheritdoc}
      */
-    public function getRoots($scope = null): array
+    public function getRoots(int|string|null $scope = null): array
     {
         $options = $this->getOptions();
 
@@ -416,7 +386,7 @@ class Manipulator implements ManipulatorInterface
     /**
      * {@inheritdoc}
      */
-    public function getRoot($scope = null): array
+    public function getRoot(int|string|null $scope = null): array
     {
         $roots = $this->getRoots($scope);
 
@@ -426,7 +396,7 @@ class Manipulator implements ManipulatorInterface
     /**
      * {@inheritdoc}
      */
-    public function getNode($nodeId): ?array
+    public function getNode(int|string $nodeId): ?array
     {
         $options = $this->getOptions();
         $nodeId = (int) $nodeId;
@@ -447,7 +417,7 @@ class Manipulator implements ManipulatorInterface
     /**
      * {@inheritdoc}
      */
-    public function getNodeInfo($nodeId): ?NodeInfo
+    public function getNodeInfo(int|string $nodeId): ?NodeInfo
     {
         $options = $this->getOptions();
         $adapter = $this->getAdapter();
@@ -469,7 +439,7 @@ class Manipulator implements ManipulatorInterface
     /**
      * {@inheritdoc}
      */
-    public function getChildrenNodeInfo($parentNodeId): array
+    public function getChildrenNodeInfo(int|string $parentNodeId): array
     {
         $adapter = $this->getAdapter();
         $options = $this->getOptions();
@@ -523,7 +493,7 @@ class Manipulator implements ManipulatorInterface
     /**
      * {@inheritdoc}
      */
-    public function getAncestors($nodeId, int $startLevel = 0, int $excludeLastNLevels = 0): array
+    public function getAncestors(int|string $nodeId, int $startLevel = 0, int $excludeLastNLevels = 0): array
     {
         $options = $this->getOptions();
 
@@ -568,7 +538,7 @@ class Manipulator implements ManipulatorInterface
     /**
      * {@inheritdoc}
      */
-    public function getDescendants($nodeId, int $startLevel = 0, ?int $levels = null, $excludeBranch = null): array
+    public function getDescendants(int|string $nodeId, int $startLevel = 0, ?int $levels = null, int|string|null $excludeBranch = null): array
     {
         $options = $this->getOptions();
 

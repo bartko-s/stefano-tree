@@ -6,15 +6,12 @@ namespace StefanoTreeTest\DbTester;
 
 class Connection
 {
-    private $pdo;
-
-    public function __construct(\PDO $pdo)
+    public function __construct(private readonly \PDO $pdo)
     {
-        $this->pdo = $pdo;
         $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_WARNING);
     }
 
-    public function insertInitData(ArrayDataSource $dataSource)
+    public function insertInitData(ArrayDataSource $dataSource): void
     {
         $connection = $this->pdo;
         foreach ($dataSource->getTableNames() as $tableName) {
@@ -36,6 +33,9 @@ class Connection
         }
     }
 
+    /**
+     * @param list<string> $tables
+     */
     public function createDataSourceFromCurrentDatabaseState(array $tables): ArrayDataSource
     {
         $connection = $this->pdo;

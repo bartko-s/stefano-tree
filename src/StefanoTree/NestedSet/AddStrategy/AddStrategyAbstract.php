@@ -10,20 +10,15 @@ use StefanoTree\NestedSet\NodeInfo;
 
 abstract class AddStrategyAbstract implements AddStrategyInterface
 {
-    private $manipulator;
-
-    /**
-     * @param ManipulatorInterface $manipulator
-     */
-    public function __construct(ManipulatorInterface $manipulator)
-    {
-        $this->manipulator = $manipulator;
+    public function __construct(
+        private readonly ManipulatorInterface $manipulator,
+    ) {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function add($targetNodeId, array $data = array())
+    public function add(int|string $targetNodeId, array $data = array()): int|string
     {
         $adapter = $this->getManipulator();
 
@@ -71,9 +66,6 @@ abstract class AddStrategyAbstract implements AddStrategyInterface
      */
     abstract protected function createNewNodeNodeInfo(NodeInfo $targetNode): NodeInfo;
 
-    /**
-     * @return ManipulatorInterface
-     */
     protected function getManipulator(): ManipulatorInterface
     {
         return $this->manipulator;

@@ -9,24 +9,19 @@ use StefanoTree\NestedSet\Utilities;
 
 class DescendantQueryBuilder implements DescendantQueryBuilderInterface
 {
-    private $manipulator;
+    private int $excludeFirstNLevel = 0;
+    private ?int $limitDepth = null;
+    private int|string|null $excludeBranch = null;
 
-    private $excludeFirstNLevel = 0;
-    private $limitDepth = null;
-    private $excludeBranch = null;
-
-    /**
-     * @param ManipulatorInterface $manipulator
-     */
-    public function __construct(ManipulatorInterface $manipulator)
-    {
-        $this->manipulator = $manipulator;
+    public function __construct(
+        private readonly ManipulatorInterface $manipulator,
+    ) {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function get($nodeId, bool $nested = false): array
+    public function get(int|string $nodeId, bool $nested = false): array
     {
         $result = $this->getManipulator()
             ->getDescendants($nodeId, $this->excludeFirstNLevel, $this->limitDepth, $this->excludeBranch);
@@ -58,7 +53,7 @@ class DescendantQueryBuilder implements DescendantQueryBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function excludeBranch($nodeId): DescendantQueryBuilderInterface
+    public function excludeBranch(int|string $nodeId): DescendantQueryBuilderInterface
     {
         $this->excludeBranch = $nodeId;
 

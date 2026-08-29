@@ -9,30 +9,17 @@ use StefanoTree\NestedSet\Options;
 
 class DoctrineDBAL implements AdapterInterface
 {
-    private $connection;
-    private $options;
-
-    /**
-     * @param Options      $options
-     * @param DbConnection $connection
-     */
-    public function __construct(Options $options, DbConnection $connection)
-    {
-        $this->connection = $connection;
-        $this->options = $options;
+    public function __construct(
+        private readonly Options $options,
+        private readonly DbConnection $connection,
+    ) {
     }
 
-    /**
-     * @return DbConnection
-     */
     private function getConnection(): DbConnection
     {
         return $this->connection;
     }
 
-    /**
-     * @return Options
-     */
     public function getOptions(): Options
     {
         return $this->options;
@@ -79,7 +66,7 @@ class DoctrineDBAL implements AdapterInterface
         return implode('.', $quotedParts);
     }
 
-    public function executeInsertSQL(string $sql, array $params = array())
+    public function executeInsertSQL(string $sql, array $params = array()): int|string
     {
         $options = $this->getOptions();
 

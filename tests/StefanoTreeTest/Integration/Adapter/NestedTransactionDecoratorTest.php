@@ -41,7 +41,7 @@ class NestedTransactionDecoratorTest extends UnitTestCase
         parent::tearDown();
     }
 
-    public function testCanHandleNestedTransaction()
+    public function testCanHandleNestedTransaction(): void
     {
         $adapterStub = \Mockery::mock(AdapterInterface::class);
 
@@ -49,7 +49,7 @@ class NestedTransactionDecoratorTest extends UnitTestCase
         $this->assertTrue($adapter->canHandleNestedTransaction());
     }
 
-    public function testWrappedAdapterCanHandleHandleNestedTransaction()
+    public function testWrappedAdapterCanHandleHandleNestedTransaction(): void
     {
         $adapterMock = \Mockery::mock(AdapterInterface::class);
         $adapterMock->shouldReceive('canHandleNestedTransaction')
@@ -76,7 +76,7 @@ class NestedTransactionDecoratorTest extends UnitTestCase
         $adapter->rollbackTransaction();
     }
 
-    public function testHandleTransaction()
+    public function testHandleTransaction(): void
     {
         $adapterMock = \Mockery::mock(AdapterInterface::class);
         $adapterMock->shouldReceive('canHandleNestedTransaction')
@@ -96,7 +96,7 @@ class NestedTransactionDecoratorTest extends UnitTestCase
         $adapter->commitTransaction();
     }
 
-    public function testHandleBrokenTransaction()
+    public function testHandleBrokenTransaction(): void
     {
         $adapterMock = \Mockery::mock(AdapterInterface::class);
         $adapterMock->shouldReceive('canHandleNestedTransaction')
@@ -116,7 +116,7 @@ class NestedTransactionDecoratorTest extends UnitTestCase
         $adapter->rollbackTransaction();
     }
 
-    public function testRollbackOnlyMarkIsSetToFalseAfterRollbackSuccess()
+    public function testRollbackOnlyMarkIsSetToFalseAfterRollbackSuccess(): void
     {
         $adapterMock = \Mockery::mock(AdapterInterface::class);
         $adapterMock->shouldReceive('canHandleNestedTransaction')
@@ -149,7 +149,7 @@ class NestedTransactionDecoratorTest extends UnitTestCase
         $adapter->commitTransaction();
     }
 
-    public function testHandleNestedTransaction()
+    public function testHandleNestedTransaction(): void
     {
         $adapterMock = \Mockery::mock(AdapterInterface::class);
         $adapterMock->shouldReceive('canHandleNestedTransaction')
@@ -171,7 +171,7 @@ class NestedTransactionDecoratorTest extends UnitTestCase
         $adapter->commitTransaction();
     }
 
-    public function testHandleBrokenNestedTransaction()
+    public function testHandleBrokenNestedTransaction(): void
     {
         $adapterMock = \Mockery::mock(AdapterInterface::class);
         $adapterMock->shouldReceive('canHandleNestedTransaction')
@@ -193,7 +193,7 @@ class NestedTransactionDecoratorTest extends UnitTestCase
         $adapter->rollbackTransaction();
     }
 
-    public function testBrokenTransactionIsRollbackOnly()
+    public function testBrokenTransactionIsRollbackOnly(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Cannot commit Transaction was marked as rollback only');
@@ -221,7 +221,7 @@ class NestedTransactionDecoratorTest extends UnitTestCase
         $adapter->rollbackTransaction();
     }
 
-    public function testTransactionWasOpenOutside()
+    public function testTransactionWasOpenOutside(): void
     {
         $dbAdapter = $this->dbAdapter;
 

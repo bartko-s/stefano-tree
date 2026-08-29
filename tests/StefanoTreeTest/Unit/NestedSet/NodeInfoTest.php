@@ -12,7 +12,7 @@ use StefanoTreeTest\UnitTestCase;
  */
 class NodeInfoTest extends UnitTestCase
 {
-    public function testNodeInfoWithScope()
+    public function testNodeInfoWithScope(): void
     {
         $nodeInfo = new NodeInfo(11, 29, 33, 44, 62, 45);
 
@@ -24,7 +24,7 @@ class NodeInfoTest extends UnitTestCase
         $this->assertEquals(45, $nodeInfo->getScope());
     }
 
-    public function testSetLevel()
+    public function testSetLevel(): void
     {
         $nodeInfo = new NodeInfo(0, 0, 0, 0, 0, 0);
 
@@ -32,7 +32,7 @@ class NodeInfoTest extends UnitTestCase
         $this->assertEquals(123, $nodeInfo->getLevel());
     }
 
-    public function testSetLeftIndex()
+    public function testSetLeftIndex(): void
     {
         $nodeInfo = new NodeInfo(0, 0, 0, 0, 0, 0);
 
@@ -40,7 +40,7 @@ class NodeInfoTest extends UnitTestCase
         $this->assertEquals(456, $nodeInfo->getLeft());
     }
 
-    public function testSetRightIndex()
+    public function testSetRightIndex(): void
     {
         $nodeInfo = new NodeInfo(0, 0, 0, 0, 0, 0);
 
@@ -48,7 +48,7 @@ class NodeInfoTest extends UnitTestCase
         $this->assertEquals(789, $nodeInfo->getRight());
     }
 
-    public function testIsNotRoot()
+    public function testIsNotRoot(): void
     {
         $nodeInfo = new NodeInfo(11, 29, 33, 44, 62, null);
         $this->assertFalse($nodeInfo->isRoot());
@@ -57,7 +57,7 @@ class NodeInfoTest extends UnitTestCase
         $this->assertFalse($nodeInfo->isRoot());
     }
 
-    public function testIsRoot()
+    public function testIsRoot(): void
     {
         $nodeInfo = new NodeInfo(25, null, 0, 1, 186, null);
         $this->assertTrue($nodeInfo->isRoot());

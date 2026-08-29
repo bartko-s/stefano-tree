@@ -30,11 +30,13 @@ use StefanoTree\NestedSet\Validator\ValidatorInterface;
 
 class NestedSet implements TreeInterface
 {
-    private $manipulator;
+    private ManipulatorInterface $manipulator;
 
-    private $validator;
+    private ?ValidatorInterface $validator = null;
 
     /**
+     * @param array<string, mixed>|Options $options
+     *
      * @throws InvalidArgumentException
      */
     public function __construct(array|Options $options, object $dbAdapter)
@@ -61,17 +63,11 @@ class NestedSet implements TreeInterface
         $this->manipulator = new Manipulator($options, $adapter);
     }
 
-    /**
-     * @return ManipulatorInterface
-     */
     public function getManipulator(): ManipulatorInterface
     {
         return $this->manipulator;
     }
 
-    /**
-     * @return ValidatorInterface
-     */
     private function getValidator(): ValidatorInterface
     {
         if (null == $this->validator) {
@@ -84,7 +80,7 @@ class NestedSet implements TreeInterface
     /**
      * {@inheritdoc}
      */
-    public function createRootNode($data = array(), $scope = null)
+    public function createRootNode(array $data = array(), int|string|null $scope = null): int|string
     {
         if ($this->getRootNode($scope)) {
             if ($scope) {
@@ -104,7 +100,7 @@ class NestedSet implements TreeInterface
     /**
      * {@inheritdoc}
      */
-    public function updateNode($nodeId, array $data): void
+    public function updateNode(int|string $nodeId, array $data): void
     {
         $this->getManipulator()
             ->update($nodeId, $data);
@@ -113,7 +109,7 @@ class NestedSet implements TreeInterface
     /**
      * {@inheritdoc}
      */
-    public function addNode($targetNodeId, array $data = array(), string $placement = self::PLACEMENT_CHILD_TOP)
+    public function addNode(int|string $targetNodeId, array $data = array(), string $placement = self::PLACEMENT_CHILD_TOP): int|string
     {
         return $this->getAddStrategy($placement)->add($targetNodeId, $data);
     }
@@ -150,7 +146,7 @@ class NestedSet implements TreeInterface
     /**
      * {@inheritdoc}
      */
-    public function moveNode($sourceNodeId, $targetNodeId, string $placement = self::PLACEMENT_CHILD_TOP): void
+    public function moveNode(int|string $sourceNodeId, int|string $targetNodeId, string $placement = self::PLACEMENT_CHILD_TOP): void
     {
         $this->getMoveStrategy($placement)->move($sourceNodeId, $targetNodeId);
     }
@@ -187,7 +183,7 @@ class NestedSet implements TreeInterface
     /**
      * {@inheritdoc}
      */
-    public function deleteBranch($nodeId): void
+    public function deleteBranch(int|string $nodeId): void
     {
         $adapter = $this->getManipulator();
 
@@ -224,7 +220,7 @@ class NestedSet implements TreeInterface
     /**
      * {@inheritdoc}
      */
-    public function getNode($nodeId): ?array
+    public function getNode(int|string $nodeId): ?array
     {
         return $this->getManipulator()
             ->getNode($nodeId);
@@ -249,7 +245,7 @@ class NestedSet implements TreeInterface
     /**
      * {@inheritdoc}
      */
-    public function getRootNode($scope = null): array
+    public function getRootNode(int|string|null $scope = null): array
     {
         return $this->getManipulator()
             ->getRoot($scope);
@@ -267,7 +263,7 @@ class NestedSet implements TreeInterface
     /**
      * {@inheritdoc}
      */
-    public function isValid($rootNodeId): bool
+    public function isValid(int|string $rootNodeId): bool
     {
         return $this->getValidator()
             ->isValid($rootNodeId);
@@ -276,7 +272,7 @@ class NestedSet implements TreeInterface
     /**
      * {@inheritdoc}
      */
-    public function rebuild($rootNodeId): void
+    public function rebuild(int|string $rootNodeId): void
     {
         $this->getValidator()
             ->rebuild($rootNodeId);

@@ -18,17 +18,16 @@ use StefanoTreeTest\UnitTestCase;
  */
 class NestedSetTest extends UnitTestCase
 {
-    private $options = array(
+    /**
+     * @var array<string, mixed>
+     */
+    private array $options = array(
         'idColumnName' => 'id',
         'tableName' => 'table',
     );
 
-    /**
-     * @param mixed $dbAdapterClass
-     * @param mixed $expectedAdapterClass
-     */
     #[DataProvider('dataProvider')]
-    public function testConstructorMethodWithOptionAsObject($dbAdapterClass, $expectedAdapterClass)
+    public function testConstructorMethodWithOptionAsObject(string $dbAdapterClass, string $expectedAdapterClass): void
     {
         $dbAdapterStub = \Mockery::mock($dbAdapterClass);
         $options = new Options($this->options);
@@ -41,12 +40,8 @@ class NestedSetTest extends UnitTestCase
         $this->assertInstanceOf($expectedAdapterClass, $adapter);
     }
 
-    /**
-     * @param mixed $dbAdapterClass
-     * @param mixed $expectedAdapterClass
-     */
     #[DataProvider('dataProvider')]
-    public function testConstructorMethodWithOptionAsArray($dbAdapterClass, $expectedAdapterClass)
+    public function testConstructorMethodWithOptionAsArray(string $dbAdapterClass, string $expectedAdapterClass): void
     {
         $dbAdapterStub = \Mockery::mock($dbAdapterClass);
         $options = $this->options;
@@ -59,7 +54,10 @@ class NestedSetTest extends UnitTestCase
         $this->assertInstanceOf($expectedAdapterClass, $adapter);
     }
 
-    public static function dataProvider()
+    /**
+     * @return array<int, array<int, string>>
+     */
+    public static function dataProvider(): array
     {
         return array(
             array(
@@ -77,7 +75,7 @@ class NestedSetTest extends UnitTestCase
         );
     }
 
-    public function testThrowExceptionIfYourDbAdapterIsNotSupporter()
+    public function testThrowExceptionIfYourDbAdapterIsNotSupporter(): void
     {
         $options = new Options($this->options);
         $dbAdapter = new \DateTime();

@@ -8,6 +8,7 @@ use StefanoTree\NestedSet\Manipulator\Manipulator;
 use StefanoTree\NestedSet\Manipulator\ManipulatorInterface;
 use StefanoTree\NestedSet\NodeInfo;
 use StefanoTree\NestedSet\Options;
+use StefanoTreeTest\DbTester\ArrayDataSource;
 use StefanoTreeTest\IntegrationTestCase;
 use StefanoTreeTest\TestUtil;
 
@@ -31,9 +32,6 @@ class ManipulatorTest extends IntegrationTestCase
         parent::tearDown();
     }
 
-    /**
-     * @return ManipulatorInterface
-     */
     protected function getManipulator(): ManipulatorInterface
     {
         $options = new Options(array(
@@ -44,18 +42,18 @@ class ManipulatorTest extends IntegrationTestCase
         return new Manipulator($options, TestUtil::buildAdapter($options));
     }
 
-    protected function getDataSet()
+    protected function getDataSet(): ArrayDataSource
     {
         return $this->createArrayDataSet(include __DIR__.'/_files/adapter/initDataSet.php');
     }
 
-    public function testLockTreeDoesNotFail()
+    public function testLockTreeDoesNotFail(): void
     {
         $this->manipulator
             ->lockTree();
     }
 
-    public function testDbTransactionDoesNotFail()
+    public function testDbTransactionDoesNotFail(): void
     {
         $this->manipulator
             ->beginTransaction();
@@ -68,7 +66,7 @@ class ManipulatorTest extends IntegrationTestCase
             ->rollbackTransaction();
     }
 
-    public function testUpdateData()
+    public function testUpdateData(): void
     {
         $this->manipulator
             ->update(2, array('name' => 'changed'));
@@ -76,7 +74,7 @@ class ManipulatorTest extends IntegrationTestCase
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testUpdateData.php');
     }
 
-    public function testUpdateDataDoesNotChangeMetadata()
+    public function testUpdateDataDoesNotChangeMetadata(): void
     {
         $data = array(
             'name' => 'changed',
@@ -93,7 +91,7 @@ class ManipulatorTest extends IntegrationTestCase
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testUpdateData.php');
     }
 
-    public function testInsertData()
+    public function testInsertData(): void
     {
         $nodeInfo = new NodeInfo(null, 6, 100, 1000, 1001, null);
 
@@ -104,7 +102,7 @@ class ManipulatorTest extends IntegrationTestCase
         $this->assertEquals(26, $generatedId);
     }
 
-    public function testInsertDataUserDefinedId()
+    public function testInsertDataUserDefinedId(): void
     {
         $uuid = 753;
         $nodeInfo = new NodeInfo(null, 6, 100, 1000, 1001, null);
@@ -116,7 +114,7 @@ class ManipulatorTest extends IntegrationTestCase
         $this->assertEquals($uuid, $generatedId);
     }
 
-    public function testInsertDataDoesNotChangeMetadata()
+    public function testInsertDataDoesNotChangeMetadata(): void
     {
         $nodeInfo = new NodeInfo(null, 6, 100, 1000, 1001, null);
 
@@ -135,7 +133,7 @@ class ManipulatorTest extends IntegrationTestCase
         $this->assertEquals(26, $generatedId);
     }
 
-    public function testDeleteBranch()
+    public function testDeleteBranch(): void
     {
         $this->manipulator
             ->delete(3);
@@ -143,7 +141,7 @@ class ManipulatorTest extends IntegrationTestCase
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testDeleteBranch.php');
     }
 
-    public function testMoveLeftIndexes()
+    public function testMoveLeftIndexes(): void
     {
         $this->manipulator
             ->moveLeftIndexes(12, 500);
@@ -151,7 +149,7 @@ class ManipulatorTest extends IntegrationTestCase
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testMoveLeftIndexes.php');
     }
 
-    public function testMoveRightIndexes()
+    public function testMoveRightIndexes(): void
     {
         $this->manipulator
             ->moveRightIndexes(15, 500);
@@ -159,7 +157,7 @@ class ManipulatorTest extends IntegrationTestCase
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testMoveRightIndexes.php');
     }
 
-    public function testUpdateParentId()
+    public function testUpdateParentId(): void
     {
         $this->manipulator
             ->updateParentId(3, 22);
@@ -167,7 +165,7 @@ class ManipulatorTest extends IntegrationTestCase
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testUpdateParentId.php');
     }
 
-    public function testUpdateLevels()
+    public function testUpdateLevels(): void
     {
         $this->manipulator
             ->updateLevels(16, 35, 500);
@@ -175,7 +173,7 @@ class ManipulatorTest extends IntegrationTestCase
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testUpdateLevels.php');
     }
 
-    public function testMoveBranch()
+    public function testMoveBranch(): void
     {
         $this->manipulator
             ->moveBranch(17, 32, 500);
@@ -183,7 +181,7 @@ class ManipulatorTest extends IntegrationTestCase
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testMoveBranch.php');
     }
 
-    public function testGetRoots()
+    public function testGetRoots(): void
     {
         $roots = $this->manipulator
             ->getRoots();
@@ -192,7 +190,7 @@ class ManipulatorTest extends IntegrationTestCase
         $this->assertEquals($expected, $roots);
     }
 
-    public function testGetRoot()
+    public function testGetRoot(): void
     {
         $roots = $this->manipulator
             ->getRoot();
@@ -201,14 +199,14 @@ class ManipulatorTest extends IntegrationTestCase
         $this->assertEquals($expected, $roots);
     }
 
-    public function testGetNodeReturnNullIfNodeDoesNotExist()
+    public function testGetNodeReturnNullIfNodeDoesNotExist(): void
     {
         $node = $this->manipulator
             ->getNode(1000000);
         $this->assertNull($node);
     }
 
-    public function testGetNode()
+    public function testGetNode(): void
     {
         $node = $this->manipulator
             ->getNode(11);
@@ -217,14 +215,14 @@ class ManipulatorTest extends IntegrationTestCase
         $this->assertEquals($expected, $node);
     }
 
-    public function testGetNodeInfoReturnNullIfNodeInfoDoesNotExist()
+    public function testGetNodeInfoReturnNullIfNodeInfoDoesNotExist(): void
     {
         $nodeInfo = $this->manipulator
             ->getNodeInfo(10000000);
         $this->assertNull($nodeInfo);
     }
 
-    public function testGetNodeInfo()
+    public function testGetNodeInfo(): void
     {
         $nodeInfo = $this->manipulator
             ->getNodeInfo(10);
@@ -236,7 +234,7 @@ class ManipulatorTest extends IntegrationTestCase
         $this->assertEquals($nodeInfo->getLevel(), 3);
     }
 
-    public function testGetChildrenNodeInfoReturnEmptyArrayIfNodeDoesNotHaveChildrenNodes()
+    public function testGetChildrenNodeInfoReturnEmptyArrayIfNodeDoesNotHaveChildrenNodes(): void
     {
         $nodeInfo = $this->manipulator
             ->getChildrenNodeInfo(7);
@@ -244,7 +242,7 @@ class ManipulatorTest extends IntegrationTestCase
         $this->assertEquals(array(), $nodeInfo);
     }
 
-    public function testGetChildrenNodeInfo()
+    public function testGetChildrenNodeInfo(): void
     {
         $nodeInfo = $this->manipulator
             ->getChildrenNodeInfo(4);
@@ -266,7 +264,7 @@ class ManipulatorTest extends IntegrationTestCase
         $this->assertEquals($nodeInfo[1]->getLevel(), 2);
     }
 
-    public function testUpdateNodeMetadata()
+    public function testUpdateNodeMetadata(): void
     {
         $nodeInfo = new NodeInfo(2, 100, 101, 102, 103, null);
 
@@ -276,7 +274,7 @@ class ManipulatorTest extends IntegrationTestCase
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/adapter/testUpdateNodeMetadata.php');
     }
 
-    public function testGetAncestorsReturnEmptyArrayIfNodeDoestNotExist()
+    public function testGetAncestorsReturnEmptyArrayIfNodeDoestNotExist(): void
     {
         $path = $this->manipulator
             ->getAncestors(1000);
@@ -284,7 +282,7 @@ class ManipulatorTest extends IntegrationTestCase
         $this->assertEquals(array(), $path);
     }
 
-    public function testGetAncestors()
+    public function testGetAncestors(): void
     {
         $path = $this->manipulator
             ->getAncestors(10);
@@ -295,7 +293,7 @@ class ManipulatorTest extends IntegrationTestCase
         $this->assertEquals($expected, $path);
     }
 
-    public function testGetAncestorsFromLevel()
+    public function testGetAncestorsFromLevel(): void
     {
         $path = $this->manipulator
             ->getAncestors(10, 2);
@@ -306,7 +304,7 @@ class ManipulatorTest extends IntegrationTestCase
         $this->assertEquals($expected, $path);
     }
 
-    public function testGetAncestorsExcludeLastNode()
+    public function testGetAncestorsExcludeLastNode(): void
     {
         // test exclude last node
         $path = $this->manipulator
@@ -325,7 +323,7 @@ class ManipulatorTest extends IntegrationTestCase
         $this->assertEquals($expected, $path);
     }
 
-    public function testGetDescendantsReturnEmptyArrayIfNodeDoesNotExist()
+    public function testGetDescendantsReturnEmptyArrayIfNodeDoesNotExist(): void
     {
         $nodes = $this->manipulator
             ->getDescendants(1000);
@@ -333,7 +331,7 @@ class ManipulatorTest extends IntegrationTestCase
         $this->assertEquals(array(), $nodes);
     }
 
-    public function testGetDescendants()
+    public function testGetDescendants(): void
     {
         $nodes = $this->manipulator
             ->getDescendants(1);
@@ -344,7 +342,7 @@ class ManipulatorTest extends IntegrationTestCase
         $this->assertEquals($expected, $nodes);
     }
 
-    public function testGetDescendantsDefinedNodeId()
+    public function testGetDescendantsDefinedNodeId(): void
     {
         $nodes = $this->manipulator
             ->getDescendants(6);
@@ -355,7 +353,7 @@ class ManipulatorTest extends IntegrationTestCase
         $this->assertEquals($expected, $nodes);
     }
 
-    public function testGetDescendantsFromLevel()
+    public function testGetDescendantsFromLevel(): void
     {
         $nodes = $this->manipulator
             ->getDescendants(6, 2);
@@ -366,7 +364,7 @@ class ManipulatorTest extends IntegrationTestCase
         $this->assertEquals($expected, $nodes);
     }
 
-    public function testGetDescendantsFixLevels()
+    public function testGetDescendantsFixLevels(): void
     {
         $nodes = $this->manipulator
             ->getDescendants(6, 2, 2);
@@ -377,7 +375,7 @@ class ManipulatorTest extends IntegrationTestCase
         $this->assertEquals($expected, $nodes);
     }
 
-    public function testGetDescendantsExcludeBranch()
+    public function testGetDescendantsExcludeBranch(): void
     {
         $nodes = $this->manipulator
             ->getDescendants(1, 0, null, 9);

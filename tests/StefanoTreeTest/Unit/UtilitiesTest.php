@@ -12,7 +12,7 @@ use StefanoTreeTest\UnitTestCase;
  */
 class UtilitiesTest extends UnitTestCase
 {
-    public function testFlatToNested()
+    public function testFlatToNested(): void
     {
         $flatTree = array(
             array(
@@ -59,7 +59,7 @@ class UtilitiesTest extends UnitTestCase
         );
     }
 
-    public function testFlatToNestedMultiRootNode()
+    public function testFlatToNestedMultiRootNode(): void
     {
         $flatTree = array(
             array(
@@ -118,7 +118,7 @@ class UtilitiesTest extends UnitTestCase
         );
     }
 
-    public function testFlatToNestedComplexTree()
+    public function testFlatToNestedComplexTree(): void
     {
         $flatTree = array(
             array(
@@ -269,7 +269,7 @@ class UtilitiesTest extends UnitTestCase
         );
     }
 
-    public function testFlatToNestedChangeLevelName()
+    public function testFlatToNestedChangeLevelName(): void
     {
         $flatTree = array(
             array(

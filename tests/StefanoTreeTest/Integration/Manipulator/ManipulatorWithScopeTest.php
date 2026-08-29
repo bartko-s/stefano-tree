@@ -8,6 +8,7 @@ use StefanoTree\NestedSet\Manipulator\Manipulator;
 use StefanoTree\NestedSet\Manipulator\ManipulatorInterface;
 use StefanoTree\NestedSet\NodeInfo;
 use StefanoTree\NestedSet\Options;
+use StefanoTreeTest\DbTester\ArrayDataSource;
 use StefanoTreeTest\IntegrationTestCase;
 use StefanoTreeTest\TestUtil;
 
@@ -31,9 +32,6 @@ class ManipulatorWithScopeTest extends IntegrationTestCase
         parent::tearDown();
     }
 
-    /**
-     * @return ManipulatorInterface
-     */
     protected function getManipulator(): ManipulatorInterface
     {
         $options = new Options(array(
@@ -45,12 +43,12 @@ class ManipulatorWithScopeTest extends IntegrationTestCase
         return new Manipulator($options, TestUtil::buildAdapter($options));
     }
 
-    protected function getDataSet()
+    protected function getDataSet(): ArrayDataSource
     {
         return $this->createArrayDataSet(include __DIR__.'/_files/adapter/with_scope/initDataSet.php');
     }
 
-    public function testUpdateDataDoesNotChangeMetadata()
+    public function testUpdateDataDoesNotChangeMetadata(): void
     {
         $data = array(
             'name' => 'changed',
@@ -67,7 +65,7 @@ class ManipulatorWithScopeTest extends IntegrationTestCase
         $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testUpdateData.php');
     }
 
-    public function testInsertDataDoesNotChangeMetadata()
+    public function testInsertDataDoesNotChangeMetadata(): void
     {
         $nodeInfo = new NodeInfo(null, 6, 1001, 1002, 1003, 1004);
 
@@ -86,7 +84,7 @@ class ManipulatorWithScopeTest extends IntegrationTestCase
         $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testInsertData.php');
     }
 
-    public function testDeleteBranch()
+    public function testDeleteBranch(): void
     {
         $this->manipulator
             ->delete(2);
@@ -94,7 +92,7 @@ class ManipulatorWithScopeTest extends IntegrationTestCase
         $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testDeleteBranch.php');
     }
 
-    public function testMoveLeftIndexes()
+    public function testMoveLeftIndexes(): void
     {
         $this->manipulator
             ->moveLeftIndexes(3, 500, 2);
@@ -102,7 +100,7 @@ class ManipulatorWithScopeTest extends IntegrationTestCase
         $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testMoveLeftIndexes.php');
     }
 
-    public function testMoveRightIndexes()
+    public function testMoveRightIndexes(): void
     {
         $this->manipulator
             ->moveRightIndexes(4, 500, 2);
@@ -110,7 +108,7 @@ class ManipulatorWithScopeTest extends IntegrationTestCase
         $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testMoveRightIndexes.php');
     }
 
-    public function testUpdateLevels()
+    public function testUpdateLevels(): void
     {
         $this->manipulator
             ->updateLevels(2, 9, 500, 2);
@@ -118,7 +116,7 @@ class ManipulatorWithScopeTest extends IntegrationTestCase
         $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testUpdateLevels.php');
     }
 
-    public function testMoveBranch()
+    public function testMoveBranch(): void
     {
         $this->manipulator
             ->moveBranch(2, 9, 500, 2);
@@ -126,7 +124,7 @@ class ManipulatorWithScopeTest extends IntegrationTestCase
         $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testMoveBranch.php');
     }
 
-    public function testGetRoots()
+    public function testGetRoots(): void
     {
         $roots = $this->manipulator
             ->getRoots();
@@ -135,7 +133,7 @@ class ManipulatorWithScopeTest extends IntegrationTestCase
         $this->assertEquals($expected, $roots);
     }
 
-    public function testGetRoot()
+    public function testGetRoot(): void
     {
         $roots = $this->manipulator
             ->getRoot(2);
@@ -144,7 +142,7 @@ class ManipulatorWithScopeTest extends IntegrationTestCase
         $this->assertEquals($expected, $roots);
     }
 
-    public function testGetNodeInfo()
+    public function testGetNodeInfo(): void
     {
         $nodeInfo = $this->manipulator
             ->getNodeInfo(8);
@@ -157,7 +155,7 @@ class ManipulatorWithScopeTest extends IntegrationTestCase
         $this->assertEquals($nodeInfo->getScope(), 1);
     }
 
-    public function testGetChildrenNodeInfo()
+    public function testGetChildrenNodeInfo(): void
     {
         $nodeInfo = $this->manipulator
             ->getChildrenNodeInfo(2);
@@ -179,7 +177,7 @@ class ManipulatorWithScopeTest extends IntegrationTestCase
         $this->assertEquals($nodeInfo[2]->getLevel(), 2);
     }
 
-    public function testUpdateNodeMetadata()
+    public function testUpdateNodeMetadata(): void
     {
         $nodeInfo = new NodeInfo(3, 1000, 1001, 1002, 1003, 2);
 
@@ -189,7 +187,7 @@ class ManipulatorWithScopeTest extends IntegrationTestCase
         $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/adapter/with_scope/testUpdateNodeMetadata.php');
     }
 
-    public function testGetPath()
+    public function testGetPath(): void
     {
         $path = $this->manipulator
             ->getAncestors(5);
@@ -200,7 +198,7 @@ class ManipulatorWithScopeTest extends IntegrationTestCase
         $this->assertEquals($expected, $path);
     }
 
-    public function testGetDescendants()
+    public function testGetDescendants(): void
     {
         $nodes = $this->manipulator
             ->getDescendants(1);

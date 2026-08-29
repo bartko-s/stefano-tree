@@ -12,11 +12,11 @@ use StefanoTree\NestedSet\Options;
 
 class TestUtil
 {
-    private static $dbConnection;
-    private static $laminasDbAdapter;
-    private static $doctrineConnection;
+    private static ?\PDO $dbConnection = null;
+    private static ?LaminasDbAdapter $laminasDbAdapter = null;
+    private static ?DBAL\Connection $doctrineConnection = null;
 
-    public static function createDbScheme()
+    public static function createDbScheme(): void
     {
         $connection = self::getPDOConnection();
 
@@ -165,10 +165,8 @@ class TestUtil
 
     /**
      * Singleton.
-     *
-     * @return \PDO
      */
-    public static function getPDOConnection()
+    public static function getPDOConnection(): \PDO
     {
         if (null == self::$dbConnection) {
             $adapter = strtolower(TEST_STEFANO_DB_VENDOR);
@@ -190,10 +188,8 @@ class TestUtil
 
     /**
      * Singleton.
-     *
-     * @return LaminasDbAdapter
      */
-    public static function getLaminasDbAdapter()
+    public static function getLaminasDbAdapter(): LaminasDbAdapter
     {
         if (null == self::$laminasDbAdapter) {
             self::$laminasDbAdapter = new LaminasDbAdapter(array(
@@ -210,10 +206,8 @@ class TestUtil
 
     /**
      * Singleton.
-     *
-     * @return DBAL\Connection
      */
-    public static function getDoctrineDBALConnection()
+    public static function getDoctrineDBALConnection(): DBAL\Connection
     {
         if (null == self::$doctrineConnection) {
             $config = new DBAL\Configuration();

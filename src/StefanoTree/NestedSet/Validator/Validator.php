@@ -11,19 +11,11 @@ use StefanoTree\NestedSet\NodeInfo;
 
 class Validator implements ValidatorInterface
 {
-    private $manipulator = null;
-
-    /**
-     * @param ManipulatorInterface $manipulator
-     */
-    public function __construct(ManipulatorInterface $manipulator)
-    {
-        $this->manipulator = $manipulator;
+    public function __construct(
+        private readonly ManipulatorInterface $manipulator,
+    ) {
     }
 
-    /**
-     * @return ManipulatorInterface
-     */
     private function getManipulator(): ManipulatorInterface
     {
         return $this->manipulator;
@@ -32,7 +24,7 @@ class Validator implements ValidatorInterface
     /**
      * {@inheritdoc}
      */
-    public function isValid($rootNodeId): bool
+    public function isValid(int|string $rootNodeId): bool
     {
         $adapter = $this->getManipulator();
 
@@ -67,7 +59,7 @@ class Validator implements ValidatorInterface
     /**
      * {@inheritdoc}
      */
-    public function rebuild($rootNodeId): void
+    public function rebuild(int|string $rootNodeId): void
     {
         $adapter = $this->getManipulator();
 

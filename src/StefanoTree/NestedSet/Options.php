@@ -8,20 +8,23 @@ use StefanoTree\Exception\InvalidArgumentException;
 
 class Options
 {
-    private $tableName = '';
+    private string $tableName = '';
 
-    private $idColumnName = '';
+    private string $idColumnName = '';
 
-    private $leftColumnName = 'lft';
-    private $rightColumnName = 'rgt';
-    private $levelColumnName = 'level';
-    private $parentIdColumnName = 'parent_id';
-    private $scopeColumnName = null;
+    private string $leftColumnName = 'lft';
+    private string $rightColumnName = 'rgt';
+    private string $levelColumnName = 'level';
+    private string $parentIdColumnName = 'parent_id';
+    private ?string $scopeColumnName = null;
 
+    /**
+     * @var null|callable(): string
+     */
     private $dbSelectBuilder = null;
 
     /**
-     * @param array $options
+     * @param array<string, mixed> $options
      *
      * @throws InvalidArgumentException
      */
@@ -42,7 +45,7 @@ class Options
     }
 
     /**
-     * @param array $options
+     * @param array<string, mixed> $options
      */
     protected function setOptions(array $options): void
     {
@@ -55,8 +58,6 @@ class Options
     }
 
     /**
-     * @param string $tableName
-     *
      * @throws InvalidArgumentException
      */
     public function setTableName(string $tableName): void
@@ -79,8 +80,6 @@ class Options
     }
 
     /**
-     * @param string $idColumnName
-     *
      * @throws InvalidArgumentException
      */
     public function setIdColumnName(string $idColumnName): void
@@ -94,19 +93,12 @@ class Options
         $this->idColumnName = $idColumnName;
     }
 
-    /**
-     * @param bool $withTableName
-     *
-     * @return string
-     */
     public function getIdColumnName(bool $withTableName = false): string
     {
         return ($withTableName) ? $this->addTableName($this->idColumnName) : $this->idColumnName;
     }
 
     /**
-     * @param string $leftColumnName
-     *
      * @throws InvalidArgumentException
      */
     public function setLeftColumnName(string $leftColumnName): void
@@ -120,19 +112,12 @@ class Options
         $this->leftColumnName = $leftColumnName;
     }
 
-    /**
-     * @param bool $withTableName
-     *
-     * @return string
-     */
     public function getLeftColumnName(bool $withTableName = false): string
     {
         return ($withTableName) ? $this->addTableName($this->leftColumnName) : $this->leftColumnName;
     }
 
     /**
-     * @param string $rightColumnName
-     *
      * @throws InvalidArgumentException
      */
     public function setRightColumnName(string $rightColumnName): void
@@ -146,19 +131,12 @@ class Options
         $this->rightColumnName = $rightColumnName;
     }
 
-    /**
-     * @param bool $withTableName
-     *
-     * @return string
-     */
     public function getRightColumnName(bool $withTableName = false): string
     {
         return ($withTableName) ? $this->addTableName($this->rightColumnName) : $this->rightColumnName;
     }
 
     /**
-     * @param string $levelColumnName
-     *
      * @throws InvalidArgumentException
      */
     public function setLevelColumnName(string $levelColumnName): void
@@ -172,19 +150,12 @@ class Options
         $this->levelColumnName = $levelColumnName;
     }
 
-    /**
-     * @param bool $withTableName
-     *
-     * @return string
-     */
     public function getLevelColumnName(bool $withTableName = false): string
     {
         return ($withTableName) ? $this->addTableName($this->levelColumnName) : $this->levelColumnName;
     }
 
     /**
-     * @param string $parentIdColumnName
-     *
      * @throws InvalidArgumentException
      */
     public function setParentIdColumnName(string $parentIdColumnName): void
@@ -198,29 +169,16 @@ class Options
         $this->parentIdColumnName = $parentIdColumnName;
     }
 
-    /**
-     * @param bool $withTableName
-     *
-     * @return string
-     */
     public function getParentIdColumnName(bool $withTableName = false): string
     {
         return ($withTableName) ? $this->addTableName($this->parentIdColumnName) : $this->parentIdColumnName;
     }
 
-    /**
-     * @param string $scopeColumnName
-     */
     public function setScopeColumnName(string $scopeColumnName): void
     {
         $this->scopeColumnName = trim($scopeColumnName);
     }
 
-    /**
-     * @param bool $withTableName
-     *
-     * @return null|string
-     */
     public function getScopeColumnName(bool $withTableName = false): ?string
     {
         return ($withTableName) ? $this->addTableName($this->scopeColumnName) : $this->scopeColumnName;
@@ -237,17 +195,12 @@ class Options
 
     /**
      * Modify base DB select. Must be without where, order parts.
-     *
-     * @param null|callable $builder
      */
     public function setDbSelectBuilder(?callable $builder): void
     {
         $this->dbSelectBuilder = $builder;
     }
 
-    /**
-     * @return null|callable
-     */
     public function getDbSelectBuilder(): ?callable
     {
         return $this->dbSelectBuilder;

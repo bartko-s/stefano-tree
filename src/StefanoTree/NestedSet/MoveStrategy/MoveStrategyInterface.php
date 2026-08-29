@@ -9,10 +9,10 @@ use StefanoTree\Exception\ValidationException;
 interface MoveStrategyInterface
 {
     /**
-     * @param null|int|string $sourceNodeId
-     * @param null|int|string $targetNodeId
+     * @param int|string $sourceNodeId
+     * @param int|string $targetNodeId
      *
      * @throws ValidationException if was not moved
      */
-    public function move($sourceNodeId, $targetNodeId): void;
+    public function move(int|string $sourceNodeId, int|string $targetNodeId): void;
 }

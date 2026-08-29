@@ -17,7 +17,7 @@ interface ValidatorInterface
      *
      * @throws ValidationException if cannot validate tree
      */
-    public function isValid($rootNodeId): bool;
+    public function isValid(int|string $rootNodeId): bool;
 
     /**
      * Rebuild broken tree left indexes, right indexes, levels.
@@ -26,5 +26,5 @@ interface ValidatorInterface
      *
      * @throws ValidationException if cannot rebuild tree
      */
-    public function rebuild($rootNodeId): void;
+    public function rebuild(int|string $rootNodeId): void;
 }

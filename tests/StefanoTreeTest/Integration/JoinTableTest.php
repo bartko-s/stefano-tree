@@ -6,6 +6,7 @@ namespace StefanoTreeTest\Integration;
 
 use StefanoTree\NestedSet as TreeAdapter;
 use StefanoTree\NestedSet\Options;
+use StefanoTreeTest\DbTester\ArrayDataSource;
 use StefanoTreeTest\IntegrationTestCase;
 use StefanoTreeTest\TestUtil;
 
@@ -14,10 +15,7 @@ use StefanoTreeTest\TestUtil;
  */
 class JoinTableTest extends IntegrationTestCase
 {
-    /**
-     * @return TreeAdapter
-     */
-    protected function getTreeAdapter()
+    protected function getTreeAdapter(): TreeAdapter
     {
         $options = new Options(array(
             'tableName' => 'tree_traversal_with_scope',
@@ -33,12 +31,12 @@ class JoinTableTest extends IntegrationTestCase
         return new TreeAdapter($options, TestUtil::buildAdapter($options));
     }
 
-    protected function getDataSet()
+    protected function getDataSet(): ArrayDataSource
     {
         return $this->createArrayDataSet(include __DIR__.'/_files/NestedSet/with_scope/initDataSet.php');
     }
 
-    public function testJoinTable()
+    public function testJoinTable(): void
     {
         $adapter = $this->getTreeAdapter();
         $result = $adapter->getDescendantsQueryBuilder()

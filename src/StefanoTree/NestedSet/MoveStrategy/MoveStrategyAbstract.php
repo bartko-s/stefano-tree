@@ -10,23 +10,18 @@ use StefanoTree\NestedSet\NodeInfo;
 
 abstract class MoveStrategyAbstract implements MoveStrategyInterface
 {
-    private $manipulator;
+    private NodeInfo $sourceNodeInfo;
+    private NodeInfo $targetNodeInfo;
 
-    private $sourceNodeInfo;
-    private $targetNodeInfo;
-
-    /**
-     * @param ManipulatorInterface $manipulator
-     */
-    public function __construct(ManipulatorInterface $manipulator)
-    {
-        $this->manipulator = $manipulator;
+    public function __construct(
+        private readonly ManipulatorInterface $manipulator,
+    ) {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function move($sourceNodeId, $targetNodeId): void
+    public function move(int|string $sourceNodeId, int|string $targetNodeId): void
     {
         $adapter = $this->getManipulator();
 
@@ -92,10 +87,10 @@ abstract class MoveStrategyAbstract implements MoveStrategyInterface
     abstract protected function isSourceNodeAtRequiredPosition(): bool;
 
     /**
-     * @param NodeInfo        $sourceNodeInfo
-     * @param null|int|string $newParentId
+     * @param NodeInfo   $sourceNodeInfo
+     * @param int|string $newParentId
      */
-    protected function _updateParentId(NodeInfo $sourceNodeInfo, $newParentId): void
+    protected function _updateParentId(NodeInfo $sourceNodeInfo, int|string $newParentId): void
     {
         if ($sourceNodeInfo->getParentId() != $newParentId) {
             $this->getManipulator()->updateParentId($sourceNodeInfo->getId(), $newParentId);
@@ -134,7 +129,7 @@ abstract class MoveStrategyAbstract implements MoveStrategyInterface
      * @param int             $indexShift
      * @param null|int|string $scope
      */
-    protected function _makeHole(int $holeFromIndex, int $indexShift, $scope): void
+    protected function _makeHole(int $holeFromIndex, int $indexShift, int|string|null $scope): void
     {
         $this->getManipulator()->moveLeftIndexes($holeFromIndex, $indexShift, $scope);
         $this->getManipulator()->moveRightIndexes($holeFromIndex, $indexShift, $scope);
@@ -151,7 +146,7 @@ abstract class MoveStrategyAbstract implements MoveStrategyInterface
      * @param int             $indexShift
      * @param null|int|string $scope
      */
-    protected function _moveBranchToTheHole(int $leftIndex, int $rightIndex, int $indexShift, $scope): void
+    protected function _moveBranchToTheHole(int $leftIndex, int $rightIndex, int $indexShift, int|string|null $scope): void
     {
         $this->getManipulator()
             ->moveBranch($leftIndex, $rightIndex, $indexShift, $scope);
@@ -167,7 +162,7 @@ abstract class MoveStrategyAbstract implements MoveStrategyInterface
      * @param int             $indexShift
      * @param null|int|string $scope
      */
-    protected function _patchHole(int $holeFromIndex, int $indexShift, $scope): void
+    protected function _patchHole(int $holeFromIndex, int $indexShift, int|string|null $scope): void
     {
         $this->getManipulator()
             ->moveLeftIndexes($holeFromIndex, $indexShift, $scope);
@@ -229,9 +224,6 @@ abstract class MoveStrategyAbstract implements MoveStrategyInterface
         return ($target->getLeft() > $source->getLeft() && $target->getRight() < $source->getRight()) ? true : false;
     }
 
-    /**
-     * @return ManipulatorInterface
-     */
     protected function getManipulator(): ManipulatorInterface
     {
         return $this->manipulator;

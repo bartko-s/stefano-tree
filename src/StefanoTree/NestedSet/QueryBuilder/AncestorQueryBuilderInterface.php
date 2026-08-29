@@ -12,9 +12,9 @@ interface AncestorQueryBuilderInterface
      * @param int|string $nodeId
      * @param bool       $nested Return result as nested array instead flat array
      *
-     * @return array
+     * @return array<int, array<string, mixed>>
      */
-    public function get($nodeId, bool $nested = false): array;
+    public function get(int|string $nodeId, bool $nested = false): array;
 
     /**
      * Limit number of levels.

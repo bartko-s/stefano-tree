@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace StefanoTreeTest\Integration\Adapter;
 
 use StefanoTree\NestedSet\Adapter\AdapterInterface;
+use StefanoTreeTest\DbTester\ArrayDataSource;
 use StefanoTreeTest\IntegrationTestCase;
 
 abstract class AdapterAbstract extends IntegrationTestCase
@@ -30,12 +31,12 @@ abstract class AdapterAbstract extends IntegrationTestCase
      */
     abstract protected function getAdapter(): AdapterInterface;
 
-    protected function getDataSet()
+    protected function getDataSet(): ArrayDataSource
     {
         return $this->createArrayDataSet(include __DIR__.'/../_files/NestedSet/initDataSet.php');
     }
 
-    public function testIsInTransaction()
+    public function testIsInTransaction(): void
     {
         $adapter = $this->getAdapter();
 
@@ -45,7 +46,7 @@ abstract class AdapterAbstract extends IntegrationTestCase
         $adapter->rollbackTransaction();
     }
 
-    public function testCommitTransaction()
+    public function testCommitTransaction(): void
     {
         $adapter = $this->getAdapter();
 
@@ -56,7 +57,7 @@ abstract class AdapterAbstract extends IntegrationTestCase
         $this->assertFalse($adapter->isInTransaction());
     }
 
-    public function testRollbackTransaction()
+    public function testRollbackTransaction(): void
     {
         $adapter = $this->getAdapter();
 
@@ -67,7 +68,7 @@ abstract class AdapterAbstract extends IntegrationTestCase
         $this->assertFalse($adapter->isInTransaction());
     }
 
-    public function testHandleNestedTransaction()
+    public function testHandleNestedTransaction(): void
     {
         $adapter = $this->getAdapter();
         if (!$adapter->canHandleNestedTransaction()) {
@@ -82,7 +83,7 @@ abstract class AdapterAbstract extends IntegrationTestCase
         $this->assertFalse($adapter->isInTransaction());
     }
 
-    public function testQuoteIdentifier()
+    public function testQuoteIdentifier(): void
     {
         $a = $this->getAdapter();
 
@@ -116,7 +117,7 @@ abstract class AdapterAbstract extends IntegrationTestCase
         }
     }
 
-    public function testExecuteInsertSQL()
+    public function testExecuteInsertSQL(): void
     {
         $a = $this->getAdapter();
 
@@ -143,7 +144,7 @@ abstract class AdapterAbstract extends IntegrationTestCase
         );
     }
 
-    public function testExecuteSQL()
+    public function testExecuteSQL(): void
     {
         $a = $this->getAdapter();
 

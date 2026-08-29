@@ -68,11 +68,9 @@ $treeAdapter = new \StefanoTree\NestedSet($options, $dbAdapter);
 
 class Service
 {
-    private $treeAdapter;
-
-    public function __construct(TreeInterface $treeAdapter)
-    {
-        $this->treeAdapter = $treeAdapter;
+    public function __construct(
+        private readonly TreeInterface $treeAdapter,
+    ) {
     }
 
     private function getTreeAdapter(): TreeInterface
@@ -80,6 +78,9 @@ class Service
         return $this->treeAdapter;
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function createRoot(array $data): void
     {
         $errors = array();
@@ -116,6 +117,9 @@ class Service
         }
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function createNode(array $data): void
     {
         $errors = array();
@@ -153,6 +157,9 @@ class Service
         }
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function deleteNode(array $data): void
     {
         $errors = array();
@@ -171,6 +178,9 @@ class Service
             ->deleteBranch($id);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function updateNode(array $data): void
     {
         $errors = array();
@@ -203,6 +213,9 @@ class Service
         }
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function moveNode(array $data): void
     {
         $errors = array();
@@ -234,19 +247,30 @@ class Service
         }
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function getRoots(): array
     {
         return $this->getTreeAdapter()
             ->getRoots();
     }
 
-    public function getDescendants($nodeId): array
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    public function getDescendants(int|string $nodeId): array
     {
         return $this->getTreeAdapter()
             ->getDescendantsQueryBuilder()
             ->get($nodeId);
     }
 
+    /**
+     * @param array<string, mixed> $criteria
+     *
+     * @return array<int, array<string, mixed>>
+     */
     public function findDescendants(array $criteria): array
     {
         $queryBuilder = $this->getTreeAdapter()
@@ -289,6 +313,11 @@ class Service
         return $queryBuilder->get($nodeId);
     }
 
+    /**
+     * @param array<string, mixed> $criteria
+     *
+     * @return array<int, array<string, mixed>>
+     */
     public function findAncestors(array $criteria): array
     {
         $queryBuilder = $this->getTreeAdapter()
@@ -329,11 +358,14 @@ class Service
 
 class ViewHelper
 {
-    public function escape($string): string
+    public function escape(mixed $string): string
     {
         return htmlspecialchars((string) $string);
     }
 
+    /**
+     * @param array<int, array<string, mixed>> $nodes
+     */
     public function renderTree(array $nodes): string
     {
         $html = '';
@@ -365,6 +397,9 @@ class ViewHelper
         return $html;
     }
 
+    /**
+     * @param array<int, array<string, mixed>> $nodes
+     */
     public function renderBreadcrumbs(array $nodes): string
     {
         $html = '';
@@ -376,6 +411,9 @@ class ViewHelper
         return '<nav class="breadcrumb">'.$html.'</nav>';
     }
 
+    /**
+     * @param array<int, array<string, mixed>> $nodes
+     */
     public function renderSelectOptions(array $nodes): string
     {
         $pathCache = array();
@@ -412,6 +450,9 @@ class ViewHelper
         return '<option value="">---</option>'.$html;
     }
 
+    /**
+     * @param array<int, string> $errors
+     */
     public function renderErrorMessages(array $errors): string
     {
         $html = '';
@@ -444,11 +485,11 @@ class ViewHelper
 
 class ValidationError extends Exception
 {
-    private $errorMessages = array();
-
-    public function __construct(array $errorMessages = array())
+    /**
+     * @param array<int, string> $errorMessages
+     */
+    public function __construct(private array $errorMessages = array())
     {
-        $this->errorMessages = $errorMessages;
     }
 
     public function addError(string $error): void
@@ -456,18 +497,24 @@ class ValidationError extends Exception
         $this->errorMessages[] = $error;
     }
 
+    /**
+     * @param array<int, string> $errors
+     */
     public function addErrors(array $errors): void
     {
         $this->errorMessages = array_merge(array_values($errors), $this->errorMessages);
     }
 
+    /**
+     * @return array<int, string>
+     */
     public function getErrors(): array
     {
         return $this->errorMessages;
     }
 }
 
-function setFlashMessageAndRedirect(string $message, string $url)
+function setFlashMessageAndRedirect(string $message, string $url): void
 {
     $_SESSION['flashMessage'] = $message;
     $redirectUrl = (isset($_SERVER['HTTPS']) ? 'https' : 'http')."://{$_SERVER['HTTP_HOST']}{$url}";

@@ -13,7 +13,7 @@ use StefanoTreeTest\UnitTestCase;
  */
 class OptionsTest extends UnitTestCase
 {
-    public function testThrowExceptionIfAllRequiredSettingsAreNotProvided()
+    public function testThrowExceptionIfAllRequiredSettingsAreNotProvided(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('tableName, idColumnName must be set');
@@ -21,10 +21,7 @@ class OptionsTest extends UnitTestCase
         new Options(array());
     }
 
-    /**
-     * @return Options
-     */
-    private function getOptionsWithDefaultSettings()
+    private function getOptionsWithDefaultSettings(): Options
     {
         return new Options(array(
             'tableName' => 'table',
@@ -32,7 +29,7 @@ class OptionsTest extends UnitTestCase
         ));
     }
 
-    public function testThrowExceptionIfTrySetWrongTableName()
+    public function testThrowExceptionIfTrySetWrongTableName(): void
     {
         $optionsStub = $this->getOptionsWithDefaultSettings();
 
@@ -42,7 +39,7 @@ class OptionsTest extends UnitTestCase
         $optionsStub->setTableName(' ');
     }
 
-    public function testThrowExceptionIfTrySetWrongIdColumnName()
+    public function testThrowExceptionIfTrySetWrongIdColumnName(): void
     {
         $optionsStub = $this->getOptionsWithDefaultSettings();
 
@@ -52,7 +49,7 @@ class OptionsTest extends UnitTestCase
         $optionsStub->setIdColumnName(' ');
     }
 
-    public function testThrowExceptionIfTrySetWrongLeftColumnName()
+    public function testThrowExceptionIfTrySetWrongLeftColumnName(): void
     {
         $optionsStub = $this->getOptionsWithDefaultSettings();
 
@@ -62,7 +59,7 @@ class OptionsTest extends UnitTestCase
         $optionsStub->setLeftColumnName(' ');
     }
 
-    public function testThrowExceptionIfTrySetWrongRightColumnName()
+    public function testThrowExceptionIfTrySetWrongRightColumnName(): void
     {
         $optionsStub = $this->getOptionsWithDefaultSettings();
 
@@ -72,7 +69,7 @@ class OptionsTest extends UnitTestCase
         $optionsStub->setRightColumnName(' ');
     }
 
-    public function testThrowExceptionIfTrySetWrongLevelColumnName()
+    public function testThrowExceptionIfTrySetWrongLevelColumnName(): void
     {
         $optionsStub = $this->getOptionsWithDefaultSettings();
 
@@ -82,7 +79,7 @@ class OptionsTest extends UnitTestCase
         $optionsStub->setLevelColumnName(' ');
     }
 
-    public function testThrowExceptionIfTrySetWrongParentIdColumnName()
+    public function testThrowExceptionIfTrySetWrongParentIdColumnName(): void
     {
         $optionsStub = $this->getOptionsWithDefaultSettings();
 
@@ -92,7 +89,7 @@ class OptionsTest extends UnitTestCase
         $optionsStub->setParentIdColumnName(' ');
     }
 
-    public function testGetTableName()
+    public function testGetTableName(): void
     {
         $optionsStub = $this->getOptionsWithDefaultSettings();
 
@@ -101,7 +98,7 @@ class OptionsTest extends UnitTestCase
         $this->assertEquals('table', $optionsStub->getTableName());
     }
 
-    public function testGetIdColumnName()
+    public function testGetIdColumnName(): void
     {
         $optionsStub = $this->getOptionsWithDefaultSettings();
 
@@ -110,7 +107,7 @@ class OptionsTest extends UnitTestCase
         $this->assertEquals('id', $optionsStub->getIdColumnName());
     }
 
-    public function testGetLeftColumnName()
+    public function testGetLeftColumnName(): void
     {
         $optionsStub = $this->getOptionsWithDefaultSettings();
 
@@ -121,7 +118,7 @@ class OptionsTest extends UnitTestCase
         $this->assertEquals('left', $optionsStub->getLeftColumnName());
     }
 
-    public function testGetRightColumnName()
+    public function testGetRightColumnName(): void
     {
         $optionsStub = $this->getOptionsWithDefaultSettings();
 
@@ -132,7 +129,7 @@ class OptionsTest extends UnitTestCase
         $this->assertEquals('right', $optionsStub->getRightColumnName());
     }
 
-    public function testGetLevelColumnName()
+    public function testGetLevelColumnName(): void
     {
         $optionsStub = $this->getOptionsWithDefaultSettings();
 
@@ -143,7 +140,7 @@ class OptionsTest extends UnitTestCase
         $this->assertEquals('lvl', $optionsStub->getLevelColumnName());
     }
 
-    public function testGetParentIdColumnName()
+    public function testGetParentIdColumnName(): void
     {
         $optionsStub = $this->getOptionsWithDefaultSettings();
 
@@ -154,14 +151,14 @@ class OptionsTest extends UnitTestCase
         $this->assertEquals('prt', $optionsStub->getParentIdColumnName());
     }
 
-    public function testGetDefaultScopeColumnName()
+    public function testGetDefaultScopeColumnName(): void
     {
         $optionsStub = $this->getOptionsWithDefaultSettings();
 
         $this->assertEquals('', $optionsStub->getScopeColumnName());
     }
 
-    public function testSetScopeColumnName()
+    public function testSetScopeColumnName(): void
     {
         $optionsStub = $this->getOptionsWithDefaultSettings();
 
