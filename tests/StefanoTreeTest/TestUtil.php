@@ -211,12 +211,15 @@ class TestUtil
     {
         if (null == self::$doctrineConnection) {
             $config = new DBAL\Configuration();
+            $driver = 'pdo_'.strtolower(TEST_STEFANO_DB_VENDOR);
+            // supported vendors, see tests/testConfig.php
+            \assert(\in_array($driver, array('pdo_mysql', 'pdo_pgsql'), true));
             $connectionParams = array(
                 'dbname' => TEST_STEFANO_DB_DB_NAME,
                 'user' => TEST_STEFANO_DB_USER,
                 'password' => TEST_STEFANO_DB_PASSWORD,
                 'host' => TEST_STEFANO_DB_HOSTNAME,
-                'driver' => 'pdo_'.strtolower(TEST_STEFANO_DB_VENDOR),
+                'driver' => $driver,
             );
 
             self::$doctrineConnection = DBAL\DriverManager::getConnection($connectionParams, $config);

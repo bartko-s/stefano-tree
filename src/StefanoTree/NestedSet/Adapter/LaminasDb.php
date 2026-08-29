@@ -6,6 +6,7 @@ namespace StefanoTree\NestedSet\Adapter;
 
 use Laminas\Db\Adapter\Adapter as DbAdapter;
 use Laminas\Db\Adapter\Driver\AbstractConnection;
+use Laminas\Db\ResultSet\ResultSet;
 use StefanoTree\NestedSet\Options;
 
 class LaminasDb implements AdapterInterface
@@ -89,6 +90,16 @@ class LaminasDb implements AdapterInterface
                 $params
             );
 
+        if (!$result instanceof ResultSet) {
+            throw new \RuntimeException(sprintf(
+                'Insert did not return a result set. SQL: "%s"',
+                $sql
+            ));
+        }
+
+        /**
+         * @var list<array<string, mixed>> $rows
+         */
         $rows = $result->toArray();
         $lastGeneratedValue = $rows[0][$options->getIdColumnName()] ?? null;
 
@@ -108,10 +119,29 @@ class LaminasDb implements AdapterInterface
             ->query($sql, $params);
     }
 
+    /**
+     * @param string               $sql
+     * @param array<string, mixed> $params
+     *
+     * @return list<array<string, mixed>>
+     */
     public function executeSelectSQL(string $sql, array $params = array()): array
     {
-        return $this->getConnection()
-            ->query($sql, $params)
-            ->toArray();
+        $result = $this->getConnection()
+            ->query($sql, $params);
+
+        if (!$result instanceof ResultSet) {
+            throw new \RuntimeException(sprintf(
+                'Select did not return a result set. SQL: "%s"',
+                $sql
+            ));
+        }
+
+        /**
+         * @var list<array<string, mixed>> $rows
+         */
+        $rows = $result->toArray();
+
+        return $rows;
     }
 }

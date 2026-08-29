@@ -34,7 +34,7 @@ trait DbTestCaseTrait
     abstract public function recreateDbScheme(): void;
 
     /**
-     * @param array<int, string> $tables
+     * @param list<string> $tables
      */
     public function assertCompareDataSet(array $tables, string $expectedDataSetArrayFile, string $message = ''): void
     {

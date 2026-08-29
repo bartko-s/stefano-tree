@@ -40,6 +40,9 @@ class Connection
     {
         $connection = $this->pdo;
 
+        /**
+         * @var array<string, list<array<string, mixed>>> $data
+         */
         $data = array();
         foreach ($tables as $tableName) {
             $sql = sprintf(
@@ -47,8 +50,19 @@ class Connection
                 $this->quoteIdentifier($tableName)
             );
 
-            $rows = $connection->query($sql)
-                ->fetchAll(\PDO::FETCH_ASSOC);
+            $statement = $connection->query($sql);
+            if (!$statement instanceof \PDOStatement) {
+                throw new \RuntimeException(sprintf(
+                    'Query failed. SQL: "%s"',
+                    $sql
+                ));
+            }
+
+            /**
+             * @var list<array<string, mixed>> $rows
+             */
+            $rows = $statement->fetchAll(\PDO::FETCH_ASSOC);
+
             $data[$tableName] = $rows;
         }
 

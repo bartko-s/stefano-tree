@@ -26,6 +26,9 @@ class NestedSetTest extends UnitTestCase
         'tableName' => 'table',
     );
 
+    /**
+     * @param class-string $expectedAdapterClass
+     */
     #[DataProvider('dataProvider')]
     public function testConstructorMethodWithOptionAsObject(string $dbAdapterClass, string $expectedAdapterClass): void
     {
@@ -40,6 +43,9 @@ class NestedSetTest extends UnitTestCase
         $this->assertInstanceOf($expectedAdapterClass, $adapter);
     }
 
+    /**
+     * @param class-string $expectedAdapterClass
+     */
     #[DataProvider('dataProvider')]
     public function testConstructorMethodWithOptionAsArray(string $dbAdapterClass, string $expectedAdapterClass): void
     {
@@ -55,20 +61,20 @@ class NestedSetTest extends UnitTestCase
     }
 
     /**
-     * @return array<int, array<int, string>>
+     * @return array<string, array{string, class-string}>
      */
     public static function dataProvider(): array
     {
         return array(
-            array(
+            'pdo' => array(
                 \PDO::class,
                 NestedSet\Adapter\Pdo::class,
             ),
-            array(
+            'laminas-db' => array(
                 Adapter::class,
                 NestedSet\Adapter\LaminasDb::class,
             ),
-            array(
+            'doctrine-dbal' => array(
                 Connection::class,
                 NestedSet\Adapter\DoctrineDBAL::class,
             ),

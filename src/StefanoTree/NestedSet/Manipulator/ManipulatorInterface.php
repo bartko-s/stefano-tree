@@ -134,7 +134,7 @@ interface ManipulatorInterface
      * @param int        $startLevel         0 = include root
      * @param int        $excludeLastNLevels
      *
-     * @return array<int, array<string, mixed>>
+     * @return list<array<string, mixed>>
      */
     public function getAncestors(int|string $nodeId, int $startLevel = 0, int $excludeLastNLevels = 0): array;
 
@@ -145,7 +145,7 @@ interface ManipulatorInterface
      * @param null|int        $levels        Number of levels in the results relative to $startLevel
      * @param null|int|string $excludeBranch Exclude defined branch(node id) from result
      *
-     * @return array<int, array<string, mixed>>
+     * @return list<array<string, mixed>>
      */
     public function getDescendants(int|string $nodeId, int $startLevel = 0, ?int $levels = null, int|string|null $excludeBranch = null): array;
 

@@ -92,12 +92,23 @@ class Pdo implements AdapterInterface
         $stm->execute($params);
     }
 
+    /**
+     * @param string               $sql
+     * @param array<string, mixed> $params
+     *
+     * @return list<array<string, mixed>>
+     */
     public function executeSelectSQL(string $sql, array $params = array()): array
     {
         $stm = $this->getConnection()
             ->prepare($sql);
         $stm->execute($params);
 
-        return $stm->fetchAll(\PDO::FETCH_ASSOC);
+        /**
+         * @var list<array<string, mixed>> $rows
+         */
+        $rows = $stm->fetchAll(\PDO::FETCH_ASSOC);
+
+        return $rows;
     }
 }

@@ -90,6 +90,12 @@ class DoctrineDBAL implements AdapterInterface
             ->executeQuery($sql, $params);
     }
 
+    /**
+     * @param string               $sql
+     * @param array<string, mixed> $params
+     *
+     * @return list<array<string, mixed>>
+     */
     public function executeSelectSQL(string $sql, array $params = array()): array
     {
         return $this->getConnection()
