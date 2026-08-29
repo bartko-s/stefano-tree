@@ -22,7 +22,7 @@ class TestUtil
 
         $queries = array();
 
-        if ('mysql' == TEST_STEFANO_DB_VENDOR) {
+        if ('mysql' === TEST_STEFANO_DB_VENDOR) {
             $queries[] = 'DROP TABLE IF EXISTS tree_traversal';
             $queries[] = 'DROP TABLE IF EXISTS tree_traversal_with_scope';
             $queries[] = 'DROP TABLE IF EXISTS tree_traversal_metadata';
@@ -75,7 +75,7 @@ class TestUtil
                 ADD FOREIGN KEY (`parent_id`) 
                 REFERENCES `tree_traversal_with_scope` (`tree_traversal_id`) 
                 ON DELETE CASCADE ON UPDATE CASCADE';
-        } elseif ('pgsql' == TEST_STEFANO_DB_VENDOR) {
+        } elseif ('pgsql' === TEST_STEFANO_DB_VENDOR) {
             $queries[] = 'DROP TABLE IF EXISTS tree_traversal';
             $queries[] = 'DROP TABLE IF EXISTS tree_traversal_with_scope';
             $queries[] = 'DROP TABLE IF EXISTS tree_traversal_metadata';

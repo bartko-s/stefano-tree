@@ -1,6 +1,14 @@
 parameters:
-    level: 3
+    level: 4
+    bootstrapFiles:
+        - phpstan-bootstrap.php
+    excludePaths:
+        # values of the TEST_STEFANO_* constants depend on env variables at
+        # runtime; they are declared with a general string type in
+        # phpstan-bootstrap.php instead of the fixed literals here
+        - tests/bootstrap.php
     paths:
         - src
         - tests
         - examples
+        - phpstan-bootstrap.php

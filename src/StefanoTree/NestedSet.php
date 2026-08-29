@@ -35,19 +35,12 @@ class NestedSet implements TreeInterface
     private $validator;
 
     /**
-     * @param array|Options $options
-     * @param object        $dbAdapter
-     *
      * @throws InvalidArgumentException
      */
-    public function __construct($options, $dbAdapter)
+    public function __construct(array|Options $options, object $dbAdapter)
     {
         if (is_array($options)) {
             $options = new Options($options);
-        } elseif (!$options instanceof Options) {
-            throw new InvalidArgumentException(
-                sprintf('Options must be an array or instance of %s', Options::class)
-            );
         }
 
         if ($dbAdapter instanceof AdapterInterface) {

@@ -9,7 +9,7 @@ if (file_exists(__DIR__.'/testConfig.local.php')) {
 /*
  * DB connection settings
  */
-if ('mysql' == TEST_STEFANO_DB_VENDOR) {
+if ('mysql' === TEST_STEFANO_DB_VENDOR) {
     defined('TEST_STEFANO_DB_HOSTNAME')
     || define('TEST_STEFANO_DB_HOSTNAME', 'mariadb');
     defined('TEST_STEFANO_DB_DB_NAME')
@@ -18,7 +18,7 @@ if ('mysql' == TEST_STEFANO_DB_VENDOR) {
     || define('TEST_STEFANO_DB_USER', 'root');
     defined('TEST_STEFANO_DB_PASSWORD')
     || define('TEST_STEFANO_DB_PASSWORD', '');
-} elseif ('pgsql' == TEST_STEFANO_DB_VENDOR) {
+} elseif ('pgsql' === TEST_STEFANO_DB_VENDOR) {
     defined('TEST_STEFANO_DB_HOSTNAME')
     || define('TEST_STEFANO_DB_HOSTNAME', 'postgres');
     defined('TEST_STEFANO_DB_DB_NAME')

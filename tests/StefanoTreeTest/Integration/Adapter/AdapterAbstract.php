@@ -72,8 +72,6 @@ abstract class AdapterAbstract extends IntegrationTestCase
         $adapter = $this->getAdapter();
         if (!$adapter->canHandleNestedTransaction()) {
             $this->markTestSkipped('Adapter does not support nested transaction');
-
-            return;
         }
         $adapter->beginTransaction();
         $this->assertTrue($adapter->isInTransaction());
@@ -89,7 +87,7 @@ abstract class AdapterAbstract extends IntegrationTestCase
         $a = $this->getAdapter();
 
         if ($this->adapterCanQuoteIdentifier) {
-            if ('pgsql' == TEST_STEFANO_DB_VENDOR) {
+            if ('pgsql' === TEST_STEFANO_DB_VENDOR) {
                 $this->assertEquals(
                     '"simple"',
                     $a->quoteIdentifier('simple')
