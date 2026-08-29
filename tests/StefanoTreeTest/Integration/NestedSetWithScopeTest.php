@@ -15,10 +15,7 @@ use StefanoTreeTest\TestUtil;
  */
 class NestedSetWithScopeTest extends IntegrationTestCase
 {
-    /**
-     * @var TreeAdapter
-     */
-    protected $treeAdapter;
+    protected ?TreeAdapter $treeAdapter;
 
     protected function setUp(): void
     {

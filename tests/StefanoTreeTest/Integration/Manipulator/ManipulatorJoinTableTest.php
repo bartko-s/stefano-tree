@@ -15,10 +15,7 @@ use StefanoTreeTest\TestUtil;
  */
 class ManipulatorJoinTableTest extends IntegrationTestCase
 {
-    /**
-     * @var ManipulatorInterface
-     */
-    protected $manipulator;
+    protected ?ManipulatorInterface $manipulator;
 
     protected function setUp(): void
     {

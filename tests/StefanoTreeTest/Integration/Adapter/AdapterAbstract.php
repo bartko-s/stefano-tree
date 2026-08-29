@@ -9,12 +9,9 @@ use StefanoTreeTest\IntegrationTestCase;
 
 abstract class AdapterAbstract extends IntegrationTestCase
 {
-    /**
-     * @var AdapterInterface
-     */
-    protected $adapter;
+    protected ?AdapterInterface $adapter;
 
-    protected $adapterCanQuoteIdentifier = true;
+    protected bool $adapterCanQuoteIdentifier = true;
 
     protected function setUp(): void
     {

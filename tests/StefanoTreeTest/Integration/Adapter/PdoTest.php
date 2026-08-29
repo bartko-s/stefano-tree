@@ -14,7 +14,7 @@ use StefanoTreeTest\TestUtil;
  */
 class PdoTest extends AdapterAbstract
 {
-    protected $adapterCanQuoteIdentifier = false;
+    protected bool $adapterCanQuoteIdentifier = false;
 
     /**
      * @return AdapterInterface

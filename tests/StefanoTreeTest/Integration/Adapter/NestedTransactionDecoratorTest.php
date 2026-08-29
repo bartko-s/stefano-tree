@@ -16,10 +16,7 @@ use StefanoTreeTest\UnitTestCase;
  */
 class NestedTransactionDecoratorTest extends UnitTestCase
 {
-    /**
-     * @var AdapterInterface
-     */
-    protected $adapterNestedDoNotSupport;
+    protected ?AdapterInterface $adapterNestedDoNotSupport;
 
     /**
      * @var \PDO
