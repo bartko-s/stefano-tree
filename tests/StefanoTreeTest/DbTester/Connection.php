@@ -19,12 +19,8 @@ class Connection
                 $sql = sprintf(
                     'INSERT INTO %s (%s) VALUES (%s)',
                     $this->quoteIdentifier($tableName),
-                    implode(', ', array_map(function ($key) {
-                        return $this->quoteIdentifier($key);
-                    }, array_keys($rowData))),
-                    implode(', ', array_map(function ($valueKey) {
-                        return ':'.$valueKey;
-                    }, array_keys($rowData)))
+                    implode(', ', array_map($this->quoteIdentifier(...), array_keys($rowData))),
+                    implode(', ', array_map(fn ($valueKey) => ':'.$valueKey, array_keys($rowData)))
                 );
 
                 $connection->prepare($sql)

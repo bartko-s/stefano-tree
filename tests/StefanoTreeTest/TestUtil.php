@@ -237,25 +237,12 @@ class TestUtil
      */
     public static function buildAdapter(Options $options): AdapterInterface
     {
-        switch (TEST_STEFANO_ADAPTER) {
-            case 'pdo':
-                $adapter = new Adapter\Pdo($options, self::getPDOConnection());
-
-                break;
-
-            case 'laminas-db':
-                $adapter = new Adapter\LaminasDb($options, self::getLaminasDbAdapter());
-
-                break;
-
-            case 'doctrine-dbal':
-                $adapter = new Adapter\DoctrineDBAL($options, self::getDoctrineDBALConnection());
-
-                break;
-
-            default:
-                throw new \Exception(sprintf('Unknown adapter "%s"', TEST_STEFANO_ADAPTER));
-        }
+        $adapter = match (TEST_STEFANO_ADAPTER) {
+            'pdo' => new Adapter\Pdo($options, self::getPDOConnection()),
+            'laminas-db' => new Adapter\LaminasDb($options, self::getLaminasDbAdapter()),
+            'doctrine-dbal' => new Adapter\DoctrineDBAL($options, self::getDoctrineDBALConnection()),
+            default => throw new \Exception(sprintf('Unknown adapter "%s"', TEST_STEFANO_ADAPTER)),
+        };
 
         return $adapter;
     }

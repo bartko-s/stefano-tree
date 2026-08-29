@@ -43,7 +43,7 @@ class Validator implements ValidatorInterface
             $this->_rebuild($rootNodeInfo, true);
 
             $adapter->commitTransaction();
-        } catch (TreeIsBrokenException $e) {
+        } catch (TreeIsBrokenException) {
             $adapter->rollbackTransaction();
 
             return false;

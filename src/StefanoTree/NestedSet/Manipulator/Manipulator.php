@@ -81,9 +81,7 @@ class Manipulator implements ManipulatorInterface
      */
     public function getDbSelectBuilder(): callable
     {
-        return $this->getOptions()->getDbSelectBuilder() ?? function (): string {
-            return $this->getBlankDbSelect();
-        };
+        return $this->getOptions()->getDbSelectBuilder() ?? $this->getBlankDbSelect(...);
     }
 
     public function getBlankDbSelect(): string
@@ -150,9 +148,7 @@ class Manipulator implements ManipulatorInterface
         $adapter = $this->getAdapter();
         $data = $this->cleanData($data);
 
-        $setPart = array_map(function ($item) use ($adapter) {
-            return $adapter->quoteIdentifier($item).' = :'.$item;
-        }, array_keys($data));
+        $setPart = array_map(fn ($item) => $adapter->quoteIdentifier($item).' = :'.$item, array_keys($data));
 
         $sql = 'UPDATE '.$adapter->quoteIdentifier($options->getTableName())
             .' SET '.implode(', ', $setPart)
@@ -181,13 +177,9 @@ class Manipulator implements ManipulatorInterface
             $data[$options->getScopeColumnName()] = $nodeInfo->getScope();
         }
 
-        $columns = array_map(function ($item) use ($adapter) {
-            return $adapter->quoteIdentifier($item);
-        }, array_keys($data));
+        $columns = array_map($adapter->quoteIdentifier(...), array_keys($data));
 
-        $values = array_map(function ($item) {
-            return ':'.$item;
-        }, array_keys($data));
+        $values = array_map(fn ($item) => ':'.$item, array_keys($data));
 
         $sql = 'INSERT INTO '.$adapter->quoteIdentifier($options->getTableName())
             .' ('.implode(', ', $columns).')'
@@ -478,9 +470,7 @@ class Manipulator implements ManipulatorInterface
             $options->getLevelColumnName() => $nodeInfo->getLevel(),
         );
 
-        $setPart = array_map(function ($item) use ($adapter) {
-            return $adapter->quoteIdentifier($item).' = :'.$item;
-        }, array_keys($data));
+        $setPart = array_map(fn ($item) => $adapter->quoteIdentifier($item).' = :'.$item, array_keys($data));
 
         $sql = 'UPDATE '.$adapter->quoteIdentifier($options->getTableName())
             .' SET '.implode(', ', $setPart)

@@ -14,42 +14,20 @@ if ($dbHost) {
 
 $dbVendor = getenv('DB');
 
-switch ($dbVendor) {
-    case 'pgsql':
-        define('TEST_STEFANO_DB_VENDOR', 'pgsql');
-
-        break;
-
-    case 'mysql':
-        define('TEST_STEFANO_DB_VENDOR', 'mysql');
-
-        break;
-
-    default:
-        throw new Exception(sprintf('Wrong DB environment variable "%s"', $dbVendor));
-}
+match ($dbVendor) {
+    'pgsql' => define('TEST_STEFANO_DB_VENDOR', 'pgsql'),
+    'mysql' => define('TEST_STEFANO_DB_VENDOR', 'mysql'),
+    default => throw new Exception(sprintf('Wrong DB environment variable "%s"', $dbVendor)),
+};
 
 $treeAdapter = getenv('ADAPTER');
 
-switch ($treeAdapter) {
-    case 'pdo':
-        define('TEST_STEFANO_ADAPTER', 'pdo');
-
-        break;
-
-    case 'laminas-db':
-        define('TEST_STEFANO_ADAPTER', 'laminas-db');
-
-        break;
-
-    case 'doctrine-dbal':
-        define('TEST_STEFANO_ADAPTER', 'doctrine-dbal');
-
-        break;
-
-    default:
-        throw new Exception(sprintf('Wrong ADAPTER environment variable "%s"', $treeAdapter));
-}
+match ($treeAdapter) {
+    'pdo' => define('TEST_STEFANO_ADAPTER', 'pdo'),
+    'laminas-db' => define('TEST_STEFANO_ADAPTER', 'laminas-db'),
+    'doctrine-dbal' => define('TEST_STEFANO_ADAPTER', 'doctrine-dbal'),
+    default => throw new Exception(sprintf('Wrong ADAPTER environment variable "%s"', $treeAdapter)),
+};
 
 echo PHP_EOL;
 echo '------- TEST CONFIG -------'.PHP_EOL;

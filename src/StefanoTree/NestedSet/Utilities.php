@@ -43,9 +43,7 @@ class Utilities
         for ($pos = $startPos; $pos < $total; ++$pos) {
             $item = $flatTree[$pos];
 
-            if (null === $level) {
-                $level = $item[$levelName];
-            }
+            $level ??= $item[$levelName];
 
             if (!array_key_exists('_children', $item)) {
                 $item['_children'] = array();

@@ -21,11 +21,9 @@ class JoinTableTest extends IntegrationTestCase
             'tableName' => 'tree_traversal_with_scope',
             'idColumnName' => 'tree_traversal_id',
             'scopeColumnName' => 'scope',
-            'dbSelectBuilder' => function () {
-                return 'SELECT tree_traversal_with_scope.*, ttm.name AS metadata FROM tree_traversal_with_scope'
-                    .' LEFT JOIN tree_traversal_metadata AS ttm'
-                    .' ON ttm.tree_traversal_id = tree_traversal_with_scope.tree_traversal_id';
-            },
+            'dbSelectBuilder' => fn () => 'SELECT tree_traversal_with_scope.*, ttm.name AS metadata FROM tree_traversal_with_scope'
+                .' LEFT JOIN tree_traversal_metadata AS ttm'
+                .' ON ttm.tree_traversal_id = tree_traversal_with_scope.tree_traversal_id',
         ));
 
         return new TreeAdapter($options, TestUtil::buildAdapter($options));

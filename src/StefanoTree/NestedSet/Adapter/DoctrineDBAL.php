@@ -56,10 +56,8 @@ class DoctrineDBAL implements AdapterInterface
     public function quoteIdentifier(string $columnName): string
     {
         $quotedParts = array_map(
-            function (string $part) {
-                return $this->getConnection()
-                    ->quoteSingleIdentifier($part);
-            },
+            fn (string $part) => $this->getConnection()
+                ->quoteSingleIdentifier($part),
             explode('.', $columnName)
         );
 

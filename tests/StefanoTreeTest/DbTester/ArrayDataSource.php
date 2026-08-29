@@ -74,11 +74,7 @@ class ArrayDataSource
             $valueA = $rowA[$keyA];
             $valueB = $rowB[$keyB];
 
-            if ($valueA == $valueB) {
-                return 0;
-            }
-
-            return ($valueA < $valueB) ? -1 : 1;
+            return $valueA <=> $valueB;
         });
 
         return $data;

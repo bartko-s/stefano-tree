@@ -40,6 +40,7 @@
         "phpstan/phpstan": "^2.2",
         "phpstan/phpstan-mockery": "^2.0",
         "phpunit/phpcov": "^10.0",
+        "rector/rector": "^2.0",
         "phpunit/phpunit": "^11.5"
     },
     "autoload": {
@@ -63,6 +64,8 @@
     },
     "scripts": {
         "phpstan": "vendor/bin/phpstan analyse --no-progress",
+        "rector": "vendor/bin/rector process",
+        "rector-check": "vendor/bin/rector process --dry-run",
         "cs-check": "php-cs-fixer --version && php-cs-fixer fix -v --diff --dry-run --allow-risky yes",
         "cs-fix": "php-cs-fixer fix -v --allow-risky yes",
         "test-pgsql-pdo": "export DB=pgsql ADAPTER=pdo; phpunit -c ./tests/phpunit.xml",

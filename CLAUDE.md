@@ -7,6 +7,7 @@
 - tests/bootstrap.php throws unless the `DB` and `ADAPTER` env vars are set (the composer scripts export them) -
   running phpunit directly without them fails, even for the unit suite.
 - Code style: `./run.sh composer cs-check` / `./run.sh composer cs-fix` (php-cs-fixer, config: .php-cs-fixer.php).
+- Rector (config: rector.php): `./run.sh php8.2 composer rector-check` shows a dry-run diff, `./run.sh php8.2 composer rector` applies it.
 - DB connection defaults: tests/testConfig.php; override locally via tests/testConfig.local.php (copy from .dist)
 
 

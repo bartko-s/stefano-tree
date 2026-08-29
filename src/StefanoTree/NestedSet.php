@@ -30,7 +30,7 @@ use StefanoTree\NestedSet\Validator\ValidatorInterface;
 
 class NestedSet implements TreeInterface
 {
-    private ManipulatorInterface $manipulator;
+    private readonly ManipulatorInterface $manipulator;
 
     private ?ValidatorInterface $validator = null;
 
@@ -54,7 +54,7 @@ class NestedSet implements TreeInterface
         } elseif ($dbAdapter instanceof \PDO) {
             $adapter = new Pdo($options, $dbAdapter);
         } else {
-            throw new InvalidArgumentException('Db adapter "'.get_class($dbAdapter)
+            throw new InvalidArgumentException('Db adapter "'.$dbAdapter::class
                 .'" is not supported');
         }
 
@@ -125,22 +125,13 @@ class NestedSet implements TreeInterface
     {
         $adapter = $this->getManipulator();
 
-        switch ($placement) {
-            case self::PLACEMENT_BOTTOM:
-                return new AddStrategy\Bottom($adapter);
-
-            case self::PLACEMENT_TOP:
-                return new AddStrategy\Top($adapter);
-
-            case self::PLACEMENT_CHILD_BOTTOM:
-                return new AddStrategy\ChildBottom($adapter);
-
-            case self::PLACEMENT_CHILD_TOP:
-                return new AddStrategy\ChildTop($adapter);
-
-            default:
-                throw new InvalidArgumentException('Unknown placement "'.$placement.'"');
-        }
+        return match ($placement) {
+            self::PLACEMENT_BOTTOM => new AddStrategy\Bottom($adapter),
+            self::PLACEMENT_TOP => new AddStrategy\Top($adapter),
+            self::PLACEMENT_CHILD_BOTTOM => new AddStrategy\ChildBottom($adapter),
+            self::PLACEMENT_CHILD_TOP => new AddStrategy\ChildTop($adapter),
+            default => throw new InvalidArgumentException('Unknown placement "'.$placement.'"'),
+        };
     }
 
     /**
@@ -162,22 +153,13 @@ class NestedSet implements TreeInterface
     {
         $adapter = $this->getManipulator();
 
-        switch ($placement) {
-            case self::PLACEMENT_BOTTOM:
-                return new MoveStrategy\Bottom($adapter);
-
-            case self::PLACEMENT_TOP:
-                return new MoveStrategy\Top($adapter);
-
-            case self::PLACEMENT_CHILD_BOTTOM:
-                return new MoveStrategy\ChildBottom($adapter);
-
-            case self::PLACEMENT_CHILD_TOP:
-                return new MoveStrategy\ChildTop($adapter);
-
-            default:
-                throw new InvalidArgumentException('Unknown placement "'.$placement.'"');
-        }
+        return match ($placement) {
+            self::PLACEMENT_BOTTOM => new MoveStrategy\Bottom($adapter),
+            self::PLACEMENT_TOP => new MoveStrategy\Top($adapter),
+            self::PLACEMENT_CHILD_BOTTOM => new MoveStrategy\ChildBottom($adapter),
+            self::PLACEMENT_CHILD_TOP => new MoveStrategy\ChildTop($adapter),
+            default => throw new InvalidArgumentException('Unknown placement "'.$placement.'"'),
+        };
     }
 
     /**

@@ -43,15 +43,10 @@ class NestedSetTest extends IntegrationTestCase
 
     protected function getDataSet(): ArrayDataSource
     {
-        switch ($this->name()) {
-            case 'testCreateRootNode':
-            case 'testCreateRootNodeWithCustomData':
-            case 'testGetRootNodeRootDoesNotExist':
-                return $this->createArrayDataSet(include __DIR__.'/_files/NestedSet/initEmptyDataSet.php');
-
-            default:
-                return $this->createArrayDataSet(include __DIR__.'/_files/NestedSet/initDataSet.php');
-        }
+        return match ($this->name()) {
+            'testCreateRootNode', 'testCreateRootNodeWithCustomData', 'testGetRootNodeRootDoesNotExist' => $this->createArrayDataSet(include __DIR__.'/_files/NestedSet/initEmptyDataSet.php'),
+            default => $this->createArrayDataSet(include __DIR__.'/_files/NestedSet/initDataSet.php'),
+        };
     }
 
     public function testCreateRootNode(): void
