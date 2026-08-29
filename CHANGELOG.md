@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## 6.0.0 (2026-August-29) - BC break
+- require PHP 8.2+, dropped support for PHP 7.1 - 8.1
+- dropped the Zend Framework 1 Db adapter (supported adapters: PDO, Laminas Db, Doctrine DBAL)
+- support Doctrine DBAL 4; adapter class `Doctrine2DBAL` renamed to `DoctrineDBAL`
+- generated node id is fetched with INSERT ... RETURNING; the `sequenceName` option was removed
+- test on PHP 8.2 - 8.5, static analysis with PHPStan
+
 ## 5.0.0 (2022-September-29) - BC break
 - removed support for Zend2 Db
 - added support for Laminas Db
