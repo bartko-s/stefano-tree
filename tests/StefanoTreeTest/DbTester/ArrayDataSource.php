@@ -63,18 +63,22 @@ class ArrayDataSource
      */
     private function sortData(array $data): array
     {
-        usort($data, function ($a, $b) {
-            reset($a);
-            reset($b);
+        usort($data, function (array $rowA, array $rowB): int {
+            reset($rowA);
+            reset($rowB);
 
-            $a = $a[key($a)];
-            $b = $b[key($b)];
+            $keyA = key($rowA);
+            $keyB = key($rowB);
+            \assert(null !== $keyA && null !== $keyB);
 
-            if ($a == $b) {
+            $valueA = $rowA[$keyA];
+            $valueB = $rowB[$keyB];
+
+            if ($valueA == $valueB) {
                 return 0;
             }
 
-            return ($a < $b) ? -1 : 1;
+            return ($valueA < $valueB) ? -1 : 1;
         });
 
         return $data;

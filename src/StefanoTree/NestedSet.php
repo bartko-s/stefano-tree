@@ -201,6 +201,9 @@ class NestedSet implements TreeInterface
                 return;
             }
 
+            // node is loaded from the database, therefore it always has an id
+            \assert(null !== $nodeInfo->getId());
+
             $adapter->delete($nodeInfo->getId());
 
             // patch hole

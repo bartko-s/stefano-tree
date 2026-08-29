@@ -94,12 +94,17 @@ class Validator implements ValidatorInterface
      * @return int
      *
      * @throws TreeIsBrokenException if tree is broken and $onlyValidate is true
+     * @throws ValidationException   if the parent node does not have an id
      */
     private function _rebuild(NodeInfo $parentNodeInfo, bool $onlyValidate = false, int $left = 1, int $level = 0): int
     {
         $adapter = $this->getManipulator();
 
         $right = $left + 1;
+
+        if (null === $parentNodeInfo->getId()) {
+            throw new ValidationException('Node does not have an id.');
+        }
 
         $children = $adapter->getChildrenNodeInfo($parentNodeInfo->getId());
 

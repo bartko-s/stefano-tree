@@ -16,14 +16,7 @@ use StefanoTreeTest\TestUtil;
  */
 class NestedSetWithScopeTest extends IntegrationTestCase
 {
-    protected ?TreeAdapter $treeAdapter;
-
-    protected function setUp(): void
-    {
-        $this->treeAdapter = $this->getTreeAdapter();
-
-        parent::setUp();
-    }
+    protected ?TreeAdapter $treeAdapter = null;
 
     protected function tearDown(): void
     {
@@ -33,13 +26,17 @@ class NestedSetWithScopeTest extends IntegrationTestCase
 
     protected function getTreeAdapter(): TreeAdapter
     {
-        $options = new Options(array(
-            'tableName' => 'tree_traversal_with_scope',
-            'idColumnName' => 'tree_traversal_id',
-            'scopeColumnName' => 'scope',
-        ));
+        if (null === $this->treeAdapter) {
+            $options = new Options(array(
+                'tableName' => 'tree_traversal_with_scope',
+                'idColumnName' => 'tree_traversal_id',
+                'scopeColumnName' => 'scope',
+            ));
 
-        return new TreeAdapter($options, TestUtil::buildAdapter($options));
+            $this->treeAdapter = new TreeAdapter($options, TestUtil::buildAdapter($options));
+        }
+
+        return $this->treeAdapter;
     }
 
     protected function getDataSet(): ArrayDataSource
@@ -56,7 +53,7 @@ class NestedSetWithScopeTest extends IntegrationTestCase
 
     public function testCreateRoot(): void
     {
-        $this->treeAdapter
+        $this->getTreeAdapter()
             ->createRootNode(array(), 10);
 
         $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/NestedSet/with_scope/testCreateRoot.php');
@@ -67,9 +64,9 @@ class NestedSetWithScopeTest extends IntegrationTestCase
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Root node for given scope already exist');
 
-        $this->treeAdapter
+        $this->getTreeAdapter()
             ->createRootNode(array(), 123);
-        $this->treeAdapter
+        $this->getTreeAdapter()
             ->createRootNode(array(), 123);
     }
 
@@ -96,7 +93,7 @@ class NestedSetWithScopeTest extends IntegrationTestCase
             ),
         );
 
-        $roots = $this->treeAdapter
+        $roots = $this->getTreeAdapter()
             ->getRoots();
 
         $this->assertEquals($expected, $roots);
@@ -104,7 +101,7 @@ class NestedSetWithScopeTest extends IntegrationTestCase
 
     public function testAddNodePlacementChildTopDefaultPlacement(): void
     {
-        $lastGeneratedValue = $this->treeAdapter
+        $lastGeneratedValue = $this->getTreeAdapter()
             ->addNode(1);
 
         $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/NestedSet/with_scope/testAddNodePlacementChildTop.php');
@@ -113,7 +110,7 @@ class NestedSetWithScopeTest extends IntegrationTestCase
 
     public function testMoveNodePlacementBottom(): void
     {
-        $this->treeAdapter
+        $this->getTreeAdapter()
             ->moveNode(3, 5, TreeAdapter::PLACEMENT_BOTTOM);
 
         $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/NestedSet/with_scope/testMoveNodePlacementBottom.php');
@@ -124,13 +121,13 @@ class NestedSetWithScopeTest extends IntegrationTestCase
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Cannot move node between scopes.');
 
-        $this->treeAdapter
+        $this->getTreeAdapter()
             ->moveNode(4, 8, TreeAdapter::PLACEMENT_CHILD_BOTTOM);
     }
 
     public function testDeleteBranch(): void
     {
-        $this->treeAdapter
+        $this->getTreeAdapter()
             ->deleteBranch(2);
 
         $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/NestedSet/with_scope/testDeleteBranch.php');
@@ -177,7 +174,7 @@ class NestedSetWithScopeTest extends IntegrationTestCase
             ),
         );
 
-        $nodeData = $this->treeAdapter
+        $nodeData = $this->getTreeAdapter()
             ->getDescendantsQueryBuilder()
             ->get(2);
 
@@ -216,7 +213,7 @@ class NestedSetWithScopeTest extends IntegrationTestCase
             ),
         );
 
-        $nodeData = $this->treeAdapter
+        $nodeData = $this->getTreeAdapter()
             ->getAncestorsQueryBuilder()
             ->get(5);
         $this->assertEquals($expectedNodeData, $nodeData);
@@ -243,20 +240,20 @@ class NestedSetWithScopeTest extends IntegrationTestCase
             'level' => 'corrupt data',
             'scope' => 'corrupt data',
         );
-        $this->treeAdapter
+        $this->getTreeAdapter()
             ->updateNode(4, $data);
 
-        $this->assertEquals($excepted, $this->treeAdapter->getNode(4));
+        $this->assertEquals($excepted, $this->getTreeAdapter()->getNode(4));
     }
 
     public function testIsTreeValid(): void
     {
-        $this->assertTrue($this->treeAdapter->isValid(1));
+        $this->assertTrue($this->getTreeAdapter()->isValid(1));
     }
 
     public function testInvalidTree(): void
     {
-        $this->assertFalse($this->treeAdapter->isValid(1));
+        $this->assertFalse($this->getTreeAdapter()->isValid(1));
     }
 
     public function testValidateTreeGivenNodeIdIsNotRoot(): void
@@ -264,12 +261,12 @@ class NestedSetWithScopeTest extends IntegrationTestCase
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Given node is not root node.');
 
-        $this->treeAdapter->isValid(2);
+        $this->getTreeAdapter()->isValid(2);
     }
 
     public function testRebuildTree(): void
     {
-        $this->treeAdapter
+        $this->getTreeAdapter()
             ->rebuild(1);
 
         $this->assertCompareDataSet(array('tree_traversal_with_scope'), __DIR__.'/_files/NestedSet/with_scope/testRebuildTree.php');
@@ -280,7 +277,7 @@ class NestedSetWithScopeTest extends IntegrationTestCase
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Given node is not root node.');
 
-        $this->treeAdapter->rebuild(5);
+        $this->getTreeAdapter()->rebuild(5);
     }
 
     public function testIsValidTreeGivenNodeIdIsNotRoot(): void
@@ -288,7 +285,7 @@ class NestedSetWithScopeTest extends IntegrationTestCase
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Given node is not root node.');
 
-        $this->treeAdapter->isValid(4);
+        $this->getTreeAdapter()->isValid(4);
     }
 
     public function testRebuildTreeGivenNodeIdDoesNotExists(): void
@@ -296,7 +293,7 @@ class NestedSetWithScopeTest extends IntegrationTestCase
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Node does not exists.');
 
-        $this->treeAdapter->rebuild(999);
+        $this->getTreeAdapter()->rebuild(999);
     }
 
     public function testIsValidTreeGivenNodeIdDoesNotExists(): void
@@ -304,6 +301,6 @@ class NestedSetWithScopeTest extends IntegrationTestCase
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Node does not exists.');
 
-        $this->treeAdapter->isValid(555);
+        $this->getTreeAdapter()->isValid(555);
     }
 }

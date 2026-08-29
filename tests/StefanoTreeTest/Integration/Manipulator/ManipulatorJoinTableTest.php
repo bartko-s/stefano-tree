@@ -16,14 +16,7 @@ use StefanoTreeTest\TestUtil;
  */
 class ManipulatorJoinTableTest extends IntegrationTestCase
 {
-    protected ?ManipulatorInterface $manipulator;
-
-    protected function setUp(): void
-    {
-        $this->manipulator = $this->getManipulator();
-
-        parent::setUp();
-    }
+    protected ?ManipulatorInterface $manipulator = null;
 
     protected function tearDown(): void
     {
@@ -33,22 +26,24 @@ class ManipulatorJoinTableTest extends IntegrationTestCase
 
     protected function getManipulator(): ManipulatorInterface
     {
-        $options = new Options(array(
-            'tableName' => 'tree_traversal_with_scope',
-            'idColumnName' => 'tree_traversal_id',
-            'scopeColumnName' => 'scope',
-            'dbSelectBuilder' => function () {
-                $sql = 'SELECT tree_traversal_with_scope.*, ttm.name AS metadata FROM tree_traversal_with_scope'
-                    .' LEFT JOIN tree_traversal_metadata AS ttm'
-                    .' ON ttm.tree_traversal_id = tree_traversal_with_scope.tree_traversal_id';
+        if (null === $this->manipulator) {
+            $options = new Options(array(
+                'tableName' => 'tree_traversal_with_scope',
+                'idColumnName' => 'tree_traversal_id',
+                'scopeColumnName' => 'scope',
+                'dbSelectBuilder' => function () {
+                    $sql = 'SELECT tree_traversal_with_scope.*, ttm.name AS metadata FROM tree_traversal_with_scope'
+                        .' LEFT JOIN tree_traversal_metadata AS ttm'
+                        .' ON ttm.tree_traversal_id = tree_traversal_with_scope.tree_traversal_id';
 
-                return $sql;
-            },
-        ));
+                    return $sql;
+                },
+            ));
 
-        $manipulator = new Manipulator($options, TestUtil::buildAdapter($options));
+            $this->manipulator = new Manipulator($options, TestUtil::buildAdapter($options));
+        }
 
-        return $manipulator;
+        return $this->manipulator;
     }
 
     protected function getDataSet(): ArrayDataSource
@@ -58,7 +53,7 @@ class ManipulatorJoinTableTest extends IntegrationTestCase
 
     public function testGetNode(): void
     {
-        $nodes = $this->manipulator
+        $nodes = $this->getManipulator()
             ->getDescendants(10);
 
         $expected = array(
@@ -78,7 +73,7 @@ class ManipulatorJoinTableTest extends IntegrationTestCase
 
     public function testGetAncestors(): void
     {
-        $nodes = $this->manipulator
+        $nodes = $this->getManipulator()
             ->getAncestors(10, 2, 1);
 
         $expected = array(
@@ -108,7 +103,7 @@ class ManipulatorJoinTableTest extends IntegrationTestCase
 
     public function testGetDescendants(): void
     {
-        $nodes = $this->manipulator
+        $nodes = $this->getManipulator()
             ->getDescendants(2, 1, 1, 4);
 
         $expected = array(
@@ -138,7 +133,7 @@ class ManipulatorJoinTableTest extends IntegrationTestCase
 
     public function testGetChildrenNodeInfo(): void
     {
-        $nodes = $this->manipulator
+        $nodes = $this->getManipulator()
             ->getChildrenNodeInfo(2);
 
         $this->assertEquals(3, count($nodes));
@@ -146,9 +141,10 @@ class ManipulatorJoinTableTest extends IntegrationTestCase
 
     public function testGetNodeInfo(): void
     {
-        $nodeInfo = $this->manipulator
+        $nodeInfo = $this->getManipulator()
             ->getNodeInfo(2);
 
+        $this->assertNotNull($nodeInfo);
         $this->assertEquals($nodeInfo->getId(), 2);
         $this->assertEquals($nodeInfo->getParentId(), 1);
         $this->assertEquals($nodeInfo->getLeft(), 2);

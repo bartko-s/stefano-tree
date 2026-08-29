@@ -36,6 +36,10 @@ class ChildTop extends MoveStrategyAbstract implements MoveStrategyInterface
     protected function updateParentId(): void
     {
         $newParentId = $this->getTargetNodeInfo()->getId();
+        // target node is always loaded from the database (see move()),
+        // therefore it always has an id
+        \assert(null !== $newParentId);
+
         $this->_updateParentId($this->getSourceNodeInfo(), $newParentId);
     }
 

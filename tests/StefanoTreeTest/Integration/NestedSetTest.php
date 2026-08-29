@@ -19,14 +19,7 @@ use StefanoTreeTest\TestUtil;
  */
 class NestedSetTest extends IntegrationTestCase
 {
-    protected ?TreeAdapter $treeAdapter;
-
-    protected function setUp(): void
-    {
-        $this->treeAdapter = $this->getTreeAdapter();
-
-        parent::setUp();
-    }
+    protected ?TreeAdapter $treeAdapter = null;
 
     protected function tearDown(): void
     {
@@ -36,12 +29,16 @@ class NestedSetTest extends IntegrationTestCase
 
     protected function getTreeAdapter(): TreeAdapter
     {
-        $options = new Options(array(
-            'tableName' => 'tree_traversal',
-            'idColumnName' => 'tree_traversal_id',
-        ));
+        if (null === $this->treeAdapter) {
+            $options = new Options(array(
+                'tableName' => 'tree_traversal',
+                'idColumnName' => 'tree_traversal_id',
+            ));
 
-        return new TreeAdapter($options, TestUtil::buildAdapter($options));
+            $this->treeAdapter = new TreeAdapter($options, TestUtil::buildAdapter($options));
+        }
+
+        return $this->treeAdapter;
     }
 
     protected function getDataSet(): ArrayDataSource
@@ -59,7 +56,7 @@ class NestedSetTest extends IntegrationTestCase
 
     public function testCreateRootNode(): void
     {
-        $newId = $this->treeAdapter
+        $newId = $this->getTreeAdapter()
             ->createRootNode();
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testCreateRootNode.php');
@@ -68,7 +65,7 @@ class NestedSetTest extends IntegrationTestCase
 
     public function testCreateRootNodeWithCustomData(): void
     {
-        $newId = $this->treeAdapter
+        $newId = $this->getTreeAdapter()
             ->createRootNode(array('name' => 'This is root node'));
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testCreateRootNodeWithCustomData.php');
@@ -80,9 +77,9 @@ class NestedSetTest extends IntegrationTestCase
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Root node already exist');
 
-        $this->treeAdapter
+        $this->getTreeAdapter()
             ->createRootNode();
-        $this->treeAdapter
+        $this->getTreeAdapter()
             ->createRootNode();
     }
 
@@ -97,7 +94,7 @@ class NestedSetTest extends IntegrationTestCase
             'level' => '3',
         );
 
-        $nodeData = $this->treeAdapter
+        $nodeData = $this->getTreeAdapter()
             ->getNode(12);
 
         $this->assertEquals($expectedNodeData, $nodeData);
@@ -105,7 +102,7 @@ class NestedSetTest extends IntegrationTestCase
 
     public function testGetNodeNodeDoesNotExist(): void
     {
-        $this->assertNull($this->treeAdapter->getNode(123456789));
+        $this->assertNull($this->getTreeAdapter()->getNode(123456789));
     }
 
     public function testAddNodeTargetNodeDoesNotExist(): void
@@ -114,7 +111,7 @@ class NestedSetTest extends IntegrationTestCase
         $this->expectExceptionMessage('Target Node does not exists.');
 
         try {
-            $this->treeAdapter
+            $this->getTreeAdapter()
                 ->addNode(123456789, array(), TreeAdapter::PLACEMENT_BOTTOM);
         } catch (\Exception $e) {
             $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.php');
@@ -128,7 +125,7 @@ class NestedSetTest extends IntegrationTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Unknown placement "unknown-placement"');
 
-        $this->treeAdapter
+        $this->getTreeAdapter()
             ->addNode(1, array(), 'unknown-placement');
     }
 
@@ -138,7 +135,7 @@ class NestedSetTest extends IntegrationTestCase
         $this->expectExceptionMessage('Cannot create node. Target node is root. Root node cannot have sibling.');
 
         try {
-            $this->treeAdapter
+            $this->getTreeAdapter()
                 ->addNode(1, array(), TreeAdapter::PLACEMENT_BOTTOM);
         } catch (\Exception $e) {
             $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.php');
@@ -153,7 +150,7 @@ class NestedSetTest extends IntegrationTestCase
         $this->expectExceptionMessage('Cannot create node. Target node is root. Root node cannot have sibling.');
 
         try {
-            $this->treeAdapter
+            $this->getTreeAdapter()
                 ->addNode(1, array(), TreeAdapter::PLACEMENT_TOP);
         } catch (\Exception $e) {
             $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.php');
@@ -165,7 +162,7 @@ class NestedSetTest extends IntegrationTestCase
     public function testAddNodePlacementBottom(): void
     {
         // test 1
-        $lastGeneratedValue = $this->treeAdapter
+        $lastGeneratedValue = $this->getTreeAdapter()
             ->addNode(12, array(), TreeAdapter::PLACEMENT_BOTTOM);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testAddNodePlacementBottom-1.php');
@@ -176,7 +173,7 @@ class NestedSetTest extends IntegrationTestCase
             'name' => 'ahoj',
         );
 
-        $lastGeneratedValue = $this->treeAdapter
+        $lastGeneratedValue = $this->getTreeAdapter()
             ->addNode(19, $data, TreeAdapter::PLACEMENT_BOTTOM);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testAddNodePlacementBottom-2.php');
@@ -187,7 +184,7 @@ class NestedSetTest extends IntegrationTestCase
     {
         $uuid = 652;
 
-        $lastGeneratedValue = $this->treeAdapter
+        $lastGeneratedValue = $this->getTreeAdapter()
             ->addNode(
                 12,
                 array(
@@ -203,7 +200,7 @@ class NestedSetTest extends IntegrationTestCase
     public function testAddNodePlacementTop(): void
     {
         // test 1
-        $lastGeneratedValue = $this->treeAdapter
+        $lastGeneratedValue = $this->getTreeAdapter()
             ->addNode(16, array(), TreeAdapter::PLACEMENT_TOP);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testAddNodePlacementTop-1.php');
@@ -213,7 +210,7 @@ class NestedSetTest extends IntegrationTestCase
         $data = array(
             'name' => 'ahoj',
         );
-        $lastGeneratedValue = $this->treeAdapter
+        $lastGeneratedValue = $this->getTreeAdapter()
             ->addNode(3, $data, TreeAdapter::PLACEMENT_TOP);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testAddNodePlacementTop-2.php');
@@ -223,7 +220,7 @@ class NestedSetTest extends IntegrationTestCase
     public function testAddNodePlacementChildBottom(): void
     {
         // test 1
-        $lastGeneratedValue = $this->treeAdapter
+        $lastGeneratedValue = $this->getTreeAdapter()
             ->addNode(21, array(), TreeAdapter::PLACEMENT_CHILD_BOTTOM);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testAddNodePlacementChildBottom-1.php');
@@ -233,7 +230,7 @@ class NestedSetTest extends IntegrationTestCase
         $data = array(
             'name' => 'ahoj',
         );
-        $lastGeneratedValue = $this->treeAdapter
+        $lastGeneratedValue = $this->getTreeAdapter()
             ->addNode(4, $data, TreeAdapter::PLACEMENT_CHILD_BOTTOM);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testAddNodePlacementChildBottom-2.php');
@@ -243,7 +240,7 @@ class NestedSetTest extends IntegrationTestCase
     public function testAddNodePlacementChildTopDefaultPlacement(): void
     {
         // test 1
-        $lastGeneratedValue = $this->treeAdapter
+        $lastGeneratedValue = $this->getTreeAdapter()
             ->addNode(4);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testAddNodePlacementChildTop-1.php');
@@ -253,7 +250,7 @@ class NestedSetTest extends IntegrationTestCase
         $data = array(
             'name' => 'ahoj',
         );
-        $lastGeneratedValue = $this->treeAdapter
+        $lastGeneratedValue = $this->getTreeAdapter()
             ->addNode(10, $data);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testAddNodePlacementChildTop-2.php');
@@ -262,7 +259,7 @@ class NestedSetTest extends IntegrationTestCase
 
     public function testDeleteBranchDoesNotExist(): void
     {
-        $this->treeAdapter
+        $this->getTreeAdapter()
             ->deleteBranch(123456789);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.php');
@@ -270,7 +267,7 @@ class NestedSetTest extends IntegrationTestCase
 
     public function testDeleteBranch(): void
     {
-        $this->treeAdapter
+        $this->getTreeAdapter()
             ->deleteBranch(6);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testDeleteBranch.php');
@@ -282,7 +279,7 @@ class NestedSetTest extends IntegrationTestCase
         $this->expectExceptionMessage('Cannot move. Target node is inside source branch.');
 
         try {
-            $this->treeAdapter
+            $this->getTreeAdapter()
                 ->moveNode(1, 12);
         } catch (\Exception $e) {
             $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.php');
@@ -297,7 +294,7 @@ class NestedSetTest extends IntegrationTestCase
         $this->expectExceptionMessage('Cannot move. Source node and Target node are equal.');
 
         try {
-            $this->treeAdapter
+            $this->getTreeAdapter()
                 ->moveNode(10, 10);
         } catch (\Exception $e) {
             $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.php');
@@ -312,7 +309,7 @@ class NestedSetTest extends IntegrationTestCase
         $this->expectExceptionMessage('Cannot move. Target node does not exists.');
 
         try {
-            $this->treeAdapter
+            $this->getTreeAdapter()
                 ->moveNode(5, 123456);
         } catch (\Exception $e) {
             $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.php');
@@ -327,7 +324,7 @@ class NestedSetTest extends IntegrationTestCase
         $this->expectExceptionMessage('Cannot move. Source node does not exists.');
 
         try {
-            $this->treeAdapter
+            $this->getTreeAdapter()
                 ->moveNode(123456, 6);
         } catch (\Exception $e) {
             $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.php');
@@ -341,7 +338,7 @@ class NestedSetTest extends IntegrationTestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Unknown placement "unknown-placement"');
 
-        $this->treeAdapter
+        $this->getTreeAdapter()
             ->moveNode(11, 1, 'unknown-placement');
     }
 
@@ -357,7 +354,7 @@ class NestedSetTest extends IntegrationTestCase
         $this->expectExceptionMessage('Cannot move. Target node is root. Root node cannot have sibling.');
 
         try {
-            $this->treeAdapter
+            $this->getTreeAdapter()
                 ->moveNode(11, 1, $placement);
         } catch (\Exception $e) {
             $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.php');
@@ -380,25 +377,25 @@ class NestedSetTest extends IntegrationTestCase
     public function testMoveNodePlacementBottom(): void
     {
         // test source node is already at required position
-        $this->treeAdapter
+        $this->getTreeAdapter()
             ->moveNode(3, 2, TreeAdapter::PLACEMENT_BOTTOM);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.php');
 
         // test
-        $this->treeAdapter
+        $this->getTreeAdapter()
             ->moveNode(14, 18, TreeAdapter::PLACEMENT_BOTTOM);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementBottom-1.php');
 
         // test
-        $this->treeAdapter
+        $this->getTreeAdapter()
             ->moveNode(16, 7, TreeAdapter::PLACEMENT_BOTTOM);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementBottom-2.php');
 
         // test
-        $this->treeAdapter
+        $this->getTreeAdapter()
             ->moveNode(14, 3, TreeAdapter::PLACEMENT_BOTTOM);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementBottom-3.php');
@@ -407,25 +404,25 @@ class NestedSetTest extends IntegrationTestCase
     public function testMoveNodePlacementTop(): void
     {
         // test source node is already at required position
-        $this->treeAdapter
+        $this->getTreeAdapter()
             ->moveNode(3, 4, TreeAdapter::PLACEMENT_TOP);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.php');
 
         // test
-        $this->treeAdapter
+        $this->getTreeAdapter()
             ->moveNode(19, 12, TreeAdapter::PLACEMENT_TOP);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementTop-1.php');
 
         // test
-        $this->treeAdapter
+        $this->getTreeAdapter()
             ->moveNode(10, 18, TreeAdapter::PLACEMENT_TOP);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementTop-2.php');
 
         // test
-        $this->treeAdapter
+        $this->getTreeAdapter()
             ->moveNode(21, 6, TreeAdapter::PLACEMENT_TOP);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementTop-3.php');
@@ -434,25 +431,25 @@ class NestedSetTest extends IntegrationTestCase
     public function testMoveNodePlacementChildBottom(): void
     {
         // test source node is already at required position
-        $this->treeAdapter
+        $this->getTreeAdapter()
             ->moveNode(22, 18, TreeAdapter::PLACEMENT_CHILD_BOTTOM);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.php');
 
         // test
-        $this->treeAdapter
+        $this->getTreeAdapter()
             ->moveNode(9, 12, TreeAdapter::PLACEMENT_CHILD_BOTTOM);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementChildBottom-1.php');
 
         // test
-        $this->treeAdapter
+        $this->getTreeAdapter()
             ->moveNode(10, 3, TreeAdapter::PLACEMENT_CHILD_BOTTOM);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementChildBottom-2.php');
 
         // test
-        $this->treeAdapter
+        $this->getTreeAdapter()
             ->moveNode(21, 12, TreeAdapter::PLACEMENT_CHILD_BOTTOM);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementChildBottom-3.php');
@@ -461,25 +458,25 @@ class NestedSetTest extends IntegrationTestCase
     public function testMoveNodePlacementChildTopDefaultPlacement(): void
     {
         // test source node is already at required position
-        $this->treeAdapter
+        $this->getTreeAdapter()
             ->moveNode(21, 18);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/initDataSetWithIds.php');
 
         // test
-        $this->treeAdapter
+        $this->getTreeAdapter()
             ->moveNode(9, 21);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementChildTop-1.php');
 
         // test
-        $this->treeAdapter
+        $this->getTreeAdapter()
             ->moveNode(16, 3);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementChildTop-2.php');
 
         // test
-        $this->treeAdapter
+        $this->getTreeAdapter()
             ->moveNode(18, 3);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testMoveNodePlacementChildTop-3.php');
@@ -487,7 +484,7 @@ class NestedSetTest extends IntegrationTestCase
 
     public function testGetAncestorsReturnEmptyArrayIfNodeDoesNotExist(): void
     {
-        $return = $this->treeAdapter
+        $return = $this->getTreeAdapter()
             ->getAncestorsQueryBuilder()
             ->get(123456789);
 
@@ -496,7 +493,7 @@ class NestedSetTest extends IntegrationTestCase
 
     public function testGetAncestorsReturnEmptyArrayIfNodeExistButHasNoPath(): void
     {
-        $return = $this->treeAdapter
+        $return = $this->getTreeAdapter()
             ->getAncestorsQueryBuilder()
             ->excludeLastNLevel(1)
             ->get(1);
@@ -507,7 +504,7 @@ class NestedSetTest extends IntegrationTestCase
     public function testGetAncestor(): void
     {
         // test
-        $return = $this->treeAdapter
+        $return = $this->getTreeAdapter()
             ->getAncestorsQueryBuilder()
             ->get(6);
 
@@ -540,7 +537,7 @@ class NestedSetTest extends IntegrationTestCase
         $this->assertEquals($expected, $return);
 
         // test
-        $return = $this->treeAdapter
+        $return = $this->getTreeAdapter()
             ->getAncestorsQueryBuilder()
             ->excludeFirstNLevel(1)
             ->get(6);
@@ -566,7 +563,7 @@ class NestedSetTest extends IntegrationTestCase
         $this->assertEquals($expected, $return);
 
         // test
-        $return = $this->treeAdapter
+        $return = $this->getTreeAdapter()
             ->getAncestorsQueryBuilder()
             ->excludeLastNLevel(1)
             ->get(6);
@@ -594,7 +591,7 @@ class NestedSetTest extends IntegrationTestCase
 
     public function testGetAncestorAsNestedArray(): void
     {
-        $return = $this->treeAdapter
+        $return = $this->getTreeAdapter()
             ->getAncestorsQueryBuilder()
             ->get(6, true);
 
@@ -634,7 +631,7 @@ class NestedSetTest extends IntegrationTestCase
 
     public function testGetDescendantsReturnEmptyArrayIfNodeDoesNotExist(): void
     {
-        $return = $this->treeAdapter
+        $return = $this->getTreeAdapter()
             ->getDescendantsQueryBuilder()
             ->get(123456789);
         $this->assertEquals(array(), $return);
@@ -642,7 +639,7 @@ class NestedSetTest extends IntegrationTestCase
 
     public function testGetDescendantsReturnEmptyArrayNodeDoesNotHaveDescendants(): void
     {
-        $return = $this->treeAdapter
+        $return = $this->getTreeAdapter()
             ->getDescendantsQueryBuilder()
             ->excludeFirstNLevel(1)
             ->get(8);
@@ -653,7 +650,7 @@ class NestedSetTest extends IntegrationTestCase
     public function testGetDescendants(): void
     {
         // test whole branch
-        $return = $this->treeAdapter
+        $return = $this->getTreeAdapter()
             ->getDescendantsQueryBuilder()
             ->get(21);
 
@@ -686,7 +683,7 @@ class NestedSetTest extends IntegrationTestCase
         $this->assertEquals($expected, $return);
 
         // test exclude fist 3 levels
-        $return = $this->treeAdapter
+        $return = $this->getTreeAdapter()
             ->getDescendantsQueryBuilder()
             ->excludeFirstNLevel(3)
             ->get(6);
@@ -728,7 +725,7 @@ class NestedSetTest extends IntegrationTestCase
         $this->assertEquals($expected, $return);
 
         // test limit depth
-        $return = $this->treeAdapter
+        $return = $this->getTreeAdapter()
             ->getDescendantsQueryBuilder()
             ->levelLimit(2)
             ->get(18);
@@ -762,7 +759,7 @@ class NestedSetTest extends IntegrationTestCase
         $this->assertEquals($expected, $return);
 
         // test exclude node
-        $return = $this->treeAdapter
+        $return = $this->getTreeAdapter()
             ->getDescendantsQueryBuilder()
             ->excludeBranch(21)
             ->get(12);
@@ -798,7 +795,7 @@ class NestedSetTest extends IntegrationTestCase
 
     public function testGetDescendantsAsNestedArray(): void
     {
-        $return = $this->treeAdapter
+        $return = $this->getTreeAdapter()
             ->getDescendantsQueryBuilder()
             ->get(21, true);
 
@@ -837,7 +834,7 @@ class NestedSetTest extends IntegrationTestCase
 
     public function testGetChildrenReturnEmptyArrayIfNodeDoesNotExist(): void
     {
-        $return = $this->treeAdapter
+        $return = $this->getTreeAdapter()
             ->getDescendantsQueryBuilder()
             ->excludeFirstNLevel(1)
             ->levelLimit(1)
@@ -848,7 +845,7 @@ class NestedSetTest extends IntegrationTestCase
 
     public function testGetChildrenReturnEmptyArrayIfNodeDoesNotHaveChildren(): void
     {
-        $return = $this->treeAdapter
+        $return = $this->getTreeAdapter()
             ->getDescendantsQueryBuilder()
             ->excludeFirstNLevel(1)
             ->levelLimit(1)
@@ -860,7 +857,7 @@ class NestedSetTest extends IntegrationTestCase
     public function testGetChildren(): void
     {
         // test exclude node
-        $return = $this->treeAdapter
+        $return = $this->getTreeAdapter()
             ->getDescendantsQueryBuilder()
             ->levelLimit(1)
             ->excludeFirstNLevel(1)
@@ -893,7 +890,7 @@ class NestedSetTest extends IntegrationTestCase
         $data = array(
             'name' => 'ahoj',
         );
-        $this->treeAdapter
+        $this->getTreeAdapter()
             ->updateNode(3, $data);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testUpdateNode-1.php');
@@ -907,7 +904,7 @@ class NestedSetTest extends IntegrationTestCase
             'level' => '123456',
             'parent_id' => '123456',
         );
-        $this->treeAdapter
+        $this->getTreeAdapter()
             ->updateNode(3, $data);
 
         $this->assertCompareDataSet(array('tree_traversal'), __DIR__.'/_files/NestedSet/testUpdateNode-1.php');
@@ -915,7 +912,7 @@ class NestedSetTest extends IntegrationTestCase
 
     public function testGetRootNodeRootDoesNotExist(): void
     {
-        $return = $this->treeAdapter
+        $return = $this->getTreeAdapter()
             ->getRootNode();
 
         $this->assertEquals(array(), $return);
@@ -923,7 +920,7 @@ class NestedSetTest extends IntegrationTestCase
 
     public function testGetRootNode(): void
     {
-        $return = $this->treeAdapter
+        $return = $this->getTreeAdapter()
             ->getRootNode();
 
         $expected = array(

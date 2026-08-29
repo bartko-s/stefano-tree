@@ -93,6 +93,10 @@ abstract class MoveStrategyAbstract implements MoveStrategyInterface
     protected function _updateParentId(NodeInfo $sourceNodeInfo, int|string $newParentId): void
     {
         if ($sourceNodeInfo->getParentId() != $newParentId) {
+            // source node is always loaded from the database (see move()),
+            // therefore it always has an id
+            \assert(null !== $sourceNodeInfo->getId());
+
             $this->getManipulator()->updateParentId($sourceNodeInfo->getId(), $newParentId);
         }
     }

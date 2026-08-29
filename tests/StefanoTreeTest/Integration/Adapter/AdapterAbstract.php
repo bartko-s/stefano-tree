@@ -10,7 +10,7 @@ use StefanoTreeTest\IntegrationTestCase;
 
 abstract class AdapterAbstract extends IntegrationTestCase
 {
-    protected ?AdapterInterface $adapter;
+    protected ?AdapterInterface $adapter = null;
 
     protected bool $adapterCanQuoteIdentifier = true;
 

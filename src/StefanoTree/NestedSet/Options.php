@@ -181,15 +181,15 @@ class Options
 
     public function getScopeColumnName(bool $withTableName = false): ?string
     {
-        return ($withTableName) ? $this->addTableName($this->scopeColumnName) : $this->scopeColumnName;
-    }
-
-    private function addTableName(?string $value): ?string
-    {
-        if (null === $value) {
+        if (null === $this->scopeColumnName) {
             return null;
         }
 
+        return ($withTableName) ? $this->addTableName($this->scopeColumnName) : $this->scopeColumnName;
+    }
+
+    private function addTableName(string $value): string
+    {
         return sprintf('%s.%s', $this->getTableName(), $value);
     }
 

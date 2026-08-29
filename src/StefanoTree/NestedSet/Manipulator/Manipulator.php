@@ -373,8 +373,9 @@ class Manipulator implements ManipulatorInterface
         $sql = $this->getBlankDbSelect();
         $sql .= ' WHERE '.$adapter->quoteIdentifier($options->getParentIdColumnName(true)).' IS NULL';
 
-        if (null != $scope && $options->getScopeColumnName()) {
-            $sql .= ' AND '.$adapter->quoteIdentifier($options->getScopeColumnName(true)).' = :__scope';
+        $qualifiedScopeColumnName = $options->getScopeColumnName(true);
+        if (null != $scope && null !== $qualifiedScopeColumnName) {
+            $sql .= ' AND '.$adapter->quoteIdentifier($qualifiedScopeColumnName).' = :__scope';
             $params['__scope'] = $scope;
         }
 
@@ -515,8 +516,9 @@ class Manipulator implements ManipulatorInterface
         $sql .= ' WHERE '.$adapter->quoteIdentifier($options->getLeftColumnName(true)).' <= :__leftIndex'
             .' AND '.$adapter->quoteIdentifier($options->getRightColumnName(true)).' >= :__rightIndex';
 
-        if ($options->getScopeColumnName()) {
-            $sql .= ' AND '.$adapter->quoteIdentifier($options->getScopeColumnName(true)).' = :__scope';
+        $qualifiedScopeColumnName = $options->getScopeColumnName(true);
+        if (null !== $qualifiedScopeColumnName) {
+            $sql .= ' AND '.$adapter->quoteIdentifier($qualifiedScopeColumnName).' = :__scope';
             $params['__scope'] = $nodeInfo->getScope();
         }
 
@@ -552,8 +554,9 @@ class Manipulator implements ManipulatorInterface
         $params = array();
         $wherePart = array();
 
-        if ($options->getScopeColumnName()) {
-            $wherePart[] = $adapter->quoteIdentifier($options->getScopeColumnName(true)).' = :__scope';
+        $qualifiedScopeColumnName = $options->getScopeColumnName(true);
+        if (null !== $qualifiedScopeColumnName) {
+            $wherePart[] = $adapter->quoteIdentifier($qualifiedScopeColumnName).' = :__scope';
             $params['__scope'] = $nodeInfo->getScope();
         }
 

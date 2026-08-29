@@ -40,6 +40,10 @@ class Bottom extends MoveStrategyAbstract implements MoveStrategyInterface
     protected function updateParentId(): void
     {
         $newParentId = $this->getTargetNodeInfo()->getParentId();
+        // target node is not a root node (checked in canMoveBranch()),
+        // therefore it always has a parent id
+        \assert(null !== $newParentId);
+
         $this->_updateParentId($this->getSourceNodeInfo(), $newParentId);
     }
 
