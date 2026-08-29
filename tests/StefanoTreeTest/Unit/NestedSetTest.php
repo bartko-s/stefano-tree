@@ -33,10 +33,6 @@ class NestedSetTest extends UnitTestCase
                 \Doctrine\DBAL\Connection::class,
                 NestedSet\Adapter\DoctrineDBAL::class,
             ),
-            array(
-                \Zend_Db_Adapter_Abstract::class,
-                NestedSet\Adapter\Zend1::class,
-            ),
         );
     }
 

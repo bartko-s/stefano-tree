@@ -14,7 +14,6 @@ use StefanoTree\NestedSet\Adapter\DoctrineDBAL;
 use StefanoTree\NestedSet\Adapter\LaminasDb;
 use StefanoTree\NestedSet\Adapter\NestedTransactionDecorator;
 use StefanoTree\NestedSet\Adapter\Pdo;
-use StefanoTree\NestedSet\Adapter\Zend1;
 use StefanoTree\NestedSet\AddStrategy;
 use StefanoTree\NestedSet\AddStrategy\AddStrategyInterface;
 use StefanoTree\NestedSet\Manipulator\Manipulator;
@@ -58,8 +57,6 @@ class NestedSet implements TreeInterface
             $adapter = new LaminasDb($options, $dbAdapter);
         } elseif ($dbAdapter instanceof DoctrineConnection) {
             $adapter = new DoctrineDBAL($options, $dbAdapter);
-        } elseif ($dbAdapter instanceof \Zend_Db_Adapter_Abstract) {
-            $adapter = new Zend1($options, $dbAdapter);
         } elseif ($dbAdapter instanceof \PDO) {
             $adapter = new Pdo($options, $dbAdapter);
         } else {

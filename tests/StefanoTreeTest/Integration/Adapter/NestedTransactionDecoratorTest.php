@@ -10,7 +10,6 @@ use StefanoTree\NestedSet\Adapter\Pdo;
 use StefanoTree\NestedSet\Options;
 use StefanoTreeTest\TestUtil;
 use StefanoTreeTest\UnitTestCase;
-use Zend_Db_Adapter_Abstract as ZendDbAdapter;
 
 /**
  * @internal
@@ -23,7 +22,7 @@ class NestedTransactionDecoratorTest extends UnitTestCase
     protected $adapterNestedDoNotSupport;
 
     /**
-     * @var ZendDbAdapter
+     * @var \PDO
      */
     protected $dbAdapter;
 

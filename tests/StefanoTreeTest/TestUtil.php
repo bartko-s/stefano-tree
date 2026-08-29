@@ -16,7 +16,6 @@ class TestUtil
 {
     private static $dbConnection;
     private static $laminasDbAdapter;
-    private static $zend1DbAdapter;
     private static $doctrineConnection;
 
     public static function createDbScheme()
@@ -214,25 +213,6 @@ class TestUtil
     /**
      * Singleton.
      *
-     * @return \Zend_Db_Adapter_Abstract
-     */
-    public static function getZend1DbAdapter()
-    {
-        if (null == self::$zend1DbAdapter) {
-            self::$zend1DbAdapter = \Zend_Db::factory('Pdo_'.ucfirst(TEST_STEFANO_DB_VENDOR), array(
-                'host' => TEST_STEFANO_DB_HOSTNAME,
-                'dbname' => TEST_STEFANO_DB_DB_NAME,
-                'username' => TEST_STEFANO_DB_USER,
-                'password' => TEST_STEFANO_DB_PASSWORD,
-            ));
-        }
-
-        return self::$zend1DbAdapter;
-    }
-
-    /**
-     * Singleton.
-     *
      * @return DBAL\Connection
      */
     public static function getDoctrineDBALConnection()
@@ -265,11 +245,6 @@ class TestUtil
         switch (TEST_STEFANO_ADAPTER) {
             case 'pdo':
                 $adapter = new Adapter\Pdo($options, self::getPDOConnection());
-
-                break;
-
-            case 'zend1':
-                $adapter = new Adapter\Zend1($options, self::getZend1DbAdapter());
 
                 break;
 
