@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StefanoTreeTest\Integration\Adapter;
 
+use Mockery\MockInterface;
 use StefanoTree\NestedSet\Adapter\AdapterInterface;
 use StefanoTree\NestedSet\Adapter\NestedTransactionDecorator;
 use StefanoTree\NestedSet\Adapter\Pdo;
@@ -18,10 +19,7 @@ class NestedTransactionDecoratorTest extends UnitTestCase
 {
     protected ?AdapterInterface $adapterNestedDoNotSupport;
 
-    /**
-     * @var \PDO
-     */
-    protected $dbAdapter;
+    protected \PDO $dbAdapter;
 
     protected function setUp(): void
     {
@@ -227,6 +225,7 @@ class NestedTransactionDecoratorTest extends UnitTestCase
     {
         $dbAdapter = $this->dbAdapter;
 
+        /** @var MockInterface&Pdo $adapterMock */
         $adapterMock = \Mockery::mock($this->adapterNestedDoNotSupport);
         $adapterMock->shouldReceive('canHandleNestedTransaction')
             ->andReturnFalse();
