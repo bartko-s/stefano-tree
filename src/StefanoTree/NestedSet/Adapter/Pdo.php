@@ -74,21 +74,28 @@ class Pdo implements AdapterInterface
     public function executeInsertSQL(string $sql, array $params = array())
     {
         $options = $this->getOptions();
-        $this->executeSQL($sql, $params);
 
         if (array_key_exists($options->getIdColumnName(), $params)) {
-            return $params[$options->getIdColumnName()];
-        } else {
-            if ('' != $options->getSequenceName()) {
-                $lastGeneratedValue = $this->getConnection()
-                    ->lastInsertId($options->getSequenceName());
-            } else {
-                $lastGeneratedValue = $this->getConnection()
-                    ->lastInsertId();
-            }
+            $this->executeSQL($sql, $params);
 
-            return $lastGeneratedValue;
+            return $params[$options->getIdColumnName()];
         }
+
+        $stm = $this->getConnection()
+            ->prepare($sql.' RETURNING '.$this->quoteIdentifier($options->getIdColumnName()));
+        $stm->execute($params);
+
+        $row = $stm->fetch(\PDO::FETCH_ASSOC);
+        $lastGeneratedValue = $row[$options->getIdColumnName()] ?? null;
+
+        if (null === $lastGeneratedValue) {
+            throw new \RuntimeException(sprintf(
+                'Insert did not return generated id. SQL: "%s"',
+                $sql
+            ));
+        }
+
+        return $lastGeneratedValue;
     }
 
     public function executeSQL(string $sql, array $params = array()): void

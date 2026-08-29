@@ -9,6 +9,7 @@ use Laminas\Db\Adapter\Adapter;
 use PHPUnit\Framework\Attributes\DataProvider;
 use StefanoTree\Exception\InvalidArgumentException;
 use StefanoTree\NestedSet;
+use StefanoTree\NestedSet\Adapter\NestedTransactionDecorator;
 use StefanoTree\NestedSet\Options;
 use StefanoTreeTest\UnitTestCase;
 
@@ -33,7 +34,9 @@ class NestedSetTest extends UnitTestCase
         $options = new Options($this->options);
 
         $tree = new NestedSet($options, $dbAdapterStub);
-        $adapter = $tree->getManipulator()->getAdapter()->getAdapter();
+        $adapterDecorator = $tree->getManipulator()->getAdapter();
+        \assert($adapterDecorator instanceof NestedTransactionDecorator);
+        $adapter = $adapterDecorator->getAdapter();
 
         $this->assertInstanceOf($expectedAdapterClass, $adapter);
     }
@@ -49,7 +52,9 @@ class NestedSetTest extends UnitTestCase
         $options = $this->options;
 
         $tree = new NestedSet($options, $dbAdapterStub);
-        $adapter = $tree->getManipulator()->getAdapter()->getAdapter();
+        $adapterDecorator = $tree->getManipulator()->getAdapter();
+        \assert($adapterDecorator instanceof NestedTransactionDecorator);
+        $adapter = $adapterDecorator->getAdapter();
 
         $this->assertInstanceOf($expectedAdapterClass, $adapter);
     }

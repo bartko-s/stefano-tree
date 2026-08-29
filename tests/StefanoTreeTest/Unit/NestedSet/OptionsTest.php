@@ -154,17 +154,6 @@ class OptionsTest extends UnitTestCase
         $this->assertEquals('prt', $optionsStub->getParentIdColumnName());
     }
 
-    public function testGetSequenceName()
-    {
-        $optionsStub = $this->getOptionsWithDefaultSettings();
-
-        $this->assertEquals('', $optionsStub->getSequenceName(), 'Wrong default value');
-
-        $optionsStub->setSequenceName('   seq ');
-
-        $this->assertEquals('seq', $optionsStub->getSequenceName());
-    }
-
     public function testGetDefaultScopeColumnName()
     {
         $optionsStub = $this->getOptionsWithDefaultSettings();

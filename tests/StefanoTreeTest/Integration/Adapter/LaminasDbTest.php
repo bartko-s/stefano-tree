@@ -25,10 +25,6 @@ class LaminasDbTest extends AdapterAbstract
                 'idColumnName' => 'tree_traversal_id',
             ));
 
-            if ('pgsql' == TEST_STEFANO_DB_VENDOR) {
-                $options->setSequenceName('tree_traversal_tree_traversal_id_seq');
-            }
-
             $this->adapter = new LaminasDb($options, TestUtil::getLaminasDbAdapter());
         }
 

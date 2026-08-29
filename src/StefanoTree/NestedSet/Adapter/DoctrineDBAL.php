@@ -82,14 +82,19 @@ class DoctrineDBAL implements AdapterInterface
     public function executeInsertSQL(string $sql, array $params = array())
     {
         $options = $this->getOptions();
-        $this->executeSQL($sql, $params);
 
         if (array_key_exists($options->getIdColumnName(), $params)) {
+            $this->executeSQL($sql, $params);
+
             return $params[$options->getIdColumnName()];
-        } else {
-            return $this->getConnection()
-                ->lastInsertId($options->getSequenceName());
         }
+
+        return $this->getConnection()
+            ->executeQuery(
+                $sql.' RETURNING '.$this->quoteIdentifier($options->getIdColumnName()),
+                $params
+            )
+            ->fetchOne();
     }
 
     public function executeSQL(string $sql, array $params = array()): void

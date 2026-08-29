@@ -10,8 +10,6 @@ class Options
 {
     private $tableName = '';
 
-    private $sequenceName = null;
-
     private $idColumnName = '';
 
     private $leftColumnName = 'lft';
@@ -78,22 +76,6 @@ class Options
     public function getTableName(): string
     {
         return $this->tableName;
-    }
-
-    /**
-     * @param string $sequenceName
-     */
-    public function setSequenceName(string $sequenceName): void
-    {
-        $this->sequenceName = trim($sequenceName);
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getSequenceName(): ?string
-    {
-        return $this->sequenceName;
     }
 
     /**

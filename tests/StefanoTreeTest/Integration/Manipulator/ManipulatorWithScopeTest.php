@@ -45,10 +45,6 @@ class ManipulatorWithScopeTest extends IntegrationTestCase
             'scopeColumnName' => 'scope',
         ));
 
-        if ('pgsql' == TEST_STEFANO_DB_VENDOR) {
-            $options->setSequenceName('tree_traversal_with_scope_tree_traversal_id_seq');
-        }
-
         return new Manipulator($options, TestUtil::buildAdapter($options));
     }
 

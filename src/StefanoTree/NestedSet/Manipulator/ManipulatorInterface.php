@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StefanoTree\NestedSet\Manipulator;
 
+use StefanoTree\NestedSet\Adapter\AdapterInterface;
 use StefanoTree\NestedSet\NodeInfo;
 use StefanoTree\NestedSet\Options;
 
@@ -13,6 +14,11 @@ interface ManipulatorInterface
      * @return Options
      */
     public function getOptions(): Options;
+
+    /**
+     * @return AdapterInterface
+     */
+    public function getAdapter(): AdapterInterface;
 
     /**
      * Lock tree for update. This prevent race condition issue.

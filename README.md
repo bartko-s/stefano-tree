@@ -46,7 +46,6 @@ composer require stefano/stefano-tree
 | rightColumnName    | string | no       | rgt           |                                                       |
 | levelColumnName    | string | no       | level         |                                                       |
 | parentIdColumnName | string | no       | parent_id     |                                                       |
-| sequenceName       | string | see note |               | Required for PostgreSQL                               |
 | scopeColumnName    | string | see note |               | If empty scope support is disabled                    |
 | dbSelectBuilder    | callable | no     |               | see Join table example below                          |
 

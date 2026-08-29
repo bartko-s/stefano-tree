@@ -44,10 +44,6 @@ class ManipulatorTest extends IntegrationTestCase
             'idColumnName' => 'tree_traversal_id',
         ));
 
-        if ('pgsql' == TEST_STEFANO_DB_VENDOR) {
-            $options->setSequenceName('tree_traversal_tree_traversal_id_seq');
-        }
-
         return new Manipulator($options, TestUtil::buildAdapter($options));
     }
 

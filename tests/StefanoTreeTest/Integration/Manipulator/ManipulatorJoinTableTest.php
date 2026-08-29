@@ -51,10 +51,6 @@ class ManipulatorJoinTableTest extends IntegrationTestCase
             },
         ));
 
-        if ('pgsql' == TEST_STEFANO_DB_VENDOR) {
-            $options->setSequenceName('tree_traversal_with_scope_tree_traversal_id_seq');
-        }
-
         $manipulator = new Manipulator($options, TestUtil::buildAdapter($options));
 
         return $manipulator;

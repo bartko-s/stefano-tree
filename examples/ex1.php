@@ -27,7 +27,6 @@ $dbAdapter = DriverManager::getConnection(
 $options = array(
     'tableName' => 'categories',
     'idColumnName' => 'id',
-    'sequenceName' => 'categories_id_seq',
 
     'scopeColumnName' => 'group_id',
 );

@@ -5,21 +5,15 @@ declare(strict_types=1);
 namespace StefanoTree\NestedSet\Adapter;
 
 use Laminas\Db\Adapter\Adapter as DbAdapter;
+use Laminas\Db\Adapter\Driver\AbstractConnection;
 use StefanoTree\NestedSet\Options;
 
 class LaminasDb implements AdapterInterface
 {
-    private $connection;
-    private $options;
-
-    /**
-     * @param Options   $options
-     * @param DbAdapter $connection
-     */
-    public function __construct(Options $options, DbAdapter $connection)
-    {
-        $this->connection = $connection;
-        $this->options = $options;
+    public function __construct(
+        private readonly Options $options,
+        private readonly DbAdapter $connection,
+    ) {
     }
 
     /**
@@ -64,10 +58,13 @@ class LaminasDb implements AdapterInterface
 
     public function isInTransaction(): bool
     {
-        return $this->getConnection()
+        /** all shipped driver connections extend AbstractConnection */
+        /** @var AbstractConnection $driverConnection */
+        $driverConnection = $this->getConnection()
             ->getDriver()
-            ->getConnection()
-            ->inTransaction();
+            ->getConnection();
+
+        return $driverConnection->inTransaction();
     }
 
     public function canHandleNestedTransaction(): bool
@@ -85,17 +82,30 @@ class LaminasDb implements AdapterInterface
     public function executeInsertSQL(string $sql, array $params = array())
     {
         $options = $this->getOptions();
-        $this->executeSQL($sql, $params);
 
         if (array_key_exists($options->getIdColumnName(), $params)) {
-            return $params[$options->getIdColumnName()];
-        } else {
-            $lastGeneratedValue = $this->getConnection()
-                ->getDriver()
-                ->getLastGeneratedValue($options->getSequenceName());
+            $this->executeSQL($sql, $params);
 
-            return $lastGeneratedValue;
+            return $params[$options->getIdColumnName()];
         }
+
+        $result = $this->getConnection()
+            ->query(
+                $sql.' RETURNING '.$this->quoteIdentifier($options->getIdColumnName()),
+                $params
+            );
+
+        $rows = $result->toArray();
+        $lastGeneratedValue = $rows[0][$options->getIdColumnName()] ?? null;
+
+        if (null === $lastGeneratedValue) {
+            throw new \RuntimeException(sprintf(
+                'Insert did not return generated id. SQL: "%s"',
+                $sql
+            ));
+        }
+
+        return $lastGeneratedValue;
     }
 
     public function executeSQL(string $sql, array $params = array()): void
