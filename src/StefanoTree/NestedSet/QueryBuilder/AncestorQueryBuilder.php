@@ -27,8 +27,8 @@ class AncestorQueryBuilder implements AncestorQueryBuilderInterface
         $result = $this->getManipulator()
             ->getAncestors($nodeId, $this->excludeFirstNLevel, $this->excludeLastNLevel);
 
-        return $nested ?
-            Utilities::flatToNested($result, $this->getManipulator()->getOptions()->getLevelColumnName()) : $result;
+        return $nested
+            ? Utilities::flatToNested($result, $this->getManipulator()->getOptions()->getLevelColumnName()) : $result;
     }
 
     public function excludeFirstNLevel(int $count): AncestorQueryBuilderInterface

@@ -21,7 +21,7 @@ class Manipulator implements ManipulatorInterface
     }
 
     /**
-     * @param \StefanoTree\NestedSet\Adapter\AdapterInterface $adapter
+     * @param AdapterInterface $adapter
      */
     private function setAdapter(AdapterInterface $adapter): void
     {

@@ -6,8 +6,6 @@ namespace StefanoTreeTest;
 
 use Doctrine\DBAL;
 use Laminas\Db\Adapter\Adapter as LaminasDbAdapter;
-use PDO;
-use StefanoTree\NestedSet;
 use StefanoTree\NestedSet\Adapter;
 use StefanoTree\NestedSet\Adapter\AdapterInterface;
 use StefanoTree\NestedSet\Options;
@@ -168,7 +166,7 @@ class TestUtil
     /**
      * Singleton.
      *
-     * @return PDO
+     * @return \PDO
      */
     public static function getPDOConnection()
     {
@@ -179,7 +177,7 @@ class TestUtil
             $user = TEST_STEFANO_DB_USER;
             $password = TEST_STEFANO_DB_PASSWORD;
 
-            self::$dbConnection = new PDO(
+            self::$dbConnection = new \PDO(
                 $adapter.':host='.$hostname.';dbname='
                 .$dbName,
                 $user,
@@ -240,7 +238,7 @@ class TestUtil
      *
      * @return AdapterInterface
      */
-    public static function buildAdapter(Options $options): NestedSet\Adapter\AdapterInterface
+    public static function buildAdapter(Options $options): AdapterInterface
     {
         switch (TEST_STEFANO_ADAPTER) {
             case 'pdo':

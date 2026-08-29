@@ -4,7 +4,10 @@
  */
 declare(strict_types=1);
 
+use Doctrine\DBAL\Configuration;
+use Doctrine\DBAL\DriverManager;
 use StefanoTree\Exception\ValidationException;
+use StefanoTree\NestedSet;
 use StefanoTree\TreeInterface;
 
 session_start();
@@ -13,9 +16,9 @@ include_once __DIR__.'/../vendor/autoload.php';
 
 $config = include_once __DIR__.'/config.php';
 
-$dbAdapter = \Doctrine\DBAL\DriverManager::getConnection(
+$dbAdapter = DriverManager::getConnection(
     $config['dbConnection'],
-    new \Doctrine\DBAL\Configuration()
+    new Configuration()
 );
 
 /**************************************
@@ -32,7 +35,7 @@ $options = array(
 /**************************************
  *    Tree Adapter
  **************************************/
-$treeAdapter = new \StefanoTree\NestedSet($options, $dbAdapter);
+$treeAdapter = new NestedSet($options, $dbAdapter);
 
 /***************************************
  * Join example 1
@@ -440,7 +443,7 @@ class ViewHelper
     }
 }
 
-class ValidationError extends \Exception
+class ValidationError extends Exception
 {
     private $errorMessages = array();
 
@@ -553,7 +556,7 @@ $wh = new ViewHelper();
                 echo $wh->renderErrorMessages($errorMessage);
             }
 
-            echo $wh->renderFlashMessage();
+echo $wh->renderFlashMessage();
 ?>
 
             <div class="row">

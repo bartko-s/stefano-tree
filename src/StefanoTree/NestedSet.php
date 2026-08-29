@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace StefanoTree;
 
 use Doctrine\DBAL\Connection as DoctrineConnection;
-use Exception;
 use Laminas\Db\Adapter\Adapter as LaminasDbAdapter;
 use StefanoTree\Exception\InvalidArgumentException;
 use StefanoTree\Exception\ValidationException;
@@ -222,7 +221,7 @@ class NestedSet implements TreeInterface
             $adapter->moveRightIndexes($moveFromIndex, $shift, $nodeInfo->getScope());
 
             $adapter->commitTransaction();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $adapter->rollbackTransaction();
 
             throw $e;

@@ -26,7 +26,7 @@ switch ($dbVendor) {
         break;
 
     default:
-        throw new \Exception(sprintf('Wrong DB environment variable "%s"', $dbVendor));
+        throw new Exception(sprintf('Wrong DB environment variable "%s"', $dbVendor));
 }
 
 $treeAdapter = getenv('ADAPTER');
@@ -48,7 +48,7 @@ switch ($treeAdapter) {
         break;
 
     default:
-        throw new \Exception(sprintf('Wrong ADAPTER environment variable "%s"', $treeAdapter));
+        throw new Exception(sprintf('Wrong ADAPTER environment variable "%s"', $treeAdapter));
 }
 
 echo PHP_EOL;

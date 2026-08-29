@@ -28,5 +28,5 @@ if ('mysql' == TEST_STEFANO_DB_VENDOR) {
     defined('TEST_STEFANO_DB_PASSWORD')
     || define('TEST_STEFANO_DB_PASSWORD', '');
 } else {
-    throw new \Exception(sprintf('Unsupported adapter "%s"', TEST_STEFANO_DB_VENDOR));
+    throw new Exception(sprintf('Unsupported adapter "%s"', TEST_STEFANO_DB_VENDOR));
 }

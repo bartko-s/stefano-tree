@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace StefanoTreeTest\Unit;
 
+use Doctrine\DBAL\Connection;
+use Laminas\Db\Adapter\Adapter;
 use PHPUnit\Framework\Attributes\DataProvider;
+use StefanoTree\Exception\InvalidArgumentException;
 use StefanoTree\NestedSet;
+use StefanoTree\NestedSet\Options;
 use StefanoTreeTest\UnitTestCase;
 
 /**
@@ -18,24 +22,6 @@ class NestedSetTest extends UnitTestCase
         'tableName' => 'table',
     );
 
-    public static function dataProvider()
-    {
-        return array(
-            array(
-                \PDO::class,
-                NestedSet\Adapter\Pdo::class,
-            ),
-            array(
-                \Laminas\Db\Adapter\Adapter::class,
-                NestedSet\Adapter\LaminasDb::class,
-            ),
-            array(
-                \Doctrine\DBAL\Connection::class,
-                NestedSet\Adapter\DoctrineDBAL::class,
-            ),
-        );
-    }
-
     /**
      * @param mixed $dbAdapterClass
      * @param mixed $expectedAdapterClass
@@ -44,7 +30,7 @@ class NestedSetTest extends UnitTestCase
     public function testConstructorMethodWithOptionAsObject($dbAdapterClass, $expectedAdapterClass)
     {
         $dbAdapterStub = \Mockery::mock($dbAdapterClass);
-        $options = new \StefanoTree\NestedSet\Options($this->options);
+        $options = new Options($this->options);
 
         $tree = new NestedSet($options, $dbAdapterStub);
         $adapter = $tree->getManipulator()->getAdapter()->getAdapter();
@@ -68,12 +54,30 @@ class NestedSetTest extends UnitTestCase
         $this->assertInstanceOf($expectedAdapterClass, $adapter);
     }
 
+    public static function dataProvider()
+    {
+        return array(
+            array(
+                \PDO::class,
+                NestedSet\Adapter\Pdo::class,
+            ),
+            array(
+                Adapter::class,
+                NestedSet\Adapter\LaminasDb::class,
+            ),
+            array(
+                Connection::class,
+                NestedSet\Adapter\DoctrineDBAL::class,
+            ),
+        );
+    }
+
     public function testThrowExceptionIfYourDbAdapterIsNotSupporter()
     {
-        $options = new \StefanoTree\NestedSet\Options($this->options);
+        $options = new Options($this->options);
         $dbAdapter = new \DateTime();
 
-        $this->expectException(\StefanoTree\Exception\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Db adapter "DateTime" is not supported');
 
         new NestedSet($options, $dbAdapter);

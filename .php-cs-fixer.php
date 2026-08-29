@@ -18,6 +18,7 @@ return $config->setRules([
         'no_useless_else' => false,
         'no_null_property_initialization' => false,
         'single_line_comment_style' => false,
+        'single_line_empty_body' => false,
         'multiline_comment_opening_closing' => false,
         'array_syntax' => array(
             'syntax' => 'long',

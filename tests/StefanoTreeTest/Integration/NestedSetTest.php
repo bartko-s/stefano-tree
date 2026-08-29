@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace StefanoTreeTest\Integration;
 
 use PHPUnit\Framework\Attributes\DataProvider;
+use StefanoTree\Exception\InvalidArgumentException;
+use StefanoTree\Exception\ValidationException;
 use StefanoTree\NestedSet as TreeAdapter;
 use StefanoTree\NestedSet\Options;
+use StefanoTree\TreeInterface;
 use StefanoTreeTest\IntegrationTestCase;
 use StefanoTreeTest\TestUtil;
 
@@ -83,7 +86,7 @@ class NestedSetTest extends IntegrationTestCase
 
     public function testCreateRootRootAlreadyExist()
     {
-        $this->expectException(\StefanoTree\Exception\ValidationException::class);
+        $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Root node already exist');
 
         $this->treeAdapter
@@ -116,7 +119,7 @@ class NestedSetTest extends IntegrationTestCase
 
     public function testAddNodeTargetNodeDoesNotExist()
     {
-        $this->expectException(\StefanoTree\Exception\ValidationException::class);
+        $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Target Node does not exists.');
 
         try {
@@ -131,7 +134,7 @@ class NestedSetTest extends IntegrationTestCase
 
     public function testCreateNodePlacementStrategyDoesNotExists()
     {
-        $this->expectException(\StefanoTree\Exception\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Unknown placement "unknown-placement"');
 
         $this->treeAdapter
@@ -140,7 +143,7 @@ class NestedSetTest extends IntegrationTestCase
 
     public function testAddNodePlacementBottomTargetNodeIsRoot()
     {
-        $this->expectException(\StefanoTree\Exception\ValidationException::class);
+        $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Cannot create node. Target node is root. Root node cannot have sibling.');
 
         try {
@@ -155,7 +158,7 @@ class NestedSetTest extends IntegrationTestCase
 
     public function testAddNodePlacementTopTargetNodeIsRoot()
     {
-        $this->expectException(\StefanoTree\Exception\ValidationException::class);
+        $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Cannot create node. Target node is root. Root node cannot have sibling.');
 
         try {
@@ -284,7 +287,7 @@ class NestedSetTest extends IntegrationTestCase
 
     public function testMoveNodeCannotMoveTargetNodeIsInsideSourceBranch()
     {
-        $this->expectException(\StefanoTree\Exception\ValidationException::class);
+        $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Cannot move. Target node is inside source branch.');
 
         try {
@@ -299,7 +302,7 @@ class NestedSetTest extends IntegrationTestCase
 
     public function testMoveNodeCannotMoveTargetAndSourceNodeAreEqual()
     {
-        $this->expectException(\StefanoTree\Exception\ValidationException::class);
+        $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Cannot move. Source node and Target node are equal.');
 
         try {
@@ -314,7 +317,7 @@ class NestedSetTest extends IntegrationTestCase
 
     public function testMoveNodeCannotMoveTargetNodeDoesNotExist()
     {
-        $this->expectException(\StefanoTree\Exception\ValidationException::class);
+        $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Cannot move. Target node does not exists.');
 
         try {
@@ -329,7 +332,7 @@ class NestedSetTest extends IntegrationTestCase
 
     public function testMoveNodeCannotMoveSourceNodeDoesNotExist()
     {
-        $this->expectException(\StefanoTree\Exception\ValidationException::class);
+        $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Cannot move. Source node does not exists.');
 
         try {
@@ -344,19 +347,11 @@ class NestedSetTest extends IntegrationTestCase
 
     public function testMoveNodePlacementStrategyDoesNotExists()
     {
-        $this->expectException(\StefanoTree\Exception\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Unknown placement "unknown-placement"');
 
         $this->treeAdapter
             ->moveNode(11, 1, 'unknown-placement');
-    }
-
-    public static function placementDataProvider()
-    {
-        return array(
-            array(\StefanoTree\TreeInterface::PLACEMENT_TOP),
-            array(\StefanoTree\TreeInterface::PLACEMENT_BOTTOM),
-        );
     }
 
     /**
@@ -367,7 +362,7 @@ class NestedSetTest extends IntegrationTestCase
     #[DataProvider('placementDataProvider')]
     public function testMoveNodeCannotCreateSiblingNodeAtRootNode(string $placement)
     {
-        $this->expectException(\StefanoTree\Exception\ValidationException::class);
+        $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Cannot move. Target node is root. Root node cannot have sibling.');
 
         try {
@@ -378,6 +373,14 @@ class NestedSetTest extends IntegrationTestCase
 
             throw $e;
         }
+    }
+
+    public static function placementDataProvider()
+    {
+        return array(
+            array(TreeInterface::PLACEMENT_TOP),
+            array(TreeInterface::PLACEMENT_BOTTOM),
+        );
     }
 
     public function testMoveNodePlacementBottom()

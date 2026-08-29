@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StefanoTreeTest\Unit\NestedSet;
 
+use StefanoTree\Exception\InvalidArgumentException;
 use StefanoTree\NestedSet\Options;
 use StefanoTreeTest\UnitTestCase;
 
@@ -14,14 +15,14 @@ class OptionsTest extends UnitTestCase
 {
     public function testThrowExceptionIfAllRequiredSettingsAreNotProvided()
     {
-        $this->expectException(\StefanoTree\Exception\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('tableName, idColumnName must be set');
 
         new Options(array());
     }
 
     /**
-     * @return \StefanoTree\NestedSet\Options
+     * @return Options
      */
     private function getOptionsWithDefaultSettings()
     {
@@ -35,7 +36,7 @@ class OptionsTest extends UnitTestCase
     {
         $optionsStub = $this->getOptionsWithDefaultSettings();
 
-        $this->expectException(\StefanoTree\Exception\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('tableName cannot be empty');
 
         $optionsStub->setTableName(' ');
@@ -45,7 +46,7 @@ class OptionsTest extends UnitTestCase
     {
         $optionsStub = $this->getOptionsWithDefaultSettings();
 
-        $this->expectException(\StefanoTree\Exception\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('idColumnName cannot be empty');
 
         $optionsStub->setIdColumnName(' ');
@@ -55,7 +56,7 @@ class OptionsTest extends UnitTestCase
     {
         $optionsStub = $this->getOptionsWithDefaultSettings();
 
-        $this->expectException(\StefanoTree\Exception\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('leftColumnName cannot be empty');
 
         $optionsStub->setLeftColumnName(' ');
@@ -65,7 +66,7 @@ class OptionsTest extends UnitTestCase
     {
         $optionsStub = $this->getOptionsWithDefaultSettings();
 
-        $this->expectException(\StefanoTree\Exception\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('rightColumnName cannot be empty');
 
         $optionsStub->setRightColumnName(' ');
@@ -75,7 +76,7 @@ class OptionsTest extends UnitTestCase
     {
         $optionsStub = $this->getOptionsWithDefaultSettings();
 
-        $this->expectException(\StefanoTree\Exception\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('levelColumnName cannot be empty');
 
         $optionsStub->setLevelColumnName(' ');
@@ -85,7 +86,7 @@ class OptionsTest extends UnitTestCase
     {
         $optionsStub = $this->getOptionsWithDefaultSettings();
 
-        $this->expectException(\StefanoTree\Exception\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('parentIdColumnName cannot be empty');
 
         $optionsStub->setParentIdColumnName(' ');

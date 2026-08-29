@@ -31,8 +31,8 @@ class DescendantQueryBuilder implements DescendantQueryBuilderInterface
         $result = $this->getManipulator()
             ->getDescendants($nodeId, $this->excludeFirstNLevel, $this->limitDepth, $this->excludeBranch);
 
-        return $nested ?
-            Utilities::flatToNested($result, $this->getManipulator()->getOptions()->getLevelColumnName()) : $result;
+        return $nested
+            ? Utilities::flatToNested($result, $this->getManipulator()->getOptions()->getLevelColumnName()) : $result;
     }
 
     /**

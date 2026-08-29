@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace StefanoTreeTest\DbTester;
 
-use PDO;
-
 trait DbTestCaseTrait
 {
     /**
@@ -54,7 +52,7 @@ trait DbTestCaseTrait
     /**
      * Returns fresh test database connection.
      *
-     * @return PDO
+     * @return \PDO
      */
     abstract protected function getPdoConnection();
 

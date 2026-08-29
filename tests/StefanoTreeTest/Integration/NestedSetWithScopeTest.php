@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StefanoTreeTest\Integration;
 
+use StefanoTree\Exception\ValidationException;
 use StefanoTree\NestedSet as TreeAdapter;
 use StefanoTree\NestedSet\Options;
 use StefanoTreeTest\IntegrationTestCase;
@@ -72,7 +73,7 @@ class NestedSetWithScopeTest extends IntegrationTestCase
 
     public function testCreateRootRootWithSomeScopeAlreadyExist()
     {
-        $this->expectException(\StefanoTree\Exception\ValidationException::class);
+        $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Root node for given scope already exist');
 
         $this->treeAdapter
@@ -129,7 +130,7 @@ class NestedSetWithScopeTest extends IntegrationTestCase
 
     public function testCannotMoveNodeBetweenScopes()
     {
-        $this->expectException(\StefanoTree\Exception\ValidationException::class);
+        $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Cannot move node between scopes.');
 
         $this->treeAdapter
@@ -269,7 +270,7 @@ class NestedSetWithScopeTest extends IntegrationTestCase
 
     public function testValidateTreeGivenNodeIdIsNotRoot()
     {
-        $this->expectException(\StefanoTree\Exception\ValidationException::class);
+        $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Given node is not root node.');
 
         $this->treeAdapter->isValid(2);
@@ -285,7 +286,7 @@ class NestedSetWithScopeTest extends IntegrationTestCase
 
     public function testRebuildTreeGivenNodeIdIsNotRoot()
     {
-        $this->expectException(\StefanoTree\Exception\ValidationException::class);
+        $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Given node is not root node.');
 
         $this->treeAdapter->rebuild(5);
@@ -293,7 +294,7 @@ class NestedSetWithScopeTest extends IntegrationTestCase
 
     public function testIsValidTreeGivenNodeIdIsNotRoot()
     {
-        $this->expectException(\StefanoTree\Exception\ValidationException::class);
+        $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Given node is not root node.');
 
         $this->treeAdapter->isValid(4);
@@ -301,7 +302,7 @@ class NestedSetWithScopeTest extends IntegrationTestCase
 
     public function testRebuildTreeGivenNodeIdDoesNotExists()
     {
-        $this->expectException(\StefanoTree\Exception\ValidationException::class);
+        $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Node does not exists.');
 
         $this->treeAdapter->rebuild(999);
@@ -309,7 +310,7 @@ class NestedSetWithScopeTest extends IntegrationTestCase
 
     public function testIsValidTreeGivenNodeIdDoesNotExists()
     {
-        $this->expectException(\StefanoTree\Exception\ValidationException::class);
+        $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Node does not exists.');
 
         $this->treeAdapter->isValid(555);

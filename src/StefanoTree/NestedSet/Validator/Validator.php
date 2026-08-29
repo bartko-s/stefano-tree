@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace StefanoTree\NestedSet\Validator;
 
-use Exception;
 use StefanoTree\Exception\TreeIsBrokenException;
 use StefanoTree\Exception\ValidationException;
 use StefanoTree\NestedSet\Manipulator\ManipulatorInterface;
@@ -56,7 +55,7 @@ class Validator implements ValidatorInterface
             $adapter->rollbackTransaction();
 
             return false;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $adapter->rollbackTransaction();
 
             throw $e;
@@ -87,7 +86,7 @@ class Validator implements ValidatorInterface
             $this->_rebuild($rootNodeInfo);
 
             $adapter->commitTransaction();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $adapter->rollbackTransaction();
 
             throw $e;

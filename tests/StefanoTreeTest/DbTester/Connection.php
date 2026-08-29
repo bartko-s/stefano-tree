@@ -4,16 +4,14 @@ declare(strict_types=1);
 
 namespace StefanoTreeTest\DbTester;
 
-use PDO;
-
 class Connection
 {
     private $pdo;
 
-    public function __construct(PDO $pdo)
+    public function __construct(\PDO $pdo)
     {
         $this->pdo = $pdo;
-        $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+        $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_WARNING);
     }
 
     public function insertInitData(ArrayDataSource $dataSource)
@@ -50,7 +48,7 @@ class Connection
             );
 
             $rows = $connection->query($sql)
-                ->fetchAll(PDO::FETCH_ASSOC);
+                ->fetchAll(\PDO::FETCH_ASSOC);
             $data[$tableName] = $rows;
         }
 
