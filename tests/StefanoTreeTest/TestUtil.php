@@ -253,7 +253,7 @@ class TestUtil
 
                 break;
 
-            case 'doctrine2-dbal':
+            case 'doctrine-dbal':
                 $adapter = new Adapter\DoctrineDBAL($options, self::getDoctrineDBALConnection());
 
                 break;

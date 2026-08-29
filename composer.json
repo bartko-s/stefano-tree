@@ -60,33 +60,33 @@
         "cs-fix": "php-cs-fixer fix -v --allow-risky yes",
         "test-pgsql-pdo": "export DB=pgsql ADAPTER=pdo; phpunit -c ./tests/phpunit.xml",
         "test-pgsql-laminas-db": "export DB=pgsql ADAPTER=laminas-db; phpunit -c ./tests/phpunit.xml",
-        "test-pgsql-doctrine2": "export DB=pgsql ADAPTER=doctrine2-dbal; phpunit -c ./tests/phpunit.xml",
+        "test-pgsql-doctrine": "export DB=pgsql ADAPTER=doctrine-dbal; phpunit -c ./tests/phpunit.xml",
         "test-mysql-pdo": "export DB=mysql ADAPTER=pdo; phpunit -c ./tests/phpunit.xml",
         "test-mysql-laminas-db": "export DB=mysql ADAPTER=laminas-db; phpunit -c ./tests/phpunit.xml",
-        "test-mysql-doctrine2": "export DB=mysql ADAPTER=doctrine2-dbal; phpunit -c ./tests/phpunit.xml",
+        "test-mysql-doctrine": "export DB=mysql ADAPTER=doctrine-dbal; phpunit -c ./tests/phpunit.xml",
         "test": [
             "@test-pgsql-pdo",
             "@test-pgsql-laminas-db",
-            "@test-pgsql-doctrine2",
+            "@test-pgsql-doctrine",
             "@test-mysql-pdo",
             "@test-mysql-laminas-db",
-            "@test-mysql-doctrine2"
+            "@test-mysql-doctrine"
         ],
         "test-coverage": [
             "mkdir -p build/logs && rm -f build/logs/*.cov",
             "@test-coverage-pgsql-pdo",
             "@test-coverage-pgsql-laminas-db",
-            "@test-coverage-pgsql-doctrine2",
+            "@test-coverage-pgsql-doctrine",
             "@test-coverage-mysql-pdo",
             "@test-coverage-mysql-laminas-db",
-            "@test-coverage-mysql-doctrine2"
+            "@test-coverage-mysql-doctrine"
         ],
         "test-coverage-pgsql-pdo": "export XDEBUG_MODE=coverage DB=pgsql ADAPTER=pdo; phpunit -c ./tests/phpunit.xml --coverage-php build/logs/coverage-pgsql-pdo.cov",
         "test-coverage-pgsql-laminas-db": "export XDEBUG_MODE=coverage DB=pgsql ADAPTER=laminas-db; phpunit -c ./tests/phpunit.xml --coverage-php build/logs/coverage-pgsql-laminas-db.cov",
-        "test-coverage-pgsql-doctrine2": "export XDEBUG_MODE=coverage DB=pgsql ADAPTER=doctrine2-dbal; phpunit -c ./tests/phpunit.xml --coverage-php build/logs/coverage-pgsql-doctrine2.cov",
+        "test-coverage-pgsql-doctrine": "export XDEBUG_MODE=coverage DB=pgsql ADAPTER=doctrine-dbal; phpunit -c ./tests/phpunit.xml --coverage-php build/logs/coverage-pgsql-doctrine.cov",
         "test-coverage-mysql-pdo": "export XDEBUG_MODE=coverage DB=mysql ADAPTER=pdo; phpunit -c ./tests/phpunit.xml --coverage-php build/logs/coverage-mysql-pdo.cov",
         "test-coverage-mysql-laminas-db": "export XDEBUG_MODE=coverage DB=mysql ADAPTER=laminas-db; phpunit -c ./tests/phpunit.xml --coverage-php build/logs/coverage-mysql-laminas-db.cov",
-        "test-coverage-mysql-doctrine2": "export XDEBUG_MODE=coverage DB=mysql ADAPTER=doctrine2-dbal; phpunit -c ./tests/phpunit.xml --coverage-php build/logs/coverage-mysql-doctrine2.cov",
+        "test-coverage-mysql-doctrine": "export XDEBUG_MODE=coverage DB=mysql ADAPTER=doctrine-dbal; phpunit -c ./tests/phpunit.xml --coverage-php build/logs/coverage-mysql-doctrine.cov",
         "coverage-merge": "mkdir -p build/logs && phpcov merge --clover build/logs/clover.xml build/logs && sed -i 's|/var/src/||g' build/logs/clover.xml"
     }
 }

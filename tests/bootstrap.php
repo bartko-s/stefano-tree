@@ -42,8 +42,8 @@ switch ($treeAdapter) {
 
         break;
 
-    case 'doctrine2-dbal':
-        define('TEST_STEFANO_ADAPTER', 'doctrine2-dbal');
+    case 'doctrine-dbal':
+        define('TEST_STEFANO_ADAPTER', 'doctrine-dbal');
 
         break;
 
