@@ -384,9 +384,8 @@ class ViewHelper
                 $html = $html . '</li>';
             }
 
-            $html = $html . '<li>';
-            $html = $html . '<span>' . $this->escape($node['name']) . '</span>'
-                    . ' <a href="/?action=delete&id=' . $this->escape($node['id']) . '" class="badge bg-danger">Delete</a>';
+            $html = $html . '<li id="' . $this->escape($node['id']) . '">';
+            $html = $html . $this->escape($node['name']);
 
             $previousLevel = $node['level'];
         }
@@ -591,6 +590,7 @@ $wh = new ViewHelper();
     <title>Demo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jstree@3.3.17/dist/themes/default/style.min.css">
     <style>
         .error-container {
             margin-bottom: 0;
@@ -653,28 +653,6 @@ $wh = new ViewHelper();
                     <div class="mb-3">
                         <input type="submit" value="Create" class="btn btn-primary"/>
                     </div>
-                </form>
-            </div>
-
-            <div class="col-12 col-md-6 col-lg-2">
-                <h3>Move</h3>
-                <form action="/?action=move-node" method="post">
-                    <div class="mb-3">
-                        <label for="move-source-<?php echo $sid; ?>">Source Node</label>
-                        <select id="move-source-<?php echo $sid; ?>" name="source_node_id"
-                                class="form-select"><?php echo $wh->renderSelectOptions($nodes); ?></select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="move-target-<?php echo $sid; ?>">Target Node</label>
-                        <select id="move-target-<?php echo $sid; ?>" name="target_node_id"
-                                class="form-select"><?php echo $wh->renderSelectOptions($nodes); ?></select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="move-placement-<?php echo $sid; ?>">Placement</label>
-                        <select id="move-placement-<?php echo $sid; ?>" name="placement"
-                                class="form-select"><?php echo $wh->renderPlacementOptions(); ?></select>
-                    </div>
-                    <input type="submit" value="Move" class="btn btn-primary"/>
                 </form>
             </div>
 
@@ -753,7 +731,7 @@ $wh = new ViewHelper();
         <div class="row">
             <div class="col-12 col-md-6">
                 <h3>Whole Tree</h3>
-                <?php echo $wh->renderTree($nodes); ?>
+                <div class="tree"><?php echo $wh->renderTree($nodes); ?></div>
             </div>
             <div class="col-12 col-md-6">
                 <?php
@@ -764,7 +742,7 @@ $wh = new ViewHelper();
                     if (0 == count($descendants)) {
                         echo $wh->renderErrorMessages(array('No descendants was found'));
                     } else {
-                        echo $wh->renderTree($descendants);
+                        echo '<div class="tree">' . $wh->renderTree($descendants) . '</div>';
                     } ?>
                     <?php
                 } ?>
@@ -778,7 +756,7 @@ $wh = new ViewHelper();
                         echo $wh->renderErrorMessages(array('No ancestors was found'));
                     } else {
                         echo $wh->renderBreadcrumbs($ancestors);
-                        echo $wh->renderTree($ancestors);
+                        echo '<div class="tree">' . $wh->renderTree($ancestors) . '</div>';
                     } ?>
                     <?php
                 } ?>
@@ -787,5 +765,92 @@ $wh = new ViewHelper();
         <?php
     } ?>
 </div>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jstree@3.3.17/dist/jstree.min.js"></script>
+<script>
+    $(function () {
+        var submitMove = function (sourceId, targetId, placement) {
+            var form = document.createElement('form');
+            form.method = 'post';
+            form.action = '/?action=move-node';
+
+            var fields = {
+                source_node_id: sourceId,
+                target_node_id: targetId,
+                placement: placement
+            };
+
+            Object.keys(fields).forEach(function (name) {
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = name;
+                input.value = fields[name];
+                form.appendChild(input);
+            });
+
+            document.body.appendChild(form);
+            form.submit();
+        };
+
+        $('.tree').jstree({
+            core: {
+                check_callback: function (operation, node, parent) {
+                    if ('move_node' !== operation || '#' === node.parent || '#' === parent.id) {
+                        return false;
+                    }
+
+                    var nodeRoot = node.parents[node.parents.length - 2];
+                    var parentRoot = 1 < parent.parents.length
+                        ? parent.parents[parent.parents.length - 2]
+                        : parent.id;
+
+                    return nodeRoot === parentRoot;
+                }
+            },
+            contextmenu: {
+                items: function (node) {
+                    return {
+                        deleteItem: {
+                            label: 'Delete',
+                            action: function () {
+                                window.location.href = '/?action=delete&id=' + node.id;
+                            }
+                        }
+                    };
+                }
+            },
+            plugins: ['dnd', 'contextmenu']
+        }).on('ready.jstree', function (e, data) {
+            data.instance.open_all();
+        }).on('move_node.jstree', function (e, data) {
+            var node = data.node;
+
+            if (data.old_parent === data.parent) {
+                var siblings = data.instance.get_node(data.parent).children
+                    .filter(function (id) {
+                        return id !== node.id;
+                    });
+
+                if (0 === data.position) {
+                    var first = siblings[0];
+                    if (first) {
+                        submitMove(node.id, first, '<?php echo TreeInterface::PLACEMENT_TOP; ?>');
+                    } else {
+                        window.location.reload();
+                    }
+                } else {
+                    var previous = siblings[data.position - 1];
+                    if (previous) {
+                        submitMove(node.id, previous, '<?php echo TreeInterface::PLACEMENT_BOTTOM; ?>');
+                    } else {
+                        window.location.reload();
+                    }
+                }
+            } else {
+                submitMove(node.id, data.parent, '<?php echo TreeInterface::PLACEMENT_CHILD_BOTTOM; ?>');
+            }
+        });
+    });
+</script>
 </body>
 </html>
