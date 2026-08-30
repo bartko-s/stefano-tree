@@ -4,3 +4,4 @@
 /tests/testConfig.local.php
 /build/
 /.php-cs-fixer.cache
+/.playwright-mcp/

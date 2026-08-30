@@ -1,10 +1,10 @@
 <?php
 return array(
     'dbConnection' => array(
-        'dbname' => '',
-        'user' => '',
+        'dbname' => 'stefano_tree_demo',
+        'user' => 'root',
         'password' => '',
-        'host' => '',
-        'driver' => 'pdo_pgsql',
+        'host' => 'mariadb',
+        'driver' => 'pdo_mysql',
     )
 );
